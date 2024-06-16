@@ -23,13 +23,13 @@ public class SecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http.authorizeHttpRequests(authorizeRequests ->
                         authorizeRequests
-                                .requestMatchers("/login").permitAll()
+                                .requestMatchers("/register", "/login", "/css/", "/js/").permitAll()
                                 .anyRequest().authenticated()
                 )
                 .formLogin(formLogin ->
                         formLogin
                                 .loginPage("/login")
-                                .defaultSuccessUrl("/home", true)
+                                .failureUrl("/login?error=true")
                                 .permitAll()
                 )
                 .logout(LogoutConfigurer::permitAll
