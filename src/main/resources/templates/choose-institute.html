@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Choose Institute</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+</head>
+<body>
+<div class="container">
+    <h1>Choose Institute</h1>
+
+    <form th:action="@{/choose-institute}" method="get" class="form-inline mb-3">
+        <input type="text" name="keyword" th:value="${keyword}" class="form-control mr-2" placeholder="Search...">
+        <button type="submit" class="btn btn-primary">Search</button>
+    </form>
+
+    <div th:if="${message}">
+        <p th:text="${message}" class="alert alert-info"></p>
+    </div>
+
+    <table class="table table-bordered" th:if="${!institutes.isEmpty()}">
+        <thead>
+        <tr>
+            <th>ID</th>
+            <th>Name</th>
+            <th>Director</th>
+            <th>City</th>
+            <th>Approval Text</th>
+            <th>Footer Text</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="institute : ${institutes}">
+            <td th:text="${institute.id}"></td>
+            <td th:text="${institute.name}"></td>
+            <td>
+                <span th:text="${institute.director.lastName}"></span>
+                <span th:text="${institute.director.firstName}"></span>
+                <span th:text="${institute.director.middleName}"></span>
+            </td>
+            <td th:text="${institute.city}"></td>
+            <td th:text="${institute.approvalText}"></td>
+            <td th:text="${institute.footerText}"></td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+</html>
