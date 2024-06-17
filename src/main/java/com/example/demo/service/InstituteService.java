@@ -1,5 +1,4 @@
 package com.example.demo.service;
-
 import com.example.demo.entity.Institute;
 import com.example.demo.repository.InstituteRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,5 +20,8 @@ public class InstituteService {
             return getAllInstitutes();
         }
         return instituteRepository.findByNameOrCityContaining(keyword);
+    }
+    public Institute findById(Long id) {
+        return instituteRepository.findById(id).orElse(null);
     }
 }
