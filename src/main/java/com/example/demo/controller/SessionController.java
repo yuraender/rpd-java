@@ -16,7 +16,6 @@ public class SessionController {
     @ResponseBody
     public ResponseEntity<Long> getInstituteId(@SessionAttribute(name = "instituteId", required = false) Long instituteId) {
         if (instituteId != null) {
-            System.out.println("InstituteId: " + instituteId);
             return ResponseEntity.ok(instituteId);
         } else {
             return ResponseEntity.ok(0L);

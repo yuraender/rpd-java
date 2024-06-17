@@ -59,18 +59,11 @@
                 <a class="nav-link" href="#">Формирование пакета РПД</a>
             </li>
         </ul>
-        <span class="navbar-text ml-auto" id="institute-status">
-            <a href="#" id="institute-link">Выбрать институт</a>
-        </span>
     </div>
 </nav>
 
 <div class="container">
-    <h1 class="mt-5">Welcome to the Home Page!</h1>
-    <p>You have successfully logged in.</p>
-    <div id="institute-info">
-        <p id="selected-institute-info"></p>
-    </div>
+    <h1 class="mt-5">Стартовая страница</h1>
 </div>
 
 <div class="rightbar">
@@ -79,42 +72,20 @@
     <a href="/auditoriums" id="menu-auditoriums" class="disabled">Аудитории</a>
 </div>
 
-<!-- Подключение полной версии jQuery -->
 <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 <script>
     $(document).ready(function () {
-        // function getSelectedInstituteId(callback) {
-        //     $.ajax({
-        //         url: '/api/session/activeInstitute',
-        //         type: 'GET',
-        //         success: function (data) {
-        //             console.log(data)
-        //             console.log('data')
-        //             callback(data);
-        //         },
-        //         error: function () {
-        //             console.error('Error fetching selected institute id');
-        //         }
-        //     });
-        // }
-
         fetch('/api/session/activeInstitute')
-            // .then(res => res.json())
             .then(selectedInstituteId => {
                 if (selectedInstituteId) {
-                    console.log('one')
-                    console.log(selectedInstituteId)
-                    // Институт выбран, обновляем текст ссылки и информацию о выбранном институте
                     $('#institute-link').text('Институт выбран');
                     $('#selected-institute-info').text('Выбранный институт: ' + selectedInstituteId);
                     $('#institute-chosen').show();
                     $('#menu-departments').removeClass('disabled');
                     $('#menu-auditoriums').removeClass('disabled');
                 } else {
-                    console.log('two')
-                    // Институт не выбран
                     $('#institute-link').text('Выбрать институт');
                     $('#selected-institute-info').text('');
                     $('#institute-chosen').hide();
@@ -122,27 +93,6 @@
                     $('#menu-auditoriums').addClass('disabled');
                 }
             })
-
-        // getSelectedInstituteId(function (selectedInstituteId) {
-        //     if (selectedInstituteId) {
-        //         console.log('one')
-        //         console.log(selectedInstituteId)
-        //         // Институт выбран, обновляем текст ссылки и информацию о выбранном институте
-        //         $('#institute-link').text('Институт выбран');
-        //         $('#selected-institute-info').text('Выбранный институт: ' + selectedInstituteId);
-        //         $('#institute-chosen').show();
-        //         $('#menu-departments').removeClass('disabled');
-        //         $('#menu-auditoriums').removeClass('disabled');
-        //     } else {
-        //         console.log('two')
-        //         // Институт не выбран
-        //         $('#institute-link').text('Выбрать институт');
-        //         $('#selected-institute-info').text('');
-        //         $('#institute-chosen').hide();
-        //         $('#menu-departments').addClass('disabled');
-        //         $('#menu-auditoriums').addClass('disabled');
-        //     }
-        // });
     });
 </script>
 </body>
