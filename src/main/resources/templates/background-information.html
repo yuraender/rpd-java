@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Справочная информация</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <style>
+        .scrollable-table {
+            max-height: 50vh; /* Максимальная высота таблицы, чтобы занять половину экрана */
+            overflow-y: auto; /* Включаем вертикальную прокрутку */
+        }
+        .active-institute, .active-department {
+            margin-top: 20px;
+            padding: 10px;
+            border: 1px solid #ddd;
+        }
+        h1, h2, h3, h4, h5, h6 {
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+<nav class="navbar navbar-expand-lg navbar-light bg-light">
+    <a class="navbar-brand" href="/">Главная</a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav"
+            aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarNav">
+        <ul class="navbar-nav">
+            <li class="nav-item">
+                <a class="nav-link" href="/choose-institute">Выбор института</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="/background-information">Справочная информация</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="#">Формирование пакета РПД</a>
+            </li>
+        </ul>
+    </div>
+</nav>
+<div class="container">
+    <h1>Справочная информация</h1>
+
+    <!-- Секция институтов -->
+    <section>
+        <h2>Институты:</h2>
+        <div class="scrollable-table">
+            <table class="table table-bordered">
+                <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Название</th>
+                    <th>Город</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="institute : ${institutes}">
+                    <td th:text="${institute.id}"></td>
+                    <td th:text="${institute.name}"></td>
+                    <td th:text="${institute.city}"></td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+        <div class="active-institute" th:if="${activeInstitute}">
+            <h3>Активный институт</h3>
+            <p><strong>ID:</strong> <span th:text="${activeInstitute.id}"></span></p>
+            <p><strong>Название:</strong> <span th:text="${activeInstitute.name}"></span></p>
+            <p><strong>Город:</strong> <span th:text="${activeInstitute.city}"></span></p>
+            <p><strong>Директор:</strong> <span th:text="${activeInstitute.director.nameTypeOne}"></span></p>
+            <p><strong>Текст утверждено:</strong> <span th:text="${activeInstitute.approvalText}"></span></p>
+            <p><strong>Текст подвал:</strong> <span th:text="${activeInstitute.footerText}"></span></p>
+        </div>
+    </section>
+
+    <!-- Секция кафедр -->
+    <section>
+        <h2>Кафедры:</h2>
+        <div class="scrollable-table">
+            <table class="table table-bordered">
+                <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Код</th>
+                    <th>Название</th>
+                    <th>Аббревиатура</th>
+                    <th>Институт</th>
+                    <th>Заведующий</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="department : ${departments}">
+                    <td th:text="${department.id}"></td>
+                    <td th:text="${department.code}"></td>
+                    <td th:text="${department.name}"></td>
+                    <td th:text="${department.abbreviation}"></td>
+                    <td th:text="${department.institute.name}"></td>
+                    <td th:text="${department.manager.nameTypeOne}"></td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+        <div class="active-department" th:if="${activeDepartment}">
+            <h3>Активная кафедра</h3>
+            <p><strong>ID:</strong> <span th:text="${activeDepartment.id}"></span></p>
+            <p><strong>Код:</strong> <span th:text="${activeDepartment.code}"></span></p>
+            <p><strong>Название:</strong> <span th:text="${activeDepartment.name}"></span></p>
+            <p><strong>Аббревиатура:</strong> <span th:text="${activeDepartment.abbreviation}"></span></p>
+            <p><strong>Институт:</strong> <span th:text="${activeDepartment.institute.name}"></span></p>
+            <p><strong>Заведующий:</strong> <span th:text="${activeDepartment.manager.name}"></span></p>
+        </div>
+    </section>
+</div>
+
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+</html>
