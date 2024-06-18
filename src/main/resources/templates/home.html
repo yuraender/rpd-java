@@ -63,7 +63,15 @@
 </nav>
 
 <div class="container">
-    <h1 class="mt-5">Стартовая страница</h1>
+    <div>
+        <h1>Профиль пользователя</h1>
+        <div th:if="${isAdmin}">
+            <p>Вы администратор</p>
+        </div>
+        <div th:unless="${isAdmin}">
+            <p>Вы обычный пользователь</p>
+        </div>
+    </div>
 </div>
 
 <div class="rightbar">

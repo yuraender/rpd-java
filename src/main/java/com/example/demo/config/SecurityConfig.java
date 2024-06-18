@@ -1,6 +1,8 @@
 package com.example.demo.config;
 
+import com.example.demo.handlers.CustomAuthenticationSuccessHandler;
 import com.example.demo.service.UserDetailsServiceImpl;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
@@ -14,26 +16,30 @@ import org.springframework.security.web.SecurityFilterChain;
 public class SecurityConfig {
 
     private final UserDetailsServiceImpl userDetailsService;
+    private final CustomAuthenticationSuccessHandler customAuthenticationSuccessHandler;
 
-    public SecurityConfig(UserDetailsServiceImpl userDetailsService) {
+    @Autowired
+    public SecurityConfig(UserDetailsServiceImpl userDetailsService, CustomAuthenticationSuccessHandler customAuthenticationSuccessHandler) {
         this.userDetailsService = userDetailsService;
+        this.customAuthenticationSuccessHandler = customAuthenticationSuccessHandler;
     }
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-        http.authorizeHttpRequests(authorizeRequests ->
+        http.authorizeRequests(authorizeRequests ->
                         authorizeRequests
                                 .requestMatchers("/register", "/login", "/css/", "/js/").permitAll()
+                                .requestMatchers("/admin/**").hasRole("ADMIN")
                                 .anyRequest().authenticated()
                 )
                 .formLogin(formLogin ->
                         formLogin
                                 .loginPage("/login")
+                                .successHandler(customAuthenticationSuccessHandler)
                                 .failureUrl("/login?error=true")
                                 .permitAll()
                 )
-                .logout(LogoutConfigurer::permitAll
-                );
+                .logout(LogoutConfigurer::permitAll);
         return http.build();
     }
 
@@ -42,6 +48,7 @@ public class SecurityConfig {
         return new BCryptPasswordEncoder();
     }
 
+    @Autowired
     public void configure(AuthenticationManagerBuilder auth) throws Exception {
         auth.userDetailsService(userDetailsService).passwordEncoder(passwordEncoder());
     }

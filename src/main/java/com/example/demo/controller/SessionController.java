@@ -54,23 +54,4 @@ public class SessionController {
             System.out.println("DepartmentId Save: " + id);
         }
     }
-
-//    @GetMapping("/background-information")
-//    public String getBackgroundInformation(HttpSession session, Model model) {
-//        List<Institute> institutes = instituteService.findAll();
-//        List<Department> departments = departmentService.findAll();
-//
-//        Long activeInstituteId = (Long) session.getAttribute("instituteId");
-//        Institute activeInstitute = activeInstituteId != null ? instituteService.findById(activeInstituteId) : null;
-//
-//        Long activeDepartmentId = (Long) session.getAttribute("activeDepartmentId");
-//        Department activeDepartment = activeDepartmentId != null ? departmentService.findById(activeDepartmentId) : null;
-//
-//        model.addAttribute("institutes", institutes);
-//        model.addAttribute("departments", departments);
-//        model.addAttribute("activeInstitute", activeInstitute);
-//        model.addAttribute("activeDepartment", activeDepartment);
-//
-//        return "background-information";
-//    }
 }

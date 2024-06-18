@@ -8,7 +8,9 @@ public class AppUser {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "role_id")
+    private RoleUser roleUser;
     @Column(nullable = false, unique = true)
     private String username;
 
@@ -21,6 +23,13 @@ public class AppUser {
     // Getters and Setters
     public Long getId() {
         return id;
+    }
+    public RoleUser getRoleUser() {
+        return roleUser;
+    }
+
+    public void setRoleUser(RoleUser roleUser) {
+        this.roleUser = roleUser;
     }
 
     public void setId(Long id) {

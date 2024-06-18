@@ -1,9 +1,8 @@
 package com.example.demo.controller;
 
-import javax.servlet.http.HttpSession;
-
 import com.example.demo.entity.Institute;
 import com.example.demo.service.InstituteService;
+import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -33,7 +32,6 @@ public class InstituteController {
 
     @GetMapping("/select-institute")
     public String selectInstitute(@RequestParam("id") Long id, HttpSession session) {
-        System.out.println(id);
         session.setAttribute("instituteId", id);
         return "redirect:/home";
     }
