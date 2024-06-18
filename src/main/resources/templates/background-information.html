@@ -8,7 +8,7 @@
             max-height: 50vh; /* Максимальная высота таблицы, чтобы занять половину экрана */
             overflow-y: auto; /* Включаем вертикальную прокрутку */
         }
-        .active-institute, .active-department {
+        .active-record {
             margin-top: 20px;
             padding: 10px;
             border: 1px solid #ddd;
@@ -63,7 +63,7 @@
                 </tbody>
             </table>
         </div>
-        <div class="active-institute" th:if="${activeInstitute}">
+        <div class="active-record" th:if="${activeInstitute}">
             <h3>Активный институт</h3>
             <p><strong>ID:</strong> <span th:text="${activeInstitute.id}"></span></p>
             <p><strong>Название:</strong> <span th:text="${activeInstitute.name}"></span></p>
@@ -101,7 +101,7 @@
                 </tbody>
             </table>
         </div>
-        <div class="active-department" th:if="${activeDepartment}">
+        <div class="active-record" th:if="${activeDepartment}">
             <h3>Активная кафедра</h3>
             <p><strong>ID:</strong> <span th:text="${activeDepartment.id}"></span></p>
             <p><strong>Код:</strong> <span th:text="${activeDepartment.code}"></span></p>
@@ -111,6 +111,62 @@
             <p><strong>Заведующий:</strong> <span th:text="${activeDepartment.manager.name}"></span></p>
         </div>
     </section>
+    <!-- Направления -->
+    <section>
+        <h2>Направления:</h2>
+        <div class="scrollable-table">
+            <table class="table table-bordered">
+                <thead>
+                <tr>
+                    <th>Шифр</th>
+                    <th>Название</th>
+                    <th>Кафедра</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="direction : ${directions}">
+                    <td th:text="${direction.encryption}"></td>
+                    <td th:text="${direction.name}"></td>
+                    <td th:text="${direction.department.name}"></td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+        <div class="active-record" th:if="${activeDirection}">
+            <h3>Активная кафедра</h3>
+            <p><strong>ID:</strong> <span th:text="${activeDirection.id}"></span></p>
+            <p><strong>Название:</strong> <span th:text="${activeDepartment.name}"></span></p>
+            <p><strong>Шифр:</strong> <span th:text="${activeDirection.encryption}"></span></p>
+            <p><strong>Кафедра:</strong> <span th:text="${activeDirection.department.name}"></span></p>
+        </div>
+    </section>
+    <!-- Профили -->
+    <section>
+        <h2>Профили:</h2>
+        <div class="scrollable-table">
+            <table class="table table-bordered">
+                <thead>
+                <tr>
+                    <th>Название</th>
+                    <th>Направление</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="profile : ${profiles}">
+                    <td th:text="${profile.name}"></td>
+                    <td th:text="${profile.direction.name}"></td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+        <div class="active-record" th:if="${activeProfile}">
+            <h3>Активный профиль</h3>
+            <p><strong>ID:</strong> <span th:text="${activeProfile.id}"></span></p>
+            <p><strong>Название:</strong> <span th:text="${activeProfile.name}"></span></p>
+            <p><strong>Шифр:</strong> <span th:text="${profile.direction.encryption + ' ' + profile.direction.name}"></span></p>
+        </div>
+    </section>
+
 </div>
 
 <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
