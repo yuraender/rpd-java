@@ -65,43 +65,25 @@
 <div class="container">
     <div>
         <h1>Профиль пользователя</h1>
-        <div th:if="${isAdmin}">
-            <p>Вы администратор</p>
-        </div>
-        <div th:unless="${isAdmin}">
-            <p>Вы обычный пользователь</p>
-        </div>
+<!--        <div th:if="${isAdmin}">-->
+<!--            <p>Вы администратор</p>-->
+<!--        </div>-->
+<!--        <div th:unless="${isAdmin}">-->
+<!--            <p>Вы обычный пользователь</p>-->
+<!--        </div>-->
     </div>
 </div>
 
 <div class="rightbar">
-    <a href="/choose-institute" id="menu-institute">Институты <span id="institute-chosen" class="institute-status" style="display:none;">выбран</span></a>
-    <a href="/departments" id="menu-departments" class="disabled">Кафедры</a>
-    <a href="/auditoriums" id="menu-auditoriums" class="disabled">Аудитории</a>
+    <a href="/choose-institute" id="menu-institute">Институты
+        <span th:if="${isInstituteSelected}" id="institute-chosen" class="institute-status">выбран</span>
+    </a>
+    <a href="/departments" id="menu-departments" th:classappend="${isInstituteSelected} ? '' : 'disabled'">Кафедры</a>
+    <a href="/auditoriums" id="menu-auditoriums" th:classappend="${isInstituteSelected} ? '' : 'disabled'">Аудитории</a>
 </div>
 
 <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
-<script>
-    $(document).ready(function () {
-        fetch('/api/session/activeInstitute')
-            .then(selectedInstituteId => {
-                if (selectedInstituteId) {
-                    $('#institute-link').text('Институт выбран');
-                    $('#selected-institute-info').text('Выбранный институт: ' + selectedInstituteId);
-                    $('#institute-chosen').show();
-                    $('#menu-departments').removeClass('disabled');
-                    $('#menu-auditoriums').removeClass('disabled');
-                } else {
-                    $('#institute-link').text('Выбрать институт');
-                    $('#selected-institute-info').text('');
-                    $('#institute-chosen').hide();
-                    $('#menu-departments').addClass('disabled');
-                    $('#menu-auditoriums').addClass('disabled');
-                }
-            })
-    });
-</script>
 </body>
 </html>

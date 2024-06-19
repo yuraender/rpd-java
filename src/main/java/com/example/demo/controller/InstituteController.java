@@ -39,7 +39,9 @@ public class InstituteController {
     @GetMapping("/home")
     public String home(Model model, HttpSession session) {
         Long instituteId = (Long) session.getAttribute("instituteId");
-        if (instituteId != null) {
+        boolean isInstituteSelected = instituteId != null;
+        model.addAttribute("isInstituteSelected", isInstituteSelected);
+        if (isInstituteSelected) {
             Institute institute = instituteService.findById(instituteId);
             model.addAttribute("institute", institute);
         }

@@ -21,9 +21,10 @@ public class AuthController {
         String role = (String) session.getAttribute("role");
 
         if (role.equals("administrator")) {
+            session.setAttribute("isAdmin", true);
             return "redirect:/home";
         }
-        System.out.println("user");
+
         return "redirect:/home";
     }
 }
