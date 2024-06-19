@@ -50,9 +50,12 @@ public class BackgroundInformationController {
     private BasicEducationalProgramService basicEducationalProgramService;
 
     @Autowired
-    private DisciplinesEducationalProgramService disciplinesEducationalProgramService;
+    private DisciplineEducationalProgramService disciplineEducationalProgramService;
     @Autowired
     private CompetenciesDisciplinesEducationalProgramService competenciesDisciplinesEducationalProgramService;
+    @Autowired
+    private FileRPDService fileRPDService;
+
 
     @GetMapping("/background-information")
     public String getBackgroundInformation(
@@ -71,6 +74,7 @@ public class BackgroundInformationController {
             @SessionAttribute(name = "basicEducationalProgramId", required = false) Long basicEducationalProgramId,
             @SessionAttribute(name = "disciplinesEducationalProgramId", required = false) Long disciplinesEducationalProgramId,
             @SessionAttribute(name = "competenciesDisciplinesEducationalProgramId", required = false) Long competenciesDisciplinesEducationalProgramId,
+            @SessionAttribute(name = "fileRPDId", required = false) Long fileRPDId,
             @SessionAttribute(name = "role", required = false) String role,
             Model model) {
         // Получаем все институты
@@ -204,13 +208,13 @@ public class BackgroundInformationController {
         }
 
         // Получаем все дисциплиныОП
-        List<DisciplinesEducationalProgram> disciplinesEducationalPrograms = disciplinesEducationalProgramService.getAll();
-        model.addAttribute("disciplinesEducationalPrograms", disciplinesEducationalPrograms);
+        List<DisciplineEducationalProgram> disciplineEducationalPrograms = disciplineEducationalProgramService.getAll();
+        model.addAttribute("disciplineEducationalPrograms", disciplineEducationalPrograms);
 
         // Устанавливаем дисциплиныОП
         if (disciplinesEducationalProgramId != null) {
-            DisciplinesEducationalProgram activeDisciplinesEducationalProgram = disciplinesEducationalProgramService.getById(disciplinesEducationalProgramId);
-            model.addAttribute("activeDisciplinesEducationalProgram", activeDisciplinesEducationalProgram);
+            DisciplineEducationalProgram activeDisciplineEducationalProgram = disciplineEducationalProgramService.getById(disciplinesEducationalProgramId);
+            model.addAttribute("activeDisciplinesEducationalProgram", activeDisciplineEducationalProgram);
         }
 
         // Получаем все компетенции дисциплин ОП
@@ -221,6 +225,16 @@ public class BackgroundInformationController {
         if (competenciesDisciplinesEducationalProgramId != null) {
             CompetenciesDisciplinesEducationalProgram activeCompetenciesDisciplinesEducationalProgram = competenciesDisciplinesEducationalProgramService.getById(competenciesDisciplinesEducationalProgramId);
             model.addAttribute("activeCompetenciesDisciplinesEducationalProgram", activeCompetenciesDisciplinesEducationalProgram);
+        }
+
+        // Получаем все РПД
+        List<FileRPD> fileRPDS = fileRPDService.getAll();
+        model.addAttribute("fileRPDS", fileRPDS);
+
+        // Устанавливаем РПД
+        if (fileRPDId != null) {
+            FileRPD activeFileRPD = fileRPDService.getById(fileRPDId);
+            model.addAttribute("activeFileRPD", activeFileRPD);
         }
 
 

@@ -11,7 +11,7 @@ public class CompetenciesDisciplinesEducationalProgram {
 
     @ManyToOne
     @JoinColumn(name = "discipline_educational_program_id", referencedColumnName = "id")
-    private DisciplinesEducationalProgram disciplinesEducationalProgram;
+    private DisciplineEducationalProgram disciplineEducationalProgram;
     @ManyToOne
     @JoinColumn(name = "competence_id", referencedColumnName = "id")
     private Competencie competencie;
@@ -24,12 +24,12 @@ public class CompetenciesDisciplinesEducationalProgram {
         this.id = id;
     }
 
-    public DisciplinesEducationalProgram getDisciplinesEducationalProgram() {
-        return disciplinesEducationalProgram;
+    public DisciplineEducationalProgram getDisciplineEducationalProgram() {
+        return disciplineEducationalProgram;
     }
 
-    public void setDisciplinesEducationalProgram(DisciplinesEducationalProgram disciplinesEducationalProgram) {
-        this.disciplinesEducationalProgram = disciplinesEducationalProgram;
+    public void setDisciplineEducationalProgram(DisciplineEducationalProgram disciplineEducationalProgram) {
+        this.disciplineEducationalProgram = disciplineEducationalProgram;
     }
 
     public Competencie getCompetencie() {

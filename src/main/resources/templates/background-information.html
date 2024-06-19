@@ -524,22 +524,22 @@
                 </tr>
                 </thead>
                 <tbody>
-                <tr th:each="disciplinesEducationalProgram : ${disciplinesEducationalPrograms}">
-                    <td th:text="${disciplinesEducationalProgram.basicEducationalProgram.profile.name}"></td>
-                    <td th:text="${disciplinesEducationalProgram.basicEducationalProgram.academicYear}"></td>
-                    <td th:text="${disciplinesEducationalProgram.basicEducationalProgram.educationType.name}"></td>
-                    <td th:text="${disciplinesEducationalProgram.discipline.name}"></td>
+                <tr th:each="disciplineEducationalProgram : ${disciplineEducationalPrograms}">
+                    <td th:text="${disciplineEducationalProgram.basicEducationalProgram.profile.name}"></td>
+                    <td th:text="${disciplineEducationalProgram.basicEducationalProgram.academicYear}"></td>
+                    <td th:text="${disciplineEducationalProgram.basicEducationalProgram.educationType.name}"></td>
+                    <td th:text="${disciplineEducationalProgram.discipline.name}"></td>
                 </tr>
                 </tbody>
             </table>
         </div>
-        <div class="active-record" th:if="${activeDisciplinesEducationalProgram}">
+        <div class="active-record" th:if="${activeDisciplineEducationalProgram}">
             <h3>Активная дисциплинаОП</h3>
-            <p><strong>ID:</strong> <span th:text="${activeDisciplinesEducationalProgram.id}"></span></p>
-            <p><strong>Профиль:</strong> <span th:text="${activeDisciplinesEducationalProgram.basicEducationalProgram.profile.name}"></span></p>
-            <p><strong>Учебный год:</strong> <span th:text="${activeDisciplinesEducationalProgram.basicEducationalProgram.academicYear}"></span></p>
-            <p><strong>Тип обучения:</strong> <span th:text="${activeDisciplinesEducationalProgram.basicEducationalProgram.educationType.name}"></span></p>
-            <p><strong>Дисциплина:</strong> <span th:text="${activeDisciplinesEducationalProgram.discipline.name}"></span></p>
+            <p><strong>ID:</strong> <span th:text="${activeDisciplineEducationalProgram.id}"></span></p>
+            <p><strong>Профиль:</strong> <span th:text="${activeDisciplineEducationalProgram.basicEducationalProgram.profile.name}"></span></p>
+            <p><strong>Учебный год:</strong> <span th:text="${activeDisciplineEducationalProgram.basicEducationalProgram.academicYear}"></span></p>
+            <p><strong>Тип обучения:</strong> <span th:text="${activeDisciplineEducationalProgram.basicEducationalProgram.educationType.name}"></span></p>
+            <p><strong>Дисциплина:</strong> <span th:text="${activeDisciplineEducationalProgram.discipline.name}"></span></p>
         </div>
     </section>
 
@@ -566,10 +566,10 @@
                 </thead>
                 <tbody>
                 <tr th:each="competenciesDisciplinesEducationalProgram : ${competenciesDisciplinesEducationalPrograms}">
-                    <td th:text="${competenciesDisciplinesEducationalProgram.disciplinesEducationalProgram.basicEducationalProgram.profile.name}"></td>
-                    <td th:text="${competenciesDisciplinesEducationalProgram.disciplinesEducationalProgram.basicEducationalProgram.academicYear}"></td>
-                    <td th:text="${competenciesDisciplinesEducationalProgram.disciplinesEducationalProgram.basicEducationalProgram.educationType.name}"></td>
-                    <td th:text="${competenciesDisciplinesEducationalProgram.disciplinesEducationalProgram.discipline.name}"></td>
+                    <td th:text="${competenciesDisciplinesEducationalProgram.disciplineEducationalProgram.basicEducationalProgram.profile.name}"></td>
+                    <td th:text="${competenciesDisciplinesEducationalProgram.disciplineEducationalProgram.basicEducationalProgram.academicYear}"></td>
+                    <td th:text="${competenciesDisciplinesEducationalProgram.disciplineEducationalProgram.basicEducationalProgram.educationType.name}"></td>
+                    <td th:text="${competenciesDisciplinesEducationalProgram.disciplineEducationalProgram.discipline.name}"></td>
                     <td th:text="${competenciesDisciplinesEducationalProgram.competencie.code}"></td>
                 </tr>
                 </tbody>
@@ -577,12 +577,88 @@
         </div>
         <div class="active-record" th:if="${activeCompetenciesDisciplinesEducationalProgram}">
             <h3>Активная дисциплинаОП</h3>
-            <p><strong>ID:</strong> <span th:text="${activeDisciplinesEducationalProgram.id}"></span></p>
-            <p><strong>Профиль:</strong> <span th:text="${activeCompetenciesDisciplinesEducationalProgram.disciplinesEducationalProgram.basicEducationalProgram.profile.name}"></span></p>
-            <p><strong>Учебный год:</strong> <span th:text="${activeCompetenciesDisciplinesEducationalProgram.disciplinesEducationalProgram.basicEducationalProgram.academicYear}"></span></p>
-            <p><strong>Тип обучения:</strong> <span th:text="${activeCompetenciesDisciplinesEducationalProgram.disciplinesEducationalProgram.basicEducationalProgram.educationType.name}"></span></p>
-            <p><strong>Дисциплина:</strong> <span th:text="${activeCompetenciesDisciplinesEducationalProgram.disciplinesEducationalProgram.discipline.name}"></span></p>
-            <p><strong>Компетенция:</strong> <span th:text="${activeCompetenciesDisciplinesEducationalProgram.disciplinesEducationalProgram.discipline.name}"></span></p>
+            <p><strong>ID:</strong> <span th:text="${activeDisciplineEducationalProgram.id}"></span></p>
+            <p><strong>Профиль:</strong> <span th:text="${activeCompetenciesDisciplinesEducationalProgram.disciplineEducationalProgram.basicEducationalProgram.profile.name}"></span></p>
+            <p><strong>Учебный год:</strong> <span th:text="${activeCompetenciesDisciplinesEducationalProgram.disciplineEducationalProgram.basicEducationalProgram.academicYear}"></span></p>
+            <p><strong>Тип обучения:</strong> <span th:text="${activeCompetenciesDisciplinesEducationalProgram.disciplineEducationalProgram.basicEducationalProgram.educationType.name}"></span></p>
+            <p><strong>Дисциплина:</strong> <span th:text="${activeCompetenciesDisciplinesEducationalProgram.disciplineEducationalProgram.discipline.name}"></span></p>
+            <p><strong>Компетенция:</strong> <span th:text="${activeCompetenciesDisciplinesEducationalProgram.disciplineEducationalProgram.discipline.name}"></span></p>
+        </div>
+    </section>
+
+    <!-- файлы РПД -->
+    <section>
+        <h2>файлы РПД:</h2>
+        <div class="scrollable-table">
+            <table class="table table-bordered" id="filesRpdTable">
+                <thead>
+                <tr class="sticky-header">
+                    <th><input type="text" class="form-control" placeholder="Профиль" onkeyup="filterTable('filesRpdTable', 0)"></th>
+                    <th><input type="text" class="form-control" placeholder="Учебный год" onkeyup="filterTable('filesRpdTable', 1)"></th>
+                    <th><input type="text" class="form-control" placeholder="Тип обучения " onkeyup="filterTable('filesRpdTable', 2)"></th>
+                    <th><input type="text" class="form-control" placeholder="Дисциплина" onkeyup="filterTable('filesRpdTable', 3)"></th>
+                    <th><input type="text" class="form-control" placeholder="Раздел 1. Цели" onkeyup="filterTable('filesRpdTable', 4)"></th>
+                    <th><input type="text" class="form-control" placeholder="Раздел 2. Место в ООП" onkeyup="filterTable('filesRpdTable', 5)"></th>
+                    <th><input type="text" class="form-control" placeholder="Раздел 3. Структура" onkeyup="filterTable('filesRpdTable', 6)"></th>
+                    <th><input type="text" class="form-control" placeholder="Раздел 4. ОбрТехнолог" onkeyup="filterTable('filesRpdTable', 7)"></th>
+                    <th><input type="text" class="form-control" placeholder="Раздел 5. ФОС" onkeyup="filterTable('filesRpdTable', 8)"></th>
+                    <th><input type="text" class="form-control" placeholder="Раздел 6. Уч-мет ОД" onkeyup="filterTable('filesRpdTable', 9)"></th>
+                </tr>
+                <tr class="sticky-header">
+                    <th>Профиль</th>
+                    <th>Учебный год</th>
+                    <th>Тип обучения</th>
+                    <th>Дисциплина</th>
+                    <th>Раздел 1. Цели</th>
+                    <th>Раздел 2. Место в ООП</th>
+                    <th>Раздел 3. Структура</th>
+                    <th>Раздел 4. ОбрТехнолог</th>
+                    <th>Раздел 5. ФОС</th>
+                    <th>Раздел 6. Уч-мет ОД</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="fileRPD : ${fileRPDS}">
+                    <td th:text="${fileRPD.disciplineEducationalProgram.basicEducationalProgram.profile.name}"></td>
+                    <td th:text="${fileRPD.disciplineEducationalProgram.basicEducationalProgram.academicYear}"></td>
+                    <td th:text="${fileRPD.disciplineEducationalProgram.basicEducationalProgram.educationType.name}"></td>
+                    <td th:text="${fileRPD.disciplineEducationalProgram.discipline.name}"></td>
+                    <td>
+                        <span th:if="${fileRPD.section1IsLoad}" th:text="'загружен'"></span>
+                        <span th:unless="${fileRPD.section1IsLoad}" th:text="'не загружен'"></span>
+                    </td>
+                    <td>
+                        <span th:if="${fileRPD.section2IsLoad}" th:text="'загружен'"></span>
+                        <span th:unless="${fileRPD.section2IsLoad}" th:text="'не загружен'"></span>
+                    </td>
+                    <td>
+                        <span th:if="${fileRPD.section3IsLoad}" th:text="'загружен'"></span>
+                        <span th:unless="${fileRPD.section3IsLoad}" th:text="'не загружен'"></span>
+                    </td>
+                    <td>
+                        <span th:if="${fileRPD.section4IsLoad}" th:text="'загружен'"></span>
+                        <span th:unless="${fileRPD.section4IsLoad}" th:text="'не загружен'"></span>
+                    </td>
+                    <td>
+                        <span th:if="${fileRPD.section5IsLoad}" th:text="'загружен'"></span>
+                        <span th:unless="${fileRPD.section5IsLoad}" th:text="'не загружен'"></span>
+                    </td>
+                    <td>
+                        <span th:if="${fileRPD.section6IsLoad}" th:text="'загружен'"></span>
+                        <span th:unless="${fileRPD.section6IsLoad}" th:text="'не загружен'"></span>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+        <div class="active-record" th:if="${activeCompetenciesDisciplinesEducationalProgram}">
+            <h3>Активная дисциплинаОП</h3>
+            <p><strong>ID:</strong> <span th:text="${activeDisciplineEducationalProgram.id}"></span></p>
+            <p><strong>Профиль:</strong> <span th:text="${activeCompetenciesDisciplinesEducationalProgram.disciplineEducationalProgram.basicEducationalProgram.profile.name}"></span></p>
+            <p><strong>Учебный год:</strong> <span th:text="${activeCompetenciesDisciplinesEducationalProgram.disciplineEducationalProgram.basicEducationalProgram.academicYear}"></span></p>
+            <p><strong>Тип обучения:</strong> <span th:text="${activeCompetenciesDisciplinesEducationalProgram.disciplineEducationalProgram.basicEducationalProgram.educationType.name}"></span></p>
+            <p><strong>Дисциплина:</strong> <span th:text="${activeCompetenciesDisciplinesEducationalProgram.disciplineEducationalProgram.discipline.name}"></span></p>
+            <p><strong>Компетенция:</strong> <span th:text="${activeCompetenciesDisciplinesEducationalProgram.disciplineEducationalProgram.discipline.name}"></span></p>
         </div>
     </section>
 
