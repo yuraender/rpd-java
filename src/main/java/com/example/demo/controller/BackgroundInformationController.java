@@ -51,6 +51,8 @@ public class BackgroundInformationController {
 
     @Autowired
     private DisciplinesEducationalProgramService disciplinesEducationalProgramService;
+    @Autowired
+    private CompetenciesDisciplinesEducationalProgramService competenciesDisciplinesEducationalProgramService;
 
     @GetMapping("/background-information")
     public String getBackgroundInformation(
@@ -68,6 +70,7 @@ public class BackgroundInformationController {
             @SessionAttribute(name = "techSupportId", required = false) Long techSupportId,
             @SessionAttribute(name = "basicEducationalProgramId", required = false) Long basicEducationalProgramId,
             @SessionAttribute(name = "disciplinesEducationalProgramId", required = false) Long disciplinesEducationalProgramId,
+            @SessionAttribute(name = "competenciesDisciplinesEducationalProgramId", required = false) Long competenciesDisciplinesEducationalProgramId,
             @SessionAttribute(name = "role", required = false) String role,
             Model model) {
         // Получаем все институты
@@ -208,6 +211,16 @@ public class BackgroundInformationController {
         if (disciplinesEducationalProgramId != null) {
             DisciplinesEducationalProgram activeDisciplinesEducationalProgram = disciplinesEducationalProgramService.getById(disciplinesEducationalProgramId);
             model.addAttribute("activeDisciplinesEducationalProgram", activeDisciplinesEducationalProgram);
+        }
+
+        // Получаем все компетенции дисциплин ОП
+        List<CompetenciesDisciplinesEducationalProgram> competenciesDisciplinesEducationalPrograms = competenciesDisciplinesEducationalProgramService.getAll();
+        model.addAttribute("competenciesDisciplinesEducationalPrograms", competenciesDisciplinesEducationalPrograms);
+
+        // Устанавливаем компетенцию дисциплин ОП
+        if (competenciesDisciplinesEducationalProgramId != null) {
+            CompetenciesDisciplinesEducationalProgram activeCompetenciesDisciplinesEducationalProgram = competenciesDisciplinesEducationalProgramService.getById(competenciesDisciplinesEducationalProgramId);
+            model.addAttribute("activeCompetenciesDisciplinesEducationalProgram", activeCompetenciesDisciplinesEducationalProgram);
         }
 
 

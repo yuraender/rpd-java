@@ -543,7 +543,48 @@
         </div>
     </section>
 
-
+    <!-- Компетенции дисциплинОП -->
+    <section>
+        <h2>Компетенции дисциплинОП:</h2>
+        <div class="scrollable-table">
+            <table class="table table-bordered" id="competenciesDisciplinesEducationalProgramsTable">
+                <thead>
+                <tr class="sticky-header">
+                    <th><input type="text" class="form-control" placeholder="Профиль" onkeyup="filterTable('competenciesDisciplinesEducationalProgramsTable', 0)"></th>
+                    <th><input type="text" class="form-control" placeholder="Учебный год" onkeyup="filterTable('competenciesDisciplinesEducationalProgramsTable', 1)"></th>
+                    <th><input type="text" class="form-control" placeholder="Тип обучения " onkeyup="filterTable('competenciesDisciplinesEducationalProgramsTable', 2)"></th>
+                    <th><input type="text" class="form-control" placeholder="Дисциплина" onkeyup="filterTable('competenciesDisciplinesEducationalProgramsTable', 3)"></th>
+                    <th><input type="text" class="form-control" placeholder="Компетенция" onkeyup="filterTable('competenciesDisciplinesEducationalProgramsTable', 4)"></th>
+                </tr>
+                <tr class="sticky-header">
+                    <th>Профиль</th>
+                    <th>Учебный год</th>
+                    <th>Тип обучения</th>
+                    <th>Дисциплина</th>
+                    <th>Компетенция</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="competenciesDisciplinesEducationalProgram : ${competenciesDisciplinesEducationalPrograms}">
+                    <td th:text="${competenciesDisciplinesEducationalProgram.disciplinesEducationalProgram.basicEducationalProgram.profile.name}"></td>
+                    <td th:text="${competenciesDisciplinesEducationalProgram.disciplinesEducationalProgram.basicEducationalProgram.academicYear}"></td>
+                    <td th:text="${competenciesDisciplinesEducationalProgram.disciplinesEducationalProgram.basicEducationalProgram.educationType.name}"></td>
+                    <td th:text="${competenciesDisciplinesEducationalProgram.disciplinesEducationalProgram.discipline.name}"></td>
+                    <td th:text="${competenciesDisciplinesEducationalProgram.competencie.code}"></td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+        <div class="active-record" th:if="${activeCompetenciesDisciplinesEducationalProgram}">
+            <h3>Активная дисциплинаОП</h3>
+            <p><strong>ID:</strong> <span th:text="${activeDisciplinesEducationalProgram.id}"></span></p>
+            <p><strong>Профиль:</strong> <span th:text="${activeCompetenciesDisciplinesEducationalProgram.disciplinesEducationalProgram.basicEducationalProgram.profile.name}"></span></p>
+            <p><strong>Учебный год:</strong> <span th:text="${activeCompetenciesDisciplinesEducationalProgram.disciplinesEducationalProgram.basicEducationalProgram.academicYear}"></span></p>
+            <p><strong>Тип обучения:</strong> <span th:text="${activeCompetenciesDisciplinesEducationalProgram.disciplinesEducationalProgram.basicEducationalProgram.educationType.name}"></span></p>
+            <p><strong>Дисциплина:</strong> <span th:text="${activeCompetenciesDisciplinesEducationalProgram.disciplinesEducationalProgram.discipline.name}"></span></p>
+            <p><strong>Компетенция:</strong> <span th:text="${activeCompetenciesDisciplinesEducationalProgram.disciplinesEducationalProgram.discipline.name}"></span></p>
+        </div>
+    </section>
 
 </div>
 
