@@ -264,43 +264,6 @@
         </div>
     </section>
 
-    <!-- Сотрудники -->
-    <section>
-        <h2>Сотрудники:</h2>
-        <div class="scrollable-table">
-            <table class="table table-bordered" id="employeesTable">
-                <thead>
-                <tr class="sticky-header">
-                    <th><input type="text" class="form-control" placeholder="Фамилия" onkeyup="filterTable('employeesTable', 0)"></th>
-                    <th><input type="text" class="form-control" placeholder="Имя" onkeyup="filterTable('employeesTable', 1)"></th>
-                    <th><input type="text" class="form-control" placeholder="Отчество" onkeyup="filterTable('employeesTable', 2)"></th>
-                </tr>
-                <tr class="sticky-header">
-                    <th>Фамилия</th>
-                    <th>Имя</th>
-                    <th>Отчество</th>
-                </tr>
-                </thead>
-                <tbody>
-                <tr th:each="employee : ${employees}">
-                    <td th:text="${employee.lastName}"></td>
-                    <td th:text="${employee.firstName}"></td>
-                    <td th:text="${employee.middleName}"></td>
-                </tr>
-                </tbody>
-            </table>
-        </div>
-        <div class="active-record" th:if="${activeEducationType}">
-            <h3>Активный сотрудник</h3>
-            <p><strong>ID:</strong> <span th:text="${activeEducationType.id}"></span></p>
-            <p><strong>Фамилия:</strong> <span th:text="${activeEducationType.lastName}"></span></p>
-            <p><strong>Имя:</strong> <span th:text="${activeEducationType.firstName}"></span></p>
-            <p><strong>Отчество:</strong> <span th:text="${activeEducationType.middleName}"></span></p>
-            <p><strong>ФамилияИО:</strong> <span th:text="${activeEducationType.nameTypeOne}"></span></p>
-            <p><strong>ИОФамилия:</strong> <span th:text="${activeEducationType.nameTypeTwo}"></span></p>
-        </div>
-    </section>
-
     <!-- Должности -->
     <section>
         <h2>Должности:</h2>
@@ -402,7 +365,6 @@
         </div>
     </section>
 
-
     <!-- Компетенции -->
     <section>
         <h2>Компетенции:</h2>
@@ -437,8 +399,156 @@
         </div>
     </section>
 
+    <!-- Аудитории -->
+    <section>
+        <h2>Аудитории:</h2>
+        <div class="scrollable-table">
+            <table class="table table-bordered" id="audiencesTable">
+                <thead>
+                <tr class="sticky-header">
+                    <th><input type="text" class="form-control" placeholder="Институт" onkeyup="filterTable('audiencesTable', 0)"></th>
+                    <th><input type="text" class="form-control" placeholder="Аудитория №" onkeyup="filterTable('audiencesTable', 1)"></th>
+                    <th><input type="text" class="form-control" placeholder="Техника" onkeyup="filterTable('audiencesTable', 2)"></th>
+                    <th><input type="text" class="form-control" placeholder="Лицензия ПО в аудитории" onkeyup="filterTable('audiencesTable', 3)"></th>
+                </tr>
+                <tr class="sticky-header">
+                    <th>Институт</th>
+                    <th>Аудитория №</th>
+                    <th>Техника</th>
+                    <th>Лицензия ПО в аудитории</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="audience : ${audiences}">
+                    <td th:text="${audience.institute.name}"></td>
+                    <td th:text="${audience.numberAudience}"></td>
+                    <td th:text="${audience.tech}"></td>
+                    <td th:text="${audience.softwareLicense}"></td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+        <div class="active-record" th:if="${activeCompetencie}">
+            <h3>Активная аудитория</h3>
+            <p><strong>ID:</strong> <span th:text="${activeCompetencie.id}"></span></p>
+            <p><strong>Институт:</strong> <span th:text="${audience.institute.name}"></span></p>
+            <p><strong>Аудитория №:</strong> <span th:text="${audience.numberAudience}"></span></p>
+            <p><strong>Техника:</strong> <span th:text="${audience.tech}"></span></p>
+            <p><strong>Лицензия ПО в аудитории:</strong> <span th:text="${audience.softwareLicense}"></span></p>
+        </div>
+    </section>
+
+    <!-- Тех.обеспечение -->
+    <section>
+        <h2>Тех.обеспечение:</h2>
+        <div class="scrollable-table">
+            <table class="table table-bordered" id="techSupportTable">
+                <thead>
+                <tr class="sticky-header">
+                    <th><input type="text" class="form-control" placeholder="Дисциплина" onkeyup="filterTable('techSupportTable', 0)"></th>
+                    <th><input type="text" class="form-control" placeholder="Аудитория №" onkeyup="filterTable('techSupportTable', 1)"></th>
+                </tr>
+                <tr class="sticky-header">
+                    <th>Дисциплина</th>
+                    <th>Аудитория №</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="techSupport : ${techSupports}">
+                    <td th:text="${techSupport.discipline.name}"></td>
+                    <td th:text="${techSupport.audience.numberAudience}"></td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+        <div class="active-record" th:if="${activeTechSupport}">
+            <h3>Активная дисциплина</h3>
+            <p><strong>ID:</strong> <span th:text="${activeTechSupport.id}"></span></p>
+            <p><strong>Институт:</strong> <span th:text="${activeTechSupport.discipline.name}"></span></p>
+            <p><strong>Аудитория №:</strong> <span th:text="${activeTechSupport.audience.numberAudience}"></span></p>
+        </div>
+    </section>
+
+    <!-- ООП -->
+    <section>
+        <h2>ООП:</h2>
+        <div class="scrollable-table">
+            <table class="table table-bordered" id="basicEducationalProgramsTable">
+                <thead>
+                <tr class="sticky-header">
+                    <th><input type="text" class="form-control" placeholder="Учебный год" onkeyup="filterTable('basicEducationalProgramsTable', 0)"></th>
+                    <th><input type="text" class="form-control" placeholder="Профиль" onkeyup="filterTable('basicEducationalProgramsTable', 1)"></th>
+                    <th><input type="text" class="form-control" placeholder="Тип Обучения" onkeyup="filterTable('basicEducationalProgramsTable', 2)"></th>
+                </tr>
+                <tr class="sticky-header">
+                    <th>Учебный год</th>
+                    <th>Профиль</th>
+                    <th>Тип Обучения</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="basicEducationalProgram : ${basicEducationalPrograms}">
+                    <td th:text="${basicEducationalProgram.academicYear}"></td>
+                    <td th:text="${basicEducationalProgram.profile.name}"></td>
+                    <td th:text="${basicEducationalProgram.educationType.name}"></td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+        <div class="active-record" th:if="${activeBasicEducationalProgram}">
+            <h3>Активная ООП</h3>
+            <p><strong>ID:</strong> <span th:text="${activeBasicEducationalProgram.id}"></span></p>
+            <p><strong>Учебный год:</strong> <span th:text="${basicEducationalProgram.academicYear}"></span></p>
+            <p><strong>Профиль обучения:</strong> <span th:text="${basicEducationalProgram.profile.name}"></span></p>
+            <p><strong>ТипОбучения:</strong> <span th:text="${basicEducationalProgram.educationType.name}"></span></p>
+        </div>
+    </section>
+
+    <!-- ДисциплиныОП -->
+    <section>
+        <h2>ДисциплиныОП:</h2>
+        <div class="scrollable-table">
+            <table class="table table-bordered" id="disciplinesEducationalProgramsTable">
+                <thead>
+                <tr class="sticky-header">
+                    <th><input type="text" class="form-control" placeholder="Профиль" onkeyup="filterTable('disciplinesEducationalProgramsTable', 0)"></th>
+                    <th><input type="text" class="form-control" placeholder="Учебный год" onkeyup="filterTable('disciplinesEducationalProgramsTable', 1)"></th>
+                    <th><input type="text" class="form-control" placeholder="Тип обучения " onkeyup="filterTable('disciplinesEducationalProgramsTable', 2)"></th>
+                    <th><input type="text" class="form-control" placeholder="Дисциплина" onkeyup="filterTable('disciplinesEducationalProgramsTable', 3)"></th>
+                </tr>
+                <tr class="sticky-header">
+                    <th>Профиль</th>
+                    <th>Учебный год</th>
+                    <th>Тип обучения</th>
+                    <th>Дисциплина</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="disciplinesEducationalProgram : ${disciplinesEducationalPrograms}">
+                    <td th:text="${disciplinesEducationalProgram.basicEducationalProgram.profile.name}"></td>
+                    <td th:text="${disciplinesEducationalProgram.basicEducationalProgram.academicYear}"></td>
+                    <td th:text="${disciplinesEducationalProgram.basicEducationalProgram.educationType.name}"></td>
+                    <td th:text="${disciplinesEducationalProgram.discipline.name}"></td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+        <div class="active-record" th:if="${activeDisciplinesEducationalProgram}">
+            <h3>Активная дисциплинаОП</h3>
+            <p><strong>ID:</strong> <span th:text="${activeDisciplinesEducationalProgram.id}"></span></p>
+            <p><strong>Профиль:</strong> <span th:text="${activeDisciplinesEducationalProgram.basicEducationalProgram.profile.name}"></span></p>
+            <p><strong>Учебный год:</strong> <span th:text="${activeDisciplinesEducationalProgram.basicEducationalProgram.academicYear}"></span></p>
+            <p><strong>Тип обучения:</strong> <span th:text="${activeDisciplinesEducationalProgram.basicEducationalProgram.educationType.name}"></span></p>
+            <p><strong>Дисциплина:</strong> <span th:text="${activeDisciplinesEducationalProgram.discipline.name}"></span></p>
+        </div>
+    </section>
+
+
 
 </div>
+
+
+
 
 <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>

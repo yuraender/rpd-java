@@ -41,6 +41,16 @@ public class BackgroundInformationController {
     private DisciplineService disciplineService;
     @Autowired
     private CompetencieService competencieService;
+    @Autowired
+    private AudienceService audienceService;
+
+    @Autowired
+    private TechSupportService techSupportService;
+    @Autowired
+    private BasicEducationalProgramService basicEducationalProgramService;
+
+    @Autowired
+    private DisciplinesEducationalProgramService disciplinesEducationalProgramService;
 
     @GetMapping("/background-information")
     public String getBackgroundInformation(
@@ -54,6 +64,10 @@ public class BackgroundInformationController {
             @SessionAttribute(name = "teacherId", required = false) Long teacherId,
             @SessionAttribute(name = "disciplineId", required = false) Long disciplineId,
             @SessionAttribute(name = "competencieId", required = false) Long competencieId,
+            @SessionAttribute(name = "audienceId", required = false) Long audienceId,
+            @SessionAttribute(name = "techSupportId", required = false) Long techSupportId,
+            @SessionAttribute(name = "basicEducationalProgramId", required = false) Long basicEducationalProgramId,
+            @SessionAttribute(name = "disciplinesEducationalProgramId", required = false) Long disciplinesEducationalProgramId,
             @SessionAttribute(name = "role", required = false) String role,
             Model model) {
         // Получаем все институты
@@ -154,6 +168,46 @@ public class BackgroundInformationController {
         if (competencieId != null) {
             Competencie activeCompetencie = competencieService.getById(competencieId);
             model.addAttribute("activeCompetencie", activeCompetencie);
+        }
+
+        // Получаем все аудитории
+        List<Audience> audiences = audienceService.getAll();
+        model.addAttribute("audiences", audiences);
+
+        // Устанавливаем аудиторию
+        if (audienceId != null) {
+            Audience activeAudience = audienceService.getById(audienceId);
+            model.addAttribute("activeAudience", activeAudience);
+        }
+
+        // Получаем все тех.обеспечения
+        List<TechSupport> techSupports = techSupportService.getAll();
+        model.addAttribute("techSupports", techSupports);
+
+        // Устанавливаем тех.обеспечение
+        if (techSupportId != null) {
+            TechSupport activeTechSupport = techSupportService.getById(techSupportId);
+            model.addAttribute("activeTechSupport", activeTechSupport);
+        }
+
+        // Получаем все ООП
+        List<BasicEducationalProgram> basicEducationalPrograms = basicEducationalProgramService.getAll();
+        model.addAttribute("basicEducationalPrograms", basicEducationalPrograms);
+
+        // Устанавливаем ООП
+        if (basicEducationalProgramId != null) {
+            BasicEducationalProgram activeBasicEducationalProgram = basicEducationalProgramService.getById(basicEducationalProgramId);
+            model.addAttribute("activeBasicEducationalProgram", activeBasicEducationalProgram);
+        }
+
+        // Получаем все дисциплиныОП
+        List<DisciplinesEducationalProgram> disciplinesEducationalPrograms = disciplinesEducationalProgramService.getAll();
+        model.addAttribute("disciplinesEducationalPrograms", disciplinesEducationalPrograms);
+
+        // Устанавливаем дисциплиныОП
+        if (disciplinesEducationalProgramId != null) {
+            DisciplinesEducationalProgram activeDisciplinesEducationalProgram = disciplinesEducationalProgramService.getById(disciplinesEducationalProgramId);
+            model.addAttribute("activeDisciplinesEducationalProgram", activeDisciplinesEducationalProgram);
         }
 
 
