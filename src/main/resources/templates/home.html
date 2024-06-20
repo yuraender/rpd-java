@@ -43,7 +43,7 @@
 <body>
 <!-- Панель навигации -->
 <nav class="navbar navbar-expand-lg navbar-light bg-light">
-    <a class="navbar-brand" href="#">Главная</a>
+    <a class="navbar-brand" href="/home">Главная</a>
     <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
     </button>
@@ -65,12 +65,12 @@
 <div class="container">
     <div>
         <h1>Профиль пользователя</h1>
-<!--        <div th:if="${isAdmin}">-->
-<!--            <p>Вы администратор</p>-->
-<!--        </div>-->
-<!--        <div th:unless="${isAdmin}">-->
-<!--            <p>Вы обычный пользователь</p>-->
-<!--        </div>-->
+        <div th:if="${isAdmin}">
+            <p>Вы администратор</p>
+        </div>
+        <div th:unless="${isAdmin}">
+            <p>Вы обычный пользователь</p>
+        </div>
     </div>
 </div>
 
@@ -80,6 +80,7 @@
     </a>
     <a href="/departments" id="menu-departments" th:classappend="${isInstituteSelected} ? '' : 'disabled'">Кафедры</a>
     <a href="/auditoriums" id="menu-auditoriums" th:classappend="${isInstituteSelected} ? '' : 'disabled'">Аудитории</a>
+    <a href="/tech-support" id="menu-tech-support" th:classappend="${isInstituteSelected} ? '' : 'disabled'">Тех.обеспечение</a>
 </div>
 
 <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>

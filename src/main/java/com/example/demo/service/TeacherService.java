@@ -18,6 +18,10 @@ public class TeacherService {
         return teacherRepository.findAll();
     }
 
+    public List<Teacher> findByDepartmentId(Long departmentId) {
+        return teacherRepository.findByDepartmentId(departmentId);
+    }
+
     public Teacher getById(Long id) {
         return teacherRepository.findById(id).orElse(null);
     }

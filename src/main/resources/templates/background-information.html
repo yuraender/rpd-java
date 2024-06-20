@@ -438,37 +438,6 @@
         </div>
     </section>
 
-    <!-- Тех.обеспечение -->
-    <section>
-        <h2>Тех.обеспечение:</h2>
-        <div class="scrollable-table">
-            <table class="table table-bordered" id="techSupportTable">
-                <thead>
-                <tr class="sticky-header">
-                    <th><input type="text" class="form-control" placeholder="Дисциплина" onkeyup="filterTable('techSupportTable', 0)"></th>
-                    <th><input type="text" class="form-control" placeholder="Аудитория №" onkeyup="filterTable('techSupportTable', 1)"></th>
-                </tr>
-                <tr class="sticky-header">
-                    <th>Дисциплина</th>
-                    <th>Аудитория №</th>
-                </tr>
-                </thead>
-                <tbody>
-                <tr th:each="techSupport : ${techSupports}">
-                    <td th:text="${techSupport.discipline.name}"></td>
-                    <td th:text="${techSupport.audience.numberAudience}"></td>
-                </tr>
-                </tbody>
-            </table>
-        </div>
-        <div class="active-record" th:if="${activeTechSupport}">
-            <h3>Активная дисциплина</h3>
-            <p><strong>ID:</strong> <span th:text="${activeTechSupport.id}"></span></p>
-            <p><strong>Институт:</strong> <span th:text="${activeTechSupport.discipline.name}"></span></p>
-            <p><strong>Аудитория №:</strong> <span th:text="${activeTechSupport.audience.numberAudience}"></span></p>
-        </div>
-    </section>
-
     <!-- ООП -->
     <section>
         <h2>ООП:</h2>

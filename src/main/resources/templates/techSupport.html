@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>techSupport</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <style>
+        .scrollable-table {
+            max-height: 50vh;
+            overflow-y: auto;
+            position: relative;
+        }
+        .sticky-header {
+            position: -webkit-sticky;
+            position: sticky;
+            top: 0;
+            background-color: #fff;
+            z-index: 10;
+        }
+        .active-record {
+            margin-top: 20px;
+            padding: 10px;
+            border: 1px solid #ddd;
+        }
+        h1, h2, h3, h4, h5, h6 {
+            text-align: center;
+        }
+        .form-container {
+            padding: 20px 0; /* Вертикальный паддинг */
+            display: flex;
+            justify-content: space-between;
+        }
+
+    </style>
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+</head>
+<body>
+<nav class="navbar navbar-expand-lg navbar-light bg-light">
+    <a class="navbar-brand" href="/home">Главная</a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav"
+            aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarNav">
+        <ul class="navbar-nav">
+            <li class="nav-item">
+                <a class="nav-link" href="/choose-institute">Выбор института</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="/background-information">Справочная информация</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="#">Формирование пакета РПД</a>
+            </li>
+        </ul>
+    </div>
+</nav>
+<section class="container">
+    <h2>Тех.обеспечение:</h2>
+    <div class="container form-container">
+        <div class="filter-container">
+            <label for="departmentSelect">Выберите кафедру:</label>
+            <select class="form-control" id="departmentSelect">
+                <option value="0">Выберите кафедру...</option>
+                <option th:each="department : ${departments}" th:value="${department.id}"
+                        th:text="${department.name}"></option>
+            </select>
+        </div>
+        <div class="filter-container">
+            <label for="teacherList">Разработчик РП:</label>
+            <select class="form-control" id="teacherList">
+                <option value="">Выберите разработчика РП</option>
+            </select>
+        </div>
+        <div class="filter-container">
+            <label for="disciplineList">Дисциплина:</label>
+            <select class="form-control" id="disciplineList">
+                <option value="">Выберите дисциплину</option>
+            </select>
+        </div>
+
+    </div>
+    <div class="scrollable-table">
+        <table class="table table-bordered" id="techSupportTable">
+            <thead>
+            <tr class="sticky-header">
+                <th><input type="text" class="form-control" placeholder="Дисциплина"
+                           onkeyup="filterTable('techSupportTable', 0)"></th>
+                <th><input type="text" class="form-control" placeholder="Аудитория №"
+                           onkeyup="filterTable('techSupportTable', 1)"></th>
+            </tr>
+            <tr class="sticky-header">
+                <th>Дисциплина</th>
+                <th>Аудитория №</th>
+            </tr>
+            </thead>
+            <tbody>
+                <tr th:each="techSupport : ${techSupports}">
+                    <td th:text="${techSupport.discipline.name}"></td>
+                    <td th:text="${techSupport.audience.numberAudience}"></td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+    <div class="active-record" th:if="${activeTechSupport}">
+        <h3>Активная дисциплина</h3>
+        <p><strong>ID:</strong> <span th:text="${activeTechSupport.id}"></span></p>
+        <p><strong>Институт:</strong> <span th:text="${activeTechSupport.discipline.name}"></span></p>
+        <p><strong>Аудитория №:</strong> <span th:text="${activeTechSupport.audience.numberAudience}"></span></p>
+    </div>
+</section>
+</body>
+
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        let departmentSelect = document.getElementById('departmentSelect');
+        let teacherList = document.getElementById('teacherList');
+        let disciplineList = document.getElementById('disciplineList');
+        let departmentIdGlobal = 0;
+        let teacherIdGlobal = 0;
+
+        // Устанавливаем начальное состояние списка
+        teacherList.disabled = true;
+        disciplineList.disabled = true;
+
+        departmentSelect.addEventListener('change', function () {
+            let departmentId = this.value;
+            departmentIdGlobal = departmentId;
+
+            // Заблокировать списки, пока не придет ответ
+            teacherList.disabled = true;
+            disciplineList.disabled = true;
+
+            fetch('/department-filter/' + departmentId)
+                .then(function (response) {
+                    if (!response.ok) {
+                        throw new Error('Ошибка HTTP ' + response.status);
+                    }
+                    return response.json();
+                })
+                .then(function (data) {
+                    let teachersList = document.getElementById('teacherList');
+
+
+                    teachersList.innerHTML = '';
+                    let option = document.createElement('option');
+                    option.textContent = "Выберите разработчика РП";
+                    option.value = "0";
+                    teachersList.appendChild(option);
+
+                    data.teachersFilter.forEach(function (teacher) {
+                        let option = document.createElement('option');
+                        option.textContent = `${teacher.employee.lastName} ${teacher.employee.firstName} ${teacher.employee.middleName}`;
+                        option.value = teacher.id;
+                        teachersList.appendChild(option);
+                    });
+
+                    // Очистить предыдущую таблицу techSupport
+                    let techSupportTable = document.getElementById('techSupportTable').getElementsByTagName('tbody')[0];
+                    techSupportTable.innerHTML = '';
+
+                    // Вставить новые данные techSupport
+                    data.techSupports.forEach(function (techSupport) {
+                        let row = '<tr>' +
+                            '<td>' + techSupport.discipline.name + '</td>' +
+                            '<td>' + techSupport.audience.numberAudience + '</td>' +
+                            '</tr>';
+                        techSupportTable.insertAdjacentHTML('beforeend', row);
+                    });
+
+                    // Разблокировать teacherList, если данные успешно загружены
+                    if(departmentId == 0){
+                        teacherList.disabled = true;
+                        disciplineList.disabled = true;
+                    }else{
+                        teacherList.disabled = false;
+                    }
+                })
+                .catch(function (error) {
+                    console.error('Ошибка загрузки данных:', error);
+                    alert('Ошибка при загрузке данных');
+                });
+        });
+
+        teacherList.addEventListener('change', function () {
+            let teacherId = this.value;
+            teacherIdGlobal = teacherId;
+            disciplineList.disabled = true;
+
+            fetch('/teacher-filter/' + departmentIdGlobal + '/' + teacherId)
+                .then(function (response) {
+                    if (!response.ok) {
+                        throw new Error('Ошибка HTTP ' + response.status);
+                    }
+                    return response.json();
+                })
+                .then(function (data) {
+                    let disciplineList = document.getElementById('disciplineList');
+                    disciplineList.innerHTML = '';
+                    let option = document.createElement('option');
+                    option.textContent = "Выберите дисциплину";
+                    option.value = "0";
+                    disciplineList.appendChild(option);
+
+                    data.disciplines.forEach(function (discipline) {
+                        let option = document.createElement('option');
+                        option.textContent = `${discipline.developer.employee.lastName} ${discipline.developer.employee.firstName} ${discipline.developer.employee.middleName} ${discipline.developer.employeePosition.positionName}`;
+                        option.value = discipline.id;
+                        disciplineList.appendChild(option);
+                    });
+
+                    let techSupportTable = document.getElementById('techSupportTable').getElementsByTagName('tbody')[0];
+                    techSupportTable.innerHTML = '';
+                    data.techSupports.forEach(function (techSupport) {
+                        let row = '<tr>' +
+                            '<td>' + techSupport.discipline.name + '</td>' +
+                            '<td>' + techSupport.audience.numberAudience + '</td>' +
+                            '</tr>';
+                        techSupportTable.insertAdjacentHTML('beforeend', row);
+                    });
+
+                    // Разблокировать disciplineList, если данные успешно загружены
+                    if(teacherId !=0){
+                        disciplineList.disabled = false;
+                    }
+                })
+                .catch(function (error) {
+                    console.error('Ошибка загрузки данных:', error);
+                    alert('Ошибка при загрузке данных');
+                });
+        });
+
+        disciplineList.addEventListener('change', function () {
+            let disciplineId = this.value;
+
+            fetch('/teacher-filter/' + departmentIdGlobal + '/' + teacherIdGlobal + '/' + disciplineId)
+                .then(function (response) {
+                    if (!response.ok) {
+                        throw new Error('Ошибка HTTP ' + response.status);
+                    }
+                    return response.json();
+                })
+                .then(function (data) {
+                    let techSupportTable = document.getElementById('techSupportTable').getElementsByTagName('tbody')[0];
+                    techSupportTable.innerHTML = '';
+                    data.techSupports.forEach(function (techSupport) {
+                        let row = '<tr>' +
+                            '<td>' + techSupport.discipline.name + '</td>' +
+                            '<td>' + techSupport.audience.numberAudience + '</td>' +
+                            '</tr>';
+                        techSupportTable.insertAdjacentHTML('beforeend', row);
+                    });
+
+                })
+                .catch(function (error) {
+                    console.error('Ошибка загрузки данных:', error);
+                    alert('Ошибка при загрузке данных');
+                });
+        })
+    });
+</script>
+
+<script>
+    function filterTable(tableId, colIndex) {
+        var input, filter, table, tr, td, i, txtValue;
+        table = document.getElementById(tableId);
+        input = table.querySelectorAll('thead input')[colIndex];
+        filter = input.value.toUpperCase();
+        tr = table.getElementsByTagName("tr");
+
+        for (i = 2; i < tr.length; i++) {
+            td = tr[i].getElementsByTagName("td")[colIndex];
+            if (td) {
+                txtValue = td.textContent || td.innerText;
+                if (txtValue.toUpperCase().indexOf(filter) > -1) {
+                    tr[i].style.display = "";
+                } else {
+                    tr[i].style.display = "none";
+                }
+            }
+        }
+    }
+</script>
+</html>

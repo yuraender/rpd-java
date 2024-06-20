@@ -21,4 +21,8 @@ public class DisciplineService {
     public Discipline getById(Long id) {
         return disciplineRepository.findById(id).orElse(null);
     }
+
+    public List<Discipline> getByTeacherId(Long teacherId) {
+        return disciplineRepository.findByDeveloperId(teacherId);
+    }
 }

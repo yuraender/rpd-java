@@ -88,7 +88,7 @@ public class BackgroundInformationController {
         }
 
         // Получаем все кафедры
-        List<Department> departments = departmentService.getAllDepartments();
+        List<Department> departments = departmentService.getAll();
         model.addAttribute("departments", departments);
 
         // Устанавливаем активную кафедру, если она есть
