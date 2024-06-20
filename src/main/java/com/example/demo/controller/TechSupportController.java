@@ -1,14 +1,9 @@
 package com.example.demo.controller;
 
-import com.example.demo.entity.Department;
-import com.example.demo.entity.Discipline;
-import com.example.demo.entity.Teacher;
-import com.example.demo.entity.TechSupport;
-import com.example.demo.service.DepartmentService;
-import com.example.demo.service.DisciplineService;
-import com.example.demo.service.TeacherService;
-import com.example.demo.service.TechSupportService;
+import com.example.demo.entity.*;
+import com.example.demo.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -31,20 +26,38 @@ public class TechSupportController {
     private TeacherService teacherService;
 
     @Autowired
+    private AudienceService audienceService;
+
+    @Autowired
     private DepartmentService departmentService;
     @Autowired
     private DisciplineService disciplineService;
 
     @GetMapping("/tech-support")
     public String getTechSupportPage(Model model) {
-        List<TechSupport> techSupports = techSupportService.getAll();
-        model.addAttribute("techSupports", techSupports);
-
-        List<Department> departments = departmentService.getAll();
-        model.addAttribute("departments", departments);
-
         return "techSupport";
     }
+
+    @GetMapping("/tech-support-data")
+    @ResponseBody
+    public ResponseEntity<Map<String, Object>> getTechSupportData() {
+        Map<String, Object> response = new HashMap<>();
+
+        List<TechSupport> techSupports = techSupportService.getAll();
+        response.put("techSupports", techSupports);
+
+        List<Department> departments = departmentService.getAll();
+        response.put("departments", departments);
+
+        List<Discipline> disciplines = disciplineService.getAll();
+        response.put("disciplines", disciplines);
+
+        List<Audience> audiences = audienceService.getAll();
+        response.put("audiences", audiences);
+
+        return ResponseEntity.ok(response);
+    }
+
 
     @GetMapping("/department-filter/{departmentId}")
     @ResponseBody
@@ -95,10 +108,87 @@ public class TechSupportController {
             techSupports = techSupportService.getByDisciplineId(departmentId, teacherId, disciplineId);
         }
         response.put("techSupports", techSupports);
+        return ResponseEntity.ok(response);
+    }
 
+    @GetMapping("/api/tech-support/get-active/{techSupportId}")
+    @ResponseBody
+    public ResponseEntity<Map<String, Object>> getActiveTechSupport(@PathVariable Long techSupportId) {
+        Map<String, Object> response = new HashMap<>();
+        TechSupport techSupport = techSupportService.getById(techSupportId);
+        List<Audience> audiences = audienceService.getAll();
+        response.put("techSupport", techSupport);
+        response.put("audiences", audiences);
+        return ResponseEntity.ok(response);
+    }
+
+
+    @GetMapping("/api/tech-support/update/{techSupportId}/{newAudienceId}")
+    @ResponseBody
+    public ResponseEntity<Map<String, Object>> updateRecord(@PathVariable Long techSupportId, @PathVariable Long newAudienceId) {
+        Map<String, Object> response = new HashMap<>();
+
+        // Получаем запись TechSupport по techSupportId
+        TechSupport techSupport = techSupportService.getById(techSupportId);
+        if (techSupport == null) {
+            response.put("error", "TechSupport not found");
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
+        }
+
+        // Получаем запись Audience по newAudienceId
+        Audience newAudience = audienceService.getById(newAudienceId);
+        if (newAudience == null) {
+            response.put("error", "Audience not found");
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
+        }
+
+        // Обновляем поле audience у TechSupport
+        techSupport.setAudience(newAudience);
+
+        // Сохраняем обновленную запись
+        techSupportService.save(techSupport);
+
+        // Добавляем обновленную запись в ответ
+        response.put("updatedTechSupport", techSupport);
 
         return ResponseEntity.ok(response);
     }
+
+    @GetMapping("/api/tech-support/save-new-record/{audienceSelectModalId}/{disciplineSelectModalId}")
+    @ResponseBody
+    public ResponseEntity<Map<String, Object>> createRecord(@PathVariable Long audienceSelectModalId, @PathVariable Long disciplineSelectModalId) {
+        Map<String, Object> response = new HashMap<>();
+
+        // Получаем запись TechSupport по techSupportId
+        TechSupport techSupport = new TechSupport();
+
+
+        // Получаем запись Audience по newAudienceId
+        Audience newAudience = audienceService.getById(audienceSelectModalId);
+        if (newAudience == null) {
+            response.put("error", "Audience not found");
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
+        }
+        // Получаем запись Audience по newAudienceId
+        Discipline newDiscipline = disciplineService.getById(disciplineSelectModalId);
+        if (newDiscipline == null) {
+            response.put("error", "newDiscipline not found");
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
+        }
+
+        // Обновляем поле audience у TechSupport
+        techSupport.setAudience(newAudience);
+        techSupport.setDiscipline(newDiscipline);
+
+        // Сохраняем обновленную запись
+        techSupportService.save(techSupport);
+
+        // Добавляем обновленную запись в ответ
+        response.put("createdTechSupport", techSupport);
+
+        return ResponseEntity.ok(response);
+    }
+
 
 
 }

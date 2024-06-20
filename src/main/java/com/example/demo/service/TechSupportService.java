@@ -58,4 +58,7 @@ public class TechSupportService {
     public TechSupport getById(Long id) {
         return techSupportRepository.findById(id).orElse(null);
     }
+    public TechSupport save(TechSupport techSupport) {
+        return techSupportRepository.save(techSupport);
+    }
 }

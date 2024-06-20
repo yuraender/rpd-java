@@ -5,11 +5,41 @@
     <title>techSupport</title>
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <style>
+        .active-auditory-wrapper {
+            display: flex;
+            gap: 20px;
+            align-items: center;
+            margin: 20px auto;
+        }
+
+        .scrollable-table {
+            border: 1px solid #dee2e6;
+        }
+
+        .edit-buttons-wrapper {
+            display: flex;
+            justify-content: space-between;
+            gap: 20px;
+            max-width: max-content;
+            margin: 20px auto;
+        }
+
+        .btn-cancel {
+            margin-left: 20px;
+        }
+
+        .active-select {
+            width: max-content;
+            height: max-content;
+            padding: 10px;
+        }
+
         .scrollable-table {
             max-height: 50vh;
             overflow-y: auto;
             position: relative;
         }
+
         .sticky-header {
             position: -webkit-sticky;
             position: sticky;
@@ -17,18 +47,70 @@
             background-color: #fff;
             z-index: 10;
         }
+
         .active-record {
             margin-top: 20px;
             padding: 10px;
             border: 1px solid #ddd;
         }
+
         h1, h2, h3, h4, h5, h6 {
             text-align: center;
         }
+
+        table:hover {
+            cursor: pointer;
+        }
+
         .form-container {
-            padding: 20px 0; /* Вертикальный паддинг */
+            padding: 20px 0;
             display: flex;
             justify-content: space-between;
+        }
+
+        .modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .modal-content {
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 5px;
+            width: 500px;
+            max-width: 90%;
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid #ccc;
+            padding-bottom: 10px;
+        }
+
+        .close-btn {
+            cursor: pointer;
+            font-size: 1.5em;
+        }
+
+        .modal-body {
+            margin-top: 20px;
+        }
+
+        .modal-footer {
+            display: flex;
+            justify-content: flex-end;
+            border-top: 1px solid #ccc;
+            padding-top: 10px;
+            margin-top: 20px;
         }
 
     </style>
@@ -61,15 +143,12 @@
         <div class="filter-container">
             <label for="departmentSelect">Выберите кафедру:</label>
             <select class="form-control" id="departmentSelect">
-                <option value="0">Выберите кафедру...</option>
-                <option th:each="department : ${departments}" th:value="${department.id}"
-                        th:text="${department.name}"></option>
             </select>
         </div>
         <div class="filter-container">
-            <label for="teacherList">Разработчик РП:</label>
+            <label for="teacherList">Преподаватель:</label>
             <select class="form-control" id="teacherList">
-                <option value="">Выберите разработчика РП</option>
+                <option value="">Выберите преподавателя</option>
             </select>
         </div>
         <div class="filter-container">
@@ -95,20 +174,47 @@
             </tr>
             </thead>
             <tbody>
-                <tr th:each="techSupport : ${techSupports}">
-                    <td th:text="${techSupport.discipline.name}"></td>
-                    <td th:text="${techSupport.audience.numberAudience}"></td>
-                </tr>
+            <!--            <tr th:each="techSupport : ${techSupports}">-->
+            <!--                <td th:text="${techSupport.discipline.name}"></td>-->
+            <!--                <td th:text="${techSupport.audience.numberAudience}"></td>-->
+            <!--            </tr>-->
             </tbody>
         </table>
     </div>
-    <div class="active-record" th:if="${activeTechSupport}">
-        <h3>Активная дисциплина</h3>
-        <p><strong>ID:</strong> <span th:text="${activeTechSupport.id}"></span></p>
-        <p><strong>Институт:</strong> <span th:text="${activeTechSupport.discipline.name}"></span></p>
-        <p><strong>Аудитория №:</strong> <span th:text="${activeTechSupport.audience.numberAudience}"></span></p>
+    <div class="d-flex edit-buttons-wrapper">
+        <button class="button-edit btn-edit button btn btn-primary">Редактировать</button>
+        <button class="btn-create button btn btn-primary">Добавить</button>
+    </div>
+    <div class="active-record">
     </div>
 </section>
+
+
+<div id="createModal" class="modal" style="display: none;">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h5>Добавить запись</h5>
+            <span class="close-btn">&times;</span>
+        </div>
+        <div class="modal-body">
+            <form id="createForm">
+                <div class="mb-3">
+                    <label for="disciplineSelectModal">Дисциплина</label>
+                    <select id="disciplineSelectModal" class="form-control"></select>
+                </div>
+                <div class="mb-3">
+                    <label for="audienceSelectModal">Аудитория</label>
+                    <select id="audienceSelectModal" class="form-control"></select>
+                </div>
+            </form>
+        </div>
+        <div class="modal-footer">
+            <button type="button" class="cancel-create-modal btn-danger">Отмена</button>
+            <button type="button" class="save-modal-record btn-success">Сохранить</button>
+        </div>
+    </div>
+</div>
+
 </body>
 
 <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
@@ -120,10 +226,141 @@
         let disciplineList = document.getElementById('disciplineList');
         let departmentIdGlobal = 0;
         let teacherIdGlobal = 0;
-
-        // Устанавливаем начальное состояние списка
         teacherList.disabled = true;
         disciplineList.disabled = true;
+        let editMode = false;
+
+        function renderPage() {
+            teacherList.disabled = true;
+            disciplineList.disabled = true;
+            document.querySelector('.button-edit').disabled = true;
+            let createModal = document.getElementById('createModal');
+            let cancelCreateModal = document.querySelector('.cancel-create-modal');
+            let saveModalRecord = document.querySelector('.save-modal-record');
+            saveModalRecord.addEventListener('click', () => saveNewRecord())
+
+            fetch('/tech-support-data')
+                .then(function (response) {
+                    if (!response.ok) {
+                        throw new Error('Ошибка HTTP ' + response.status);
+                    }
+                    return response.json();
+                })
+                .then(function (data) {
+                    let departmentSelect = document.getElementById('departmentSelect');
+                    departmentSelect.innerHTML = '';
+                    let option = document.createElement('option');
+                    option.textContent = "Выберите кафедру";
+                    option.value = "0";
+                    departmentSelect.appendChild(option);
+
+                    data.departments.forEach(function (department) {
+                        let option = document.createElement('option');
+                        option.textContent = `${department.name}`;
+                        option.value = department.id;
+                        departmentSelect.appendChild(option);
+                    });
+                    renderTable(data.techSupports)
+                })
+                .catch(function (error) {
+                    console.error('Ошибка загрузки данных:', error);
+                    alert('Ошибка при загрузке данных');
+                });
+
+            let buttonEdit = document.querySelector('.button-edit');
+            buttonEdit.addEventListener('click', editActive)
+
+            function editActive() {
+                editMode = true
+                let audienceSelect = document.getElementById('audienceSelect')
+
+                audienceSelect.disabled = false
+            }
+
+            let createBtn = document.querySelector('.btn-create')
+            createBtn.addEventListener('click', showCreateModal)
+
+            function showCreateModal() {
+                fetch('/tech-support-data')
+                    .then(function (response) {
+                        if (!response.ok) {
+                            throw new Error('Ошибка HTTP ' + response.status);
+                        }
+                        return response.json();
+                    })
+                    .then(data => {
+                        let disciplineSelect = document.getElementById('disciplineSelectModal');
+                        let audienceSelect = document.getElementById('audienceSelectModal');
+
+                        disciplineSelect.innerHTML = '';
+                        audienceSelect.innerHTML = '';
+                        data.disciplines.forEach(discipline => {
+                            let option = document.createElement('option');
+                            option.value = discipline.id;
+                            option.textContent = discipline.name;
+                            disciplineSelect.appendChild(option);
+                        });
+                        //
+                        data.audiences.forEach(audience => {
+                            let option = document.createElement('option');
+                            option.value = audience.id;
+                            option.textContent = audience.numberAudience;
+                            audienceSelect.appendChild(option);
+                        });
+
+
+                        let closeBtn = document.querySelector('.close-btn');
+                        cancelCreateModal.addEventListener('click', () => closeModal(createModal))
+                        closeBtn.addEventListener('click', () => closeModal(createModal))
+                        createModal.style.display = 'flex';
+                    })
+                    .catch(error => {
+                        console.error('Ошибка загрузки данных:', error);
+                        alert('Ошибка при загрузке данных');
+                    });
+            }
+
+
+        }
+        function saveNewRecord() {
+            let audienceSelectModalId = document.getElementById('audienceSelectModal').value
+            let disciplineSelectModalId = document.getElementById('disciplineSelectModal').value
+            createNewRecord(audienceSelectModalId, disciplineSelectModalId)
+
+        }
+
+        function createNewRecord(audienceSelectModalId, disciplineSelectModalId) {
+            fetch('/api/tech-support/save-new-record/' + audienceSelectModalId + '/' + disciplineSelectModalId)
+                .then(function (response) {
+                    if (!response.ok) {
+                        throw new Error('Ошибка HTTP ' + response.status);
+                    }
+                    return response.json();
+                })
+                .then(techSupport => {
+                    techSupport = techSupport.createdTechSupport
+                    let techSupportTable = document.getElementById('techSupportTable').getElementsByTagName('tbody')[0];
+
+                    let row = document.createElement('tr');
+                    row.setAttribute('techSupportId', techSupport.id);
+                    row.classList.add(`${techSupport.id}`)
+
+                    row.innerHTML = '<td>' + techSupport.discipline.name + '</td>' +
+                        '<td>' + techSupport.audience.numberAudience + '</td>';
+
+                    row.addEventListener('click', () => (techSupport.id));
+
+                    techSupportTable.append(row);
+                    closeModal(createModal)
+                    showModal('Запись создана.');
+                    setTimeout(() => {
+                        document.getElementById('successModal').remove();
+                        document.querySelector('.modal-backdrop').remove();
+                    }, 2000)
+                })
+        }
+
+        renderPage()
 
         departmentSelect.addEventListener('change', function () {
             let departmentId = this.value;
@@ -142,11 +379,9 @@
                 })
                 .then(function (data) {
                     let teachersList = document.getElementById('teacherList');
-
-
                     teachersList.innerHTML = '';
                     let option = document.createElement('option');
-                    option.textContent = "Выберите разработчика РП";
+                    option.textContent = "Выберите преподавателя";
                     option.value = "0";
                     teachersList.appendChild(option);
 
@@ -156,25 +391,12 @@
                         option.value = teacher.id;
                         teachersList.appendChild(option);
                     });
-
-                    // Очистить предыдущую таблицу techSupport
-                    let techSupportTable = document.getElementById('techSupportTable').getElementsByTagName('tbody')[0];
-                    techSupportTable.innerHTML = '';
-
-                    // Вставить новые данные techSupport
-                    data.techSupports.forEach(function (techSupport) {
-                        let row = '<tr>' +
-                            '<td>' + techSupport.discipline.name + '</td>' +
-                            '<td>' + techSupport.audience.numberAudience + '</td>' +
-                            '</tr>';
-                        techSupportTable.insertAdjacentHTML('beforeend', row);
-                    });
-
+                    renderTable(data.techSupports)
                     // Разблокировать teacherList, если данные успешно загружены
-                    if(departmentId == 0){
+                    if (departmentId == 0) {
                         teacherList.disabled = true;
                         disciplineList.disabled = true;
-                    }else{
+                    } else {
                         teacherList.disabled = false;
                     }
                 })
@@ -203,26 +425,14 @@
                     option.textContent = "Выберите дисциплину";
                     option.value = "0";
                     disciplineList.appendChild(option);
-
                     data.disciplines.forEach(function (discipline) {
                         let option = document.createElement('option');
-                        option.textContent = `${discipline.developer.employee.lastName} ${discipline.developer.employee.firstName} ${discipline.developer.employee.middleName} ${discipline.developer.employeePosition.positionName}`;
+                        option.textContent = `${discipline.name}`;
                         option.value = discipline.id;
                         disciplineList.appendChild(option);
                     });
-
-                    let techSupportTable = document.getElementById('techSupportTable').getElementsByTagName('tbody')[0];
-                    techSupportTable.innerHTML = '';
-                    data.techSupports.forEach(function (techSupport) {
-                        let row = '<tr>' +
-                            '<td>' + techSupport.discipline.name + '</td>' +
-                            '<td>' + techSupport.audience.numberAudience + '</td>' +
-                            '</tr>';
-                        techSupportTable.insertAdjacentHTML('beforeend', row);
-                    });
-
-                    // Разблокировать disciplineList, если данные успешно загружены
-                    if(teacherId !=0){
+                    renderTable(data.techSupports)
+                    if (teacherId != 0) {
                         disciplineList.disabled = false;
                     }
                 })
@@ -243,25 +453,184 @@
                     return response.json();
                 })
                 .then(function (data) {
-                    let techSupportTable = document.getElementById('techSupportTable').getElementsByTagName('tbody')[0];
-                    techSupportTable.innerHTML = '';
-                    data.techSupports.forEach(function (techSupport) {
-                        let row = '<tr>' +
-                            '<td>' + techSupport.discipline.name + '</td>' +
-                            '<td>' + techSupport.audience.numberAudience + '</td>' +
-                            '</tr>';
-                        techSupportTable.insertAdjacentHTML('beforeend', row);
-                    });
-
+                    renderTable(data.techSupports)
                 })
                 .catch(function (error) {
                     console.error('Ошибка загрузки данных:', error);
                     alert('Ошибка при загрузке данных');
                 });
         })
+
+        function renderTable(techSupportList) {
+            let techSupportTable = document.getElementById('techSupportTable').getElementsByTagName('tbody')[0];
+            techSupportTable.innerHTML = '';
+
+            techSupportList.forEach(function (techSupport) {
+                let row = document.createElement('tr');
+                row.setAttribute('techSupportId', techSupport.id);
+                row.classList.add(`${techSupport.id}`)
+
+                row.innerHTML = '<td>' + techSupport.discipline.name + '</td>' +
+                    '<td>' + techSupport.audience.numberAudience + '</td>';
+
+                row.addEventListener('click', function () {
+                    changeActiveRowTable(techSupport.id);
+                });
+
+                techSupportTable.appendChild(row);
+            });
+        }
+
+        function changeActiveRowTable(techSupportId) {
+            fetch('/api/tech-support/get-active/' + techSupportId)
+                .then(function (response) {
+                    if (!response.ok) {
+                        throw new Error('Ошибка HTTP ' + response.status);
+                    }
+                    return response.json();
+                })
+                .then(function (data) {
+                    document.querySelector('.button-edit').disabled = false;
+                    let activeRecordWrapper = document.querySelector('.active-record');
+                    activeRecordWrapper.innerHTML = '';
+
+                    let form = document.createElement('div');
+                    form.classList.add('form-table', 'active-form');
+
+                    let idField = document.createElement('p');
+                    idField.innerHTML = `<strong>ID:</strong> ${data.techSupport.id}`;
+                    // idField.setAttribute('id', 'activeRecordId')
+                    form.setAttribute('activeRecordId', data.techSupport.id)
+                    form.appendChild(idField);
+
+                    // Выпадающий список дисциплин
+                    let disciplineField = document.createElement('p');
+                    disciplineField.innerHTML = `<strong>Дисциплина:</strong> ${data.techSupport.discipline.name}`;
+                    form.appendChild(disciplineField);
+
+                    // Выпадающий список аудиторий
+                    let audienceField = document.createElement('div');
+                    audienceField.innerHTML = `<label for="audienceSelect"><strong>Аудитория:</strong></label>`;
+                    let audienceSelect = document.createElement('select');
+                    audienceField.classList.add('active-auditory-wrapper')
+                    audienceSelect.classList.add('form-control', 'active-select')
+                    audienceSelect.id = 'audienceSelect';
+
+                    data.audiences.forEach(function (audience) {
+                        let option = document.createElement('option');
+                        option.textContent = audience.numberAudience;
+                        option.value = audience.id;
+                        if (audience.id === data.techSupport.audience.id) {
+                            option.selected = true;
+                        }
+                        audienceSelect.appendChild(option);
+                    });
+                    // audienceSelect.disabled = true
+                    audienceSelect.disabled = !editMode;
+                    audienceSelect.addEventListener('change', (e) => audienceChange(e, form));
+
+                    function audienceChange(e) {
+                        let btnSuccess = document.createElement('button');
+                        btnSuccess.classList.add('btn-success', 'button', 'btn', 'button-success')
+                        btnSuccess.textContent = 'Подтвердить'
+                        btnSuccess.addEventListener('click', updateRecord)
+                        form.appendChild(btnSuccess);
+
+                        let btnCansel = document.createElement('button');
+                        btnCansel.classList.add('btn-cancel', 'button', 'btn', 'btn-danger')
+                        btnCansel.textContent = 'Отменить'
+                        btnCansel.addEventListener('click', cancelUpdate)
+                        form.appendChild(btnCansel);
+                    }
+
+                    function cancelUpdate() {
+                        let techSupportId = document.querySelector('.active-form').getAttribute('activerecordid')
+                        changeActiveRowTable(techSupportId)
+                    }
+
+                    audienceField.appendChild(audienceSelect);
+                    form.appendChild(audienceField);
+                    // Добавляем форму в контейнер
+                    activeRecordWrapper.appendChild(form);
+                    // Показываем контейнер
+                    activeRecordWrapper.style.display = 'block';
+                })
+                .catch(function (error) {
+                    console.error('Ошибка загрузки данных:', error);
+                    alert('Ошибка при загрузке данных');
+                });
+        }
+
+        function updateRecord() {
+            let newAudienceId = document.getElementById('audienceSelect').value
+            let techSupportId = document.querySelector('.active-form').getAttribute('activerecordid')
+            fetch('/api/tech-support/update/' + techSupportId + '/' + newAudienceId)
+                .then(function (response) {
+                    if (!response.ok) {
+                        throw new Error('Ошибка HTTP ' + response.status);
+                    }
+                    return response.json();
+                })
+                .then(function (newRecord) {
+                    let table = document.getElementById('techSupportTable');
+                    let rows = table.getElementsByTagName('tr');
+
+                    // Найти строку с нужным techSupportId и обновить ее содержимое
+                    for (let i = 0; i < rows.length; i++) {
+                        if (rows[i].getAttribute('techsupportid') == newRecord.updatedTechSupport.id) {
+                            rows[i].innerHTML = '<td>' + newRecord.updatedTechSupport.discipline.name + '</td>' +
+                                '<td>' + newRecord.updatedTechSupport.audience.numberAudience + '</td>';
+                            break;
+                        }
+                    }
+                    changeActiveRowTable(newRecord.updatedTechSupport.id)
+                    // модальное окно
+                    showModal('Запись обновлена.');
+                    setTimeout(() => {
+                        document.getElementById('successModal').remove();
+                        document.querySelector('.modal-backdrop').remove();
+                    }, 2000)
+
+                })
+                .catch(function (error) {
+                    console.error('Ошибка обновления данных:', error);
+                    alert('Ошибка при обновлении данных');
+                });
+        }
+        function closeModal(modal) {
+            modal.style.display = 'none';
+        }
+//модальное окно
+        function showModal(message) {
+            let modalHtml = `
+        <div class="modal fade" id="successModal" tabindex="-1" aria-labelledby="successModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-body">
+                        <div class="alert alert-success" role="alert">
+                            ${message}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    `;
+            // Вставить модальное окно в body
+            document.body.insertAdjacentHTML('beforeend', modalHtml);
+
+            // Показать модальное окно
+            let successModal = new bootstrap.Modal(document.getElementById('successModal'), {
+                keyboard: false
+            });
+            successModal.show();
+
+            // Удалить модальное окно после закрытия
+            document.getElementById('successModal').addEventListener('hidden.bs.modal', function (event) {
+                document.getElementById('successModal').remove();
+            });
+        }
     });
 </script>
-
 <script>
     function filterTable(tableId, colIndex) {
         var input, filter, table, tr, td, i, txtValue;
