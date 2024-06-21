@@ -15,7 +15,9 @@ public class TechSupportService {
     private TechSupportRepository techSupportRepository;
 
     public List<TechSupport> getAll() {
-        return techSupportRepository.findAll();
+        return techSupportRepository.findAll().stream()
+                .filter(techSupport -> !techSupport.getDisable())
+                .collect(Collectors.toList());
     }
 
     public List<TechSupport> getByDepartmentId(Long departmentId) {
@@ -55,6 +57,17 @@ public class TechSupportService {
 
         return filteredTechSupports;
     }
+
+    public List<TechSupport> findByAudienceAndDiscipline(Long audienceId, Long disciplineId) {
+        // Фильтруем по departmentId и teacherId
+        List<TechSupport> filteredTechSupports = techSupportRepository.findAll().stream()
+                .filter(techSupport -> Long.valueOf(techSupport.getAudience().getId()).equals(audienceId))
+                .filter(techSupport -> Long.valueOf(techSupport.getDiscipline().getId()).equals(disciplineId))
+                .collect(Collectors.toList());
+
+        return filteredTechSupports;
+    }
+
     public TechSupport getById(Long id) {
         return techSupportRepository.findById(id).orElse(null);
     }

@@ -184,6 +184,7 @@
     <div class="d-flex edit-buttons-wrapper">
         <button class="button-edit btn-edit button btn btn-primary">Редактировать</button>
         <button class="btn-create button btn btn-primary">Добавить</button>
+        <button class="btn-delete button btn btn-primary">Удалить</button>
     </div>
     <div class="active-record">
     </div>
@@ -209,8 +210,8 @@
             </form>
         </div>
         <div class="modal-footer">
-            <button type="button" class="cancel-create-modal btn-danger">Отмена</button>
-            <button type="button" class="save-modal-record btn-success">Сохранить</button>
+            <button type="button" class="cancel-create-modal btn btn-danger">Отмена</button>
+            <button type="button" class="save-modal-record btn btn-success">Сохранить</button>
         </div>
     </div>
 </div>
@@ -279,6 +280,50 @@
 
             let createBtn = document.querySelector('.btn-create')
             createBtn.addEventListener('click', showCreateModal)
+            let deleteBtn = document.querySelector('.btn-delete')
+            deleteBtn.addEventListener('click', deleteRecord)
+
+            function deleteRecord(){
+                let recordElement = document.querySelector('.active-form');
+                if(!recordElement){
+                    showModal('Для удаления нужно выбрать запись, а потом нажать кнопку удаления.');
+                    setTimeout(() => {
+                        document.getElementById('successModal').remove();
+                        document.querySelector('.modal-backdrop').remove();
+                    }, 2000)
+                }else{
+                    let techSupportId = recordElement.getAttribute('activerecordid')
+                    if (!techSupportId) return null;
+                    fetch('/api/tech-support/delete-record/' + techSupportId)
+                        .then(function (response) {
+                            if (!response.ok) {
+                                throw new Error('Ошибка HTTP ' + response.status);
+                            }
+                            return response.json();
+                        })
+                        .then(deletedRecord => {
+                            showModal('Запись удалена.');
+                            setTimeout(() => {
+                                document.getElementById('successModal').remove();
+                                document.querySelector('.modal-backdrop').remove();
+                            }, 2000)
+                            document.querySelector('.active-form').remove()
+
+                            let table = document.getElementById('techSupportTable');
+                            let rows = table.querySelectorAll('tbody tr');
+
+                            rows.forEach(row => {
+                                if (row.getAttribute('techsupportid') == deletedRecord.deletedTechSupport) {
+                                    row.remove();
+                                }
+                            });
+                        })
+                }
+
+
+
+
+            }
 
             function showCreateModal() {
                 fetch('/tech-support-data')
@@ -338,25 +383,31 @@
                     return response.json();
                 })
                 .then(techSupport => {
-                    techSupport = techSupport.createdTechSupport
-                    let techSupportTable = document.getElementById('techSupportTable').getElementsByTagName('tbody')[0];
+                    if(techSupport.error){
+                        showModal('Запись уже существует.');
+                    }else{
+                        techSupport = techSupport.createdTechSupport
+                        let techSupportTable = document.getElementById('techSupportTable').getElementsByTagName('tbody')[0];
 
-                    let row = document.createElement('tr');
-                    row.setAttribute('techSupportId', techSupport.id);
-                    row.classList.add(`${techSupport.id}`)
+                        let row = document.createElement('tr');
+                        row.setAttribute('techSupportId', techSupport.id);
+                        row.classList.add(`${techSupport.id}`)
 
-                    row.innerHTML = '<td>' + techSupport.discipline.name + '</td>' +
-                        '<td>' + techSupport.audience.numberAudience + '</td>';
+                        row.innerHTML = '<td>' + techSupport.discipline.name + '</td>' +
+                            '<td>' + techSupport.audience.numberAudience + '</td>';
 
-                    row.addEventListener('click', () => (techSupport.id));
+                        row.addEventListener('click', () => (techSupport.id));
 
-                    techSupportTable.append(row);
-                    closeModal(createModal)
-                    showModal('Запись создана.');
+                        techSupportTable.append(row);
+                        closeModal(createModal)
+                        showModal('Запись создана.');
+
+                    }
                     setTimeout(() => {
                         document.getElementById('successModal').remove();
                         document.querySelector('.modal-backdrop').remove();
                     }, 2000)
+
                 })
         }
 

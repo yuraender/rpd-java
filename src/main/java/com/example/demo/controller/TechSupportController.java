@@ -159,9 +159,15 @@ public class TechSupportController {
     public ResponseEntity<Map<String, Object>> createRecord(@PathVariable Long audienceSelectModalId, @PathVariable Long disciplineSelectModalId) {
         Map<String, Object> response = new HashMap<>();
 
-        // Получаем запись TechSupport по techSupportId
-        TechSupport techSupport = new TechSupport();
+        // Проверяем, существует ли уже запись с такими audience_id и discipline_id и disable=false
+        List<TechSupport> existingTechSupports = techSupportService.findByAudienceAndDiscipline(audienceSelectModalId, disciplineSelectModalId);
+        if (!existingTechSupports.isEmpty()) {
+            response.put("error", "Запись уже существует.");
+            return ResponseEntity.ok(response);
+        }
 
+        // Создаем новую запись TechSupport
+        TechSupport techSupport = new TechSupport();
 
         // Получаем запись Audience по newAudienceId
         Audience newAudience = audienceService.getById(audienceSelectModalId);
@@ -169,26 +175,41 @@ public class TechSupportController {
             response.put("error", "Audience not found");
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
         }
-        // Получаем запись Audience по newAudienceId
+
+        // Получаем запись Discipline по newDisciplineId
         Discipline newDiscipline = disciplineService.getById(disciplineSelectModalId);
         if (newDiscipline == null) {
-            response.put("error", "newDiscipline not found");
+            response.put("error", "Discipline not found");
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
         }
 
-        // Обновляем поле audience у TechSupport
+        // Обновляем поле audience и discipline у TechSupport
         techSupport.setAudience(newAudience);
         techSupport.setDiscipline(newDiscipline);
+        techSupport.setDisable(false); // Устанавливаем disabled в false при создании новой записи
 
-        // Сохраняем обновленную запись
+        // Сохраняем новую запись
         techSupportService.save(techSupport);
 
-        // Добавляем обновленную запись в ответ
+        // Добавляем созданную запись в ответ
         response.put("createdTechSupport", techSupport);
-
         return ResponseEntity.ok(response);
     }
 
+    @GetMapping("/api/tech-support/delete-record/{techSupportId}")
+    @ResponseBody
+    public ResponseEntity<Map<String, Object>> updateRecord(@PathVariable Long techSupportId) {
+        Map<String, Object> response = new HashMap<>();
 
-
+        // Получаем запись TechSupport по techSupportId
+        TechSupport techSupport = techSupportService.getById(techSupportId);
+        if (techSupport == null) {
+            response.put("error", "TechSupport not found");
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
+        }
+        techSupport.setDisable(true);
+        techSupportService.save(techSupport);
+        response.put("deletedTechSupport", techSupport.getId());
+        return ResponseEntity.ok(response);
+    }
 }

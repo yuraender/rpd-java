@@ -16,6 +16,16 @@ public class TechSupport {
     @JoinColumn(name = "audiences_id", referencedColumnName = "id")
     private Audience audience;
 
+    private Boolean disable;
+
+    public Boolean getDisable() {
+        return disable;
+    }
+
+    public void setDisable(Boolean disable) {
+        this.disable = disable;
+    }
+
     public Long getId() {
         return id;
     }
