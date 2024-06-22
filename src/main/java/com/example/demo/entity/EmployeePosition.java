@@ -9,6 +9,14 @@ public class EmployeePosition {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
     private String positionName;
+    private Boolean disabled;
+    public Boolean getDisabled() {
+        return disabled;
+    }
+
+    public void setDisabled(Boolean disabled) {
+        this.disabled = disabled;
+    }
 
     public Integer getId() {
         return id;

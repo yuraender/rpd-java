@@ -48,7 +48,14 @@ public class FileRPD {
 
     @Column(name = "section_6_isLoad")
     private Boolean section6IsLoad;
+    private Boolean disabled;
+    public Boolean getDisabled() {
+        return disabled;
+    }
 
+    public void setDisabled(Boolean disabled) {
+        this.disabled = disabled;
+    }
     // Геттеры и сеттеры
 
     public Integer getId() {

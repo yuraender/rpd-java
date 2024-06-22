@@ -27,6 +27,8 @@ public class TechSupportService {
         // Фильтруем по departmentId
         List<TechSupport> filteredTechSupports = allTechSupports.stream()
                 .filter(techSupport -> Long.valueOf(techSupport.getDiscipline().getDepartment().getId()).equals(departmentId))
+                .filter(techSupport -> techSupport.getDisable().equals(false))
+                .filter(techSupport -> techSupport.getDisable().equals(false))
                 .collect(Collectors.toList());
 
         return filteredTechSupports;
@@ -39,6 +41,7 @@ public class TechSupportService {
         List<TechSupport> filteredTechSupports = allTechSupports.stream()
                 .filter(techSupport -> Long.valueOf(techSupport.getDiscipline().getDepartment().getId()).equals(departmentId))
                 .filter(techSupport -> Long.valueOf(techSupport.getDiscipline().getDeveloper().getId()).equals(teacherId))
+                .filter(techSupport -> techSupport.getDisable().equals(false))
                 .collect(Collectors.toList());
 
         return filteredTechSupports;
@@ -53,6 +56,7 @@ public class TechSupportService {
                 .filter(techSupport -> Long.valueOf(techSupport.getDiscipline().getDepartment().getId()).equals(departmentId))
                 .filter(techSupport -> Long.valueOf(techSupport.getDiscipline().getDeveloper().getId()).equals(teacherId))
                 .filter(techSupport -> Long.valueOf(techSupport.getDiscipline().getId()).equals(disciplineId))
+                .filter(techSupport -> techSupport.getDisable().equals(false))
                 .collect(Collectors.toList());
 
         return filteredTechSupports;
@@ -63,6 +67,7 @@ public class TechSupportService {
         List<TechSupport> filteredTechSupports = techSupportRepository.findAll().stream()
                 .filter(techSupport -> Long.valueOf(techSupport.getAudience().getId()).equals(audienceId))
                 .filter(techSupport -> Long.valueOf(techSupport.getDiscipline().getId()).equals(disciplineId))
+                .filter(techSupport -> techSupport.getDisable().equals(false))
                 .collect(Collectors.toList());
 
         return filteredTechSupports;

@@ -105,6 +105,10 @@
             margin-top: 20px;
         }
 
+        .no-visible {
+            display: none;
+        }
+
         .modal-footer {
             display: flex;
             justify-content: flex-end;
@@ -112,7 +116,6 @@
             padding-top: 10px;
             margin-top: 20px;
         }
-
     </style>
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
 </head>
@@ -181,7 +184,7 @@
             </tbody>
         </table>
     </div>
-    <div class="d-flex edit-buttons-wrapper">
+    <div class="edit-buttons-wrapper no-visible">
         <button class="button-edit btn-edit button btn btn-primary">Редактировать</button>
         <button class="btn-create button btn btn-primary">Добавить</button>
         <button class="btn-delete button btn btn-primary">Удалить</button>
@@ -189,7 +192,6 @@
     <div class="active-record">
     </div>
 </section>
-
 
 <div id="createModal" class="modal" style="display: none;">
     <div class="modal-content">
@@ -215,7 +217,6 @@
         </div>
     </div>
 </div>
-
 </body>
 
 <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
@@ -230,6 +231,15 @@
         teacherList.disabled = true;
         disciplineList.disabled = true;
         let editMode = false;
+        let isAdmin = false;
+
+        function checkAdmin(data) {
+            if (data.role === 'administrator') {
+                isAdmin = true;
+                let buttonsWrapper = document.querySelector('.edit-buttons-wrapper')
+                buttonsWrapper.classList.remove('no-visible')
+            }
+        }
 
         function renderPage() {
             teacherList.disabled = true;
@@ -248,6 +258,7 @@
                     return response.json();
                 })
                 .then(function (data) {
+                    checkAdmin(data)
                     let departmentSelect = document.getElementById('departmentSelect');
                     departmentSelect.innerHTML = '';
                     let option = document.createElement('option');
@@ -283,15 +294,15 @@
             let deleteBtn = document.querySelector('.btn-delete')
             deleteBtn.addEventListener('click', deleteRecord)
 
-            function deleteRecord(){
+            function deleteRecord() {
                 let recordElement = document.querySelector('.active-form');
-                if(!recordElement){
+                if (!recordElement) {
                     showModal('Для удаления нужно выбрать запись, а потом нажать кнопку удаления.');
                     setTimeout(() => {
                         document.getElementById('successModal').remove();
                         document.querySelector('.modal-backdrop').remove();
                     }, 2000)
-                }else{
+                } else {
                     let techSupportId = recordElement.getAttribute('activerecordid')
                     if (!techSupportId) return null;
                     fetch('/api/tech-support/delete-record/' + techSupportId)
@@ -319,10 +330,6 @@
                             });
                         })
                 }
-
-
-
-
             }
 
             function showCreateModal() {
@@ -336,6 +343,7 @@
                     .then(data => {
                         let disciplineSelect = document.getElementById('disciplineSelectModal');
                         let audienceSelect = document.getElementById('audienceSelectModal');
+
 
                         disciplineSelect.innerHTML = '';
                         audienceSelect.innerHTML = '';
@@ -367,6 +375,7 @@
 
 
         }
+
         function saveNewRecord() {
             let audienceSelectModalId = document.getElementById('audienceSelectModal').value
             let disciplineSelectModalId = document.getElementById('disciplineSelectModal').value
@@ -383,9 +392,9 @@
                     return response.json();
                 })
                 .then(techSupport => {
-                    if(techSupport.error){
+                    if (techSupport.error) {
                         showModal('Запись уже существует.');
-                    }else{
+                    } else {
                         techSupport = techSupport.createdTechSupport
                         let techSupportTable = document.getElementById('techSupportTable').getElementsByTagName('tbody')[0];
 
@@ -396,7 +405,9 @@
                         row.innerHTML = '<td>' + techSupport.discipline.name + '</td>' +
                             '<td>' + techSupport.audience.numberAudience + '</td>';
 
-                        row.addEventListener('click', () => (techSupport.id));
+                        row.addEventListener('click', function () {
+                            changeActiveRowTable(techSupport.id);
+                        });
 
                         techSupportTable.append(row);
                         closeModal(createModal)
@@ -550,7 +561,6 @@
 
                     let idField = document.createElement('p');
                     idField.innerHTML = `<strong>ID:</strong> ${data.techSupport.id}`;
-                    // idField.setAttribute('id', 'activeRecordId')
                     form.setAttribute('activeRecordId', data.techSupport.id)
                     form.appendChild(idField);
 
@@ -623,35 +633,48 @@
                     return response.json();
                 })
                 .then(function (newRecord) {
-                    let table = document.getElementById('techSupportTable');
-                    let rows = table.getElementsByTagName('tr');
+                    if(newRecord.error){
+                        changeActiveRowTable(newRecord.updatedTechSupport.id)
+                        showModalWithMessage('Запись уже существует.')
+                    }else{
+                        let table = document.getElementById('techSupportTable');
+                        let rows = table.getElementsByTagName('tr');
 
-                    // Найти строку с нужным techSupportId и обновить ее содержимое
-                    for (let i = 0; i < rows.length; i++) {
-                        if (rows[i].getAttribute('techsupportid') == newRecord.updatedTechSupport.id) {
-                            rows[i].innerHTML = '<td>' + newRecord.updatedTechSupport.discipline.name + '</td>' +
-                                '<td>' + newRecord.updatedTechSupport.audience.numberAudience + '</td>';
-                            break;
+                        // Найти строку с нужным techSupportId и обновить ее содержимое
+                        for (let i = 0; i < rows.length; i++) {
+                            if (rows[i].getAttribute('techsupportid') == newRecord.updatedTechSupport.id) {
+                                rows[i].innerHTML = '<td>' + newRecord.updatedTechSupport.discipline.name + '</td>' +
+                                    '<td>' + newRecord.updatedTechSupport.audience.numberAudience + '</td>';
+                                break;
+                            }
                         }
+                        changeActiveRowTable(newRecord.updatedTechSupport.id)
+                        // модальное окно
+                        showModalWithMessage('Запись обновлена.')
                     }
-                    changeActiveRowTable(newRecord.updatedTechSupport.id)
-                    // модальное окно
-                    showModal('Запись обновлена.');
-                    setTimeout(() => {
-                        document.getElementById('successModal').remove();
-                        document.querySelector('.modal-backdrop').remove();
-                    }, 2000)
-
                 })
                 .catch(function (error) {
                     console.error('Ошибка обновления данных:', error);
                     alert('Ошибка при обновлении данных');
                 });
         }
+
         function closeModal(modal) {
             modal.style.display = 'none';
         }
-//модальное окно
+
+
+        //модальное окно
+        function showModalWithMessage(message) {
+            console.log('new show modal')
+            showModal(message);
+            setTimeout(() => {
+                document.getElementById('successModal').remove();
+                document.querySelector('.modal-backdrop').remove();
+            }, 2000)
+        }
+
+        //модальное окно
         function showModal(message) {
             let modalHtml = `
         <div class="modal fade" id="successModal" tabindex="-1" aria-labelledby="successModalLabel" aria-hidden="true">

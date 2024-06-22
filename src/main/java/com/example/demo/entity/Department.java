@@ -18,6 +18,15 @@ public class Department {
     @JoinColumn(name = "manager_id", referencedColumnName = "id")
     private Employee manager;
 
+    private Boolean disabled;
+    public Boolean getDisabled() {
+        return disabled;
+    }
+
+    public void setDisabled(Boolean disabled) {
+        this.disabled = disabled;
+    }
+
     public Integer getId() {
         return id;
     }

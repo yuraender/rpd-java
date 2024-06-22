@@ -12,6 +12,14 @@ public class Profile {
     @ManyToOne
     @JoinColumn(name = "direction_id", referencedColumnName = "id")
     private Direction direction;
+    private Boolean disabled;
+    public Boolean getDisabled() {
+        return disabled;
+    }
+
+    public void setDisabled(Boolean disabled) {
+        this.disabled = disabled;
+    }
     public Integer getId() {
         return id;
     }

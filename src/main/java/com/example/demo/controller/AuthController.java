@@ -19,7 +19,6 @@ public class AuthController {
     @GetMapping("/default")
     public String defaultAfterLogin(HttpSession session) {
         String role = (String) session.getAttribute("role");
-
         if (role.equals("administrator")) {
             session.setAttribute("isAdmin", true);
             return "redirect:/home";

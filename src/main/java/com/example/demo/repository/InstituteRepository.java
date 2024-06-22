@@ -10,7 +10,8 @@ import java.util.List;
 
 @Repository
 public interface InstituteRepository extends JpaRepository<Institute, Long> {
-
+    List<Institute> findByDisabledFalse();
+    List<Institute> findByNameContainingOrCityContainingAndDisabledFalse(String name, String city);
     @Query("SELECT i FROM Institute i WHERE i.name LIKE %:keyword% OR i.city LIKE %:keyword%")
     List<Institute> findByNameOrCityContaining(@Param("keyword") String keyword);
 }

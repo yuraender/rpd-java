@@ -21,6 +21,7 @@ public class CustomAuthenticationSuccessHandler implements AuthenticationSuccess
         UserDetails userDetails = (UserDetails) authentication.getPrincipal();
         String role = userDetails.getAuthorities().iterator().next().getAuthority();
         session.setAttribute("role", role);
+        session.setAttribute("isAdmin", true);
         response.sendRedirect("/home");
     }
 }

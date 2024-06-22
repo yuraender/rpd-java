@@ -15,14 +15,14 @@ public class TeacherService {
     }
 
     public List<Teacher> getAll() {
-        return teacherRepository.findAll();
+        return teacherRepository.findByDisabledFalse();
     }
 
     public List<Teacher> findByDepartmentId(Long departmentId) {
-        return teacherRepository.findByDepartmentId(departmentId);
+        return teacherRepository.findByDepartmentIdAndDisabledFalse(departmentId);
     }
 
     public Teacher getById(Long id) {
-        return teacherRepository.findById(id).orElse(null);
+        return teacherRepository.findByIdAndDisabledFalse(id).orElse(null);
     }
 }

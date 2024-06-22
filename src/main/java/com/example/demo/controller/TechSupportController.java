@@ -2,6 +2,8 @@ package com.example.demo.controller;
 
 import com.example.demo.entity.*;
 import com.example.demo.service.*;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -40,9 +42,9 @@ public class TechSupportController {
 
     @GetMapping("/tech-support-data")
     @ResponseBody
-    public ResponseEntity<Map<String, Object>> getTechSupportData() {
+    public ResponseEntity<Map<String, Object>> getTechSupportData(HttpServletRequest request) {
         Map<String, Object> response = new HashMap<>();
-
+        HttpSession session = (HttpSession) request.getSession();
         List<TechSupport> techSupports = techSupportService.getAll();
         response.put("techSupports", techSupports);
 
@@ -54,6 +56,9 @@ public class TechSupportController {
 
         List<Audience> audiences = audienceService.getAll();
         response.put("audiences", audiences);
+
+        String role = (String) session.getAttribute("role");
+        response.put("role", role);
 
         return ResponseEntity.ok(response);
     }
@@ -134,7 +139,6 @@ public class TechSupportController {
             response.put("error", "TechSupport not found");
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
         }
-
         // Получаем запись Audience по newAudienceId
         Audience newAudience = audienceService.getById(newAudienceId);
         if (newAudience == null) {
@@ -142,15 +146,20 @@ public class TechSupportController {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
         }
 
+        // Проверяем, существует ли уже запись с такими audience_id и discipline_id и disable=false
+        List<TechSupport> existingTechSupports = techSupportService.findByAudienceAndDiscipline(newAudienceId,
+                Long.valueOf(techSupport.getDiscipline().getId()));
+        if (!existingTechSupports.isEmpty()) {
+            response.put("error", "Запись уже существует.");
+            response.put("updatedTechSupport", techSupport);
+            return ResponseEntity.ok(response);
+        }
         // Обновляем поле audience у TechSupport
         techSupport.setAudience(newAudience);
-
         // Сохраняем обновленную запись
         techSupportService.save(techSupport);
-
         // Добавляем обновленную запись в ответ
         response.put("updatedTechSupport", techSupport);
-
         return ResponseEntity.ok(response);
     }
 
@@ -198,7 +207,7 @@ public class TechSupportController {
 
     @GetMapping("/api/tech-support/delete-record/{techSupportId}")
     @ResponseBody
-    public ResponseEntity<Map<String, Object>> updateRecord(@PathVariable Long techSupportId) {
+    public ResponseEntity<Map<String, Object>> deleteRecord(@PathVariable Long techSupportId) {
         Map<String, Object> response = new HashMap<>();
 
         // Получаем запись TechSupport по techSupportId

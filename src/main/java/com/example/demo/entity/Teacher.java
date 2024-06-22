@@ -20,6 +20,14 @@ public class Teacher {
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "employee_positions_id", referencedColumnName = "id")
     private EmployeePosition employeePosition;
+    private Boolean disabled;
+    public Boolean getDisabled() {
+        return disabled;
+    }
+
+    public void setDisabled(Boolean disabled) {
+        this.disabled = disabled;
+    }
 
     public Long getId() {
         return id;

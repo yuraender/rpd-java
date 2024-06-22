@@ -23,7 +23,14 @@ public class Employee {
 
     @Column(name = "name_type_two")
     private String nameTypeTwo;
+    private Boolean disabled;
+    public Boolean getDisabled() {
+        return disabled;
+    }
 
+    public void setDisabled(Boolean disabled) {
+        this.disabled = disabled;
+    }
     // Геттеры и сеттеры
 
     public Integer getId() {

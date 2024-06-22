@@ -17,6 +17,14 @@ public class Institute {
     private String city;
     private String approvalText;
     private String footerText;
+    private Boolean disabled;
+    public Boolean getDisabled() {
+        return disabled;
+    }
+
+    public void setDisabled(Boolean disabled) {
+        this.disabled = disabled;
+    }
 
     public Integer getId() {
         return id;

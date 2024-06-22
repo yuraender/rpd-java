@@ -16,7 +16,14 @@ public class DisciplineEducationalProgram {
     @ManyToOne
     @JoinColumn(name = "basic_educational_program_id", referencedColumnName = "id")
     private BasicEducationalProgram basicEducationalProgram;
+    private Boolean disabled;
+    public Boolean getDisabled() {
+        return disabled;
+    }
 
+    public void setDisabled(Boolean disabled) {
+        this.disabled = disabled;
+    }
     public Integer getId() {
         return id;
     }

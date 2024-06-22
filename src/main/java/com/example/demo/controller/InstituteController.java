@@ -36,15 +36,21 @@ public class InstituteController {
         return "redirect:/home";
     }
 
-    @GetMapping("/home")
-    public String home(Model model, HttpSession session) {
-        Long instituteId = (Long) session.getAttribute("instituteId");
-        boolean isInstituteSelected = instituteId != null;
-        model.addAttribute("isInstituteSelected", isInstituteSelected);
-        if (isInstituteSelected) {
-            Institute institute = instituteService.findById(instituteId);
-            model.addAttribute("institute", institute);
-        }
-        return "home";
-    }
+//    @GetMapping("/home")
+//    public String home(Model model, HttpSession session) {
+//        Long instituteId = (Long) session.getAttribute("instituteId");
+//        boolean isInstituteSelected = instituteId != null;
+//        model.addAttribute("isInstituteSelected", isInstituteSelected);
+//        System.out.println("institute controller");
+//        String role = (String) session.getAttribute("role");
+//
+//        if (role.equals("administrator")) {
+//            model.addAttribute("isAdmin", true);
+//        }
+//        if (isInstituteSelected) {
+//            Institute institute = instituteService.findById(instituteId);
+//            model.addAttribute("institute", institute);
+//        }
+//        return "home";
+//    }
 }

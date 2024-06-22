@@ -13,6 +13,14 @@ public class Direction {
     @ManyToOne
     @JoinColumn(name = "departament_id", referencedColumnName = "id")
     private Department department;
+    private Boolean disabled;
+    public Boolean getDisabled() {
+        return disabled;
+    }
+
+    public void setDisabled(Boolean disabled) {
+        this.disabled = disabled;
+    }
 
     public Integer getId() {
         return id;
