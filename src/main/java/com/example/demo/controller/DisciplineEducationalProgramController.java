@@ -239,7 +239,7 @@ public class DisciplineEducationalProgramController {
         Map<String, Object> response = new HashMap<>();
         List<DisciplineEducationalProgram> allTableEntity = disciplineEducationalProgramService.getAll();
 
-        if (filter2 == 0) {
+        if (filter3 == 0) {
             List<DisciplineEducationalProgram> entityList = allTableEntity.stream()
                     .filter(el -> Long.valueOf(el.getDiscipline().getDepartment().getId()).equals(filter1))
                     .filter(el -> el.getDisabled().equals(false)).toList();

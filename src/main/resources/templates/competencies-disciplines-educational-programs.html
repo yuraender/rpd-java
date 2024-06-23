@@ -2,17 +2,23 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>discipline OP</title>
+    <title>competentions discipline OP</title>
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <style>
         * {
             box-sizing: border-box;
+        }
+        .big-option{
+            max-width: 30%;
+            height: max-content;
+            overflow: auto;
         }
 
         .form-container {
             padding: 20px 0;
             display: flex;
             gap: 20px;
+            flex-wrap: wrap;
             /*justify-content: space-between;*/
         }
 
@@ -176,23 +182,29 @@
     </div>
 </nav>
 <section class="container">
-    <h2>ДисциплиныОП:</h2>
+    <h2>Компетенции дисциплин ОП:</h2>
     <div class="container form-container">
         <div class="filter-container">
-            <label for="filter1">Выберите кафедру:</label>
+            <label for="filter1">Кафедра:</label>
             <select class="form-control" id="filter1">
             </select>
         </div>
         <div class="filter-container">
-            <label for="filter2">Направление:</label>
+            <label for="filter2">Разработчик РП:</label>
             <select class="form-control" id="filter2">
-                <option value="">Направление</option>
+                <option value="0">Разработчик РП</option>
             </select>
         </div>
         <div class="filter-container">
-            <label for="filter3">Профили:</label>
+            <label for="filter3">Дисциплина:</label>
             <select class="form-control" id="filter3">
-                <option value="">Профиль</option>
+                <option value="0">Дисциплина</option>
+            </select>
+        </div>
+        <div class="filter-container">
+            <label for="filter4">ООП:</label>
+            <select class="form-control" id="filter4">
+                <option value="0">ООП</option>
             </select>
         </div>
     </div>
@@ -210,6 +222,8 @@
                            onkeyup="filterTable('dataTable', 3)"></th>
                 <th><input type="text" class="form-control" placeholder="Дисциплина"
                            onkeyup="filterTable('dataTable', 4)"></th>
+                <th><input type="text" class="form-control" placeholder="Компетенция"
+                           onkeyup="filterTable('dataTable', 5)"></th>
             </tr>
             <tr class="sticky-header">
                 <th>ID</th>
@@ -217,6 +231,7 @@
                 <th>Учебный год</th>
                 <th>Тип обучения</th>
                 <th>Дисциплина</th>
+                <th>Компетенция</th>
             </tr>
             </thead>
             <tbody>
@@ -224,7 +239,7 @@
         </table>
     </div>
     <div class="edit-buttons-wrapper no-visible">
-        <button class="button-edit btn-edit button btn btn-primary">Редактировать</button>
+        <button class="button-edit btn-edit button btn btn-primary d-none">Редактировать</button>
         <button class="btn-create button btn btn-primary">Добавить</button>
         <button class="btn-delete button btn btn-primary">Удалить</button>
         <button class="btn-choose button btn btn-primary d-none">Выбрать направление</button>
@@ -257,10 +272,13 @@
         let filter1 = document.getElementById('filter1');
         let filter2 = document.getElementById('filter2');
         let filter3 = document.getElementById('filter3');
+        let filter4 = document.getElementById('filter4');
         let filter1Global = 0;
         let filter2Global = 0;
+        let filter3Global = 0;
         filter2.disabled = true;
         filter3.disabled = true;
+        filter4.disabled = true;
 
         const csrfToken = document.querySelector('input[name="_csrf"]').value;
         let btnChoose = document.querySelector('.btn-choose')
@@ -270,7 +288,7 @@
             let form = document.querySelector('.active-form')
             if (form) {
                 let activeRecordId = form.getAttribute('activerecordid')
-                fetch('/dep-data-set-active/' + activeRecordId)
+                fetch('/cdep-data-set-active/' + activeRecordId)
                     .then(function (response) {
                         if (!response.ok) {
                             throw new Error('Ошибка HTTP ' + response.status);
@@ -309,7 +327,7 @@
             let saveModalRecord = document.querySelector('.save-modal-record');
             saveModalRecord.addEventListener('click', () => saveNewRecord())
 
-            fetch('/dep-data')
+            fetch('/cdep-data')
                 .then(function (response) {
                     if (!response.ok) {
                         throw new Error('Ошибка HTTP ' + response.status);
@@ -318,7 +336,6 @@
                 })
                 .then(function (data) {
                     checkAdmin(data)
-
                     let filter1 = document.getElementById('filter1');
                     filter1.innerHTML = '';
                     let option = document.createElement('option');
@@ -328,7 +345,7 @@
 
                     data.departments.forEach(function (department) {
                         let option = document.createElement('option');
-                        option.textContent = `${department.name}`;
+                        option.textContent = `${department.code} ${department.name}`;
                         option.value = department.id;
                         filter1.appendChild(option);
                     });
@@ -387,7 +404,7 @@
                 } else {
                     let dataId = recordElement.getAttribute('activerecordid')
                     if (!dataId) return null;
-                    fetch('/api/dep/delete-record/' + dataId)
+                    fetch('/api/cdep/delete-record/' + dataId)
                         .then(function (response) {
                             if (!response.ok) {
                                 throw new Error('Ошибка HTTP ' + response.status);
@@ -424,7 +441,7 @@
             }
 
             function showCreateModal() {
-                fetch('/dep-data')
+                fetch('/cdep-data')
                     .then(function (response) {
                         if (!response.ok) {
                             throw new Error('Ошибка HTTP ' + response.status);
@@ -434,45 +451,45 @@
                     .then(data => {
                         const form = document.querySelector('.createForm')
 
-                        //field1======================институт=========================
+                        //field4=======================================================
+                        let fieldThreeWrapper = document.createElement('div')
+                        fieldThreeWrapper.classList.add('standard__active-record-wrapper')
+                        let fieldThreeDesc = document.createElement('p')
+                        fieldThreeDesc.classList.add('field__desc')
+                        fieldThreeDesc.textContent = `Дисциплина ОП:`
+                        fieldThreeWrapper.append(fieldThreeDesc)
+                        //создаем селект
+                        let select1 = document.createElement('select');
+                        select1.classList.add('form-control', 'field');
+                        select1.classList.add('form-control')
+                        data.entity4.forEach(function (optionData) {
+                            let text = optionData.discipline.name;
+                            let id = optionData.id;
+                            let option = createOptionForCreate(text, id)
+                            select1.appendChild(option);
+                        });
+                        fieldThreeWrapper.append(select1)
+                        form.append(fieldThreeWrapper)
+
+                        //field4=======================================================
                         let fieldFourWrapper = document.createElement('div')
                         fieldFourWrapper.classList.add('standard__active-record-wrapper')
                         let fieldFourDesc = document.createElement('p')
                         fieldFourDesc.classList.add('field__desc')
-                        fieldFourDesc.textContent = `ООП:`
+                        fieldFourDesc.textContent = `Компетенция:`
                         fieldFourWrapper.append(fieldFourDesc)
                         //создаем селект
                         let select2 = document.createElement('select');
                         select2.classList.add('form-control', 'field');
                         select2.classList.add('form-control')
-                        data.entity1.forEach(function (optionData) {
-                            let text = 'Год: ' + optionData.academicYear + ' id: ' + optionData.id;
+                        data.entity3.forEach(function (optionData) {
+                            let text = optionData.code + ' ' + optionData.beAble;
                             let id = optionData.id;
                             let option = createOptionForCreate(text, id)
                             select2.appendChild(option);
                         });
                         fieldFourWrapper.append(select2)
                         form.append(fieldFourWrapper)
-
-                        //field4======================институт=========================
-                        let fieldSixWrapper = document.createElement('div')
-                        fieldSixWrapper.classList.add('standard__active-record-wrapper')
-                        let fieldSixDesc = document.createElement('p')
-                        fieldSixDesc.classList.add('field__desc')
-                        fieldSixDesc.textContent = `Дисциплина:`
-                        fieldSixWrapper.append(fieldSixDesc)
-                        //создаем селект
-                        let select4 = document.createElement('select');
-                        select4.classList.add('form-control', 'field');
-                        select4.classList.add('form-control')
-                        data.entity4.forEach(function (optionData) {
-                            let text = optionData.name;
-                            let id = optionData.id;
-                            let option = createOptionForCreate(text, id)
-                            select4.appendChild(option);
-                        });
-                        fieldSixWrapper.append(select4)
-                        form.append(fieldSixWrapper)
 
                         let closeBtn = document.querySelector('.close-btn');
                         cancelCreateModal.addEventListener('click', () => closeModal(createModal))
@@ -505,7 +522,7 @@
         }
 
         function createNewRecord(data) {
-            fetch('/api/dep/save-new-record', {
+            fetch('/api/cdep/save-new-record', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -530,14 +547,14 @@
                         row.classList.add(`${data.id}`)
                         row.innerHTML =
                             '<td>' + data.id + '</td>' +
-                            '<td>' + data.basicEducationalProgram.profile.name + '</td>' +
-                            '<td>' + data.basicEducationalProgram.academicYear + '</td>' +
-                            '<td>' + data.basicEducationalProgram.educationType.name + '</td>' +
-                            '<td>' + data.discipline.name + '</td>';
+                            '<td>' + data.disciplineEducationalProgram.basicEducationalProgram.profile.name + '</td>' +
+                            '<td>' + data.disciplineEducationalProgram.basicEducationalProgram.academicYear + '</td>' +
+                            '<td>' + data.disciplineEducationalProgram.basicEducationalProgram.educationType.name + '</td>' +
+                            '<td>' + data.disciplineEducationalProgram.discipline.name + '</td>' +
+                            '<td>' + data.competencie.code + '</td>';
                         row.addEventListener('click', function () {
                             changeActiveRowTable(data.id);
                         });
-
                         dataTable.append(row);
                         closeModal(createModal)
                         showModalWithMessage('Запись создана.')
@@ -561,10 +578,11 @@
                 row.classList.add(`${data.id}`)
                 row.innerHTML =
                     '<td>' + data.id + '</td>' +
-                    '<td>' + data.basicEducationalProgram.profile.name + '</td>' +
-                    '<td>' + data.basicEducationalProgram.academicYear + '</td>' +
-                    '<td>' + data.basicEducationalProgram.educationType.name + '</td>' +
-                    '<td>' + data.discipline.name + '</td>';
+                    '<td>' + data.disciplineEducationalProgram.basicEducationalProgram.profile.name + '</td>' +
+                    '<td>' + data.disciplineEducationalProgram.basicEducationalProgram.academicYear + '</td>' +
+                    '<td>' + data.disciplineEducationalProgram.basicEducationalProgram.educationType.name + '</td>' +
+                    '<td>' + data.disciplineEducationalProgram.discipline.name + '</td>' +
+                    '<td>' + data.competencie.code + '</td>';
                 row.addEventListener('click', function () {
                     changeActiveRowTable(data.id);
                 });
@@ -573,7 +591,7 @@
         }
 
         function changeActiveRowTable(dataId) {
-            fetch('/api/dep/get-active/' + dataId)
+            fetch('/api/cdep/get-active/' + dataId)
                 .then(function (response) {
                     if (!response.ok) {
                         throw new Error('Ошибка HTTP ' + response.status);
@@ -587,7 +605,7 @@
                     let form = document.createElement('div');
                     form.classList.add('form-table', 'active-form');
 
-                    //field1=======================================================
+
                     function createIdFieldForActiveRecord(data) {
                         let fieldOneWrapper = document.createElement('div')
                         fieldOneWrapper.classList.add('standard__active-record-wrapper')
@@ -603,15 +621,14 @@
                     form.setAttribute('activeRecordId', data.data.id)
                     form.appendChild(createIdFieldForActiveRecord(data.data));
 
-                    //field3======================институт=========================
+                    //field2======================институт=========================
                     let fieldThreeWrapper = document.createElement('div')
                     fieldThreeWrapper.classList.add('standard__active-record-wrapper')
                     let fieldThreeDesc = document.createElement('p')
                     fieldThreeDesc.classList.add('field__desc')
                     fieldThreeDesc.textContent = `Профиль:`
                     fieldThreeWrapper.append(fieldThreeDesc)
-
-                    fieldThreeWrapper.append(createInactiveTextBox(data.data.basicEducationalProgram.profile.name, 'academicYear'))
+                    fieldThreeWrapper.append(createInactiveTextBox(data.data.disciplineEducationalProgram.basicEducationalProgram.profile.name, 'profile'))
                     form.append(fieldThreeWrapper)
 
                     //field2=======================================================
@@ -621,10 +638,20 @@
                     fieldTwoDesc.classList.add('field__desc')
                     fieldTwoDesc.textContent = `Учебный год:`
                     fieldTwoWrapper.append(fieldTwoDesc)
-                    fieldTwoWrapper.append(createInactiveTextBox(data.data.basicEducationalProgram.academicYear, 'academicYear'))
+                    fieldTwoWrapper.append(createInactiveTextBox(data.data.disciplineEducationalProgram.basicEducationalProgram.academicYear, 'academicYear'))
                     form.append(fieldTwoWrapper)
 
-                    //field4======================институт=========================
+                    //field3=======================================================
+                    let fieldFiveWrapper = document.createElement('div')
+                    fieldFiveWrapper.classList.add('standard__active-record-wrapper')
+                    let fieldFiveDesc = document.createElement('p')
+                    fieldFiveDesc.classList.add('field__desc')
+                    fieldFiveDesc.textContent = `Тип обучения:`
+                    fieldFiveWrapper.append(fieldFiveDesc)
+                    fieldFiveWrapper.append(createInactiveTextBox(data.data.disciplineEducationalProgram.basicEducationalProgram.educationType.name, 'academicYear'))
+                    form.append(fieldFiveWrapper)
+
+                    //field4=======================================================
                     let fieldFourWrapper = document.createElement('div')
                     fieldFourWrapper.classList.add('standard__active-record-wrapper')
                     let fieldFourDesc = document.createElement('p')
@@ -635,11 +662,10 @@
                     let select2 = document.createElement('select');
                     select2.classList.add('form-control', 'field');
                     select2.classList.add('form-control')
-
                     data.entity2.forEach(function (optionData) {
-                        let text = optionData.name;
+                        let text = optionData.code + ' ' + optionData.beAble;
                         let id = optionData.id;
-                        let parentDataId = data.data.discipline.id
+                        let parentDataId = data.data.competencie.id
 
                         let option = createOptionForActiveRecord(text, id, parentDataId)
                         select2.appendChild(option);
@@ -714,7 +740,7 @@
             data['dataId'] = dataId;
 
             if (emptyFields) return
-            fetch('/api/dep/update', {
+            fetch('/api/cdep/update', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -771,8 +797,9 @@
             // Заблокировать списки, пока не придет ответ
             filter2.disabled = true;
             filter3.disabled = true;
+            filter4.disabled = true;
 
-            fetch('/api/dep/department-filter/' + filter1Id)
+            fetch('/api/cdep/department-filter/' + filter1Id)
                 .then(function (response) {
                     if (!response.ok) {
                         throw new Error('Ошибка HTTP ' + response.status);
@@ -788,7 +815,8 @@
                     filterElement.appendChild(option);
                     data.filterList.forEach(function (entity) {
                         let option = document.createElement('option');
-                        option.textContent = entity.name;
+                        option.classList.add('big-option')
+                        option.textContent = `${entity.employee.lastName} ${entity.employee.firstName} ${entity.employee.middleName}. ${entity.employeePosition.positionName}`;
                         option.value = entity.id;
                         filterElement.appendChild(option);
                     });
@@ -810,7 +838,8 @@
             let filter2Id = this.value;
             filter2Global = filter2Id;
             filter3.disabled = true;
-            fetch('/api/dep/direction-filter/' + filter1Global + '/' + filter2Id)
+            filter4.disabled = true;
+            fetch('/api/cdep/direction-filter/' + filter1Global + '/' + filter2Id)
                 .then(function (response) {
                     if (!response.ok) {
                         throw new Error('Ошибка HTTP ' + response.status);
@@ -818,11 +847,10 @@
                     return response.json();
                 })
                 .then(function (data) {
-
                     let filterElement = document.getElementById('filter3');
                     filterElement.innerHTML = '';
                     let option = document.createElement('option');
-                    option.textContent = "Профиль";
+                    option.textContent = "Дисциплина";
                     option.value = "0";
                     filterElement.appendChild(option);
                     data.filterList.forEach(function (entity) {
@@ -835,6 +863,7 @@
                     // Разблокировать, если данные успешно загружены
                     if (filter2Id == 0) {
                         filter3.disabled = true;
+                        filter4.disabled = true;
                     } else {
                         filter3.disabled = false;
                     }
@@ -846,8 +875,8 @@
         });
         filter3.addEventListener('change', function () {
             let filter3Id = this.value;
-
-            fetch('/api/dep/profile-filter/' + filter1Global + '/' + filter2Global + '/' + filter3Id)
+            filter3Global = filter3Id
+            fetch('/api/cdep/discipline-filter/' + filter1Global + '/' + filter2Global + '/' + filter3Id)
                 .then(function (response) {
                     if (!response.ok) {
                         throw new Error('Ошибка HTTP ' + response.status);
@@ -855,7 +884,43 @@
                     return response.json();
                 })
                 .then(function (data) {
-                    filter3.disabled = false;
+                    let filterElement = document.getElementById('filter4');
+                    filterElement.innerHTML = '';
+                    let option = document.createElement('option');
+                    option.textContent = "ООП";
+                    option.value = "0";
+                    filterElement.appendChild(option);
+                    data.filterList.forEach(function (entity) {
+                        let option = document.createElement('option');
+                        option.textContent = `${entity.basicEducationalProgram.academicYear}, ${entity.basicEducationalProgram.educationType.name}, ${entity.basicEducationalProgram.profile.name}, ${entity.discipline.name}`;
+                        option.value = entity.id;
+                        filterElement.appendChild(option);
+                    });
+
+                    renderTable(data.entityList)
+                    // Разблокировать, если данные успешно загружены
+                    if (filter3Id == 0) {
+                        filter4.disabled = true;
+                    } else {
+                        filter4.disabled = false;
+                    }
+                })
+                .catch(function (error) {
+                    console.error('Ошибка загрузки данных:', error);
+                    alert('Ошибка при загрузке данных');
+                });
+        });
+        filter4.addEventListener('change', function () {
+            let filter4Id = this.value;
+
+            fetch('/api/cdep/oop-filter/' + filter1Global + '/' + filter2Global + '/' + filter3Global + '/' + filter4Id)
+                .then(function (response) {
+                    if (!response.ok) {
+                        throw new Error('Ошибка HTTP ' + response.status);
+                    }
+                    return response.json();
+                })
+                .then(function (data) {
                     renderTable(data.entityList)
                 })
                 .catch(function (error) {
@@ -863,7 +928,6 @@
                     alert('Ошибка при загрузке данных');
                 });
         });
-
         //модальное окно
         function showModalWithMessage(message) {
             showModal(message);
