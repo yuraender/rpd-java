@@ -1,6 +1,7 @@
 package com.example.demo.service;
 
 import com.example.demo.entity.BasicEducationalProgram;
+import com.example.demo.entity.Profile;
 import com.example.demo.repository.BasicEducationalProgramRepository;
 import org.springframework.stereotype.Service;
 
@@ -14,10 +15,13 @@ public class BasicEducationalProgramService {
     }
 
     public List<BasicEducationalProgram> getAll() {
-        return basicEducationalProgramRepository.findAll();
+        return basicEducationalProgramRepository.findAllByDisabledFalse();
     }
 
     public BasicEducationalProgram getById(Long id) {
         return basicEducationalProgramRepository.findById(id).orElse(null);
+    }
+    public BasicEducationalProgram save(BasicEducationalProgram basicEducationalProgram) {
+        return basicEducationalProgramRepository.save(basicEducationalProgram);
     }
 }

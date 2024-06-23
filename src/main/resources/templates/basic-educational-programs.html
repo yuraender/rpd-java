@@ -2,11 +2,18 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>audiences</title>
+    <title>bep</title>
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <style>
         * {
             box-sizing: border-box;
+        }
+
+        .form-container {
+            padding: 20px 0;
+            display: flex;
+            gap: 20px;
+            /*justify-content: space-between;*/
         }
 
         .textbox {
@@ -169,28 +176,38 @@
     </div>
 </nav>
 <section class="container">
-    <h2>Аудитории:</h2>
+    <h2>ООП:</h2>
+    <div class="container form-container">
+        <div class="filter-container">
+            <label for="filter1">Выберите кафедру:</label>
+            <select class="form-control" id="filter1">
+            </select>
+        </div>
+        <div class="filter-container">
+            <label for="filter2">Направление:</label>
+            <select class="form-control" id="filter2">
+                <option value="">Направление</option>
+            </select>
+        </div>
+    </div>
     <div class="scrollable-table">
         <table class="table table-bordered" id="dataTable">
             <thead>
             <tr class="sticky-header">
                 <th><input type="text" class="form-control" placeholder="ID"
                            onkeyup="filterTable('dataTable', 0)"></th>
-                <th><input type="text" class="form-control" placeholder="Институт"
+                <th><input type="text" class="form-control" placeholder="Учебный год"
                            onkeyup="filterTable('dataTable', 1)"></th>
-                <th><input type="text" class="form-control" placeholder="Аудитория"
+                <th><input type="text" class="form-control" placeholder="Профиль"
                            onkeyup="filterTable('dataTable', 2)"></th>
-                <th><input type="text" class="form-control" placeholder="Техника"
+                <th><input type="text" class="form-control" placeholder="Тип обучения"
                            onkeyup="filterTable('dataTable', 3)"></th>
-                <th><input type="text" class="form-control" placeholder="Лицензии"
-                           onkeyup="filterTable('dataTable', 4)"></th>
             </tr>
             <tr class="sticky-header">
                 <th>ID</th>
-                <th>Институт</th>
-                <th>Аудитория</th>
-                <th>Техника</th>
-                <th>Лицензии</th>
+                <th>Учебный год</th>
+                <th>Профиль</th>
+                <th>Тип обучения</th>
             </tr>
             </thead>
             <tbody>
@@ -201,7 +218,7 @@
         <button class="button-edit btn-edit button btn btn-primary">Редактировать</button>
         <button class="btn-create button btn btn-primary">Добавить</button>
         <button class="btn-delete button btn btn-primary">Удалить</button>
-<!--        <button class="btn-choose button btn btn-primary">Выбрать аудиторию</button>-->
+        <button class="btn-choose button btn btn-primary">Выбрать направление</button>
     </div>
     <div class="active-record">
     </div>
@@ -228,6 +245,12 @@
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 <script>
     document.addEventListener('DOMContentLoaded', function () {
+        let filter1 = document.getElementById('filter1');
+        let filter2 = document.getElementById('filter2');
+        let filter1Global = 0;
+        filter2.disabled = true;
+
+
         const csrfToken = document.querySelector('input[name="_csrf"]').value;
         let btnChoose = document.querySelector('.btn-choose')
         btnChoose.addEventListener('click', chooseRecord)
@@ -236,7 +259,7 @@
             let form = document.querySelector('.active-form')
             if (form) {
                 let activeRecordId = form.getAttribute('activerecordid')
-                fetch('/audiences-data-set-active/' + activeRecordId)
+                fetch('/bep-data-set-active/' + activeRecordId)
                     .then(function (response) {
                         if (!response.ok) {
                             throw new Error('Ошибка HTTP ' + response.status);
@@ -244,7 +267,7 @@
                         return response.json();
                     })
                     .then(function (data) {
-                        showModalWithMessage('Вы выбрали аудиторию: ' + data.dataName)
+                        showModalWithMessage('Вы выбрали ООП с id: ' + data.dataName)
                     })
             } else {
                 showModalWithMessage('Выберите запись, кликнув по записи из таблицы. Затем нажмите "выбрать кафедру".')
@@ -275,7 +298,7 @@
             let saveModalRecord = document.querySelector('.save-modal-record');
             saveModalRecord.addEventListener('click', () => saveNewRecord())
 
-            fetch('/audiences-data')
+            fetch('/bep-data')
                 .then(function (response) {
                     if (!response.ok) {
                         throw new Error('Ошибка HTTP ' + response.status);
@@ -284,6 +307,20 @@
                 })
                 .then(function (data) {
                     checkAdmin(data)
+
+                    let filter1 = document.getElementById('filter1');
+                    filter1.innerHTML = '';
+                    let option = document.createElement('option');
+                    option.textContent = "Выберите кафедру";
+                    option.value = "0";
+                    filter1.appendChild(option);
+
+                    data.departments.forEach(function (department) {
+                        let option = document.createElement('option');
+                        option.textContent = `${department.name}`;
+                        option.value = department.id;
+                        filter1.appendChild(option);
+                    });
                     renderTable(data.data)
                 })
                 .catch(function (error) {
@@ -339,7 +376,7 @@
                 } else {
                     let dataId = recordElement.getAttribute('activerecordid')
                     if (!dataId) return null;
-                    fetch('/api/audience-support/delete-record/' + dataId)
+                    fetch('/api/bep/delete-record/' + dataId)
                         .then(function (response) {
                             if (!response.ok) {
                                 throw new Error('Ошибка HTTP ' + response.status);
@@ -377,7 +414,7 @@
             }
 
             function showCreateModal() {
-                fetch('/audiences-data')
+                fetch('/bep-data')
                     .then(function (response) {
                         if (!response.ok) {
                             throw new Error('Ошибка HTTP ' + response.status);
@@ -386,58 +423,57 @@
                     })
                     .then(data => {
                         const form = document.querySelector('.createForm')
-
-                        //field2======================институт=========================
+                        //field2=======================================================
                         let fieldTwoWrapper = document.createElement('div')
                         fieldTwoWrapper.classList.add('standard__active-record-wrapper')
                         let fieldTwoDesc = document.createElement('p')
                         fieldTwoDesc.classList.add('field__desc')
-                        fieldTwoDesc.textContent = `Институт:`
+                        fieldTwoDesc.textContent = `Учебный год:`
                         fieldTwoWrapper.append(fieldTwoDesc)
-                        //создаем селект
-                        let institutSelect = document.createElement('select');
-                        institutSelect.classList.add('form-control', 'field');
-                        institutSelect.classList.add('form-control')
-                        institutSelect.id = 'institute';
-                        data.institutes.forEach(function (optionData) {
-                            let text = optionData.name;
-                            let id = optionData.id;
-                            let parentDataId = data.data.institute.id
-                            let option = createOptionForCreate(text, id, parentDataId)
-                            institutSelect.appendChild(option);
-                        });
-                        fieldTwoWrapper.append(institutSelect)
+                        fieldTwoWrapper.append(createTextBoxForCreate())
                         form.append(fieldTwoWrapper)
 
-                        //field3=======================================================
+                        //field3======================институт=========================
                         let fieldThreeWrapper = document.createElement('div')
                         fieldThreeWrapper.classList.add('standard__active-record-wrapper')
                         let fieldThreeDesc = document.createElement('p')
                         fieldThreeDesc.classList.add('field__desc')
-                        fieldThreeDesc.textContent = `Аудитория:`
+                        fieldThreeDesc.textContent = `Профиль:`
                         fieldThreeWrapper.append(fieldThreeDesc)
-                        fieldThreeWrapper.append(createTextBoxForCreate())
+                        //создаем селект
+                        let departmentSelect = document.createElement('select');
+                        departmentSelect.classList.add('form-control', 'field');
+                        departmentSelect.classList.add('form-control')
+                        data.entity1.forEach(function (optionData) {
+                            let text = optionData.direction.encryption + ' ' + optionData.name;
+                            let id = optionData.id;
+                            let option = createOptionForCreate(text, id)
+                            departmentSelect.appendChild(option);
+                        });
+                        fieldThreeWrapper.append(departmentSelect)
                         form.append(fieldThreeWrapper)
 
-                        //field4=======================================================
+                        //field4======================институт=========================
                         let fieldFourWrapper = document.createElement('div')
                         fieldFourWrapper.classList.add('standard__active-record-wrapper')
                         let fieldFourDesc = document.createElement('p')
                         fieldFourDesc.classList.add('field__desc')
-                        fieldFourDesc.textContent = `Техника:`
+                        fieldFourDesc.textContent = `Тип обучения:`
                         fieldFourWrapper.append(fieldFourDesc)
-                        fieldFourWrapper.appendChild(createTextBoxForCreate());
-                        form.appendChild(fieldFourWrapper);
+                        //создаем селект
+                        let select2 = document.createElement('select');
+                        select2.classList.add('form-control', 'field');
+                        select2.classList.add('form-control')
+                        select2.id = 'institute';
 
-                        //field5=======================================================
-                        let fieldFiveWrapper = document.createElement('div')
-                        fieldFiveWrapper.classList.add('standard__active-record-wrapper')
-                        let fieldFiveDesc = document.createElement('p')
-                        fieldFiveDesc.classList.add('field__desc')
-                        fieldFiveDesc.textContent = `Лицензия:`
-                        fieldFiveWrapper.append(fieldFiveDesc)
-                        fieldFiveWrapper.appendChild(createTextBoxForCreate());
-                        form.appendChild(fieldFiveWrapper);
+                        data.entity2.forEach(function (optionData) {
+                            let text = optionData.name;
+                            let id = optionData.id;
+                            let option = createOptionForCreate(text, id)
+                            select2.appendChild(option);
+                        });
+                        fieldFourWrapper.append(select2)
+                        form.append(fieldFourWrapper)
 
                         let closeBtn = document.querySelector('.close-btn');
                         cancelCreateModal.addEventListener('click', () => closeModal(createModal))
@@ -455,7 +491,6 @@
             let activeRecord = document.querySelector('.createForm');
             let fields = activeRecord.querySelectorAll('.field');
             let emptyFields = false;
-            let query = '/api/audience-support/save-new-record'
             let data = {}
             fields.forEach(function (field, index) {
                 if (field.value) {
@@ -471,7 +506,7 @@
         }
 
         function createNewRecord(data) {
-            fetch('/api/audience-support/save-new-record', {
+            fetch('/api/bep/save-new-record', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -496,11 +531,9 @@
                         row.classList.add(`${data.id}`)
                         row.innerHTML =
                             '<td>' + data.id + '</td>' +
-                            '<td>' + data.institute.name + '</td>' +
-                            '<td>' + data.numberAudience + '</td>' +
-                            '<td>' + data.tech + '</td>' +
-                            '<td>' + data.softwareLicense + '</td>';
-
+                            '<td>' + data.academicYear + '</td>' +
+                            '<td>' + data.profile.name + '</td>' +
+                            '<td>' + data.educationType.name + '</td>';
                         row.addEventListener('click', function () {
                             changeActiveRowTable(data.id);
                         });
@@ -509,7 +542,7 @@
                         closeModal(createModal)
                         showModalWithMessage('Запись создана.')
                         let activeRecord = document.querySelector('.createForm');
-                        if(activeRecord){
+                        if (activeRecord) {
                             removeAllChildElements(activeRecord)
                         }
 
@@ -525,26 +558,22 @@
             dataTable.innerHTML = '';
             dataList.forEach(function (data) {
                 let row = document.createElement('tr');
-
                 row.setAttribute('dataId', data.id);
                 row.classList.add(`${data.id}`)
-
                 row.innerHTML =
                     '<td>' + data.id + '</td>' +
-                    '<td>' + data.institute.name + '</td>' +
-                    '<td>' + data.numberAudience + '</td>' +
-                    '<td>' + data.tech + '</td>' +
-                    '<td>' + data.softwareLicense + '</td>';
+                    '<td>' + data.academicYear + '</td>' +
+                    '<td>' + data.profile.name + '</td>' +
+                    '<td>' + data.educationType.name + '</td>';
                 row.addEventListener('click', function () {
                     changeActiveRowTable(data.id);
                 });
-
                 dataTable.appendChild(row);
             });
         }
 
         function changeActiveRowTable(dataId) {
-            fetch('/api/audiences/get-active/' + dataId)
+            fetch('/api/bep/get-active/' + dataId)
                 .then(function (response) {
                     if (!response.ok) {
                         throw new Error('Ошибка HTTP ' + response.status);
@@ -575,61 +604,69 @@
                     form.setAttribute('activeRecordId', data.data.id)
                     form.appendChild(createIdFieldForActiveRecord(data.data));
 
-                    //field2======================институт=========================
+                    //field2=======================================================
                     let fieldTwoWrapper = document.createElement('div')
                     fieldTwoWrapper.classList.add('standard__active-record-wrapper')
                     let fieldTwoDesc = document.createElement('p')
                     fieldTwoDesc.classList.add('field__desc')
-                    fieldTwoDesc.textContent = `Институт:`
+                    fieldTwoDesc.textContent = `Учебный год:`
                     fieldTwoWrapper.append(fieldTwoDesc)
-                    //создаем селект
-                    let institutSelect = document.createElement('select');
-                    institutSelect.classList.add('form-control', 'field');
-                    institutSelect.classList.add('form-control')
-                    institutSelect.id = 'institute';
-                    data.instituteList.forEach(function (optionData) {
-                        let text = optionData.name;
-                        let id = optionData.id;
-                        let parentDataId = data.data.institute.id
-                        let option = createOptionForActiveRecord(text, id, parentDataId)
-                        institutSelect.appendChild(option);
-                    });
-                    // audienceSelect.disabled = true
-                    institutSelect.disabled = !editMode;
-                    // institutSelect.addEventListener('change', activeFieldsChange);
-                    fieldTwoWrapper.append(institutSelect)
+                    fieldTwoWrapper.append(createTextBoxForActiveRecord(data.data.academicYear, 'academicYear'))
                     form.append(fieldTwoWrapper)
 
-
-                    //field3=======================================================
+                    //field3======================институт=========================
                     let fieldThreeWrapper = document.createElement('div')
                     fieldThreeWrapper.classList.add('standard__active-record-wrapper')
                     let fieldThreeDesc = document.createElement('p')
                     fieldThreeDesc.classList.add('field__desc')
-                    fieldThreeDesc.textContent = `Аудитория:`
+                    fieldThreeDesc.textContent = `Направление:`
                     fieldThreeWrapper.append(fieldThreeDesc)
-                    fieldThreeWrapper.append(createTextBoxForActiveRecord(data.data.numberAudience, 'numberOfAudience'))
+                    //создаем селект
+                    let departmentSelect = document.createElement('select');
+                    departmentSelect.classList.add('form-control', 'field');
+                    departmentSelect.classList.add('form-control')
+
+                    data.entity1.forEach(function (optionData) {
+                        let text = optionData.direction.encryption + ' ' + optionData.name;
+                        let id = optionData.id;
+                        let parentDataId = data.data.profile.id
+
+                        let option = createOptionForActiveRecord(text, id, parentDataId)
+                        departmentSelect.appendChild(option);
+                    });
+                    departmentSelect.disabled = !editMode;
+                    fieldThreeWrapper.append(departmentSelect)
                     form.append(fieldThreeWrapper)
 
-                    //field4=======================================================
+                    //field4======================институт=========================
                     let fieldFourWrapper = document.createElement('div')
                     fieldFourWrapper.classList.add('standard__active-record-wrapper')
                     let fieldFourDesc = document.createElement('p')
                     fieldFourDesc.classList.add('field__desc')
-                    fieldFourDesc.textContent = `Техника:`
+                    fieldFourDesc.textContent = `Тип обучения:`
                     fieldFourWrapper.append(fieldFourDesc)
-                    fieldFourWrapper.appendChild(createTextBoxForActiveRecord(data.data.tech, 'tech'));
-                    form.appendChild(fieldFourWrapper);
+                    //создаем селект
+                    let select2 = document.createElement('select');
+                    select2.classList.add('form-control', 'field');
+                    select2.classList.add('form-control')
+                    select2.id = 'institute';
 
-                    //field5=======================================================
-                    let fieldFiveWrapper = document.createElement('div')
-                    fieldFiveWrapper.classList.add('standard__active-record-wrapper')
-                    let fieldFiveDesc = document.createElement('p')
-                    fieldFiveDesc.classList.add('field__desc')
-                    fieldFiveDesc.textContent = `Лицензия:`
-                    fieldFiveWrapper.append(fieldFiveDesc)
-                    fieldFiveWrapper.appendChild(createTextBoxForActiveRecord(data.data.softwareLicense, 'softwareLicense'));
-                    form.appendChild(fieldFiveWrapper);
+                    data.entity2.forEach(function (optionData) {
+                        let text = optionData.name;
+                        let id = optionData.id;
+                        let parentDataId = data.data.educationType.id
+
+                        let option = createOptionForActiveRecord(text, id, parentDataId)
+                        select2.appendChild(option);
+                    });
+                    select2.disabled = !editMode;
+                    fieldFourWrapper.append(select2)
+                    form.append(fieldFourWrapper)
+
+
+
+
+
 
                     //конец добавления в активную запись
                     // Добавляем форму в контейнер
@@ -678,18 +715,26 @@
             let emptyFields = false;
             let dataId = document.querySelector('.active-form').getAttribute('activerecordid')
 
-            let query = '/api/audience-support/update/' + dataId
-            fields.forEach(function (field) {
+            let data = {}
+            fields.forEach(function (field, index) {
                 if (field.value) {
-                    query += '/' + field.value;
+                    data[index] = field.value
                 } else {
-                    changeActiveRowTable(dataId)
                     showModalWithMessage('Поля должны быть заполнены.')
                     emptyFields = true
                 }
-            });
+            })
+            data['dataId'] = dataId;
+
             if (emptyFields) return
-            fetch(query)
+            fetch('/api/bep/update', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': csrfToken
+                },
+                body: JSON.stringify(data)
+            })
                 .then(function (response) {
                     if (!response.ok) {
                         throw new Error('Ошибка HTTP ' + response.status);
@@ -708,10 +753,9 @@
                             if (rows[i].getAttribute('dataid') == newRecord.updatedData.id) {
                                 rows[i].innerHTML =
                                     '<td>' + newRecord.updatedData.id + '</td>' +
-                                    '<td>' + newRecord.updatedData.institute.name + '</td>' +
-                                    '<td>' + newRecord.updatedData.numberAudience + '</td>' +
-                                    '<td>' + newRecord.updatedData.tech + '</td>' +
-                                    '<td>' + newRecord.updatedData.softwareLicense + '</td>';
+                                    '<td>' + newRecord.updatedData.academicYear + '</td>' +
+                                    '<td>' + newRecord.updatedData.profile.name + '</td>' +
+                                    '<td>' + newRecord.updatedData.educationType.name + '</td>';
                                 break;
                             }
                         }
@@ -731,6 +775,68 @@
             removeAllChildElements(form)
             modal.style.display = 'none';
         }
+
+        filter1.addEventListener('change', function () {
+            let filter1Id = this.value;
+            filter1Global = filter1Id;
+
+            // Заблокировать списки, пока не придет ответ
+            filter2.disabled = true;
+
+            fetch('/api/bep/department-filter/' + filter1Id)
+                .then(function (response) {
+                    if (!response.ok) {
+                        throw new Error('Ошибка HTTP ' + response.status);
+                    }
+                    return response.json();
+                })
+                .then(function (data) {
+                    let filterElement = document.getElementById('filter2');
+                    filterElement.innerHTML = '';
+                    let option = document.createElement('option');
+                    option.textContent = "Направление";
+                    option.value = "0";
+                    filterElement.appendChild(option);
+                    data.filterList.forEach(function (entity) {
+                        let option = document.createElement('option');
+                        option.textContent = entity.name;
+                        option.value = entity.id;
+                        filterElement.appendChild(option);
+                    });
+                    renderTable(data.entityList)
+                    // Разблокировать, если данные успешно загружены
+                    if (filter1Id == 0) {
+                        filter2.disabled = true;
+                    } else {
+                        filter2.disabled = false;
+                    }
+                })
+                .catch(function (error) {
+                    console.error('Ошибка загрузки данных:', error);
+                    alert('Ошибка при загрузке данных');
+                });
+        });
+
+        filter2.addEventListener('change', function () {
+            let filter2Id = this.value;
+
+            fetch('/api/bep/direction-filter/' + filter1Global + '/' + filter2Id)
+                .then(function (response) {
+                    if (!response.ok) {
+                        throw new Error('Ошибка HTTP ' + response.status);
+                    }
+                    return response.json();
+                })
+                .then(function (data) {
+
+                    renderTable(data.entityList)
+                })
+                .catch(function (error) {
+                    console.error('Ошибка загрузки данных:', error);
+                    alert('Ошибка при загрузке данных');
+                });
+        });
+
 
         //модальное окно
         function showModalWithMessage(message) {
