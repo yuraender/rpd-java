@@ -1,6 +1,7 @@
 package com.example.demo.service;
 
 import com.example.demo.entity.Discipline;
+import com.example.demo.entity.Employee;
 import com.example.demo.repository.DisciplineRepository;
 import org.springframework.stereotype.Service;
 
@@ -15,7 +16,7 @@ public class DisciplineService {
     }
 
     public List<Discipline> getAll() {
-        return disciplineRepository.findAll();
+        return disciplineRepository.findAllByDisabledFalse();
     }
 
     public Discipline getById(Long id) {
@@ -24,5 +25,8 @@ public class DisciplineService {
 
     public List<Discipline> getByTeacherId(Long teacherId) {
         return disciplineRepository.findByDeveloperId(teacherId);
+    }
+    public Discipline save(Discipline employee) {
+        return disciplineRepository.save(employee);
     }
 }

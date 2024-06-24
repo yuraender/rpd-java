@@ -1,6 +1,7 @@
 package com.example.demo.service;
 
 import com.example.demo.entity.Competencie;
+import com.example.demo.entity.EducationType;
 import com.example.demo.repository.CompetencieRepository;
 import org.springframework.stereotype.Service;
 
@@ -14,10 +15,13 @@ public class CompetencieService {
     }
 
     public List<Competencie> getAll() {
-        return competencieRepository.findAll();
+        return competencieRepository.findAllByDisabledFalse();
     }
 
     public Competencie getById(Long id) {
         return competencieRepository.findById(id).orElse(null);
+    }
+    public Competencie save(Competencie entity) {
+        return competencieRepository.save(entity);
     }
 }

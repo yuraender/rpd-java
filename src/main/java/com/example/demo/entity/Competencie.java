@@ -12,6 +12,7 @@ public class Competencie {
     private String essence;
     private String know;
     private String beAble;
+    private String own;
     private Boolean disabled;
     public Boolean getDisabled() {
         return disabled;
@@ -69,6 +70,6 @@ public class Competencie {
         this.own = own;
     }
 
-    private String own;
+
 }
 

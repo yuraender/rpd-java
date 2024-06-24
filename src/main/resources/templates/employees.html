@@ -2,11 +2,18 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>audiences</title>
+    <title>Employees</title>
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <style>
         * {
             box-sizing: border-box;
+        }
+
+        .form-container {
+            padding: 20px 0;
+            display: flex;
+            gap: 20px;
+            /*justify-content: space-between;*/
         }
 
         .textbox {
@@ -169,28 +176,25 @@
     </div>
 </nav>
 <section class="container">
-    <h2>Аудитории:</h2>
+    <h2>Сотрудники:</h2>
     <div class="scrollable-table">
         <table class="table table-bordered" id="dataTable">
             <thead>
             <tr class="sticky-header">
                 <th><input type="text" class="form-control" placeholder="ID"
                            onkeyup="filterTable('dataTable', 0)"></th>
-                <th><input type="text" class="form-control" placeholder="Институт"
+                <th><input type="text" class="form-control" placeholder="Фамилия"
                            onkeyup="filterTable('dataTable', 1)"></th>
-                <th><input type="text" class="form-control" placeholder="Аудитория"
+                <th><input type="text" class="form-control" placeholder="Имя"
                            onkeyup="filterTable('dataTable', 2)"></th>
-                <th><input type="text" class="form-control" placeholder="Техника"
+                <th><input type="text" class="form-control" placeholder="Отчество"
                            onkeyup="filterTable('dataTable', 3)"></th>
-                <th><input type="text" class="form-control" placeholder="Лицензии"
-                           onkeyup="filterTable('dataTable', 4)"></th>
             </tr>
             <tr class="sticky-header">
                 <th>ID</th>
-                <th>Институт</th>
-                <th>Аудитория</th>
-                <th>Техника</th>
-                <th>Лицензии</th>
+                <th>Фамилия</th>
+                <th>Имя</th>
+                <th>Отчество</th>
             </tr>
             </thead>
             <tbody>
@@ -201,7 +205,6 @@
         <button class="button-edit btn-edit button btn btn-primary">Редактировать</button>
         <button class="btn-create button btn btn-primary">Добавить</button>
         <button class="btn-delete button btn btn-primary">Удалить</button>
-        <button class="btn-choose button btn btn-primary d-none">Выбрать аудиторию</button>
     </div>
     <div class="active-record">
     </div>
@@ -229,27 +232,6 @@
 <script>
     document.addEventListener('DOMContentLoaded', function () {
         const csrfToken = document.querySelector('input[name="_csrf"]').value;
-        let btnChoose = document.querySelector('.btn-choose')
-        btnChoose.addEventListener('click', chooseRecord)
-
-        function chooseRecord() {
-            let form = document.querySelector('.active-form')
-            if (form) {
-                let activeRecordId = form.getAttribute('activerecordid')
-                fetch('/audiences-data-set-active/' + activeRecordId)
-                    .then(function (response) {
-                        if (!response.ok) {
-                            throw new Error('Ошибка HTTP ' + response.status);
-                        }
-                        return response.json();
-                    })
-                    .then(function (data) {
-                        showModalWithMessage('Вы выбрали аудиторию: ' + data.dataName)
-                    })
-            } else {
-                showModalWithMessage('Выберите запись, кликнув по записи из таблицы. Затем нажмите "выбрать кафедру".')
-            }
-        }
 
         let editMode = false;
         let isAdmin = false;
@@ -275,7 +257,7 @@
             let saveModalRecord = document.querySelector('.save-modal-record');
             saveModalRecord.addEventListener('click', () => saveNewRecord())
 
-            fetch('/audiences-data')
+            fetch('/employees-data')
                 .then(function (response) {
                     if (!response.ok) {
                         throw new Error('Ошибка HTTP ' + response.status);
@@ -339,7 +321,7 @@
                 } else {
                     let dataId = recordElement.getAttribute('activerecordid')
                     if (!dataId) return null;
-                    fetch('/api/audience-support/delete-record/' + dataId)
+                    fetch('/api/employees/delete-record/' + dataId)
                         .then(function (response) {
                             if (!response.ok) {
                                 throw new Error('Ошибка HTTP ' + response.status);
@@ -349,7 +331,6 @@
                         .then(deletedRecord => {
                             showModalWithMessage('Запись удалена.')
                             document.querySelector('.active-form').remove()
-
                             let table = document.getElementById('dataTable');
                             let rows = table.querySelectorAll('tbody tr');
 
@@ -377,7 +358,7 @@
             }
 
             function showCreateModal() {
-                fetch('/audiences-data')
+                fetch('/employees-data')
                     .then(function (response) {
                         if (!response.ok) {
                             throw new Error('Ошибка HTTP ' + response.status);
@@ -387,57 +368,37 @@
                     .then(data => {
                         const form = document.querySelector('.createForm')
 
-                        //field2======================институт=========================
-                        let fieldTwoWrapper = document.createElement('div')
-                        fieldTwoWrapper.classList.add('standard__active-record-wrapper')
-                        let fieldTwoDesc = document.createElement('p')
-                        fieldTwoDesc.classList.add('field__desc')
-                        fieldTwoDesc.textContent = `Институт:`
-                        fieldTwoWrapper.append(fieldTwoDesc)
-                        //создаем селект
-                        let institutSelect = document.createElement('select');
-                        institutSelect.classList.add('form-control', 'field');
-                        institutSelect.classList.add('form-control')
-                        institutSelect.id = 'institute';
-                        data.institutes.forEach(function (optionData) {
-                            let text = optionData.name;
-                            let id = optionData.id;
-                            let parentDataId = data.data.institute.id
-                            let option = createOptionForCreate(text, id, parentDataId)
-                            institutSelect.appendChild(option);
-                        });
-                        fieldTwoWrapper.append(institutSelect)
-                        form.append(fieldTwoWrapper)
-
-                        //field3=======================================================
+                        //field3======================институт=========================
                         let fieldThreeWrapper = document.createElement('div')
                         fieldThreeWrapper.classList.add('standard__active-record-wrapper')
                         let fieldThreeDesc = document.createElement('p')
                         fieldThreeDesc.classList.add('field__desc')
-                        fieldThreeDesc.textContent = `Аудитория:`
+                        fieldThreeDesc.textContent = `Фамилия:`
                         fieldThreeWrapper.append(fieldThreeDesc)
+
                         fieldThreeWrapper.append(createTextBoxForCreate())
                         form.append(fieldThreeWrapper)
 
-                        //field4=======================================================
+                        //field2=======================================================
+                        let fieldTwoWrapper = document.createElement('div')
+                        fieldTwoWrapper.classList.add('standard__active-record-wrapper')
+                        let fieldTwoDesc = document.createElement('p')
+                        fieldTwoDesc.classList.add('field__desc')
+                        fieldTwoDesc.textContent = `Имя:`
+                        fieldTwoWrapper.append(fieldTwoDesc)
+                        fieldTwoWrapper.append(createTextBoxForCreate())
+                        form.append(fieldTwoWrapper)
+
+                        //field4======================институт=========================
                         let fieldFourWrapper = document.createElement('div')
                         fieldFourWrapper.classList.add('standard__active-record-wrapper')
                         let fieldFourDesc = document.createElement('p')
                         fieldFourDesc.classList.add('field__desc')
-                        fieldFourDesc.textContent = `Техника:`
+                        fieldFourDesc.textContent = `Отчество:`
                         fieldFourWrapper.append(fieldFourDesc)
-                        fieldFourWrapper.appendChild(createTextBoxForCreate());
-                        form.appendChild(fieldFourWrapper);
-
-                        //field5=======================================================
-                        let fieldFiveWrapper = document.createElement('div')
-                        fieldFiveWrapper.classList.add('standard__active-record-wrapper')
-                        let fieldFiveDesc = document.createElement('p')
-                        fieldFiveDesc.classList.add('field__desc')
-                        fieldFiveDesc.textContent = `Лицензия:`
-                        fieldFiveWrapper.append(fieldFiveDesc)
-                        fieldFiveWrapper.appendChild(createTextBoxForCreate());
-                        form.appendChild(fieldFiveWrapper);
+                        //создаем селект
+                        fieldFourWrapper.append(createTextBoxForCreate())
+                        form.append(fieldFourWrapper)
 
                         let closeBtn = document.querySelector('.close-btn');
                         cancelCreateModal.addEventListener('click', () => closeModal(createModal))
@@ -455,7 +416,6 @@
             let activeRecord = document.querySelector('.createForm');
             let fields = activeRecord.querySelectorAll('.field');
             let emptyFields = false;
-            let query = '/api/audience-support/save-new-record'
             let data = {}
             fields.forEach(function (field, index) {
                 if (field.value) {
@@ -471,7 +431,7 @@
         }
 
         function createNewRecord(data) {
-            fetch('/api/audience-support/save-new-record', {
+            fetch('/api/employees/save-new-record', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -496,11 +456,9 @@
                         row.classList.add(`${data.id}`)
                         row.innerHTML =
                             '<td>' + data.id + '</td>' +
-                            '<td>' + data.institute.name + '</td>' +
-                            '<td>' + data.numberAudience + '</td>' +
-                            '<td>' + data.tech + '</td>' +
-                            '<td>' + data.softwareLicense + '</td>';
-
+                            '<td>' + data.lastName + '</td>' +
+                            '<td>' + data.firstName + '</td>' +
+                            '<td>' + data.middleName + '</td>';
                         row.addEventListener('click', function () {
                             changeActiveRowTable(data.id);
                         });
@@ -509,12 +467,11 @@
                         closeModal(createModal)
                         showModalWithMessage('Запись создана.')
                         let activeRecord = document.querySelector('.createForm');
-                        if(activeRecord){
+                        if (activeRecord) {
                             removeAllChildElements(activeRecord)
                         }
 
                     }
-
                 })
         }
 
@@ -524,27 +481,25 @@
             let dataTable = document.getElementById('dataTable').getElementsByTagName('tbody')[0];
             dataTable.innerHTML = '';
             dataList.forEach(function (data) {
+                console.log('data')
+                console.log(data)
                 let row = document.createElement('tr');
-
                 row.setAttribute('dataId', data.id);
                 row.classList.add(`${data.id}`)
-
                 row.innerHTML =
                     '<td>' + data.id + '</td>' +
-                    '<td>' + data.institute.name + '</td>' +
-                    '<td>' + data.numberAudience + '</td>' +
-                    '<td>' + data.tech + '</td>' +
-                    '<td>' + data.softwareLicense + '</td>';
+                    '<td>' + data.lastName + '</td>' +
+                    '<td>' + data.firstName + '</td>' +
+                    '<td>' + data.middleName + '</td>';
                 row.addEventListener('click', function () {
                     changeActiveRowTable(data.id);
                 });
-
                 dataTable.appendChild(row);
             });
         }
 
         function changeActiveRowTable(dataId) {
-            fetch('/api/audiences/get-active/' + dataId)
+            fetch('/api/employees/get-active/' + dataId)
                 .then(function (response) {
                     if (!response.ok) {
                         throw new Error('Ошибка HTTP ' + response.status);
@@ -571,66 +526,40 @@
                         idField.textContent = data.id;
                         return fieldOneWrapper
                     }
-
                     form.setAttribute('activeRecordId', data.data.id)
                     form.appendChild(createIdFieldForActiveRecord(data.data));
 
-                    //field2======================институт=========================
-                    let fieldTwoWrapper = document.createElement('div')
-                    fieldTwoWrapper.classList.add('standard__active-record-wrapper')
-                    let fieldTwoDesc = document.createElement('p')
-                    fieldTwoDesc.classList.add('field__desc')
-                    fieldTwoDesc.textContent = `Институт:`
-                    fieldTwoWrapper.append(fieldTwoDesc)
-                    //создаем селект
-                    let institutSelect = document.createElement('select');
-                    institutSelect.classList.add('form-control', 'field');
-                    institutSelect.classList.add('form-control')
-                    institutSelect.id = 'institute';
-                    data.instituteList.forEach(function (optionData) {
-                        let text = optionData.name;
-                        let id = optionData.id;
-                        let parentDataId = data.data.institute.id
-                        let option = createOptionForActiveRecord(text, id, parentDataId)
-                        institutSelect.appendChild(option);
-                    });
-                    // audienceSelect.disabled = true
-                    institutSelect.disabled = !editMode;
-                    // institutSelect.addEventListener('change', activeFieldsChange);
-                    fieldTwoWrapper.append(institutSelect)
-                    form.append(fieldTwoWrapper)
-
-
-                    //field3=======================================================
+                    //field3======================институт=========================
                     let fieldThreeWrapper = document.createElement('div')
                     fieldThreeWrapper.classList.add('standard__active-record-wrapper')
                     let fieldThreeDesc = document.createElement('p')
                     fieldThreeDesc.classList.add('field__desc')
-                    fieldThreeDesc.textContent = `Аудитория:`
+                    fieldThreeDesc.textContent = `Фамилия:`
                     fieldThreeWrapper.append(fieldThreeDesc)
-                    fieldThreeWrapper.append(createTextBoxForActiveRecord(data.data.numberAudience, 'numberOfAudience'))
+
+                    fieldThreeWrapper.append(createTextBoxForActiveRecord(data.data.lastName, 'type-learningPeriod'))
                     form.append(fieldThreeWrapper)
 
-                    //field4=======================================================
+                    //field2=======================================================
+                    let fieldTwoWrapper = document.createElement('div')
+                    fieldTwoWrapper.classList.add('standard__active-record-wrapper')
+                    let fieldTwoDesc = document.createElement('p')
+                    fieldTwoDesc.classList.add('field__desc')
+                    fieldTwoDesc.textContent = `Имя:`
+                    fieldTwoWrapper.append(fieldTwoDesc)
+                    fieldTwoWrapper.append(createTextBoxForActiveRecord(data.data.firstName, 'period'))
+                    form.append(fieldTwoWrapper)
+
+                    //field4======================институт=========================
                     let fieldFourWrapper = document.createElement('div')
                     fieldFourWrapper.classList.add('standard__active-record-wrapper')
                     let fieldFourDesc = document.createElement('p')
                     fieldFourDesc.classList.add('field__desc')
-                    fieldFourDesc.textContent = `Техника:`
+                    fieldFourDesc.textContent = `Отчество:`
                     fieldFourWrapper.append(fieldFourDesc)
-                    fieldFourWrapper.appendChild(createTextBoxForActiveRecord(data.data.tech, 'tech'));
-                    form.appendChild(fieldFourWrapper);
-
-                    //field5=======================================================
-                    let fieldFiveWrapper = document.createElement('div')
-                    fieldFiveWrapper.classList.add('standard__active-record-wrapper')
-                    let fieldFiveDesc = document.createElement('p')
-                    fieldFiveDesc.classList.add('field__desc')
-                    fieldFiveDesc.textContent = `Лицензия:`
-                    fieldFiveWrapper.append(fieldFiveDesc)
-                    fieldFiveWrapper.appendChild(createTextBoxForActiveRecord(data.data.softwareLicense, 'softwareLicense'));
-                    form.appendChild(fieldFiveWrapper);
-
+                    //создаем селект
+                    fieldFourWrapper.append(createTextBoxForActiveRecord(data.data.middleName, 'text'))
+                    form.append(fieldFourWrapper)
                     //конец добавления в активную запись
                     // Добавляем форму в контейнер
                     activeRecordWrapper.appendChild(form);
@@ -640,7 +569,6 @@
                     if (editMode && isAdmin) {
                         let activeRecord = document.querySelector('.active-record');
                         let fields = activeRecord.querySelectorAll('.field');
-
                         fields.forEach(function (field) {
                             field.disabled = true;
                             field.readOnly = true;
@@ -653,6 +581,13 @@
                         textBox.id = id;
                         textBox.readOnly = !editMode;
                         textBox.classList.add('form-control', 'field', 'textbox');
+                        return textBox;
+                    }
+
+                    function createInactiveTextBox(text, id) {
+                        let textBox = document.createElement('p');
+                        textBox.textContent = text;
+                        textBox.id = id;
                         return textBox;
                     }
 
@@ -678,18 +613,26 @@
             let emptyFields = false;
             let dataId = document.querySelector('.active-form').getAttribute('activerecordid')
 
-            let query = '/api/audience-support/update/' + dataId
-            fields.forEach(function (field) {
+            let data = {}
+            fields.forEach(function (field, index) {
                 if (field.value) {
-                    query += '/' + field.value;
+                    data[index] = field.value
                 } else {
-                    changeActiveRowTable(dataId)
                     showModalWithMessage('Поля должны быть заполнены.')
                     emptyFields = true
                 }
-            });
+            })
+            data['dataId'] = dataId;
+
             if (emptyFields) return
-            fetch(query)
+            fetch('/api/employees/update', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': csrfToken
+                },
+                body: JSON.stringify(data)
+            })
                 .then(function (response) {
                     if (!response.ok) {
                         throw new Error('Ошибка HTTP ' + response.status);
@@ -708,10 +651,9 @@
                             if (rows[i].getAttribute('dataid') == newRecord.updatedData.id) {
                                 rows[i].innerHTML =
                                     '<td>' + newRecord.updatedData.id + '</td>' +
-                                    '<td>' + newRecord.updatedData.institute.name + '</td>' +
-                                    '<td>' + newRecord.updatedData.numberAudience + '</td>' +
-                                    '<td>' + newRecord.updatedData.tech + '</td>' +
-                                    '<td>' + newRecord.updatedData.softwareLicense + '</td>';
+                                    '<td>' + newRecord.updatedData.lastName + '</td>' +
+                                    '<td>' + newRecord.updatedData.firstName + '</td>' +
+                                    '<td>' + newRecord.updatedData.middleName + '</td>';
                                 break;
                             }
                         }
@@ -731,6 +673,7 @@
             removeAllChildElements(form)
             modal.style.display = 'none';
         }
+
 
         //модальное окно
         function showModalWithMessage(message) {

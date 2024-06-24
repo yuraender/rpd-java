@@ -1,5 +1,6 @@
 package com.example.demo.service;
 
+import com.example.demo.entity.DisciplineEducationalProgram;
 import com.example.demo.entity.EducationType;
 import com.example.demo.repository.EducationTypeRepository;
 import org.springframework.stereotype.Service;
@@ -19,5 +20,12 @@ public class EducationTypeService {
 
     public EducationType getById(Long id) {
         return educationTypeRepository.findById(id).orElse(null);
+    }
+    public List<EducationType> getAll() {
+        return educationTypeRepository.findAllByDisabledFalse();
+    }
+
+    public EducationType save(EducationType educationType) {
+        return educationTypeRepository.save(educationType);
     }
 }

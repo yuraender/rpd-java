@@ -1,5 +1,6 @@
 package com.example.demo.service;
 
+import com.example.demo.entity.EducationType;
 import com.example.demo.entity.Employee;
 import com.example.demo.repository.EmployeeRepository;
 import org.springframework.stereotype.Service;
@@ -14,10 +15,13 @@ public class EmployeeService {
     }
 
     public List<Employee> getAllEmployees() {
-        return employeeRepository.findAll();
+        return employeeRepository.findAllByDisabledFalse();
     }
 
     public Employee getById(Long id) {
         return employeeRepository.findById(id).orElse(null);
+    }
+    public Employee save(Employee employee) {
+        return employeeRepository.save(employee);
     }
 }

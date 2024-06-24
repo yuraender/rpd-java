@@ -1,5 +1,6 @@
 package com.example.demo.service;
 
+import com.example.demo.entity.Employee;
 import com.example.demo.entity.Teacher;
 import com.example.demo.repository.TeacherRepository;
 import org.springframework.stereotype.Service;
@@ -24,5 +25,8 @@ public class TeacherService {
 
     public Teacher getById(Long id) {
         return teacherRepository.findByIdAndDisabledFalse(id).orElse(null);
+    }
+    public Teacher save(Teacher entity) {
+        return teacherRepository.save(entity);
     }
 }
