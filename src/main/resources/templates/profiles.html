@@ -196,7 +196,7 @@
     <button class="button-edit btn-edit button btn btn-primary">Редактировать</button>
     <button class="btn-create button btn btn-primary">Добавить</button>
     <button class="btn-delete button btn btn-primary">Удалить</button>
-    <button class="btn-choose button btn btn-primary">Выбрать направление</button>
+    <button class="btn-choose button btn btn-primary">Выбрать профиль</button>
   </div>
   <div class="active-record">
   </div>
@@ -257,7 +257,6 @@
                   return response.json();
                 })
                 .then(function (data) {
-                  console.log(data)
                   showModalWithMessage('Вы выбрали профиль: ' + data.dataName)
                 })
       } else {
@@ -362,8 +361,7 @@
                   })
                   .then(deletedRecord => {
                     showModalWithMessage('Запись удалена.')
-                    document.querySelector('.active-form').remove()
-
+                    removeAllChildElements(document.querySelector('.active-form'))
                     let table = document.getElementById('dataTable');
                     let rows = table.querySelectorAll('tbody tr');
 
@@ -513,7 +511,6 @@
       let dataTable = document.getElementById('dataTable').getElementsByTagName('tbody')[0];
       dataTable.innerHTML = '';
       dataList.forEach(function (data) {
-        console.log(data)
         let row = document.createElement('tr');
         row.setAttribute('dataId', data.id);
         row.classList.add(`${data.id}`)
@@ -679,7 +676,6 @@
                   // Найти строку с нужным dataId и обновить ее содержимое
                   for (let i = 0; i < rows.length; i++) {
                     if (rows[i].getAttribute('dataid') == newRecord.updatedData.id) {
-                      console.log(data)
                       rows[i].innerHTML =
                               '<td>' + newRecord.updatedData.id + '</td>' +
                               '<td>' + newRecord.updatedData.name + '</td>' +

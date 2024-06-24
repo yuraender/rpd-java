@@ -199,7 +199,7 @@
         <button class="button-edit btn-edit button btn btn-primary">Редактировать</button>
         <button class="btn-create button btn btn-primary">Добавить</button>
         <button class="btn-delete button btn btn-primary">Удалить</button>
-        <button class="btn-choose button btn btn-primary">Выбрать аудиторию</button>
+        <button class="btn-choose button btn btn-primary">Выбрать направление</button>
     </div>
     <div class="active-record">
     </div>
@@ -260,7 +260,6 @@
                         return response.json();
                     })
                     .then(function (data) {
-                        console.log(data)
                         showModalWithMessage('Вы выбрали направление: ' + data.dataName)
                     })
             } else {

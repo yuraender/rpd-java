@@ -19,26 +19,10 @@ import java.util.Map;
 @Controller
 public class ProfileController {
     @Autowired
-    private TechSupportService techSupportService;
-    @Autowired
     private ProfileService profileService;
-    @Autowired
-    private EmployeeService employeeService;
 
     @Autowired
     private DirectionService directionService;
-    @Autowired
-    private TeacherService teacherService;
-
-    @Autowired
-    private AudienceService audienceService;
-
-    @Autowired
-    private DepartmentService departmentService;
-    @Autowired
-    private DisciplineService disciplineService;
-    @Autowired
-    private InstituteService instituteService;
 
     @GetMapping("/profiles")
     public String getTablePage(Model model) {
@@ -58,7 +42,7 @@ public class ProfileController {
         response.put("dataName", entity.getName());
 
         HttpSession session = request.getSession();
-        session.setAttribute("directionId", entityId);
+        session.setAttribute("profileId", entityId);
         return ResponseEntity.ok(response);
     }
 

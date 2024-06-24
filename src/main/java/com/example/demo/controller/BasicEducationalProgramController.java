@@ -18,26 +18,14 @@ import java.util.stream.Collectors;
 @Controller
 public class BasicEducationalProgramController {
     @Autowired
-    private TechSupportService techSupportService;
-    @Autowired
     private ProfileService profileService;
-    @Autowired
-    private EmployeeService employeeService;
 
     @Autowired
     private DirectionService directionService;
-    @Autowired
-    private TeacherService teacherService;
-
-    @Autowired
-    private AudienceService audienceService;
 
     @Autowired
     private DepartmentService departmentService;
-    @Autowired
-    private DisciplineService disciplineService;
-    @Autowired
-    private InstituteService instituteService;
+
     @Autowired
     private BasicEducationalProgramService basicEducationalProgramService;
     @Autowired

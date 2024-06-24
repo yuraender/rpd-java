@@ -20,21 +20,11 @@ import java.util.Optional;
 public class DepartmentController {
 
     @Autowired
-    private TechSupportService techSupportService;
-
-    @Autowired
     private EmployeeService employeeService;
 
     @Autowired
-    private TeacherService teacherService;
-
-    @Autowired
-    private AudienceService audienceService;
-
-    @Autowired
     private DepartmentService departmentService;
-    @Autowired
-    private DisciplineService disciplineService;
+
     @Autowired
     private InstituteService instituteService;
 

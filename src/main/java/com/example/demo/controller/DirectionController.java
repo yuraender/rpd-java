@@ -20,25 +20,10 @@ import java.util.Map;
 @Controller
 public class DirectionController {
     @Autowired
-    private TechSupportService techSupportService;
-
-    @Autowired
-    private EmployeeService employeeService;
-
-    @Autowired
     private DirectionService directionService;
-    @Autowired
-    private TeacherService teacherService;
-
-    @Autowired
-    private AudienceService audienceService;
 
     @Autowired
     private DepartmentService departmentService;
-    @Autowired
-    private DisciplineService disciplineService;
-    @Autowired
-    private InstituteService instituteService;
 
     @GetMapping("/directions")
     public String getDepartmentPage(Model model) {
@@ -131,9 +116,9 @@ public class DirectionController {
         }
 
         Direction entity = new Direction();
-        entity.setName(param1);
+        entity.setName(param2);
         entity.setDepartment(department);
-        entity.setEncryption(param2);
+        entity.setEncryption(param1);
         entity.setDisabled(false);
         // Сохраняем обновленную запись
         directionService.save(entity);

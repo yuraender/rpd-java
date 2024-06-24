@@ -421,8 +421,7 @@
                         data.institutes.forEach(function (optionData) {
                             let text = optionData.name;
                             let id = optionData.id;
-                            let parentDataId = data.data.institute.id
-                            let option = createOptionForCreate(text, id, parentDataId)
+                            let option = createOptionForCreate(text, id)
                             institutSelect.appendChild(option);
                         });
                         fieldTwoWrapper.append(institutSelect)

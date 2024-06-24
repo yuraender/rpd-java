@@ -15,7 +15,7 @@ public class EducationTypeService {
     }
 
     public List<EducationType> getAllEducationTypes() {
-        return educationTypeRepository.findAll();
+        return educationTypeRepository.findAllByDisabledFalse();
     }
 
     public EducationType getById(Long id) {

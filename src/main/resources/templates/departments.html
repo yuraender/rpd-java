@@ -426,7 +426,7 @@
                         fieldThreeWrapper.append(fieldThreeDesc)
                         fieldThreeWrapper.append(createTextBoxForCreate())
                         form.append(fieldThreeWrapper)
-
+                        console.log('1')
                         //field4======================аббревиатура=====================
                         let fieldFourWrapper = document.createElement('div')
                         fieldFourWrapper.classList.add('standard__active-record-wrapper')
@@ -436,7 +436,6 @@
                         fieldFourWrapper.append(fieldFourDesc)
                         fieldFourWrapper.appendChild(createTextBoxForCreate())
                         form.appendChild(fieldFourWrapper);
-
                         //field5======================институт=========================
                         let fieldFiveWrapper = document.createElement('div')
                         fieldFiveWrapper.classList.add('standard__active-record-wrapper')
@@ -449,24 +448,21 @@
                         institutSelect.classList.add('form-control', 'field');
                         institutSelect.classList.add('form-control')
                         institutSelect.id = 'institute';
-
                         data.institutes.forEach(function (optionData) {
                             let text = optionData.name;
                             let id = optionData.id;
-                            let parentDataId = data.data.institute.id
-                            let option = createOptionForCreate(text, id, parentDataId)
-
+                            let option = createOptionForCreate(text, id)
                             institutSelect.appendChild(option);
                         });
                         fieldFiveWrapper.append(institutSelect)
                         form.append(fieldFiveWrapper)
-
+                        console.log('3')
                         //field6======================преподаватель=========================
                         let fieldSixWrapper = document.createElement('div')
                         fieldSixWrapper.classList.add('standard__active-record-wrapper')
                         let fieldSixDesc = document.createElement('p')
                         fieldSixDesc.classList.add('field__desc')
-                        fieldSixDesc.textContent = `Кафедра:`
+                        fieldSixDesc.textContent = `Сотрудник:`
                         fieldSixWrapper.append(fieldSixDesc)
                         //создаем селект
                         let teacherSelect = document.createElement('select');
@@ -672,17 +668,16 @@
                     fieldSixWrapper.classList.add('standard__active-record-wrapper')
                     let fieldSixDesc = document.createElement('p')
                     fieldSixDesc.classList.add('field__desc')
-                    fieldSixDesc.textContent = `Кафедра:`
+                    fieldSixDesc.textContent = `Сотрудник:`
                     fieldSixWrapper.append(fieldSixDesc)
                     //создаем селект
                     let teacherSelect = document.createElement('select');
                     teacherSelect.id = 'teacher';
                     teacherSelect.classList.add('form-control', 'field')
-
                     data.teacherList.forEach(function (optionData) {
                         let text = optionData.nameTypeOne;
                         let id = optionData.id;
-                        let parentDataId = data.data.employee.id
+                        let parentDataId = data.data.manager.id
                         let option = createOptionForActiveRecord(text, id, parentDataId)
 
                         teacherSelect.appendChild(option);
@@ -692,6 +687,8 @@
                     // teacherSelect.addEventListener('change', activeFieldsChange);
                     fieldSixWrapper.append(teacherSelect)
                     form.append(fieldSixWrapper)
+
+
                     //конец добавления в активную запись
                     // Добавляем форму в контейнер
                     activeRecordWrapper.appendChild(form);
