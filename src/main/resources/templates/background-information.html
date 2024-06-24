@@ -4,6 +4,7 @@
     <title>Справочная информация</title>
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <style>
+
         .scrollable-table {
             max-height: 50vh;
             overflow-y: auto;
@@ -25,8 +26,9 @@
             text-align: center;
         }
     </style>
+    <link rel="stylesheet" href="/styles.css"/>
 </head>
-<body>
+<body class="body-wrapper">
 <nav class="navbar navbar-expand-lg navbar-light bg-light">
     <a class="navbar-brand" href="/home">Главная</a>
     <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav"
@@ -632,9 +634,25 @@
     </section>
 
 </div>
-
-
-
+<div class="rightbar">
+    <a href="/choose-institute" id="menu-institute">Институты
+        <span id="institute-chosen" class="institute-status">выбран</span>
+    </a>
+    <a href="/departments" id="menu-departments" >Кафедры</a>
+    <a href="/audiences" id="menu-auditoriums" >Аудитории</a>
+    <a href="/tech-support" id="menu-tech-support" >Тех.обеспечение</a>
+    <a href="/directions" id="menu-direction" >Направления</a>
+    <a href="/profiles" id="menu-profiles" >Профили</a>
+    <a href="/bep" id="menu-bep" >ООП</a>
+    <a href="/dep" id="menu-dep" >ДисциплиныОП</a>
+    <a href="/cdep" id="menu-cdep" >Компетенции дисциплин ОП</a>
+    <a href="/education-type" id="menu-education-type" >Типы обучения</a>
+    <a href="/employees" id="menu-employees" >Сотрудники</a>
+    <a href="/employees-positions" id="menu-employees-positions" >Должности</a>
+    <a href="/teachers" id="menu-teachers" >Преподаватели</a>
+    <a href="/disciplines" id="menu-disciplines" >Дисциплины</a>
+    <a href="/competencies" id="menu-competencies" >Компетенции</a>
+</div>
 
 <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>

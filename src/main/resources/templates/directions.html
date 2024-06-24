@@ -144,9 +144,10 @@
             max-width: 100%;
         }
     </style>
+    <link rel="stylesheet" href="/styles.css"/>
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
 </head>
-<body>
+<body class="body-wrapper">
 <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
 <nav class="navbar navbar-expand-lg navbar-light bg-light">
     <a class="navbar-brand" href="/home">Главная</a>
@@ -203,7 +204,25 @@
     <div class="active-record">
     </div>
 </section>
-
+<div class="rightbar">
+    <a href="/choose-institute" id="menu-institute">Институты
+        <span id="institute-chosen" class="institute-status">выбран</span>
+    </a>
+    <a href="/departments" id="menu-departments" >Кафедры</a>
+    <a href="/audiences" id="menu-auditoriums" >Аудитории</a>
+    <a href="/tech-support" id="menu-tech-support" >Тех.обеспечение</a>
+    <a href="/directions" id="menu-direction" >Направления</a>
+    <a href="/profiles" id="menu-profiles" >Профили</a>
+    <a href="/bep" id="menu-bep" >ООП</a>
+    <a href="/dep" id="menu-dep" >ДисциплиныОП</a>
+    <a href="/cdep" id="menu-cdep" >Компетенции дисциплин ОП</a>
+    <a href="/education-type" id="menu-education-type" >Типы обучения</a>
+    <a href="/employees" id="menu-employees" >Сотрудники</a>
+    <a href="/employees-positions" id="menu-employees-positions" >Должности</a>
+    <a href="/teachers" id="menu-teachers" >Преподаватели</a>
+    <a href="/disciplines" id="menu-disciplines" >Дисциплины</a>
+    <a href="/competencies" id="menu-competencies" >Компетенции</a>
+</div>
 <div id="createModal" class="modal" style="display: none;">
     <div class="modal-content">
         <div class="modal-header">
