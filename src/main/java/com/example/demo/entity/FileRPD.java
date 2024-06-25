@@ -17,44 +17,112 @@ public class FileRPD {
     @Column(name = "section_1", columnDefinition = "LONGBLOB")
     private byte[] section1;
 
-    @Column(name = "section_1_isLoad")
+    @Column(name = "section_1_is_load")
     private Boolean section1IsLoad;
 
     @Lob
     @Column(name = "section_2", columnDefinition = "LONGBLOB")
     private byte[] section2;
 
-    @Column(name = "section_2_isLoad")
+    @Column(name = "section_2_is_load")
     private Boolean section2IsLoad;
 
     @Lob
     @Column(name = "section_3", columnDefinition = "LONGBLOB")
     private byte[] section3;
 
-    @Column(name = "section_3_isLoad")
+    @Column(name = "section_3_is_load")
     private Boolean section3IsLoad;
 
     @Lob
     @Column(name = "section_4", columnDefinition = "LONGBLOB")
     private byte[] section4;
 
-    @Column(name = "section_4_isLoad")
+    @Column(name = "section_4_is_load")
     private Boolean section4IsLoad;
 
     @Lob
     @Column(name = "section_5", columnDefinition = "LONGBLOB")
     private byte[] section5;
 
-    @Column(name = "section_5_isLoad")
+    @Column(name = "section_5_is_load")
     private Boolean section5IsLoad;
 
     @Lob
     @Column(name = "section_6", columnDefinition = "LONGBLOB")
     private byte[] section6;
 
-    @Column(name = "section_6_isLoad")
+    @Column(name = "section_6_is_load")
     private Boolean section6IsLoad;
+
+    @Lob
+    @Column(name = "section_7", columnDefinition = "LONGBLOB")
+    private byte[] section7;
+    @Column(name = "section_7_is_load")
+    private Boolean section7IsLoad;
+
+    @Lob
+    @Column(name = "section_8", columnDefinition = "LONGBLOB")
+    private byte[] section8;
+
+    @Column(name = "section_8_is_load")
+    private Boolean section8IsLoad;
+
+    @Lob
+    @Column(name = "section_9", columnDefinition = "LONGBLOB")
+    private byte[] section9;
+
+    @Column(name = "section_9_is_load")
+    private Boolean section9IsLoad;
     private Boolean disabled;
+    public byte[] getSection7() {
+        return section7;
+    }
+
+    public void setSection7(byte[] section7) {
+        this.section7 = section7;
+    }
+
+    public Boolean getSection7IsLoad() {
+        return section7IsLoad;
+    }
+
+    public void setSection7IsLoad(Boolean section7IsLoad) {
+        this.section7IsLoad = section7IsLoad;
+    }
+
+    public byte[] getSection8() {
+        return section8;
+    }
+
+    public void setSection8(byte[] section8) {
+        this.section8 = section8;
+    }
+
+    public Boolean getSection8IsLoad() {
+        return section8IsLoad;
+    }
+
+    public void setSection8IsLoad(Boolean section8IsLoad) {
+        this.section8IsLoad = section8IsLoad;
+    }
+
+    public byte[] getSection() {
+        return section9;
+    }
+
+    public void setSection(byte[] section) {
+        this.section9 = section;
+    }
+
+    public Boolean getSection9IsLoad() {
+        return section9IsLoad;
+    }
+
+    public void setSection9IsLoad(Boolean section9IsLoad) {
+        this.section9IsLoad = section9IsLoad;
+    }
+
     public Boolean getDisabled() {
         return disabled;
     }

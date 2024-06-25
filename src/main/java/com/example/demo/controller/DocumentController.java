@@ -1,5 +1,4 @@
 package com.example.demo.controller;
-
 import com.example.demo.entity.*;
 import com.example.demo.repository.FileRPDRepository;
 import com.example.demo.service.*;
@@ -11,7 +10,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
@@ -59,6 +57,8 @@ public class DocumentController {
     private DisciplineEducationalProgramService disciplineEducationalProgramService;
     @Autowired
     private EmployeePositionService employeePositionService;
+    @Autowired
+    private CompetenciesDisciplinesEducationalProgramService competenciesDisciplinesEducationalProgramService;
 
     @PostMapping("/generate")
     public ResponseEntity<String> generateAndSaveDocuments(@RequestBody Map<String, String> payload, HttpServletRequest request) throws IOException {
@@ -111,6 +111,15 @@ public class DocumentController {
                 // ===========================================================
                 Discipline discipline = disciplineEducationalProgram.getDiscipline();
                 String disciplineName = discipline.getName();
+                //============================================================
+                List<CompetenciesDisciplinesEducationalProgram> allCompetenciesOP = competenciesDisciplinesEducationalProgramService.getAll();
+                Integer competenciesOPFirst = allCompetenciesOP.getFirst().getDisciplineEducationalProgram().getId();
+                Integer disciplineOPActual = disciplineEducationalProgram.getId();
+                List<CompetenciesDisciplinesEducationalProgram> competenciesOPFilter = allCompetenciesOP.stream()
+                        .filter(el -> el.getDisciplineEducationalProgram().getId().equals(disciplineOPActual))
+                        .filter(el -> el.getDisabled().equals(false)).toList();
+                Competencie competencie = competenciesOPFilter.getFirst().getCompetencie();
+                String competencyBeAble = competencie.getBeAble();
 
                 // Собираем данные в карту
                 Map<String, String> dataMap = new HashMap<>();
@@ -127,6 +136,9 @@ public class DocumentController {
                 dataMap.put("disciplineName", disciplineName);
                 dataMap.put("dateProtocol", dateProtocol);
 
+                //====================================list2
+                dataMap.put("competencyBeAble", competencyBeAble);
+
                 // Передаем карту в метод генерации и сохранения документов
                 documentService.generateAndSaveDocuments(dataMap, disciplineEducationalProgram);
             }
@@ -138,11 +150,12 @@ public class DocumentController {
     public ResponseEntity<byte[]> downloadFile(@PathVariable Integer id) {
 //        FileRPD fileRPD = fileRPDRepository.findById(4L).orElseThrow(() -> new RuntimeException("File not found"));
         FileRPD fileRPD = fileRPDRepository.findAll().getLast();
-        System.out.println(fileRPD.getId());
+
         byte[] fileContent = fileRPD.getSection2();
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_OCTET_STREAM);
         headers.setContentDispositionFormData("attachment", "title.docx");
+        headers.setContentDispositionFormData("attachment", "missions.docx");
         headers.setContentLength(fileContent.length);
 
         return new ResponseEntity<>(fileContent, headers, HttpStatus.OK);

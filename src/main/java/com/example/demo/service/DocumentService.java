@@ -87,17 +87,27 @@ public class DocumentService {
         placeholders.put("profileName", data.get("profileName"));
         placeholders.put("disciplineName", data.get("disciplineName"));
         placeholders.put("dateProtocol", data.get("dateProtocol"));
+        //===========================list2
+        placeholders.put("competencyBeAble", data.get("competencyBeAble"));
+
 
         // Путь к шаблону документа
-        String templatePath = "src/main/resources/templates/tempDocs/title.docx";
+        String title = "src/main/resources/templates/tempDocs/title.docx";
+        String missions = "src/main/resources/templates/tempDocs/missions.docx";
 
         // Создание сущности FileRPD и сохранение документа в базу данных
         FileRPD fileRPD = new FileRPD();
         fileRPD.setDisciplineEducationalProgram(disciplineEducationalProgram);
         fileRPD.setDisabled(false);
 
-        byte[] section1 = generateDocument(templatePath, placeholders);
-        fileRPD.setSection2(section1);
+        //Титульник
+        byte[] section1 = generateDocument(title, placeholders);
+        fileRPD.setSection1(section1);
+        fileRPD.setSection1IsLoad(true);
+
+        //Раздел1. Цели
+        byte[] section2 = generateDocument(missions, placeholders);
+        fileRPD.setSection2(section2);
         fileRPD.setSection2IsLoad(true);
 
         fileRPDRepository.save(fileRPD);
