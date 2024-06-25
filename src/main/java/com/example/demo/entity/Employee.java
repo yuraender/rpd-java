@@ -24,6 +24,18 @@ public class Employee {
     @Column(name = "name_type_two")
     private String nameTypeTwo;
     private Boolean disabled;
+    @ManyToOne
+    @JoinColumn(name = "employee_position_id", referencedColumnName = "id")
+    private EmployeePosition employeePosition;
+
+    public EmployeePosition getEmployeePosition() {
+        return employeePosition;
+    }
+
+    public void setEmployeePosition(EmployeePosition employeePosition) {
+        this.employeePosition = employeePosition;
+    }
+
     public Boolean getDisabled() {
         return disabled;
     }

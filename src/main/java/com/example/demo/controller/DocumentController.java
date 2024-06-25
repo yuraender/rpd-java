@@ -91,7 +91,8 @@ public class DocumentController {
                 // Сотрудник
                 Employee employee = institute.getDirector();
                 String directorName = employee.getNameTypeTwo();
-                String employeePosition = disciplineEducationalProgram.getDiscipline().getDeveloper().getEmployeePosition().getPositionName();
+//                String employeePosition = disciplineEducationalProgram.getDiscipline().getDeveloper().getEmployeePosition().getPositionName();
+                String employeePosition = employee.getEmployeePosition().getPositionName();
 
                 // ===========================================================
                 // Направление

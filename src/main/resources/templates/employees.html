@@ -419,6 +419,25 @@
                         fieldFourWrapper.append(createTextBoxForCreate())
                         form.append(fieldFourWrapper)
 
+                        //field5======================должности=========================
+                        let fieldFiveWrapper = document.createElement('div')
+                        fieldFiveWrapper.classList.add('standard__active-record-wrapper')
+                        let fieldFiveDesc = document.createElement('p')
+                        fieldFiveDesc.classList.add('field__desc')
+                        fieldFiveDesc.textContent = `Должность:`
+                        fieldFiveWrapper.append(fieldFiveDesc)
+                        let select2 = document.createElement('select');
+                        select2.classList.add('form-control', 'field');
+                        select2.classList.add('form-control')
+                        data.entity1.forEach(function (optionData) {
+                            let text = optionData.positionName;
+                            let id = optionData.id;
+                            let option = createOptionForCreate(text, id)
+                            select2.appendChild(option);
+                        });
+                        fieldFiveWrapper.append(select2)
+                        form.append(fieldFiveWrapper)
+
                         let closeBtn = document.querySelector('.close-btn');
                         cancelCreateModal.addEventListener('click', () => closeModal(createModal))
                         closeBtn.addEventListener('click', () => closeModal(createModal))

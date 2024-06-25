@@ -2,6 +2,7 @@ package com.example.demo.controller;
 
 import com.example.demo.entity.EducationType;
 import com.example.demo.entity.Employee;
+import com.example.demo.entity.EmployeePosition;
 import com.example.demo.service.*;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
@@ -45,6 +46,9 @@ public class EmployeeController {
     private EducationTypeService educationTypeService;
 
     @Autowired
+    private EmployeePositionService employeePositionService;
+
+    @Autowired
     private DisciplineEducationalProgramService disciplineEducationalProgramService;
 
     @GetMapping("/employees")
@@ -60,6 +64,9 @@ public class EmployeeController {
 
         List<Employee> entity = employeeService.getAllEmployees();
         response.put("data", entity);
+
+        List<EmployeePosition> entity1 = employeePositionService.getAll();
+        response.put("entity1", entity1);
 
         String role = (String) session.getAttribute("role");
         response.put("role", role);
@@ -110,6 +117,7 @@ public class EmployeeController {
         String param0 = payload.get("0");
         String param1 = payload.get("1");
         String param2 = payload.get("2");
+        Long param3 = Long.valueOf(payload.get("3"));
 
         Employee entity = new Employee();
         entity.setLastName(param0);
@@ -129,6 +137,9 @@ public class EmployeeController {
             nameTypeTwo += param2.charAt(0) + ". ";
         }
         nameTypeTwo+=param0;
+
+        EmployeePosition employeePosition = employeePositionService.getById(param3);
+        entity.setEmployeePosition(employeePosition);
         entity.setNameTypeOne(nameTypeOne);
         entity.setNameTypeTwo(nameTypeTwo);
         entity.setDisabled(false);
