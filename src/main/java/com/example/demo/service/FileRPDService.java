@@ -1,6 +1,7 @@
 package com.example.demo.service;
 
 import com.example.demo.entity.FileRPD;
+import com.example.demo.entity.Institute;
 import com.example.demo.repository.FileRPDRepository;
 import org.springframework.stereotype.Service;
 
@@ -20,5 +21,8 @@ public class FileRPDService {
 
     public FileRPD getById(Long id) {
         return fileRPDRepository.findById(id).orElse(null);
+    }
+    public FileRPD save(FileRPD entity) {
+        return fileRPDRepository.save(entity);
     }
 }

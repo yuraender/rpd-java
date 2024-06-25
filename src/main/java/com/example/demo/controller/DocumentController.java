@@ -151,11 +151,11 @@ public class DocumentController {
 //        FileRPD fileRPD = fileRPDRepository.findById(4L).orElseThrow(() -> new RuntimeException("File not found"));
         FileRPD fileRPD = fileRPDRepository.findAll().getLast();
 
-        byte[] fileContent = fileRPD.getSection2();
+        byte[] fileContent = fileRPD.getSection1();
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_OCTET_STREAM);
         headers.setContentDispositionFormData("attachment", "title.docx");
-        headers.setContentDispositionFormData("attachment", "missions.docx");
+//        headers.setContentDispositionFormData("attachment", "missions.docx");
         headers.setContentLength(fileContent.length);
 
         return new ResponseEntity<>(fileContent, headers, HttpStatus.OK);

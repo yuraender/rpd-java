@@ -220,15 +220,15 @@
 
         async function downloadTitlePage() {
 
-            fetch('/api/documents/download/10') // Замените '1' на соответствующий ID файла
+            fetch('/api/documents/download/10')
                 .then(response => response.blob())
                 .then(blob => {
                     const url = window.URL.createObjectURL(blob);
                     const a = document.createElement('a');
                     a.style.display = 'none';
                     a.href = url;
-                    // a.download = 'title.docx';  // Имя файла для скачивания
-                    a.download = 'missions.docx';  // Имя файла для скачивания
+                    a.download = 'title.docx';  // Имя файла для скачивания
+                    // a.download = 'missions.docx';  // Имя файла для скачивания
                     document.body.appendChild(a);
                     a.click();
                     window.URL.revokeObjectURL(url);

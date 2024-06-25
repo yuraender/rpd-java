@@ -68,9 +68,6 @@ CREATE TABLE departaments (
                               FOREIGN KEY (manager_id) REFERENCES employees(id)
 );
 
--- Удалить таблицу, если она существует
-DROP TABLE IF EXISTS teachers;
-
 -- Создать таблицу преподавателей
 CREATE TABLE teachers (
                           id INT AUTO_INCREMENT PRIMARY KEY,
@@ -192,18 +189,24 @@ CREATE TABLE competencies_disciplines_educational_programs (
 CREATE TABLE files_rpd (
                            id INT AUTO_INCREMENT PRIMARY KEY,
                            discipline_educational_program_id INT,
-                           section_1 BLOB,
-                           section_1_isLoad BOOLEAN,
-                           section_2 BLOB,
-                           section_2_isLoad BOOLEAN,
-                           section_3 BLOB,
-                           section_3_isLoad BOOLEAN,
-                           section_4 BLOB,
-                           section_4_isLoad BOOLEAN,
-                           section_5 BLOB,
-                           section_5_isLoad BOOLEAN,
-                           section_6 BLOB,
-                           section_6_isLoad BOOLEAN,
+                           section_1 LONGBLOB,
+                           section_1_is_load BOOLEAN,
+                           section_2 LONGBLOB,
+                           section_2_is_load BOOLEAN,
+                           section_3 LONGBLOB,
+                           section_3_is_load BOOLEAN,
+                           section_4 LONGBLOB,
+                           section_4_is_load BOOLEAN,
+                           section_5 LONGBLOB,
+                           section_5_is_load BOOLEAN,
+                           section_6 LONGBLOB,
+                           section_6_is_load BOOLEAN,
+                           section_7 LONGBLOB,
+                           section_7_is_load BOOLEAN,
+                           section_8 LONGBLOB,
+                           section_8_is_load BOOLEAN,
+                           section_9 LONGBLOB,
+                           section_9_is_load BOOLEAN,
                            disabled BOOLEAN DEFAULT FALSE,
                            FOREIGN KEY (discipline_educational_program_id) REFERENCES disciplines_educational_programs(id)
 );
@@ -338,11 +341,61 @@ INSERT INTO files_rpd (discipline_educational_program_id, section_1, section_1_i
                                                                                                                                                                                                                                             (15, null, 0, null, 0, null, 0, null, 0, null, 0, null, 0);
 
 
-select * from tech_supports;
-select * from institutes;
-select * from departaments;
--- techSupport.getDiscipline().getDepartment()
+ALTER TABLE files_rpd
+    MODIFY COLUMN section_1_is_load BOOLEAN,
+    MODIFY COLUMN section_1_is_load BOOLEAN,
+    MODIFY COLUMN section_1_is_load BOOLEAN,
+    MODIFY COLUMN section_1_is_load BOOLEAN,
+    MODIFY COLUMN section_1_is_load BOOLEAN,
+    MODIFY COLUMN section_6_isLoad BOOLEAN,
+    MODIFY COLUMN section_7_isLoad BOOLEAN,
+    MODIFY COLUMN section_8_isLoad BOOLEAN,
+    MODIFY COLUMN section_9_isLoad BOOLEAN;
 
 
-select * from competencies;
+SHOW CREATE TABLE files_rpd;
+SHOW VARIABLES LIKE 'max_allowed_packet';
+
+
+SET GLOBAL max_allowed_packet = 64*1024*1024;
+
+SHOW VARIABLES LIKE 'secure_file_priv';
+
+UPDATE files_rpd
+SET section_2 = LOAD_FILE('C:/ProgramData/MySQL/MySQL Server 8.0/Uploads/title.docx')
+WHERE id = 1;
+
+
+-- 'C:\ProgramData\MySQL\MySQL Server 8.0\Uploads\'
+
+drop table if exists files_rpd;
+select * from files_rpd;
+
+
+
+-- Создание таблицы ФайлыРПД
+CREATE TABLE files_rpd (
+                           id INT AUTO_INCREMENT PRIMARY KEY,
+                           discipline_educational_program_id INT,
+                           section_1 LONGBLOB,
+                           section_1_is_load BOOLEAN,
+                           section_2 LONGBLOB,
+                           section_2_is_load BOOLEAN,
+                           section_3 LONGBLOB,
+                           section_3_is_load BOOLEAN,
+                           section_4 LONGBLOB,
+                           section_4_is_load BOOLEAN,
+                           section_5 LONGBLOB,
+                           section_5_is_load BOOLEAN,
+                           section_6 LONGBLOB,
+                           section_6_is_load BOOLEAN,
+                           section_7 LONGBLOB,
+                           section_7_is_load BOOLEAN,
+                           section_8 LONGBLOB,
+                           section_8_is_load BOOLEAN,
+                           section_9 LONGBLOB,
+                           section_9_is_load BOOLEAN,
+                           disabled BOOLEAN DEFAULT FALSE,
+                           FOREIGN KEY (discipline_educational_program_id) REFERENCES disciplines_educational_programs(id)
+);
 

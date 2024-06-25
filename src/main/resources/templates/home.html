@@ -22,7 +22,7 @@
                 <a class="nav-link" href="/background-information">Справочная информация</a>
             </li>
             <li class="nav-item">
-                <a class="nav-link" href="create-rpd">Формирование пакета РПД</a>
+                <a class="nav-link" href="/create-rpd">Формирование пакета РПД</a>
             </li>
             <li >
                 <div th:if="${isAdmin}" class="nav-item">
@@ -48,6 +48,7 @@
     <a href="/directions" id="menu-direction" th:classappend="${isInstituteSelected} ? '' : 'disabled'">Направления</a>
     <a href="/profiles" id="menu-profiles" th:classappend="${isInstituteSelected} ? '' : 'disabled'">Профили</a>
     <a href="/bep" id="menu-bep" th:classappend="${isInstituteSelected} ? '' : 'disabled'">ООП</a>
+    <a href="/files-rpd" id="menu-files-rpd" th:classappend="${isInstituteSelected} ? '' : 'disabled'">РПД</a>
     <a href="/dep" id="menu-dep" th:classappend="${isInstituteSelected} ? '' : 'disabled'">ДисциплиныОП</a>
     <a href="/cdep" id="menu-cdep" th:classappend="${isInstituteSelected} ? '' : 'disabled'">Компетенции дисциплин
         ОП</a>
