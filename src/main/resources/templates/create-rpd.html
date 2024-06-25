@@ -167,6 +167,7 @@
     </div>
 </nav>
 <section class="container container-rpd">
+    <button class="btn-download">Download</button>
 </section>
 <div class="rightbar">
     <a href="/choose-institute" id="menu-institute">Институты
@@ -203,15 +204,38 @@
     </div>
 </div>
 </body>
-
 <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 <script>
     document.addEventListener('DOMContentLoaded', function () {
         const csrfToken = document.querySelector('input[name="_csrf"]').value;
         const container = document.querySelector('.container');
-
+        let disciplineOPId = 0;
+        let oopId = 0;
         let isAdmin = false;
+
+
+        const btn_download = document.querySelector('.btn-download')
+        btn_download.addEventListener('click', downloadTitlePage)
+
+        async function downloadTitlePage() {
+
+            fetch('/api/documents/download/10') // Замените '1' на соответствующий ID файла
+                .then(response => response.blob())
+                .then(blob => {
+                    const url = window.URL.createObjectURL(blob);
+                    const a = document.createElement('a');
+                    a.style.display = 'none';
+                    a.href = url;
+                    a.download = 'title.docx';  // Имя файла для скачивания
+                    document.body.appendChild(a);
+                    a.click();
+                    window.URL.revokeObjectURL(url);
+                })
+                .catch(error => console.error('Error:', error));
+
+        }
+
 
         function removeAllChildElements(parentElement) {
             while (parentElement.firstChild) {
@@ -271,8 +295,21 @@
         }
 
         function generateRPD() {
-            console.log('generate')
+            let yourDate = new Date()
+            yourDate.toISOString().split('T')[0]
+            fetch('/api/documents/generate', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': csrfToken
+                },
+                body: JSON.stringify({
+                    oopId: oopId.toString(),
+                    dateProtocol: yourDate
+                })
+            })
         }
+
 
         function renderPage() {
             fetch('/page-rpd-data')
@@ -284,7 +321,7 @@
                 })
                 .then(function (data) {
                     checkAdmin(data)
-                    if(data.error){
+                    if (data.error) {
                         const title = document.createElement('h2');
                         title.textContent = "Нужно выбрать ООП";
                         container.appendChild(title);
@@ -293,7 +330,8 @@
                         link.textContent = 'Выбрать'
                         link.classList.add('link')
                         container.append(link)
-                    }else{
+                    } else {
+                        oopId = data.oopId
                         const title = document.createElement('h2');
                         title.textContent = "Список дисциплин ОП для генерации РПД:";
                         container.appendChild(title);
@@ -306,7 +344,7 @@
                         container.appendChild(disciplinesList)
 
                         const buttonGenerate = document.createElement('button')
-                        buttonGenerate.classList.add('btn-create', 'button', 'btn',  'btn-primary')
+                        buttonGenerate.classList.add('btn-create', 'button', 'btn', 'btn-primary')
                         buttonGenerate.textContent = "Сгенерировать РПД для этих записей"
                         buttonGenerate.addEventListener('click', generateRPD)
                         container.appendChild(buttonGenerate)

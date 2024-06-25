@@ -60,18 +60,6 @@ public class CreateRpdController {
         Map<String, Object> response = new HashMap<>();
         HttpSession session = request.getSession();
 
-//        Long instituteId = (Long) session.getAttribute("instituteId");
-//        response.put("instituteId", instituteId);
-//
-//        Long departmentId = (Long) session.getAttribute("departmentId");
-//        response.put("departmentId", departmentId);
-//
-//        Long directionId = (Long) session.getAttribute("directionId");
-//        response.put("directionId", directionId);
-//
-//        Long profileId = (Long) session.getAttribute("profileId");
-//        response.put("profileId", profileId);
-
         Object oopIdObj = session.getAttribute("oopId");
 
         Long oopId = null;
@@ -96,6 +84,7 @@ public class CreateRpdController {
                     .filter(el -> Long.valueOf(el.getBasicEducationalProgram().getId()).equals(finalOopId))
                     .filter(el -> el.getDisabled().equals(false)).toList();
             response.put("disciplinesOP", disciplineEducationalPrograms);
+            response.put("oopId", oopId);
         }else{
             response.put("error", "Нужно выбрать ООП");
         }

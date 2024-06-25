@@ -14,36 +14,42 @@ public class FileRPD {
     private DisciplineEducationalProgram disciplineEducationalProgram;
 
     @Lob
+    @Column(name = "section_1", columnDefinition = "LONGBLOB")
     private byte[] section1;
 
     @Column(name = "section_1_isLoad")
     private Boolean section1IsLoad;
 
     @Lob
+    @Column(name = "section_2", columnDefinition = "LONGBLOB")
     private byte[] section2;
 
     @Column(name = "section_2_isLoad")
     private Boolean section2IsLoad;
 
     @Lob
+    @Column(name = "section_3", columnDefinition = "LONGBLOB")
     private byte[] section3;
 
     @Column(name = "section_3_isLoad")
     private Boolean section3IsLoad;
 
     @Lob
+    @Column(name = "section_4", columnDefinition = "LONGBLOB")
     private byte[] section4;
 
     @Column(name = "section_4_isLoad")
     private Boolean section4IsLoad;
 
     @Lob
+    @Column(name = "section_5", columnDefinition = "LONGBLOB")
     private byte[] section5;
 
     @Column(name = "section_5_isLoad")
     private Boolean section5IsLoad;
 
     @Lob
+    @Column(name = "section_6", columnDefinition = "LONGBLOB")
     private byte[] section6;
 
     @Column(name = "section_6_isLoad")
