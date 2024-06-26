@@ -179,6 +179,7 @@
     <a href="/directions" id="menu-direction">Направления</a>
     <a href="/profiles" id="menu-profiles">Профили</a>
     <a href="/bep" id="menu-bep">ООП</a>
+    <a href="/files-rpd" class="link-rightbar">РПД</a>
     <a href="/dep" id="menu-dep">ДисциплиныОП</a>
     <a href="/cdep" id="menu-cdep">Компетенции дисциплин ОП</a>
     <a href="/education-type" id="menu-education-type">Типы обучения</a>
@@ -206,6 +207,7 @@
 </body>
 <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+<script src="/modalWindow.js"></script>
 <script>
     document.addEventListener('DOMContentLoaded', function () {
 
@@ -268,45 +270,6 @@
             let form = document.querySelector('.createForm')
             removeAllChildElements(form)
             modal.style.display = 'none';
-        }
-
-        //модальное окно
-        function showModalWithMessage(message) {
-            showModal(message);
-            setTimeout(() => {
-                document.getElementById('successModal').remove();
-                document.querySelector('.modal-backdrop').remove();
-            }, 2000)
-        }
-
-        //модальное окно
-        function showModal(message) {
-            let modalHtml = `
-        <div class="modal fade" id="successModal" tabindex="-1" aria-labelledby="successModalLabel" aria-hidden="true">
-            <div class="modal-dialog">
-                <div class="modal-content">
-                    <div class="modal-body">
-                        <div class="alert alert-success" role="alert">
-                            ${message}
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    `;
-            // Вставить модальное окно в body
-            document.body.insertAdjacentHTML('beforeend', modalHtml);
-
-            // Показать модальное окно
-            let successModal = new bootstrap.Modal(document.getElementById('successModal'), {
-                keyboard: false
-            });
-            successModal.show();
-
-            // Удалить модальное окно после закрытия
-            document.getElementById('successModal').addEventListener('hidden.bs.modal', function (event) {
-                document.getElementById('successModal').remove();
-            });
         }
 
         function generateRPD() {

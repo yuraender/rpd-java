@@ -214,6 +214,7 @@
     <a href="/directions" id="menu-direction" >Направления</a>
     <a href="/profiles" id="menu-profiles" >Профили</a>
     <a href="/bep" id="menu-bep" >ООП</a>
+    <a href="/files-rpd" class="link-rightbar">РПД</a>
     <a href="/dep" id="menu-dep" >ДисциплиныОП</a>
     <a href="/cdep" id="menu-cdep" >Компетенции дисциплин ОП</a>
     <a href="/education-type" id="menu-education-type" >Типы обучения</a>
@@ -242,6 +243,7 @@
 
 <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+<script src="/modalWindow.js"></script>
 <script>
     document.addEventListener('DOMContentLoaded', function () {
         
@@ -346,11 +348,7 @@
             function deleteRecord() {
                 let recordElement = document.querySelector('.active-form');
                 if (!recordElement) {
-                    showModal('Для удаления нужно выбрать запись, а потом нажать кнопку удаления.');
-                    setTimeout(() => {
-                        document.getElementById('successModal').remove();
-                        document.querySelector('.modal-backdrop').remove();
-                    }, 2000)
+                    showModalWithMessage('Для удаления нужно выбрать запись, а потом нажать кнопку удаления.', document);
                 } else {
                     let dataId = recordElement.getAttribute('activerecordid')
                     if (!dataId) return null;
@@ -362,7 +360,7 @@
                             return response.json();
                         })
                         .then(deletedRecord => {
-                            showModal('Запись удалена.');
+                            showModalWithMessage('Запись удалена.', document);
                             setTimeout(() => {
                                 document.getElementById('successModal').remove();
                                 document.querySelector('.modal-backdrop').remove();
@@ -498,7 +496,7 @@
                 if(field.value){
                     query += '/' + field.value;
                 }else{
-                    showModalWithMessage('Поля должны быть заполнены.')
+                    showModalWithMessage('Поля должны быть заполнены.', document)
                     emptyFields = true
                 }})
             if(emptyFields) return
@@ -516,7 +514,7 @@
                 })
                 .then(data => {
                     if (data.error) {
-                        showModal(data.error);
+                        showModalWithMessage(data.error, document);
                     } else {
                         data = data.createdData
                         let dataTable = document.getElementById('dataTable').getElementsByTagName('tbody')[0];
@@ -539,7 +537,7 @@
 
                         dataTable.append(row);
                         closeModal(createModal)
-                        showModalWithMessage('Запись создана.')
+                        showModalWithMessage('Запись создана.', document)
                         let activeRecord = document.querySelector('.createForm');
                         removeAllChildElements(activeRecord)
                     }
@@ -742,7 +740,7 @@
                     query += '/' + field.value;
                 }else{
                     changeActiveRowTable(dataId)
-                    showModalWithMessage('Поля должны быть заполнены.')
+                    showModalWithMessage('Поля должны быть заполнены.', document)
                     emptyFields = true
                 }
             });
@@ -756,7 +754,7 @@
                 })
                 .then(function (newRecord) {
                     if (newRecord.error) {
-                        showModalWithMessage(newRecord.error)
+                        showModalWithMessage(newRecord.error, document)
                         emptyFields = true
                     } else {
                         let table = document.getElementById('dataTable');
@@ -776,7 +774,7 @@
                         }
                         changeActiveRowTable(newRecord.updatedData.id)
                         // модальное окно
-                        showModalWithMessage('Запись обновлена.')
+                        showModalWithMessage('Запись обновлена.', document)
                     }
                 })
                 .catch(function (error) {
@@ -789,44 +787,6 @@
             let form = document.querySelector('.createForm')
             removeAllChildElements(form)
             modal.style.display = 'none';
-        }
-        //модальное окно
-        function showModalWithMessage(message) {
-            showModal(message);
-            setTimeout(() => {
-                document.getElementById('successModal').remove();
-                document.querySelector('.modal-backdrop').remove();
-            }, 2000)
-        }
-
-        //модальное окно
-        function showModal(message) {
-            let modalHtml = `
-        <div class="modal fade" id="successModal" tabindex="-1" aria-labelledby="successModalLabel" aria-hidden="true">
-            <div class="modal-dialog">
-                <div class="modal-content">
-                    <div class="modal-body">
-                        <div class="alert alert-success" role="alert">
-                            ${message}
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    `;
-            // Вставить модальное окно в body
-            document.body.insertAdjacentHTML('beforeend', modalHtml);
-
-            // Показать модальное окно
-            let successModal = new bootstrap.Modal(document.getElementById('successModal'), {
-                keyboard: false
-            });
-            successModal.show();
-
-            // Удалить модальное окно после закрытия
-            document.getElementById('successModal').addEventListener('hidden.bs.modal', function (event) {
-                document.getElementById('successModal').remove();
-            });
         }
     });
 </script>
