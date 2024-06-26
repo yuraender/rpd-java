@@ -1,6 +1,6 @@
-.body-wrapper{
+.body-wrapper, html{
     min-height: 100vh;
-    height: 100vh;
+    /*height: 100vh;*/
     display: grid;
     grid-template-columns: 1fr max-content;
     grid-template-rows: repeat(3, max-content);

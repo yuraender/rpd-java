@@ -8,7 +8,13 @@
         * {
             box-sizing: border-box;
         }
-        .big-option{
+        .btn-download{
+            width: 45%;
+            height: 60px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        .big-option {
             max-width: 30%;
             height: max-content;
             overflow: auto;
@@ -256,7 +262,7 @@
         </table>
     </div>
     <div class="edit-buttons-wrapper no-visible">
-        <button class="button-edit btn-edit button btn btn-primary">Редактировать</button>
+        <button class="button-edit btn-edit button btn btn-primary d-none">Редактировать</button>
         <button class="btn-create button btn btn-primary">Добавить</button>
         <button class="btn-delete button btn btn-primary">Удалить</button>
         <button class="btn-choose button btn btn-primary d-none">Выбрать направление</button>
@@ -268,20 +274,20 @@
     <a href="/institutes" id="menu-institute">Институты
         <span id="institute-chosen" class="institute-status">выбран</span>
     </a>
-    <a href="/departments" id="menu-departments" >Кафедры</a>
-    <a href="/audiences" id="menu-auditoriums" >Аудитории</a>
-    <a href="/tech-support" id="menu-tech-support" >Тех.обеспечение</a>
-    <a href="/directions" id="menu-direction" >Направления</a>
-    <a href="/profiles" id="menu-profiles" >Профили</a>
-    <a href="/bep" id="menu-bep" >ООП</a>
-    <a href="/dep" id="menu-dep" >ДисциплиныОП</a>
-    <a href="/cdep" id="menu-cdep" >Компетенции дисциплин ОП</a>
-    <a href="/education-type" id="menu-education-type" >Типы обучения</a>
-    <a href="/employees" id="menu-employees" >Сотрудники</a>
-    <a href="/employees-positions" id="menu-employees-positions" >Должности</a>
-    <a href="/teachers" id="menu-teachers" >Преподаватели</a>
-    <a href="/disciplines" id="menu-disciplines" >Дисциплины</a>
-    <a href="/competencies" id="menu-competencies" >Компетенции</a>
+    <a href="/departments" id="menu-departments">Кафедры</a>
+    <a href="/audiences" id="menu-auditoriums">Аудитории</a>
+    <a href="/tech-support" id="menu-tech-support">Тех.обеспечение</a>
+    <a href="/directions" id="menu-direction">Направления</a>
+    <a href="/profiles" id="menu-profiles">Профили</a>
+    <a href="/bep" id="menu-bep">ООП</a>
+    <a href="/dep" id="menu-dep">ДисциплиныОП</a>
+    <a href="/cdep" id="menu-cdep">Компетенции дисциплин ОП</a>
+    <a href="/education-type" id="menu-education-type">Типы обучения</a>
+    <a href="/employees" id="menu-employees">Сотрудники</a>
+    <a href="/employees-positions" id="menu-employees-positions">Должности</a>
+    <a href="/teachers" id="menu-teachers">Преподаватели</a>
+    <a href="/disciplines" id="menu-disciplines">Дисциплины</a>
+    <a href="/competencies" id="menu-competencies">Компетенции</a>
 </div>
 <div id="createModal" class="modal" style="display: none;">
     <div class="modal-content">
@@ -304,6 +310,18 @@
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 <script>
     document.addEventListener('DOMContentLoaded', function () {
+        const filesNames = [
+            "Титульный лист",
+            "Цели освоения дисциплины",
+            "Место дисциплины в составе ОП",
+            "Компетенции обучающегося",
+            "Структура и содержание дисциплины",
+            "Образовательные технологии",
+            "Оценочные средства",
+            "Учебно-методическое и информационное обеспечение дисциплины",
+            "Материально-техническое обеспечение дисциплины",
+            "Подвал"
+        ]
         let filter1 = document.getElementById('filter1');
         let filter2 = document.getElementById('filter2');
         let filter3 = document.getElementById('filter3');
@@ -331,10 +349,10 @@
                         return response.json();
                     })
                     .then(function (data) {
-                        showModalWithMessage('Вы выбрали ООП с id: ' + data.dataName)
+                        showModalWithMessage('Вы выбрали ООП с id: ' + data.dataName, document)
                     })
             } else {
-                showModalWithMessage('Выберите запись, кликнув по записи из таблицы. Затем нажмите "выбрать кафедру".')
+                showModalWithMessage('Выберите запись, кликнув по записи из таблицы. Затем нажмите "выбрать кафедру".', document)
             }
         }
 
@@ -406,25 +424,25 @@
 
                 activeFieldsChange()
 
-                function activeFieldsChange() {
-                    let form = document.querySelector('.active-form')
-                    let btnSuccess = document.createElement('button');
-                    btnSuccess.classList.add('btn-success', 'button', 'btn', 'button-success')
-                    btnSuccess.textContent = 'Подтвердить'
-                    btnSuccess.addEventListener('click', updateRecord)
-                    form.appendChild(btnSuccess);
-
-                    let btnCansel = document.createElement('button');
-                    btnCansel.classList.add('btn-cancel', 'button', 'btn', 'btn-danger')
-                    btnCansel.textContent = 'Отменить'
-                    btnCansel.addEventListener('click', cancelUpdate)
-                    form.appendChild(btnCansel);
-                }
-
-                function cancelUpdate() {
-                    let dataId = document.querySelector('.active-form').getAttribute('activerecordid')
-                    changeActiveRowTable(dataId)
-                }
+                // function activeFieldsChange() {
+                //     let form = document.querySelector('.active-form')
+                //     let btnSuccess = document.createElement('button');
+                //     btnSuccess.classList.add('btn-success', 'button', 'btn', 'button-success')
+                //     btnSuccess.textContent = 'Подтвердить'
+                //     btnSuccess.addEventListener('click', updateRecord)
+                //     form.appendChild(btnSuccess);
+                //
+                //     let btnCansel = document.createElement('button');
+                //     btnCansel.classList.add('btn-cancel', 'button', 'btn', 'btn-danger')
+                //     btnCansel.textContent = 'Отменить'
+                //     btnCansel.addEventListener('click', cancelUpdate)
+                //     form.appendChild(btnCansel);
+                // }
+                //
+                // function cancelUpdate() {
+                //     let dataId = document.querySelector('.active-form').getAttribute('activerecordid')
+                //     changeActiveRowTable(dataId)
+                // }
             }
 
             let createBtn = document.querySelector('.btn-create')
@@ -435,7 +453,7 @@
             function deleteRecord() {
                 let recordElement = document.querySelector('.active-form');
                 if (!recordElement) {
-                    showModalWithMessage('Для удаления нужно выбрать запись, а потом нажать кнопку удаления.')
+                    showModalWithMessage('Для удаления нужно выбрать запись, а потом нажать кнопку удаления.', document)
                 } else {
                     let dataId = recordElement.getAttribute('activerecordid')
                     if (!dataId) return null;
@@ -447,7 +465,7 @@
                             return response.json();
                         })
                         .then(deletedRecord => {
-                            showModalWithMessage('Запись удалена.')
+                            showModalWithMessage('Запись удалена.', document)
                             document.querySelector('.active-form').remove()
                             let table = document.getElementById('dataTable');
                             let rows = table.querySelectorAll('tbody tr');
@@ -547,7 +565,7 @@
                 if (field.value) {
                     data[index] = field.value
                 } else {
-                    showModalWithMessage('Поля должны быть заполнены.')
+                    showModalWithMessage('Поля должны быть заполнены.', document)
                     emptyFields = true
                 }
             })
@@ -597,7 +615,7 @@
                         });
                         dataTable.append(row);
                         closeModal(createModal)
-                        showModalWithMessage('Запись создана.')
+                        showModalWithMessage('Запись создана.', document)
                         let activeRecord = document.querySelector('.createForm');
                         if (activeRecord) {
                             removeAllChildElements(activeRecord)
@@ -616,8 +634,6 @@
                 let row = document.createElement('tr');
                 row.setAttribute('dataId', data.id);
                 row.classList.add(`${data.id}`)
-                console.log(data)
-
                 row.innerHTML =
                     '<td>' + data.id + '</td>' +
                     '<td>' + data.disciplineEducationalProgram.basicEducationalProgram.profile.name + '</td>' +
@@ -631,7 +647,7 @@
                     '<td>' + isLoadStatus(data.section6IsLoad) + '</td>' +
                     '<td>' + isLoadStatus(data.section7IsLoad) + '</td>';
                 row.addEventListener('click', function () {
-                    changeActiveRowTable(data.id, );
+                    changeActiveRowTable(data.id,);
                 });
                 dataTable.appendChild(row);
             });
@@ -664,85 +680,62 @@
                         idField.textContent = data.id;
                         return fieldOneWrapper
                     }
+                    //field1=======================================================
                     form.setAttribute('activeRecordId', data.data.id)
                     form.appendChild(createIdFieldForActiveRecord(data.data));
-
-                    //field2======================институт=========================
-                    let fieldThreeWrapper = document.createElement('div')
-                    fieldThreeWrapper.classList.add('standard__active-record-wrapper')
-                    let fieldThreeDesc = document.createElement('p')
-                    fieldThreeDesc.classList.add('field__desc')
-                    fieldThreeDesc.textContent = `Профиль:`
-                    fieldThreeWrapper.append(fieldThreeDesc)
-                    fieldThreeWrapper.append(createInactiveTextBox(data.data.disciplineEducationalProgram.basicEducationalProgram.profile.name, 'profile'))
-                    form.append(fieldThreeWrapper)
 
                     //field2=======================================================
                     let fieldTwoWrapper = document.createElement('div')
                     fieldTwoWrapper.classList.add('standard__active-record-wrapper')
                     let fieldTwoDesc = document.createElement('p')
                     fieldTwoDesc.classList.add('field__desc')
-                    fieldTwoDesc.textContent = `Учебный год:`
+                    fieldTwoDesc.textContent = `Профиль:`
                     fieldTwoWrapper.append(fieldTwoDesc)
-                    fieldTwoWrapper.append(createInactiveTextBox(data.data.disciplineEducationalProgram.basicEducationalProgram.academicYear, 'academicYear'))
+                    fieldTwoWrapper.append(createInactiveTextBox(data.data.disciplineEducationalProgram.basicEducationalProgram.profile.name, 'profile'))
                     form.append(fieldTwoWrapper)
 
                     //field3=======================================================
-                    let fieldFiveWrapper = document.createElement('div')
-                    fieldFiveWrapper.classList.add('standard__active-record-wrapper')
+                    let fieldThreeWrapper = document.createElement('div')
+                    fieldThreeWrapper.classList.add('standard__active-record-wrapper')
+                    let fieldThreeDesc = document.createElement('p')
+                    fieldThreeDesc.classList.add('field__desc')
+                    fieldThreeDesc.textContent = `Учебный год:`
+                    fieldThreeWrapper.append(fieldThreeDesc)
+                    fieldThreeWrapper.append(createInactiveTextBox(data.data.disciplineEducationalProgram.basicEducationalProgram.academicYear, 'academicYear'))
+                    form.append(fieldThreeWrapper)
+
+                    //field4=======================================================
+                    let fieldFourWrapper = document.createElement('div')
+                    fieldFourWrapper.classList.add('standard__active-record-wrapper')
                     let fieldFiveDesc = document.createElement('p')
                     fieldFiveDesc.classList.add('field__desc')
                     fieldFiveDesc.textContent = `Тип обучения:`
-                    fieldFiveWrapper.append(fieldFiveDesc)
-                    fieldFiveWrapper.append(createInactiveTextBox(data.data.disciplineEducationalProgram.basicEducationalProgram.educationType.name, 'academicYear'))
-                    form.append(fieldFiveWrapper)
-
-                    //field4=======================================================
-
-                    let fieldFourWrapper = document.createElement('div')
-                    fieldFourWrapper.classList.add('standard__active-record-wrapper')
-                    let isLoadedSection1 = !!data.data.section1IsLoad;
-
-                    fieldFourWrapper.append(createBtnDownloadForActiveRecord("downloadSectionOne", "Раздел 1", isLoadedSection1, data.data.id))
-
-
-                    const uploadSection = document.createElement('input');
-                    uploadSection.setAttribute('type', 'file');
-                    uploadSection.setAttribute('id', 'uploadSection1');
-                    uploadSection.classList.add('form-control-file');
-                    uploadSection.setAttribute('accept', '.docx');
-
-                    // Добавляем обработчик события для загрузки файла
-                    uploadSection.addEventListener('change', function(event, sectionNumber) {
-                        const file = event.target.files[0];
-                        let rpdId = document.querySelector('.active-form').getAttribute('activerecordid')
-                        if (file) {
-                            // Создаем объект FormData
-                            const formData = new FormData();
-                            formData.append('file', file);
-                            formData.append('sectionNumber', sectionNumber)
-                            formData.append('rpdId', rpdId)
-                            // Отправляем файл на сервер
-                            fetch('/api/files-rpd/upload', {
-                                method: 'POST',
-                                headers: {
-                                    'X-CSRF-TOKEN': csrfToken
-                                },
-                                body: formData
-                            })
-                                .then(response => response.json())
-                                .then(data => {
-                                    console.log('File uploaded successfully:', data);
-                                    // Здесь можно добавить дополнительную обработку успешной загрузки
-                                })
-                                .catch(error => {
-                                    console.error('Error uploading file:', error);
-                                    // Здесь можно добавить обработку ошибок
-                                });
-                        }
-                    });
-                    fieldFourWrapper.append(uploadSection)
+                    fieldFourWrapper.append(fieldFiveDesc)
+                    fieldFourWrapper.append(createInactiveTextBox(data.data.disciplineEducationalProgram.basicEducationalProgram.educationType.name, 'academicYear'))
                     form.append(fieldFourWrapper)
+
+                    function createChangersFiles(data, numberSection){
+                        let fieldWrapper = document.createElement('div')
+                        fieldWrapper.classList.add('standard__active-record-wrapper')
+                        let isLoadedSection = !!data.data["section" + numberSection + "IsLoad"];
+                        fieldWrapper.append(createBtnDownloadForActiveRecord(numberSection, filesNames[numberSection], isLoadedSection, data.data.id))
+                        const uploadSection = document.createElement('input');
+                        uploadSection.setAttribute('type', 'file');
+                        uploadSection.classList.add('form-control-file');
+                        uploadSection.classList.add('btn-download', 'button', 'btn', 'btn-primary')
+                        uploadSection.setAttribute('accept', '.docx');
+                        uploadSection.addEventListener('change', (e) => uploadFile(e, numberSection));
+                        fieldWrapper.append(uploadSection)
+                        return fieldWrapper
+                    }
+                    // добавляем кнопки загрузки и выгрузки файлов
+                    form.append(createChangersFiles(data, 1))
+                    form.append(createChangersFiles(data, 2))
+                    form.append(createChangersFiles(data, 3))
+                    form.append(createChangersFiles(data, 4))
+                    form.append(createChangersFiles(data, 5))
+                    form.append(createChangersFiles(data, 6))
+                    form.append(createChangersFiles(data, 7))
 
                     //конец добавления в активную запись
                     // Добавляем форму в контейнер
@@ -759,135 +752,10 @@
                             field.readOnly = true;
                         });
                     }
-
-                    function createTextBoxForActiveRecord(text, id) {
-                        let textBox = document.createElement('textarea');
-                        textBox.textContent = text;
-                        textBox.id = id;
-                        textBox.readOnly = !editMode;
-                        textBox.classList.add('form-control', 'field', 'textbox');
-                        return textBox;
-                    }
-
-                    function createInactiveTextBox(text, id) {
-                        let textBox = document.createElement('p');
-                        textBox.textContent = text;
-                        textBox.id = id;
-                        return textBox;
-                    }
-
-                    function createOptionForActiveRecord(text, id, parentDataId) {
-                        let option = document.createElement('option');
-                        option.textContent = text;
-                        option.value = id;
-                        if (id == parentDataId) {
-                            option.selected = true;
-                        }
-                        return option;
-                    }
-
-                    function createBtnDownloadForActiveRecord(code,text, status, recordId) {
-                        let button = document.createElement('button');
-                        button.textContent = 'Скачать: ' + text;
-                        button.disabled = !status;
-                        button.classList.add('btn-download', 'button', 'btn', 'btn-primary')
-                        button.addEventListener('click', (e) => fileDownload(code, recordId))
-                        return button;
-                    }
-
-                    function fileDownload(action, recordId) {
-
-                        fetch('/api/cdep/update', {
-                            method: 'POST',
-                            headers: {
-                                'Content-Type': 'application/json',
-                                'X-CSRF-TOKEN': csrfToken
-                            },
-                            body: JSON.stringify({
-                                recordId,
-                                action
-                            })
-                        })
-                            .then(function (response) {
-                                if (!response.ok) {
-                                    throw new Error('Ошибка HTTP ' + response.status);
-                                }
-                                return response.json();
-                            })
-                    }
-
                 })
                 .catch(function (error) {
                     console.error('Ошибка загрузки данных:', error);
                     alert('Ошибка при загрузке данных');
-                });
-        }
-
-        function updateRecord() {
-            let activeRecord = document.querySelector('.active-record');
-            let fields = activeRecord.querySelectorAll('.field');
-            let emptyFields = false;
-            let dataId = document.querySelector('.active-form').getAttribute('activerecordid')
-
-            let data = {}
-            fields.forEach(function (field, index) {
-                if (field.value) {
-                    data[index] = field.value
-                } else {
-                    showModalWithMessage('Поля должны быть заполнены.')
-                    emptyFields = true
-                }
-            })
-            data['dataId'] = dataId;
-
-            if (emptyFields) return
-            fetch('/api/cdep/update', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'X-CSRF-TOKEN': csrfToken
-                },
-                body: JSON.stringify(data)
-            })
-                .then(function (response) {
-                    if (!response.ok) {
-                        throw new Error('Ошибка HTTP ' + response.status);
-                    }
-                    return response.json();
-                })
-                .then(function (newRecord) {
-                    if (newRecord.error) {
-                        showModalWithMessage(newRecord.error)
-                        emptyFields = true
-                    } else {
-                        let table = document.getElementById('dataTable');
-                        let rows = table.getElementsByTagName('tr');
-                        // Найти строку с нужным dataId и обновить ее содержимое
-                        for (let i = 0; i < rows.length; i++) {
-                            if (rows[i].getAttribute('dataid') == newRecord.updatedData.id) {
-                                rows[i].innerHTML =
-                                    '<td>' + newRecord.updatedData.id + '</td>' +
-                                    '<td>' + newRecord.updatedData.disciplineEducationalProgram.basicEducationalProgram.profile.name + '</td>' +
-                                    '<td>' + newRecord.updatedData.disciplineEducationalProgram.basicEducationalProgram.academicYear + '</td>' +
-                                    '<td>' + newRecord.updatedData.disciplineEducationalProgram.basicEducationalProgram.educationType.name + '</td>' +
-                                    '<td>' + newRecord.updatedData.disciplineEducationalProgram.discipline.name + '</td>' +
-                                    '<td>' + newRecord.updatedData.section1IsLoad ? "Загружен" : "Не загружен" + '</td>' +
-                                    '<td>' + newRecord.updatedData.section2IsLoad + '</td>' +
-                                    '<td>' + newRecord.updatedData.section4IsLoad + '</td>' +
-                                    '<td>' + newRecord.updatedData.section5IsLoad + '</td>' +
-                                    '<td>' + newRecord.updatedData.section6IsLoad + '</td>' +
-                                    '<td>' + newRecord.updatedData.section7IsLoad + '</td>';
-                                break;
-                            }
-                        }
-                        changeActiveRowTable(newRecord.updatedData.id)
-                        // модальное окно
-                        showModalWithMessage('Запись обновлена.')
-                    }
-                })
-                .catch(function (error) {
-                    console.error('Ошибка обновления данных:', error);
-                    alert('Ошибка при обновлении данных');
                 });
         }
 
@@ -1035,12 +903,15 @@
                     alert('Ошибка при загрузке данных');
                 });
         });
+
         //модальное окно
-        function showModalWithMessage(message) {
+        function showModalWithMessage(message, thisPage) {
             showModal(message);
             setTimeout(() => {
-                document.getElementById('successModal').remove();
-                document.querySelector('.modal-backdrop').remove();
+                thisPage.getElementById('successModal').remove();
+                thisPage.querySelector('.modal-backdrop').remove();
+                thisPage.body.style.overflow = 'auto'
+                thisPage.documentElement.style.overflow = 'auto'
             }, 2000)
         }
 
@@ -1073,10 +944,86 @@
                 document.getElementById('successModal').remove();
             });
         }
+
         function isLoadStatus(section) {
             let load = "Загружен";
             let noLoad = "Не загружен";
             return section ? load : noLoad;
+        }
+
+        function fileDownload(numberSection, recordId) {
+            fetch('/api/files-rpd/download', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': csrfToken
+                },
+                body: JSON.stringify({
+                    recordId,
+                    numberSection
+                })
+            })
+                .then(response => response.blob())
+                .then(blob => {
+                    const url = window.URL.createObjectURL(blob);
+                    const a = document.createElement('a');
+                    a.style.display = 'none';
+                    a.href = url;
+                    a.download = filesNames[numberSection] + ".docx";
+                    document.body.appendChild(a);
+                    a.click();
+                    window.URL.revokeObjectURL(url);
+                })
+                .catch(error => console.error('Error:', error));
+        }
+
+        function uploadFile(event, sectionNumber) {
+            const file = event.target.files[0];
+            let rpdId = document.querySelector('.active-form').getAttribute('activerecordid');
+            if (file) {
+                const formData = new FormData();
+                formData.append('file', file);
+                formData.append('sectionNumber', sectionNumber);
+                formData.append('rpdId', rpdId);
+
+                fetch('/api/files-rpd/uploadFile', {
+                    method: 'POST',
+                    headers: {
+                        'X-CSRF-TOKEN': csrfToken
+                    },
+                    body: formData
+                })
+                    .then(res => res.json())
+                    .then(data => {
+                        let buttons = document.querySelectorAll('.btn-download')
+                        buttons.forEach(el => {
+                            if(el.getAttribute('downloadid') == data){
+                                el.removeAttribute('disabled')
+                            }
+                        })
+                        const thisPage = document
+                        showModalWithMessage("Файл успешно загружен", thisPage);
+                    })
+                    .catch(error => {
+                        console.error('Error uploading file:', error);
+                        showModalWithMessage("Не удалось загрузить файл", thisPage);
+                    });
+            }
+        }
+        function createBtnDownloadForActiveRecord(numberSection, text, status, recordId) {
+            let button = document.createElement('button');
+            button.textContent = 'Скачать: ' + text;
+            button.disabled = !status;
+            button.setAttribute('downloadid', numberSection)
+            button.classList.add('btn-download', 'button', 'btn', 'btn-primary')
+            button.addEventListener('click', (e) => fileDownload(numberSection, recordId))
+            return button;
+        }
+        function createInactiveTextBox(text, id) {
+            let textBox = document.createElement('p');
+            textBox.textContent = text;
+            textBox.id = id;
+            return textBox;
         }
     });
 </script>

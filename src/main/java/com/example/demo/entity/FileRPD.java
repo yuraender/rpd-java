@@ -14,6 +14,12 @@ public class FileRPD {
     private DisciplineEducationalProgram disciplineEducationalProgram;
 
     @Lob
+    @Column(name = "section_0", columnDefinition = "LONGBLOB")
+    private byte[] section0;
+
+    @Column(name = "section_0_is_load")
+    private Boolean section0IsLoad;
+    @Lob
     @Column(name = "section_1", columnDefinition = "LONGBLOB")
     private byte[] section1;
 
@@ -30,6 +36,14 @@ public class FileRPD {
     @Lob
     @Column(name = "section_3", columnDefinition = "LONGBLOB")
     private byte[] section3;
+
+    public byte[] getSection0() {
+        return section0;
+    }
+
+    public void setSection0IsLoad(Boolean section0IsLoad) {
+        this.section0IsLoad = section0IsLoad;
+    }
 
     @Column(name = "section_3_is_load")
     private Boolean section3IsLoad;
@@ -75,6 +89,14 @@ public class FileRPD {
     @Column(name = "section_9_is_load")
     private Boolean section9IsLoad;
     private Boolean disabled;
+
+    public void setSection0(byte[] section0) {
+        this.section0 = section0;
+    }
+
+    public Boolean getSection0IsLoad() {
+        return section0IsLoad;
+    }
     public byte[] getSection7() {
         return section7;
     }
@@ -107,11 +129,11 @@ public class FileRPD {
         this.section8IsLoad = section8IsLoad;
     }
 
-    public byte[] getSection() {
+    public byte[] getSection9() {
         return section9;
     }
 
-    public void setSection(byte[] section) {
+    public void setSection9(byte[] section) {
         this.section9 = section;
     }
 

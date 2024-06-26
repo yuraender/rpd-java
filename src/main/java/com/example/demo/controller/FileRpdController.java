@@ -15,6 +15,8 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -92,7 +94,8 @@ public class FileRpdController {
 
         return ResponseEntity.ok(response);
     }
-//    @GetMapping("/files-rpd-data-set-active/{entityId}")
+
+    //    @GetMapping("/files-rpd-data-set-active/{entityId}")
 //    @ResponseBody
 //    public ResponseEntity<Map<String, Object>> setActive(@PathVariable Long entityId, HttpServletRequest request) {
 //        Map<String, Object> response = new HashMap<>();
@@ -121,49 +124,132 @@ public class FileRpdController {
     }
 
 
-    @PostMapping("/api/files-rpd/upload")
-    public ResponseEntity<String> uploadFile(@RequestParam("file") MultipartFile file, @RequestParam("sectionNumber") String sectionNumber, Long rpdId) {
+    @PostMapping("/api/files-rpd/uploadFile")
+    @ResponseBody
+    public ResponseEntity<String> uploadFileRPD(
+            @RequestParam("file") MultipartFile file,
+            @RequestParam("rpdId") Long rpdId,
+            @RequestParam("sectionNumber") int sectionNumber) {
+
         try {
             // Обработка файла и сохранение в БД
-            // Например, можно получить байты файла и сохранить их в БД
             byte[] fileBytes = file.getBytes();
 
             // Пример сохранения в базу данных
             FileRPD fileRPD = fileRPDService.getById(rpdId);
 
-            if(sectionNumber.equals("section3")){
-                fileRPD.setSection1(fileBytes);
-                fileRPD.setSection1IsLoad(true);
+            switch (sectionNumber) {
+                case 0:
+                    fileRPD.setSection0(fileBytes);
+                    fileRPD.setSection0IsLoad(true);
+                    break;
+                case 1:
+                    fileRPD.setSection1(fileBytes);
+                    fileRPD.setSection1IsLoad(true);
+                    break;
+                case 2:
+                    fileRPD.setSection2(fileBytes);
+                    fileRPD.setSection2IsLoad(true);
+                    break;
+                case 3:
+                    fileRPD.setSection3(fileBytes);
+                    fileRPD.setSection3IsLoad(true);
+                    break;
+                case 4:
+                    fileRPD.setSection4(fileBytes);
+                    fileRPD.setSection4IsLoad(true);
+                    break;
+                case 5:
+                    fileRPD.setSection5(fileBytes);
+                    fileRPD.setSection5IsLoad(true);
+                    break;
+                case 6:
+                    fileRPD.setSection6(fileBytes);
+                    fileRPD.setSection6IsLoad(true);
+                    break;
+                case 7:
+                    fileRPD.setSection7(fileBytes);
+                    fileRPD.setSection7IsLoad(true);
+                    break;
+                case 8:
+                    fileRPD.setSection8(fileBytes);
+                    fileRPD.setSection8IsLoad(true);
+                    break;
+                case 9:
+                    fileRPD.setSection9(fileBytes);
+                    fileRPD.setSection9IsLoad(true);
+                    break;
+                default:
+                    return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Invalid section number");
             }
 
-            fileRPD.setSection4(fileBytes);
-            fileRPD.setSection4IsLoad(true);
             fileRPDService.save(fileRPD);
 
-            return ResponseEntity.ok("File uploaded successfully");
+            return ResponseEntity.ok(String.valueOf(sectionNumber));
         } catch (IOException e) {
             e.printStackTrace();
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Failed to upload file");
         }
     }
 
-//    @GetMapping("/api/files-rpd/download")
-//    public ResponseEntity<byte[]> downloadFile(@PathVariable Integer id) {
-//        FileRPD fileRPD = fileRPDService.getById(id);
-//
-//
-//        byte[] fileContent = fileRPD.getSection1();
-//        HttpHeaders headers = new HttpHeaders();
-//        headers.setContentType(MediaType.APPLICATION_OCTET_STREAM);
-//        headers.setContentDispositionFormData("attachment", "title.docx");
-////        headers.setContentDispositionFormData("attachment", "missions.docx");
-//        headers.setContentLength(fileContent.length);
-//
-//        return new ResponseEntity<>(fileContent, headers, HttpStatus.OK);
-//    }
+    @PostMapping("/api/files-rpd/download")
+    @ResponseBody
+    public ResponseEntity<byte[]> downloadFile(@RequestBody Map<String, String> payload) {
+        Long fileRPDId = Long.valueOf(payload.get("recordId"));
+        int dataId = Integer.parseInt(payload.get("numberSection"));
+        FileRPD fileRPD = fileRPDService.getById(fileRPDId);
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_OCTET_STREAM);
+
+        byte[] fileContent;
+
+        switch (dataId) {
+            case 0:
+                fileContent = fileRPD.getSection0();
+                break;
+            case 1:
+                fileContent = fileRPD.getSection1();
+                break;
+            case 2:
+                fileContent = fileRPD.getSection2();
+                break;
+            case 3:
+                fileContent = fileRPD.getSection3();
+                break;
+            case 4:
+                fileContent = fileRPD.getSection4();
+                break;
+            case 5:
+                fileContent = fileRPD.getSection5();
+                break;
+            case 6:
+                fileContent = fileRPD.getSection6();
+                break;
+            case 7:
+                fileContent = fileRPD.getSection7();
+                break;
+            case 8:
+                fileContent = fileRPD.getSection8();
+                break;
+            case 9:
+                fileContent = fileRPD.getSection9();
+                break;
+            default:
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
+        }
+
+        if (fileContent == null) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+        }
+
+        headers.setContentLength(fileContent.length);
+        headers.set("Content-Disposition", "attachment; filename=\"downloadFile.docx\"");
+
+        return new ResponseEntity<>(fileContent, headers, HttpStatus.OK);
+    }
 
 
-//
+    //
 //    @PostMapping("/api/files-rpd/update")
 //    public ResponseEntity<Map<String, Object>> updateRecord(@RequestBody Map<String, String> payload) {
 //        Map<String, Object> response = new HashMap<>();
