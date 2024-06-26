@@ -2,7 +2,7 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>Teachers</title>
+    <title>Institutes</title>
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <style>
         * {
@@ -54,12 +54,6 @@
         .btn-cancel {
             margin-left: 20px;
         }
-
-        /*.active-select {*/
-        /*    width: max-content;*/
-        /*    height: max-content;*/
-        /*    padding: 10px;*/
-        /*}*/
 
         .scrollable-table {
             max-height: 50vh;
@@ -147,9 +141,17 @@
         }
 
         .form-control {
-            width: max-content !important;
             max-width: 100%;
         }
+
+        .btn-create {
+            margin: 0 auto;
+        }
+
+        .choosed-record {
+            background-color: rgba(40, 167, 69, 0.8);
+        }
+
     </style>
     <link rel="stylesheet" href="/styles.css"/>
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
@@ -177,25 +179,22 @@
     </div>
 </nav>
 <section class="container">
-    <h2>Преподаватели:</h2>
+    <h2>Институты:</h2>
     <div class="scrollable-table">
         <table class="table table-bordered" id="dataTable">
             <thead>
             <tr class="sticky-header">
                 <th><input type="text" class="form-control" placeholder="ID"
                            onkeyup="filterTable('dataTable', 0)"></th>
-                <th><input type="text" class="form-control" placeholder="Кафедра"
+                <th><input type="text" class="form-control" placeholder="Название института"
                            onkeyup="filterTable('dataTable', 1)"></th>
-                <th><input type="text" class="form-control" placeholder="Должность"
+                <th><input type="text" class="form-control" placeholder="Город"
                            onkeyup="filterTable('dataTable', 2)"></th>
-                <th><input type="text" class="form-control" placeholder="ФамилияИО"
-                           onkeyup="filterTable('dataTable', 3)"></th>
             </tr>
             <tr class="sticky-header">
                 <th>ID</th>
-                <th>Кафедра</th>
-                <th>Должность</th>
-                <th>ФамилияИО</th>
+                <th>Название института</th>
+                <th>Город</th>
             </tr>
             </thead>
             <tbody>
@@ -212,22 +211,25 @@
 </section>
 <div class="rightbar">
     <a href="/institutes" id="menu-institute">Институты
-        <span id="institute-chosen" class="institute-status">выбран</span>
+        <span id="institute-chosen" class="institute-status d-none">выбран</span>
     </a>
-    <a href="/departments" id="menu-departments" >Кафедры</a>
-    <a href="/audiences" id="menu-auditoriums" >Аудитории</a>
-    <a href="/tech-support" id="menu-tech-support" >Тех.обеспечение</a>
-    <a href="/directions" id="menu-direction" >Направления</a>
-    <a href="/profiles" id="menu-profiles" >Профили</a>
-    <a href="/bep" id="menu-bep" >ООП</a>
-    <a href="/dep" id="menu-dep" >ДисциплиныОП</a>
-    <a href="/cdep" id="menu-cdep" >Компетенции дисциплин ОП</a>
-    <a href="/education-type" id="menu-education-type" >Типы обучения</a>
-    <a href="/employees" id="menu-employees" >Сотрудники</a>
-    <a href="/employees-positions" id="menu-employees-positions" >Должности</a>
-    <a href="/teachers" id="menu-teachers" >Преподаватели</a>
-    <a href="/disciplines" id="menu-disciplines" >Дисциплины</a>
-    <a href="/competencies" id="menu-competencies" >Компетенции</a>
+    <a href="/departments" class="link-rightbar">Кафедры</a>
+    <a href="/audiences" class="link-rightbar">Аудитории</a>
+    <a href="/tech-support" class="link-rightbar">Тех.обеспечение</a>
+    <a href="/directions" class="link-rightbar">Направления</a>
+    <a href="/profiles" class="link-rightbar">Профили</a>
+    <a href="/bep" class="link-rightbar">ООП</a>
+    <a href="/files-rpd" class="link-rightbar">РПД</a>
+    <a href="/dep" class="link-rightbar">ДисциплиныОП</a>
+    <a href="/cdep" class="link-rightbar">Компетенции дисциплин
+        ОП</a>
+    <a href="/education-type" class="link-rightbar">Типы
+        обучения</a>
+    <a href="/employees" class="link-rightbar">Сотрудники</a>
+    <a href="/employees-positions" class="link-rightbar">Должности</a>
+    <a href="/teachers" class="link-rightbar">Преподаватели</a>
+    <a href="/disciplines" class="link-rightbar">Дисциплины</a>
+    <a href="/competencies" class="link-rightbar">Компетенции</a>
 </div>
 <div id="createModal" class="modal" style="display: none;">
     <div class="modal-content">
@@ -251,9 +253,57 @@
 <script>
     document.addEventListener('DOMContentLoaded', function () {
         const csrfToken = document.querySelector('input[name="_csrf"]').value;
-
         let editMode = false;
         let isAdmin = false;
+
+        function changePermitLink(action) {
+            let linkList = document.querySelectorAll('.link-rightbar');
+            linkList.forEach(link => {
+                if(action === "visibleOn"){
+                    link.classList.remove('d-none');
+                    document.querySelector('.institute-status').classList.remove('d-none')
+                } else {
+                    link.classList.add('d-none');
+                }
+            });
+        }
+
+        changePermitLink("none")
+
+        function chooseInstitute(id, dataTable) {
+            fetch('/select-institute/' + id)
+                .then(function (response) {
+                    if (!response.ok) {
+                        throw new Error('Ошибка HTTP ' + response.status);
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    if (data.error) {
+                        showModalWithMessage(data.error)
+                    } else {
+                        let rows = dataTable.querySelectorAll('tr');
+                        rows.forEach(row => {
+                            if (row.getAttribute('dataid') == data.id) {
+                                row.classList.add('choosed-record');
+                            } else {
+                                row.classList.remove('choosed-record');
+                            }
+                        });
+                        changePermitLink("visibleOn")
+                    }
+                })
+        }
+
+
+        function createBtnDownloadForActiveRecord(id, row) {
+            let btnWrapper = document.createElement('td')
+            let button = document.createElement('button');
+            button.textContent = "Выбрать";
+            button.classList.add('btn-success', 'button', 'btn', 'btn-primary')
+            btnWrapper.append(button)
+            return btnWrapper;
+        }
 
         function removeAllChildElements(parentElement) {
             while (parentElement.firstChild) {
@@ -276,7 +326,7 @@
             let saveModalRecord = document.querySelector('.save-modal-record');
             saveModalRecord.addEventListener('click', () => saveNewRecord())
 
-            fetch('/teacher-data')
+            fetch('/institutes-data')
                 .then(function (response) {
                     if (!response.ok) {
                         throw new Error('Ошибка HTTP ' + response.status);
@@ -285,7 +335,7 @@
                 })
                 .then(function (data) {
                     checkAdmin(data)
-                    renderTable(data.data)
+                    renderTable(data)
                 })
                 .catch(function (error) {
                     console.error('Ошибка загрузки данных:', error);
@@ -340,7 +390,7 @@
                 } else {
                     let dataId = recordElement.getAttribute('activerecordid')
                     if (!dataId) return null;
-                    fetch('/api/teacher/delete-record/' + dataId)
+                    fetch('/api/institute/delete-record/' + dataId)
                         .then(function (response) {
                             if (!response.ok) {
                                 throw new Error('Ошибка HTTP ' + response.status);
@@ -377,7 +427,7 @@
             }
 
             function showCreateModal() {
-                fetch('/teacher-data')
+                fetch('/institutes-data')
                     .then(function (response) {
                         if (!response.ok) {
                             throw new Error('Ошибка HTTP ' + response.status);
@@ -387,69 +437,75 @@
                     .then(data => {
                         const form = document.querySelector('.createForm')
 
-                        //field2=========================================================
-                        let fieldTwoWrapper = document.createElement('div')
-                        fieldTwoWrapper.classList.add('standard__active-record-wrapper')
-                        let fieldTwoDesc = document.createElement('p')
-                        fieldTwoDesc.classList.add('field__desc')
-                        fieldTwoDesc.textContent = `Кафедра:`
-                        fieldTwoWrapper.append(fieldTwoDesc)
-                        //создаем селект
-                        let select1 = document.createElement('select');
-                        select1.classList.add('form-control', 'field');
-                        select1.classList.add('form-control')
-
-                        data.entity1.forEach(function (optionData) {
-                            let text = optionData.name;
-                            let id = optionData.id;
-                            let option = createOptionForCreate(text, id)
-                            select1.appendChild(option);
-                        });
-                        fieldTwoWrapper.append(select1)
-                        form.append(fieldTwoWrapper)
-
-                        //field4======================институт=========================
+                        //field3======================институт=========================
                         let fieldThreeWrapper = document.createElement('div')
                         fieldThreeWrapper.classList.add('standard__active-record-wrapper')
                         let fieldThreeDesc = document.createElement('p')
                         fieldThreeDesc.classList.add('field__desc')
-                        fieldThreeDesc.textContent = `Должность:`
+                        fieldThreeDesc.textContent = `Название:`
                         fieldThreeWrapper.append(fieldThreeDesc)
-                        //создаем селект
+
+                        fieldThreeWrapper.append(createTextBoxForCreate())
+                        form.append(fieldThreeWrapper)
+
+                        //field2=======================================================
+                        let fieldTwoWrapper = document.createElement('div')
+                        fieldTwoWrapper.classList.add('standard__active-record-wrapper')
+                        let fieldTwoDesc = document.createElement('p')
+                        fieldTwoDesc.classList.add('field__desc')
+                        fieldTwoDesc.textContent = `Город:`
+                        fieldTwoWrapper.append(fieldTwoDesc)
+                        fieldTwoWrapper.append(createTextBoxForCreate())
+                        form.append(fieldTwoWrapper)
+
+                        //field5======================должности=========================
+                        let fieldFiveWrapper = document.createElement('div')
+                        fieldFiveWrapper.classList.add('standard__active-record-wrapper')
+                        let fieldFiveDesc = document.createElement('p')
+                        fieldFiveDesc.classList.add('field__desc')
+                        fieldFiveDesc.textContent = `Управляющий:`
+                        fieldFiveWrapper.append(fieldFiveDesc)
                         let select2 = document.createElement('select');
                         select2.classList.add('form-control', 'field');
                         select2.classList.add('form-control')
-
-                        data.entity3.forEach(function (optionData) {
-                            let text = optionData.positionName;
+                        data.entity1.forEach(function (optionData) {
+                            let text = optionData.nameTypeOne;
                             let id = optionData.id;
                             let option = createOptionForCreate(text, id)
                             select2.appendChild(option);
                         });
-                        fieldThreeWrapper.append(select2)
-                        form.append(fieldThreeWrapper)
+                        fieldFiveWrapper.append(select2)
+                        form.append(fieldFiveWrapper)
 
-                        //field4======================институт=========================
+
+                        //field2=======================================================
                         let fieldFourWrapper = document.createElement('div')
                         fieldFourWrapper.classList.add('standard__active-record-wrapper')
                         let fieldFourDesc = document.createElement('p')
                         fieldFourDesc.classList.add('field__desc')
-                        fieldFourDesc.textContent = `Сотрудник:`
+                        fieldFourDesc.textContent = `Текст утвержд.:`
                         fieldFourWrapper.append(fieldFourDesc)
-                        //создаем селект
-                        let select3 = document.createElement('select');
-                        select3.classList.add('form-control', 'field');
-                        select3.classList.add('form-control')
-
-                        data.entity2.forEach(function (optionData) {
-                            let text = optionData.nameTypeOne;
-                            let id = optionData.id;
-
-                            let option = createOptionForCreate(text, id)
-                            select3.appendChild(option);
-                        });
-                        fieldFourWrapper.append(select3)
+                        fieldFourWrapper.append(createTextBoxForCreate())
                         form.append(fieldFourWrapper)
+
+                        //field2=======================================================
+                        let fieldSixWrapper = document.createElement('div')
+                        fieldSixWrapper.classList.add('standard__active-record-wrapper')
+                        let fieldSixDesc = document.createElement('p')
+                        fieldSixDesc.classList.add('field__desc')
+                        fieldSixDesc.textContent = `Подвальный текст:`
+                        fieldSixWrapper.append(fieldSixDesc)
+                        fieldSixWrapper.append(createTextBoxForCreate())
+                        form.append(fieldSixWrapper)
+
+
+
+
+
+
+
+
+
 
                         let closeBtn = document.querySelector('.close-btn');
                         cancelCreateModal.addEventListener('click', () => closeModal(createModal))
@@ -482,7 +538,7 @@
         }
 
         function createNewRecord(data) {
-            fetch('/api/teacher/save-new-record', {
+            fetch('/api/institute/save-new-record', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -507,9 +563,8 @@
                         row.classList.add(`${data.id}`)
                         row.innerHTML =
                             '<td>' + data.id + '</td>' +
-                            '<td>' + data.department.name + '</td>' +
-                            '<td>' + data.employeePosition.positionName + '</td>' +
-                            '<td>' + data.employee.nameTypeOne + '</td>';
+                            '<td>' + data.name + '</td>' +
+                            '<td>' + data.city + '</td>';
                         row.addEventListener('click', function () {
                             changeActiveRowTable(data.id);
                         });
@@ -528,27 +583,37 @@
 
         renderPage()
 
-        function renderTable(dataList) {
+        function renderTable(data) {
+            let dataList = data.data
+            const instituteId = data.instituteId
             let dataTable = document.getElementById('dataTable').getElementsByTagName('tbody')[0];
             dataTable.innerHTML = '';
             dataList.forEach(function (data) {
                 let row = document.createElement('tr');
                 row.setAttribute('dataId', data.id);
                 row.classList.add(`${data.id}`)
-                row.innerHTML =
-                    '<td>' + data.id + '</td>' +
-                    '<td>' + data.department.name + '</td>' +
-                    '<td>' + data.employeePosition.positionName + '</td>' +
-                    '<td>' + data.employee.nameTypeOne + '</td>';
-                row.addEventListener('click', function () {
-                    changeActiveRowTable(data.id);
+                if(instituteId == data.id){
+                    row.classList.add('choosed-record')
+                    changePermitLink("visibleOn")
+                }
+                row.append(createBtnDownloadForActiveRecord(data.id, dataTable))
+                row.innerHTML +=
+                    '<td>' + data.name + '</td>' +
+                    '<td>' + data.city + '</td>';
+                row.addEventListener('click', function (e) {
+                    if (e.target.classList.contains('button')){
+                        chooseInstitute(data.id, dataTable)
+                    }else{
+                        changeActiveRowTable(data.id, e);
+                    }
+
                 });
                 dataTable.appendChild(row);
             });
         }
 
         function changeActiveRowTable(dataId) {
-            fetch('/api/teacher/get-active/' + dataId)
+            fetch('/api/institute/get-active/' + dataId)
                 .then(function (response) {
                     if (!response.ok) {
                         throw new Error('Ошибка HTTP ' + response.status);
@@ -575,79 +640,72 @@
                         idField.textContent = data.id;
                         return fieldOneWrapper
                     }
+
                     form.setAttribute('activeRecordId', data.data.id)
                     form.appendChild(createIdFieldForActiveRecord(data.data));
 
-                    //field2=========================================================
-                    let fieldTwoWrapper = document.createElement('div')
-                    fieldTwoWrapper.classList.add('standard__active-record-wrapper')
-                    let fieldTwoDesc = document.createElement('p')
-                    fieldTwoDesc.classList.add('field__desc')
-                    fieldTwoDesc.textContent = `Кафедра:`
-                    fieldTwoWrapper.append(fieldTwoDesc)
-                    //создаем селект
-                    let select1 = document.createElement('select');
-                    select1.classList.add('form-control', 'field');
-                    select1.classList.add('form-control')
-
-                    data.entity1.forEach(function (optionData) {
-                        let text = optionData.name;
-                        let id = optionData.id;
-                        let parentDataId = data.data.department.id
-
-                        let option = createOptionForActiveRecord(text, id, parentDataId)
-                        select1.appendChild(option);
-                    });
-                    select1.disabled = !editMode;
-                    fieldTwoWrapper.append(select1)
-                    form.append(fieldTwoWrapper)
-
-                    //field4======================институт=========================
+                    //field3======================институт=========================
                     let fieldThreeWrapper = document.createElement('div')
                     fieldThreeWrapper.classList.add('standard__active-record-wrapper')
                     let fieldThreeDesc = document.createElement('p')
                     fieldThreeDesc.classList.add('field__desc')
-                    fieldThreeDesc.textContent = `Должность:`
+                    fieldThreeDesc.textContent = `Название:`
                     fieldThreeWrapper.append(fieldThreeDesc)
-                    //создаем селект
+
+                    fieldThreeWrapper.append(createTextBoxForActiveRecord(data.data.name, 'name'))
+                    form.append(fieldThreeWrapper)
+
+                    //field2=======================================================
+                    let fieldTwoWrapper = document.createElement('div')
+                    fieldTwoWrapper.classList.add('standard__active-record-wrapper')
+                    let fieldTwoDesc = document.createElement('p')
+                    fieldTwoDesc.classList.add('field__desc')
+                    fieldTwoDesc.textContent = `Город:`
+                    fieldTwoWrapper.append(fieldTwoDesc)
+                    fieldTwoWrapper.append(createTextBoxForActiveRecord(data.data.city, 'city'))
+                    form.append(fieldTwoWrapper)
+
+                    //field5======================должности=========================
+                    let fieldFiveWrapper = document.createElement('div')
+                    fieldFiveWrapper.classList.add('standard__active-record-wrapper')
+                    let fieldFiveDesc = document.createElement('p')
+                    fieldFiveDesc.classList.add('field__desc')
+                    fieldFiveDesc.textContent = `Управляющий:`
+                    fieldFiveWrapper.append(fieldFiveDesc)
                     let select2 = document.createElement('select');
                     select2.classList.add('form-control', 'field');
                     select2.classList.add('form-control')
-
-                    data.entity2.forEach(function (optionData) {
-                        let text = optionData.positionName;
+                    data.entity1.forEach(function (optionData) {
+                        let text = optionData.nameTypeOne;
                         let id = optionData.id;
-                        let parentDataId = data.data.employeePosition.id
-                        let option = createOptionForActiveRecord(text, id, parentDataId)
+                        let parent = data.data.director.id
+                        let option = createOptionForActiveRecord(text, id, parent)
                         select2.appendChild(option);
                     });
                     select2.disabled = !editMode;
-                    fieldThreeWrapper.append(select2)
-                    form.append(fieldThreeWrapper)
+                    fieldFiveWrapper.append(select2)
+                    form.append(fieldFiveWrapper)
 
-                    //field4======================институт=========================
+                    //field2=======================================================
                     let fieldFourWrapper = document.createElement('div')
                     fieldFourWrapper.classList.add('standard__active-record-wrapper')
                     let fieldFourDesc = document.createElement('p')
                     fieldFourDesc.classList.add('field__desc')
-                    fieldFourDesc.textContent = `Сотрудник:`
+                    fieldFourDesc.textContent = `Текст утвержд.:`
                     fieldFourWrapper.append(fieldFourDesc)
-                    //создаем селект
-                    let select3 = document.createElement('select');
-                    select3.classList.add('form-control', 'field');
-                    select3.classList.add('form-control')
-
-                    data.entity3.forEach(function (optionData) {
-                        let text = optionData.nameTypeOne;
-                        let id = optionData.id;
-                        let parentDataId = data.data.employee.id
-
-                        let option = createOptionForActiveRecord(text, id, parentDataId)
-                        select3.appendChild(option);
-                    });
-                    select3.disabled = !editMode;
-                    fieldFourWrapper.append(select3)
+                    fieldFourWrapper.append(createTextBoxForActiveRecord(data.data.approvalText, 'approvalText'))
                     form.append(fieldFourWrapper)
+
+                    //field2=======================================================
+                    let fieldSixWrapper = document.createElement('div')
+                    fieldSixWrapper.classList.add('standard__active-record-wrapper')
+                    let fieldSixDesc = document.createElement('p')
+                    fieldSixDesc.classList.add('field__desc')
+                    fieldSixDesc.textContent = `Подвальный текст:`
+                    fieldSixWrapper.append(fieldSixDesc)
+                    fieldSixWrapper.append(createTextBoxForActiveRecord(data.data.footerText, 'footerText'))
+                    form.append(fieldSixWrapper)
+
 
                     //конец добавления в активную запись
                     // Добавляем форму в контейнер
@@ -694,6 +752,7 @@
                     console.error('Ошибка загрузки данных:', error);
                     alert('Ошибка при загрузке данных');
                 });
+
         }
 
         function updateRecord() {
@@ -714,7 +773,7 @@
             data['dataId'] = dataId;
 
             if (emptyFields) return
-            fetch('/api/teacher/update', {
+            fetch('/api/institute/update', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -740,9 +799,8 @@
                             if (rows[i].getAttribute('dataid') == newRecord.updatedData.id) {
                                 rows[i].innerHTML =
                                     '<td>' + newRecord.updatedData.id + '</td>' +
-                                    '<td>' + newRecord.updatedData.department.name + '</td>' +
-                                    '<td>' + newRecord.updatedData.employeePosition.positionName + '</td>' +
-                                    '<td>' + newRecord.updatedData.employee.nameTypeOne + '</td>';
+                                    '<td>' + newRecord.updatedData.name + '</td>' +
+                                    '<td>' + newRecord.updatedData.city + '</td>';
                                 break;
                             }
                         }

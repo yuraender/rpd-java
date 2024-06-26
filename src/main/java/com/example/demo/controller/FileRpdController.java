@@ -5,7 +5,9 @@ import com.example.demo.service.*;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -145,7 +147,20 @@ public class FileRpdController {
         }
     }
 
-
+//    @GetMapping("/api/files-rpd/download")
+//    public ResponseEntity<byte[]> downloadFile(@PathVariable Integer id) {
+//        FileRPD fileRPD = fileRPDService.getById(id);
+//
+//
+//        byte[] fileContent = fileRPD.getSection1();
+//        HttpHeaders headers = new HttpHeaders();
+//        headers.setContentType(MediaType.APPLICATION_OCTET_STREAM);
+//        headers.setContentDispositionFormData("attachment", "title.docx");
+////        headers.setContentDispositionFormData("attachment", "missions.docx");
+//        headers.setContentLength(fileContent.length);
+//
+//        return new ResponseEntity<>(fileContent, headers, HttpStatus.OK);
+//    }
 
 
 //

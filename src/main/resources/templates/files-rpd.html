@@ -172,7 +172,7 @@
     <div class="collapse navbar-collapse" id="navbarNav">
         <ul class="navbar-nav">
             <li class="nav-item">
-                <a class="nav-link" href="/choose-institute">Выбор института</a>
+                <a class="nav-link" href="/institutes">Выбор института</a>
             </li>
             <li class="nav-item">
                 <a class="nav-link" href="/background-information">Справочная информация</a>
@@ -265,7 +265,7 @@
     </div>
 </section>
 <div class="rightbar">
-    <a href="/choose-institute" id="menu-institute">Институты
+    <a href="/institutes" id="menu-institute">Институты
         <span id="institute-chosen" class="institute-status">выбран</span>
     </a>
     <a href="/departments" id="menu-departments" >Кафедры</a>
@@ -617,11 +617,6 @@
                 row.setAttribute('dataId', data.id);
                 row.classList.add(`${data.id}`)
                 console.log(data)
-                function isLoadStatus(section) {
-                    let load = "Загружен";
-                    let noLoad = "Не загружен";
-                    return section ? load : noLoad;
-                }
 
                 row.innerHTML =
                     '<td>' + data.id + '</td>' +
@@ -636,7 +631,7 @@
                     '<td>' + isLoadStatus(data.section6IsLoad) + '</td>' +
                     '<td>' + isLoadStatus(data.section7IsLoad) + '</td>';
                 row.addEventListener('click', function () {
-                    changeActiveRowTable(data.id);
+                    changeActiveRowTable(data.id, );
                 });
                 dataTable.appendChild(row);
             });
@@ -656,7 +651,6 @@
                     activeRecordWrapper.innerHTML = '';
                     let form = document.createElement('div');
                     form.classList.add('form-table', 'active-form');
-
 
                     function createIdFieldForActiveRecord(data) {
                         let fieldOneWrapper = document.createElement('div')
@@ -709,7 +703,7 @@
                     fieldFourWrapper.classList.add('standard__active-record-wrapper')
                     let isLoadedSection1 = !!data.data.section1IsLoad;
 
-                    fieldFourWrapper.append(createBtnDownloadForActiveRecord("sectionOne", "Раздел 1", isLoadedSection1))
+                    fieldFourWrapper.append(createBtnDownloadForActiveRecord("downloadSectionOne", "Раздел 1", isLoadedSection1, data.data.id))
 
 
                     const uploadSection = document.createElement('input');
@@ -747,7 +741,6 @@
                                 });
                         }
                     });
-
                     fieldFourWrapper.append(uploadSection)
                     form.append(fieldFourWrapper)
 
@@ -793,17 +786,34 @@
                         return option;
                     }
 
-                    function createBtnDownloadForActiveRecord(code,text, status) {
+                    function createBtnDownloadForActiveRecord(code,text, status, recordId) {
                         let button = document.createElement('button');
                         button.textContent = 'Скачать: ' + text;
                         button.disabled = !status;
-                        button.classList.add('btn-create', 'button', 'btn', 'btn-primary')
-                        button.addEventListener('click', (e) => fileDownload(code))
+                        button.classList.add('btn-download', 'button', 'btn', 'btn-primary')
+                        button.addEventListener('click', (e) => fileDownload(code, recordId))
                         return button;
                     }
 
-                    function fileDownload(text) {
-                        console.log(text)
+                    function fileDownload(action, recordId) {
+
+                        fetch('/api/cdep/update', {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json',
+                                'X-CSRF-TOKEN': csrfToken
+                            },
+                            body: JSON.stringify({
+                                recordId,
+                                action
+                            })
+                        })
+                            .then(function (response) {
+                                if (!response.ok) {
+                                    throw new Error('Ошибка HTTP ' + response.status);
+                                }
+                                return response.json();
+                            })
                     }
 
                 })
@@ -1062,6 +1072,11 @@
             document.getElementById('successModal').addEventListener('hidden.bs.modal', function (event) {
                 document.getElementById('successModal').remove();
             });
+        }
+        function isLoadStatus(section) {
+            let load = "Загружен";
+            let noLoad = "Не загружен";
+            return section ? load : noLoad;
         }
     });
 </script>

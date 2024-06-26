@@ -13,7 +13,6 @@
             padding: 20px 0;
             display: flex;
             gap: 20px;
-            /*justify-content: space-between;*/
         }
 
         .textbox {
@@ -54,12 +53,6 @@
         .btn-cancel {
             margin-left: 20px;
         }
-
-        /*.active-select {*/
-        /*    width: max-content;*/
-        /*    height: max-content;*/
-        /*    padding: 10px;*/
-        /*}*/
 
         .scrollable-table {
             max-height: 50vh;
@@ -145,9 +138,7 @@
             padding-top: 10px;
             margin-top: 20px;
         }
-
         .form-control {
-            width: max-content !important;
             max-width: 100%;
         }
     </style>
@@ -165,7 +156,7 @@
     <div class="collapse navbar-collapse" id="navbarNav">
         <ul class="navbar-nav">
             <li class="nav-item">
-                <a class="nav-link" href="/choose-institute">Выбор института</a>
+                <a class="nav-link" href="/institutes">Выбор института</a>
             </li>
             <li class="nav-item">
                 <a class="nav-link" href="/background-information">Справочная информация</a>
@@ -225,7 +216,7 @@
     </div>
 </section>
 <div class="rightbar">
-    <a href="/choose-institute" id="menu-institute">Институты
+    <a href="/institutes" id="menu-institute">Институты
         <span id="institute-chosen" class="institute-status">выбран</span>
     </a>
     <a href="/departments" id="menu-departments" >Кафедры</a>

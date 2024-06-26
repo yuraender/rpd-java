@@ -91,3 +91,9 @@
     gap: 20px;
     /*justify-content: space-between;*/
 }
+
+.field{
+    max-width: 90%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}

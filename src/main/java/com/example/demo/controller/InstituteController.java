@@ -5,6 +5,7 @@ import com.example.demo.entity.EmployeePosition;
 import com.example.demo.entity.Institute;
 import com.example.demo.service.EmployeeService;
 import com.example.demo.service.InstituteService;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -25,21 +26,50 @@ public class InstituteController {
     @Autowired
     private EmployeeService employeeService;
 
-    @GetMapping("/choose-institute")
-    public String chooseInstitute(Model model, @RequestParam(value = "keyword", required = false) String keyword) {
-        List<Institute> institutes = instituteService.filterInstitutes(keyword);
-        model.addAttribute("institutes", institutes);
-        model.addAttribute("keyword", keyword);
-        if (institutes.isEmpty()) {
-            model.addAttribute("message", "В БД пока нет записей");
-        }
-        return "choose-institute";
+    @GetMapping("/institutes")
+    public String getTablePage(Model model) {
+        return "institutes";
     }
 
-    @GetMapping("/select-institute")
-    public String selectInstitute(@RequestParam("id") Long id, HttpSession session) {
+    @GetMapping("/institutes-data")
+    @ResponseBody
+    public ResponseEntity<Map<String, Object>> getEntityData(HttpServletRequest request) {
+        Map<String, Object> response = new HashMap<>();
+        HttpSession session = request.getSession();
+
+        List<Institute> entity = instituteService.getAllInstitutes();
+        response.put("data", entity);
+
+        List<Employee> entity1 = employeeService.getAllEmployees();
+        response.put("entity1", entity1);
+
+        String role = (String) session.getAttribute("role");
+        response.put("role", role);
+
+        Long instituteId = (Long) session.getAttribute("instituteId");
+        response.put("instituteId", instituteId);
+
+        return ResponseEntity.ok(response);
+    }
+
+    @GetMapping("/api/institute/get-active/{entityId}")
+    @ResponseBody
+    public ResponseEntity<Map<String, Object>> getActiveEntity(@PathVariable Long entityId) {
+        Map<String, Object> response = new HashMap<>();
+        Institute entity = instituteService.findById(entityId);
+        List<Employee> entity1 = employeeService.getAllEmployees();
+        response.put("entity1", entity1);
+        response.put("data", entity);
+        return ResponseEntity.ok(response);
+    }
+
+    @GetMapping("/select-institute/{id}")
+    @ResponseBody
+    public ResponseEntity<Map<String, Object>> setInstitute(@PathVariable Long id, HttpSession session) {
+        Map<String, Object> response = new HashMap<>();
         session.setAttribute("instituteId", id);
-        return "redirect:/home";
+        response.put("id", id);
+        return ResponseEntity.ok(response);
     }
 
 
@@ -47,15 +77,15 @@ public class InstituteController {
     public ResponseEntity<Map<String, Object>> updateRecord(@RequestBody Map<String, String> payload) {
         Map<String, Object> response = new HashMap<>();
         String param0 = payload.get("0");
-        Long param1 = Long.valueOf(payload.get("1"));
-        String param2 = payload.get("2");
+        String param1 = payload.get("1");
+        Long param2 = Long.valueOf(payload.get("2"));
         String param3 = payload.get("3");
         String param4 = payload.get("4");
         Long dataId = Long.valueOf(payload.get("dataId"));
 
         Institute entity = instituteService.findById(dataId);
 
-        Employee employee = employeeService.getById(param1);
+        Employee employee = employeeService.getById(param2);
 
         if (entity == null) {
             response.put("error", "Запись не найдена. Запись не обновлена.");
@@ -64,7 +94,7 @@ public class InstituteController {
 
         entity.setName(param0);
         entity.setDirector(employee);
-        entity.setCity(param2);
+        entity.setCity(param1);
         entity.setApprovalText(param3);
         entity.setFooterText(param4);
         entity.setDisabled(false);
@@ -79,17 +109,17 @@ public class InstituteController {
     public ResponseEntity<Map<String, Object>> createRecord(@RequestBody Map<String, String> payload) {
         Map<String, Object> response = new HashMap<>();
         String param0 = payload.get("0");
-        Long param1 = Long.valueOf(payload.get("1"));
-        String param2 = payload.get("2");
-        String param3 = payload.get("3");
-        String param4 = payload.get("4");
+        String param1 = payload.get("1");
+        Long param2 = Long.valueOf(payload.get("2"));
+        String param3 = payload.get("2");
+        String param4 = payload.get("3");
 
-        Employee employee = employeeService.getById(param1);
+        Employee employee = employeeService.getById(param2);
 
         Institute entity = new Institute();
         entity.setName(param0);
+        entity.setCity(param1);
         entity.setDirector(employee);
-        entity.setCity(param2);
         entity.setApprovalText(param3);
         entity.setFooterText(param4);
         entity.setDisabled(false);
@@ -117,6 +147,4 @@ public class InstituteController {
         response.put("deletedData", entity.getId());
         return ResponseEntity.ok(response);
     }
-
-
 }
