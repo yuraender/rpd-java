@@ -114,13 +114,19 @@ public class DocumentController {
                 String disciplineName = discipline.getName();
                 //============================================================
                 List<CompetenciesDisciplinesEducationalProgram> allCompetenciesOP = competenciesDisciplinesEducationalProgramService.getAll();
-                Integer competenciesOPFirst = allCompetenciesOP.getFirst().getDisciplineEducationalProgram().getId();
                 Integer disciplineOPActual = disciplineEducationalProgram.getId();
+
                 List<CompetenciesDisciplinesEducationalProgram> competenciesOPFilter = allCompetenciesOP.stream()
                         .filter(el -> el.getDisciplineEducationalProgram().getId().equals(disciplineOPActual))
                         .filter(el -> el.getDisabled().equals(false)).toList();
                 Competencie competencie = competenciesOPFilter.getFirst().getCompetencie();
                 String competencyBeAble = competencie.getBeAble();
+                String competencyName = competencie.getEssence();
+                String competencyKnow = competencie.getKnow();
+                String competencyOwn = competencie.getOwn();
+
+
+
 
                 // Собираем данные в карту
                 Map<String, String> dataMap = new HashMap<>();
@@ -136,9 +142,11 @@ public class DocumentController {
                 dataMap.put("profileName", profileName);
                 dataMap.put("disciplineName", disciplineName);
                 dataMap.put("dateProtocol", dateProtocol);
-
-                //====================================list2
+                //====================================list
                 dataMap.put("competencyBeAble", competencyBeAble);
+                dataMap.put("competencyName", competencyName);
+                dataMap.put("competencyKnow", competencyKnow);
+                dataMap.put("competencyOwn", competencyOwn);
 
                 // Передаем карту в метод генерации и сохранения документов
                 documentService.generateAndSaveDocuments(dataMap, disciplineEducationalProgram);
