@@ -11,6 +11,7 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -77,11 +78,6 @@ public class DocumentController {
         if (!disciplinesEducationalPrograms.isEmpty()) {
             for (DisciplineEducationalProgram disciplineEducationalProgram : disciplinesEducationalPrograms) {
 
-//                Long instituteId = Long.valueOf(payload.get("instituteId"));
-//                Long directionId = payload.get("directionId");
-//                Long profileId = payload.get("profileId");
-//                Long departmentId = payload.get("departmentId");
-
                 Institute institute = instituteService.findById(instituteId);
                 // Институт
                 String instituteName = institute.getName();
@@ -91,9 +87,7 @@ public class DocumentController {
                 // Сотрудник
                 Employee employee = institute.getDirector();
                 String directorName = employee.getNameTypeTwo();
-//                String employeePosition = disciplineEducationalProgram.getDiscipline().getDeveloper().getEmployeePosition().getPositionName();
                 String employeePosition = employee.getEmployeePosition().getPositionName();
-
                 // ===========================================================
                 // Направление
                 Direction direction = disciplineEducationalProgram.getBasicEducationalProgram().getProfile().getDirection();
@@ -119,17 +113,19 @@ public class DocumentController {
                 List<CompetenciesDisciplinesEducationalProgram> competenciesOPFilter = allCompetenciesOP.stream()
                         .filter(el -> el.getDisciplineEducationalProgram().getId().equals(disciplineOPActual))
                         .filter(el -> el.getDisabled().equals(false)).toList();
-                Competencie competencie = competenciesOPFilter.getFirst().getCompetencie();
-                String competencyBeAble = competencie.getBeAble();
-                String competencyName = competencie.getEssence();
-                String competencyKnow = competencie.getKnow();
-                String competencyOwn = competencie.getOwn();
-
-
-
+                List<Map<String, String>> competenciesData = new ArrayList<>();
+                for (CompetenciesDisciplinesEducationalProgram cdep : competenciesOPFilter) {
+                    Competencie competencie = cdep.getCompetencie();
+                    Map<String, String> competencyData = new HashMap<>();
+                    competencyData.put("competencyName", competencie.getEssence());
+                    competencyData.put("competencyKnow", competencie.getKnow());
+                    competencyData.put("competencyBeAble", competencie.getBeAble());
+                    competencyData.put("competencyOwn", competencie.getOwn());
+                    competenciesData.add(competencyData);
+                }
 
                 // Собираем данные в карту
-                Map<String, String> dataMap = new HashMap<>();
+                Map<String, Object> dataMap = new HashMap<>();
                 dataMap.put("instituteName", instituteName);
                 dataMap.put("instituteCity", instituteCity);
                 dataMap.put("employeePosition", employeePosition);
@@ -143,13 +139,9 @@ public class DocumentController {
                 dataMap.put("disciplineName", disciplineName);
                 dataMap.put("dateProtocol", dateProtocol);
                 //====================================list
-                dataMap.put("competencyBeAble", competencyBeAble);
-                dataMap.put("competencyName", competencyName);
-                dataMap.put("competencyKnow", competencyKnow);
-                dataMap.put("competencyOwn", competencyOwn);
 
                 // Передаем карту в метод генерации и сохранения документов
-                documentService.generateAndSaveDocuments(dataMap, disciplineEducationalProgram);
+                documentService.generateAndSaveDocuments(dataMap, disciplineEducationalProgram, competenciesData);
             }
         }
         return ResponseEntity.ok("Documents generated and saved successfully.");
@@ -160,7 +152,7 @@ public class DocumentController {
 //        FileRPD fileRPD = fileRPDRepository.findById(4L).orElseThrow(() -> new RuntimeException("File not found"));
         FileRPD fileRPD = fileRPDRepository.findAll().getLast();
 
-        byte[] fileContent = fileRPD.getSection1();
+        byte[] fileContent = fileRPD.getSection3();
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_OCTET_STREAM);
         headers.setContentDispositionFormData("attachment", "title.docx");

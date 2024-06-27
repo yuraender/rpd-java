@@ -2,7 +2,9 @@ package com.example.demo.service;
 
 import com.example.demo.entity.*;
 import com.example.demo.repository.FileRPDRepository;
+import org.apache.poi.util.Units;
 import org.apache.poi.xwpf.usermodel.*;
+import org.apache.xmlbeans.XmlCursor;
 import org.openxmlformats.schemas.wordprocessingml.x2006.main.CTText;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -10,6 +12,7 @@ import org.springframework.stereotype.Service;
 import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -112,51 +115,135 @@ public class DocumentService {
         }
     }
 
-    public void generateAndSaveDocuments(Map<String, String> data, DisciplineEducationalProgram disciplineEducationalProgram) throws IOException {
-        // Загрузка данных
-        // Создание карты значений для замены
+    public void generateAndSaveDocuments(Map<String, Object> data, DisciplineEducationalProgram disciplineEducationalProgram, List<Map<String, String>> competenciesData) throws IOException {
         Map<String, String> placeholders = new HashMap<>();
-        placeholders.put("instituteName", data.get("instituteName"));
-        placeholders.put("instituteCity", data.get("instituteCity"));
-        placeholders.put("instituteApprovalText", data.get("instituteApprovalText"));
-        placeholders.put("director", data.get("directorName"));
-        placeholders.put("employeePosition", data.get("employeePosition"));
-        placeholders.put("directionCode", data.get("directionCode"));
-        placeholders.put("directionName", data.get("directionName"));
-        placeholders.put("educationTypeText", data.get("educationTypeText"));
-        placeholders.put("educationTypeLearningPeriod", data.get("educationTypeLearningPeriod"));
-        placeholders.put("profileName", data.get("profileName"));
-        placeholders.put("disciplineName", data.get("disciplineName"));
-        placeholders.put("dateProtocol", data.get("dateProtocol"));
-        //===========================list2
-        placeholders.put("competencyBeAble", data.get("competencyBeAble"));
-        placeholders.put("competencyName", data.get("competencyName"));
-        placeholders.put("competencyKnow", data.get("competencyKnow"));
-        placeholders.put("competencyOwn", data.get("competencyOwn"));
+        placeholders.put("instituteName", (String) data.get("instituteName"));
+        placeholders.put("instituteCity", (String) data.get("instituteCity"));
+        placeholders.put("instituteApprovalText", (String) data.get("instituteApprovalText"));
+        placeholders.put("director", (String) data.get("directorName"));
+        placeholders.put("employeePosition", (String) data.get("employeePosition"));
+        placeholders.put("directionCode", (String) data.get("directionCode"));
+        placeholders.put("directionName", (String) data.get("directionName"));
+        placeholders.put("educationTypeText", (String) data.get("educationTypeText"));
+        placeholders.put("educationTypeLearningPeriod", (String) data.get("educationTypeLearningPeriod"));
+        placeholders.put("profileName", (String) data.get("profileName"));
+        placeholders.put("disciplineName", (String) data.get("disciplineName"));
+        placeholders.put("dateProtocol", (String) data.get("dateProtocol"));
 
-        // Путь к шаблону документа
-        String title = "src/main/resources/templates/tempDocs/title.docx";
-        String missions = "src/main/resources/templates/tempDocs/missions.docx";
-        String placeDisciplineOP = "src/main/resources/templates/tempDocs/placeDisciplineOP.docx";
-        // Создание сущности FileRPD и сохранение документа в базу данных
+
+        String titlePath = "src/main/resources/templates/tempDocs/title.docx";
+        String missionsPath = "src/main/resources/templates/tempDocs/missions.docx";
+        String placeDisciplineOPPath = "src/main/resources/templates/tempDocs/placeDisciplineOP.docx";
+        String competentions = "src/main/resources/templates/tempDocs/competentions.docx";
+
         FileRPD fileRPD = new FileRPD();
         fileRPD.setDisciplineEducationalProgram(disciplineEducationalProgram);
         fileRPD.setDisabled(false);
 
-        //Титульник
-        byte[] section0 = generateDocument(title, placeholders);
+        // Титульник
+        byte[] section0 = generateDocument(titlePath, placeholders);
         fileRPD.setSection0(section0);
         fileRPD.setSection0IsLoad(true);
 
-        byte[] section1 = Files.readAllBytes(Paths.get(missions));
+        // Раздел1. Цели
+        byte[] section1 = Files.readAllBytes(Paths.get(missionsPath));
         fileRPD.setSection1(section1);
         fileRPD.setSection1IsLoad(true);
 
-        byte[] section2 = Files.readAllBytes(Paths.get(placeDisciplineOP));
+        // Раздел2. Место дисциплины
+        byte[] section2 = Files.readAllBytes(Paths.get(placeDisciplineOPPath));
         fileRPD.setSection2(section2);
         fileRPD.setSection2IsLoad(true);
 
+        // Раздел3. Компетенции
+        byte[] section3 = generateCompetenciesDocument(competenciesData);
+        fileRPD.setSection3(section3);
+        fileRPD.setSection3IsLoad(true);
 
         fileRPDRepository.save(fileRPD);
+    }
+
+    public byte[] generateCompetenciesDocument(List<Map<String, String>> competenciesData) throws IOException {
+        XWPFDocument document = new XWPFDocument();
+
+        // Заголовок "3. КОМПЕТЕНЦИИ ОБУЧАЮЩЕГОСЯ, ФОРМИРУЕМЫЕ В РЕЗУЛЬТАТЕ ОСВОЕНИЯ ДИСЦИПЛИНЫ"
+        XWPFParagraph titleParagraph = document.createParagraph();
+        titleParagraph.setIndentationFirstLine(32 * 20); // Отступ первой строки в 32 pt
+        XWPFRun titleRun = titleParagraph.createRun();
+        titleRun.setBold(true);
+        titleRun.setFontSize(14);
+        titleRun.setFontFamily("Times New Roman");
+        titleRun.setText("3. КОМПЕТЕНЦИИ ОБУЧАЮЩЕГОСЯ, ФОРМИРУЕМЫЕ В РЕЗУЛЬТАТЕ ОСВОЕНИЯ ДИСЦИПЛИНЫ");
+
+        // Добавляем пустой абзац после заголовка
+        document.createParagraph();
+
+        // Цикл по всем компетенциям
+        int index = 1;
+        for (Map<String, String> competency : competenciesData) {
+            // Название компетенции
+            String competencyName = competency.get("competencyName");
+
+            // Создание параграфа для названия компетенции
+            XWPFParagraph competencyParagraph = document.createParagraph();
+            competencyParagraph.setIndentationFirstLine(32 * 20);
+            XWPFRun competencyRun = competencyParagraph.createRun();
+            competencyRun.setFontSize(14);
+            competencyRun.setFontFamily("Times New Roman");
+            competencyRun.setBold(true);
+            competencyRun.setText(competencyName);
+
+            // Добавляем пустой абзац после названия компетенции
+            document.createParagraph();
+
+            // Описание "В результате освоения дисциплины обучающийся должен демонстрировать следующие результаты образования:"
+            XWPFParagraph descriptionParagraph = document.createParagraph();
+            descriptionParagraph.setIndentationFirstLine(32 * 20); // Отступ первой строки в 32 pt
+            XWPFRun descriptionRun = descriptionParagraph.createRun();
+            descriptionRun.setFontSize(14);
+            descriptionRun.setFontFamily("Times New Roman");
+            descriptionRun.setText("В результате освоения дисциплины обучающийся должен демонстрировать следующие результаты образования:");
+
+            // Добавляем пустой абзац после описания
+            document.createParagraph();
+
+            // Пункты "знать:", "уметь:", "владеть:"
+            String[] points = {"знать", "уметь", "владеть"};
+            for (String point : points) {
+                XWPFParagraph pointParagraph = document.createParagraph();
+                pointParagraph.setIndentationFirstLine(32 * 20); // Отступ первой строки в 32 pt
+                XWPFRun pointRun = pointParagraph.createRun();
+                pointRun.setFontSize(14);
+                pointRun.setFontFamily("Times New Roman");
+                pointRun.setBold(true);
+                pointRun.setText(index + ") " + point + ":");
+
+                // Значения для каждой компетенции
+                String detail = "";
+                if(point.equals("знать")){
+                    detail = competency.get("competencyKnow");
+                } else if (point.equals("уметь")) {
+                    detail = competency.get("competencyBeAble");
+                }else{
+                    detail = competency.get("competencyOwn");
+                }
+                XWPFParagraph detailParagraph = document.createParagraph();
+                detailParagraph.setIndentationFirstLine(32 * 20); // Отступ первой строки в 32 pt
+                XWPFRun detailRun = detailParagraph.createRun();
+                detailRun.setFontSize(14);
+                detailRun.setFontFamily("Times New Roman");
+                detailRun.setText("- " + (detail != null ? detail : ""));
+            }
+
+            // Добавляем пустой абзац после каждой компетенции
+            document.createParagraph();
+
+            index++;
+        }
+
+        // Конвертация документа в массив байтов
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        document.write(baos);
+        return baos.toByteArray();
     }
 }
