@@ -115,7 +115,12 @@ public class DocumentService {
         }
     }
 
-    public void generateAndSaveDocuments(Map<String, Object> data, DisciplineEducationalProgram disciplineEducationalProgram, List<Map<String, String>> competenciesData) throws IOException {
+    public void generateAndSaveDocuments(
+            Map<String, Object> data,
+            DisciplineEducationalProgram disciplineEducationalProgram,
+            List<Map<String, String>> competenciesData,
+            List<Map<String, String>> techSupportData
+            ) throws IOException {
         Map<String, String> placeholders = new HashMap<>();
         placeholders.put("instituteName", (String) data.get("instituteName"));
         placeholders.put("instituteCity", (String) data.get("instituteCity"));
@@ -128,19 +133,33 @@ public class DocumentService {
         placeholders.put("educationTypeLearningPeriod", (String) data.get("educationTypeLearningPeriod"));
         placeholders.put("profileName", (String) data.get("profileName"));
         placeholders.put("disciplineName", (String) data.get("disciplineName"));
-        placeholders.put("dateProtocol", (String) data.get("dateProtocol"));
+        placeholders.put("protocolDate", (String) data.get("protocolDate"));
+
+        placeholders.put("educationTypeName", (String) data.get("educationTypeName"));
+        placeholders.put("developerPosition", (String) data.get("developerPosition"));
+        placeholders.put("abbreviation", (String) data.get("abbreviation"));
+        placeholders.put("developerName", (String) data.get("developerName"));
+        placeholders.put("managerName", (String) data.get("managerName"));
+        placeholders.put("protocolNumber", (String) data.get("protocolNumber"));
+        placeholders.put("directorApprovalDate", (String) data.get("directorApprovalDate"));
+        placeholders.put("instituteFooterText", (String) data.get("instituteFooterText"));
 
 
         String titlePath = "src/main/resources/templates/tempDocs/title.docx";
         String missionsPath = "src/main/resources/templates/tempDocs/missions.docx";
         String placeDisciplineOPPath = "src/main/resources/templates/tempDocs/placeDisciplineOP.docx";
-        String competentions = "src/main/resources/templates/tempDocs/competentions.docx";
+        String educationTech = "src/main/resources/templates/tempDocs/educationTech.docx";
+        String evaluationTools = "src/main/resources/templates/tempDocs/evaluationTools.docx";
+        String emiSupport = "src/main/resources/templates/tempDocs/emiSupport.docx";
+        String materialTechSuppDiscipline = "src/main/resources/templates/tempDocs/materialTechSuppDiscipline.docx";
+        String structureAndContent = "src/main/resources/templates/tempDocs/structureAndContent.docx";
+        String footer = "src/main/resources/templates/tempDocs/footer.docx";
 
         FileRPD fileRPD = new FileRPD();
         fileRPD.setDisciplineEducationalProgram(disciplineEducationalProgram);
         fileRPD.setDisabled(false);
 
-        // Титульник
+        // Раздел0. Титульник
         byte[] section0 = generateDocument(titlePath, placeholders);
         fileRPD.setSection0(section0);
         fileRPD.setSection0IsLoad(true);
@@ -159,6 +178,36 @@ public class DocumentService {
         byte[] section3 = generateCompetenciesDocument(competenciesData);
         fileRPD.setSection3(section3);
         fileRPD.setSection3IsLoad(true);
+
+        // Раздел4. Структура и содержание дисциплины
+        byte[] section4 = Files.readAllBytes(Paths.get(structureAndContent));
+        fileRPD.setSection4(section4);
+        fileRPD.setSection4IsLoad(true);
+
+        // Раздел4. Образовательные технологии
+        byte[] section5 = Files.readAllBytes(Paths.get(educationTech));
+        fileRPD.setSection5(section5);
+        fileRPD.setSection5IsLoad(true);
+
+        // Раздел5. Место дисциплины
+        byte[] section6 = Files.readAllBytes(Paths.get(evaluationTools));
+        fileRPD.setSection6(section6);
+        fileRPD.setSection6IsLoad(true);
+
+        // Раздел6. Учебно-методическое и информационное обеспечение дисциплины
+        byte[] section7 = Files.readAllBytes(Paths.get(emiSupport));
+        fileRPD.setSection7(section7);
+        fileRPD.setSection7IsLoad(true);
+
+//        // Раздел8. Материально-техническое обеспечение
+//        byte[] section8 = generateTechSupportDocument(techSupportData);
+//        fileRPD.setSection8(section8);
+//        fileRPD.setSection8IsLoad(true);
+
+        // Раздел9. Подвал
+        byte[] section9 = generateDocument(footer, placeholders);
+        fileRPD.setSection9(section9);
+        fileRPD.setSection9IsLoad(true);
 
         fileRPDRepository.save(fileRPD);
     }
@@ -246,4 +295,71 @@ public class DocumentService {
         document.write(baos);
         return baos.toByteArray();
     }
+
+
+    public byte[] generateTechSupportDocument(List<Map<String, String>> techData) throws IOException {
+        XWPFDocument document = new XWPFDocument();
+
+        // Заголовок "8. МАТЕРИАЛЬНО-ТЕХНИЧЕСКОЕ ОБЕСПЕЧЕНИЕ ДИСЦИПЛИНЫ"
+        XWPFParagraph titleParagraph = document.createParagraph();
+        titleParagraph.setIndentationFirstLine(32 * 20); // Отступ первой строки в 32 pt
+        XWPFRun titleRun = titleParagraph.createRun();
+        titleRun.setBold(true);
+        titleRun.setFontSize(14);
+        titleRun.setFontFamily("Times New Roman");
+        titleRun.setText("8. МАТЕРИАЛЬНО-ТЕХНИЧЕСКОЕ ОБЕСПЕЧЕНИЕ ДИСЦИПЛИНЫ");
+
+        // Добавляем пустой абзац после заголовка
+        document.createParagraph();
+
+        // Основной контент документа
+        for (Map<String, String> techSupport : techData) {
+            String roomNumber = techSupport.get("roomNumber");
+            String specialEquipment = techSupport.get("specialEquipment");
+            String softwareLicenses = techSupport.get("softwareLicenses");
+            String confirmingDocuments = techSupport.get("confirmingDocuments");
+
+            // Создание параграфа для наименования специальных помещений
+            XWPFParagraph roomParagraph = document.createParagraph();
+            roomParagraph.setIndentationFirstLine(32 * 20);
+            XWPFRun roomRun = roomParagraph.createRun();
+            roomRun.setFontSize(14);
+            roomRun.setFontFamily("Times New Roman");
+            roomRun.setBold(true);
+            roomRun.setText(roomNumber);
+
+            // Создание параграфа для оснащенности специальных помещений
+            XWPFParagraph equipmentParagraph = document.createParagraph();
+            equipmentParagraph.setIndentationFirstLine(32 * 20);
+            XWPFRun equipmentRun = equipmentParagraph.createRun();
+            equipmentRun.setFontSize(14);
+            equipmentRun.setFontFamily("Times New Roman");
+            equipmentRun.setText(specialEquipment);
+
+            // Создание параграфа для перечня лицензионного программного обеспечения
+            XWPFParagraph softwareParagraph = document.createParagraph();
+            softwareParagraph.setIndentationFirstLine(32 * 20);
+            XWPFRun softwareRun = softwareParagraph.createRun();
+            softwareRun.setFontSize(14);
+            softwareRun.setFontFamily("Times New Roman");
+            softwareRun.setText(softwareLicenses);
+
+            // Создание параграфа для реквизитов подтверждающего документа
+            XWPFParagraph confirmingParagraph = document.createParagraph();
+            confirmingParagraph.setIndentationFirstLine(32 * 20);
+            XWPFRun confirmingRun = confirmingParagraph.createRun();
+            confirmingRun.setFontSize(14);
+            confirmingRun.setFontFamily("Times New Roman");
+            confirmingRun.setText(confirmingDocuments);
+
+            // Добавляем пустой абзац после каждой секции
+            document.createParagraph();
+        }
+
+        // Конвертация документа в массив байтов
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        document.write(baos);
+        return baos.toByteArray();
+    }
+
 }
