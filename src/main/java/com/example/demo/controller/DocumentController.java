@@ -150,19 +150,20 @@ public class DocumentController {
                 dataMap.put("instituteFooterText", instituteFooterText);
                 FileRPD fileRPD = documentService.generateAndSaveDocuments(dataMap, disciplineEducationalProgram, competenciesData, competenciesData);
 
-                String sanitizedDisciplineName = disciplineName.replaceAll("[^a-zA-Z0-9]", "_");
                 File folder = new File("generated_documents/" + disciplineName);
                 folder.mkdirs();
+
+                saveDocumentPart(folder, "Титульный лист.docx", fileRPD.getSection0());
+                saveDocumentPart(folder, "Цели освоения дисциплины.docx", fileRPD.getSection1());
+                saveDocumentPart(folder, "Место дисциплины в составе ООП.docx", fileRPD.getSection2());
+                saveDocumentPart(folder, "Компетенции обучающегося.docx", fileRPD.getSection3());
+                saveDocumentPart(folder, "Структура и содержание дисциплины.docx", fileRPD.getSection4());
+                saveDocumentPart(folder, "Образовательные технологии.docx", fileRPD.getSection5());
+                saveDocumentPart(folder, "Оценочные средства.docx", fileRPD.getSection6());
+                saveDocumentPart(folder, "Учебно-методическое и информационное обеспечение дисциплины.docx", fileRPD.getSection7());
+                //saveDocumentPart(folder, "Материально-техническое обеспечение дисциплины.docx", fileRPD.getSection8());
+                saveDocumentPart(folder, "Подвал.docx", fileRPD.getSection9());
                 folders.add(folder);
-                saveDocumentPart(folder, "Section0.docx", fileRPD.getSection0());
-                saveDocumentPart(folder, "Section1.docx", fileRPD.getSection1());
-                saveDocumentPart(folder, "Section2.docx", fileRPD.getSection2());
-                saveDocumentPart(folder, "Section3.docx", fileRPD.getSection3());
-                saveDocumentPart(folder, "Section4.docx", fileRPD.getSection4());
-                saveDocumentPart(folder, "Section5.docx", fileRPD.getSection5());
-                saveDocumentPart(folder, "Section6.docx", fileRPD.getSection6());
-                saveDocumentPart(folder, "Section7.docx", fileRPD.getSection7());
-                saveDocumentPart(folder, "Section9.docx", fileRPD.getSection9());
             }
 
             File zipFile = new File("generated_documents/all_documents.zip");
@@ -175,6 +176,10 @@ public class DocumentController {
             }
             zipContent = Files.readAllBytes(zipFile.toPath());
             headers.add(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=all_documents.zip");
+
+            // Удаление папки generated_documents после создания архива
+            File generatedDocumentsFolder = new File("generated_documents");
+            deleteFolderRecursively(generatedDocumentsFolder);
         }
         return new ResponseEntity<>(zipContent, headers, HttpStatus.OK);
     }
@@ -210,6 +215,20 @@ public class DocumentController {
         try (FileOutputStream fos = new FileOutputStream(file)) {
             fos.write(content);
         }
+    }
+
+    private void deleteFolderRecursively(File folder) {
+        File[] files = folder.listFiles();
+        if (files != null) {
+            for (File file : files) {
+                if (file.isDirectory()) {
+                    deleteFolderRecursively(file);
+                } else {
+                    file.delete();
+                }
+            }
+        }
+        folder.delete();
     }
 
     @GetMapping("/download/{id}")
