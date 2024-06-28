@@ -111,6 +111,7 @@ public class DocumentController {
                         .filter(el -> el.getDisciplineEducationalProgram().getId().equals(disciplineOPActual))
                         .filter(el -> el.getDisabled().equals(false)).toList();
                 List<Map<String, String>> competenciesData = new ArrayList<>();
+
                 for (CompetenciesDisciplinesEducationalProgram cdep : competenciesOPFilter) {
                     Competencie competencie = cdep.getCompetencie();
                     Map<String, String> competencyData = new HashMap<>();
@@ -122,10 +123,25 @@ public class DocumentController {
                 }
                 Department department = disciplineEducationalProgram.getDiscipline().getDepartment();
                 String developerPosition = department.getManager().getEmployeePosition().getPositionName();
-
                 String abbreviation = department.getAbbreviation();
                 String developerName = disciplineEducationalProgram.getDiscipline().getDeveloper().getEmployee().getNameTypeTwo();
                 String managerName = department.getManager().getNameTypeTwo();
+
+                // Получение данных для тех обеспечения
+                List<Audience> allAudiencesList = audienceService.getAll();
+                List<Audience> audiencesFiltered = allAudiencesList.stream()
+                        .filter(el -> el.getId().equals(discipline.getId()))
+                        .filter(el -> el.getDisabled().equals(false)).toList();
+                List<Map<String, String>> audienciesData = new ArrayList<>();
+
+                for (Audience audience : audiencesFiltered) {
+                    Map<String, String> audiences = new HashMap<>();
+                    audiences.put("roomNumber", audience.getNumberAudience());
+                    audiences.put("specialEquipment", audience.getTech());
+                    audiences.put("softwareLicenses", audience.getSoftwareLicense());
+                    audienciesData.add(audiences);
+                }
+
 
                 Map<String, Object> dataMap = new HashMap<>();
                 dataMap.put("instituteName", instituteName);
@@ -148,7 +164,8 @@ public class DocumentController {
                 dataMap.put("directorApprovalDate", directorApprovalDate);
                 dataMap.put("protocolNumber", protocolNumber);
                 dataMap.put("instituteFooterText", instituteFooterText);
-                FileRPD fileRPD = documentService.generateAndSaveDocuments(dataMap, disciplineEducationalProgram, competenciesData, competenciesData);
+
+                FileRPD fileRPD = documentService.generateAndSaveDocuments(dataMap, disciplineEducationalProgram, competenciesData, audienciesData);
 
                 File folder = new File("generated_documents/" + disciplineName);
                 folder.mkdirs();
@@ -161,7 +178,7 @@ public class DocumentController {
                 saveDocumentPart(folder, "Образовательные технологии.docx", fileRPD.getSection5());
                 saveDocumentPart(folder, "Оценочные средства.docx", fileRPD.getSection6());
                 saveDocumentPart(folder, "Учебно-методическое и информационное обеспечение дисциплины.docx", fileRPD.getSection7());
-                //saveDocumentPart(folder, "Материально-техническое обеспечение дисциплины.docx", fileRPD.getSection8());
+                saveDocumentPart(folder, "Материально-техническое обеспечение дисциплины.docx", fileRPD.getSection8());
                 saveDocumentPart(folder, "Подвал.docx", fileRPD.getSection9());
                 folders.add(folder);
             }

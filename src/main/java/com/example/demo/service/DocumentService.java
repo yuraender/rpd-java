@@ -5,6 +5,7 @@ import com.example.demo.repository.FileRPDRepository;
 import org.apache.poi.util.Units;
 import org.apache.poi.xwpf.usermodel.*;
 import org.apache.xmlbeans.XmlCursor;
+import org.openxmlformats.schemas.wordprocessingml.x2006.main.CTTcPr;
 import org.openxmlformats.schemas.wordprocessingml.x2006.main.CTText;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -119,7 +120,7 @@ public class DocumentService {
             Map<String, Object> data,
             DisciplineEducationalProgram disciplineEducationalProgram,
             List<Map<String, String>> competenciesData,
-            List<Map<String, String>> techSupportData
+            List<Map<String, String>> audienciesData
             ) throws IOException {
         Map<String, String> placeholders = new HashMap<>();
         placeholders.put("instituteName", (String) data.get("instituteName"));
@@ -143,7 +144,6 @@ public class DocumentService {
         placeholders.put("protocolNumber", (String) data.get("protocolNumber"));
         placeholders.put("directorApprovalDate", (String) data.get("directorApprovalDate"));
         placeholders.put("instituteFooterText", (String) data.get("instituteFooterText"));
-
 
         String titlePath = "src/main/resources/templates/tempDocs/title.docx";
         String missionsPath = "src/main/resources/templates/tempDocs/missions.docx";
@@ -199,10 +199,10 @@ public class DocumentService {
         fileRPD.setSection7(section7);
         fileRPD.setSection7IsLoad(true);
 
-//        // Раздел8. Материально-техническое обеспечение
-//        byte[] section8 = generateTechSupportDocument(techSupportData);
-//        fileRPD.setSection8(section8);
-//        fileRPD.setSection8IsLoad(true);
+        // Раздел8. Материально-техническое обеспечение
+        byte[] section8 = generateTechSupportDocument(materialTechSuppDiscipline, audienciesData);
+        fileRPD.setSection8(section8);
+        fileRPD.setSection8IsLoad(true);
 
         // Раздел9. Подвал
         byte[] section9 = generateDocument(footer, placeholders);
@@ -297,70 +297,57 @@ public class DocumentService {
         return baos.toByteArray();
     }
 
+    public byte[] generateTechSupportDocument(String templatePath, List<Map<String, String>> audienciesData) throws IOException {
+        // Загрузка шаблона документа
+        try (FileInputStream fis = new FileInputStream(templatePath);
+             XWPFDocument document = new XWPFDocument(fis)) {
 
-    public byte[] generateTechSupportDocument(List<Map<String, String>> techData) throws IOException {
-        XWPFDocument document = new XWPFDocument();
+            // Поиск таблицы в документе
+            XWPFTable table = document.getTables().get(0);
 
-        // Заголовок "8. МАТЕРИАЛЬНО-ТЕХНИЧЕСКОЕ ОБЕСПЕЧЕНИЕ ДИСЦИПЛИНЫ"
-        XWPFParagraph titleParagraph = document.createParagraph();
-        titleParagraph.setIndentationFirstLine(32 * 20); // Отступ первой строки в 32 pt
-        XWPFRun titleRun = titleParagraph.createRun();
-        titleRun.setBold(true);
-        titleRun.setFontSize(14);
-        titleRun.setFontFamily("Times New Roman");
-        titleRun.setText("8. МАТЕРИАЛЬНО-ТЕХНИЧЕСКОЕ ОБЕСПЕЧЕНИЕ ДИСЦИПЛИНЫ");
+            // Очистка существующих строк, кроме заголовка таблицы
+            int numberOfRows = table.getNumberOfRows();
+            for (int i = numberOfRows - 1; i > 0; i--) {
+                table.removeRow(i);
+            }
 
-        // Добавляем пустой абзац после заголовка
-        document.createParagraph();
+            // Получение стиля границы из первой ячейки таблицы
+            XWPFTableCell templateCell = table.getRow(0).getCell(0);
+            CTTcPr templateTcPr = templateCell.getCTTc().getTcPr();
 
-        // Основной контент документа
-        for (Map<String, String> techSupport : techData) {
-            String roomNumber = techSupport.get("roomNumber");
-            String specialEquipment = techSupport.get("specialEquipment");
-            String softwareLicenses = techSupport.get("softwareLicenses");
-            String confirmingDocuments = techSupport.get("confirmingDocuments");
+            // Добавление данных в таблицу
+            for (Map<String, String> audience : audienciesData) {
+                XWPFTableRow row = table.createRow();
 
-            // Создание параграфа для наименования специальных помещений
-            XWPFParagraph roomParagraph = document.createParagraph();
-            roomParagraph.setIndentationFirstLine(32 * 20);
-            XWPFRun roomRun = roomParagraph.createRun();
-            roomRun.setFontSize(14);
-            roomRun.setFontFamily("Times New Roman");
-            roomRun.setBold(true);
-            roomRun.setText(roomNumber);
+                // Установка значений в ячейки строки
+                XWPFTableCell cell0 = row.getCell(0);
+                XWPFTableCell cell1 = row.getCell(1);
+                XWPFTableCell cell2 = row.getCell(2);
 
-            // Создание параграфа для оснащенности специальных помещений
-            XWPFParagraph equipmentParagraph = document.createParagraph();
-            equipmentParagraph.setIndentationFirstLine(32 * 20);
-            XWPFRun equipmentRun = equipmentParagraph.createRun();
-            equipmentRun.setFontSize(14);
-            equipmentRun.setFontFamily("Times New Roman");
-            equipmentRun.setText(specialEquipment);
+                cell0.setText(audience.get("roomNumber") + " Учебная аудитория");
+                cell1.setText(audience.get("specialEquipment"));
+                cell2.setText(audience.get("softwareLicenses"));
 
-            // Создание параграфа для перечня лицензионного программного обеспечения
-            XWPFParagraph softwareParagraph = document.createParagraph();
-            softwareParagraph.setIndentationFirstLine(32 * 20);
-            XWPFRun softwareRun = softwareParagraph.createRun();
-            softwareRun.setFontSize(14);
-            softwareRun.setFontFamily("Times New Roman");
-            softwareRun.setText(softwareLicenses);
+                // Установка стилей границ для ячеек
+                setBordersFromTemplate(cell0, templateTcPr);
+                setBordersFromTemplate(cell1, templateTcPr);
+                setBordersFromTemplate(cell2, templateTcPr);
+            }
 
-            // Создание параграфа для реквизитов подтверждающего документа
-            XWPFParagraph confirmingParagraph = document.createParagraph();
-            confirmingParagraph.setIndentationFirstLine(32 * 20);
-            XWPFRun confirmingRun = confirmingParagraph.createRun();
-            confirmingRun.setFontSize(14);
-            confirmingRun.setFontFamily("Times New Roman");
-            confirmingRun.setText(confirmingDocuments);
-
-            // Добавляем пустой абзац после каждой секции
-            document.createParagraph();
+            // Конвертация документа в массив байтов
+            try (ByteArrayOutputStream baos = new ByteArrayOutputStream()) {
+                document.write(baos);
+                return baos.toByteArray();
+            }
         }
+    }
 
-        // Конвертация документа в массив байтов
-        ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        document.write(baos);
-        return baos.toByteArray();
+    // Метод для установки стиля границы ячейки из шаблона
+    private void setBordersFromTemplate(XWPFTableCell cell, CTTcPr templateTcPr) {
+        CTTcPr tcPr = cell.getCTTc().addNewTcPr();
+        if (templateTcPr.isSetTcBorders()) {
+            tcPr.setTcBorders(templateTcPr.getTcBorders());
+        }
     }
 
 }

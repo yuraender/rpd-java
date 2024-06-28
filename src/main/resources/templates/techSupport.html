@@ -326,11 +326,6 @@
                         })
                         .then(deletedRecord => {
                             showModalWithMessage('Запись удалена.');
-                            setTimeout(() => {
-                                document.getElementById('successModal').remove();
-                                document.querySelector('.modal-backdrop').remove();
-                            }, 2000)
-                            document.querySelector('.active-form').remove()
 
                             let table = document.getElementById('techSupportTable');
                             let rows = table.querySelectorAll('tbody tr');
@@ -426,11 +421,6 @@
                         showModalWithMessage('Запись создана.');
 
                     }
-                    setTimeout(() => {
-                        document.getElementById('successModal').remove();
-                        document.querySelector('.modal-backdrop').remove();
-                    }, 2000)
-
                 })
         }
 
