@@ -115,7 +115,7 @@ public class DocumentService {
         }
     }
 
-    public void generateAndSaveDocuments(
+    public FileRPD generateAndSaveDocuments(
             Map<String, Object> data,
             DisciplineEducationalProgram disciplineEducationalProgram,
             List<Map<String, String>> competenciesData,
@@ -210,6 +210,7 @@ public class DocumentService {
         fileRPD.setSection9IsLoad(true);
 
         fileRPDRepository.save(fileRPD);
+        return fileRPD;
     }
 
     public byte[] generateCompetenciesDocument(List<Map<String, String>> competenciesData) throws IOException {

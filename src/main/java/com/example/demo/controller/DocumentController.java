@@ -10,12 +10,16 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.nio.file.Files;
+import java.util.*;
 import java.util.stream.Collectors;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipOutputStream;
 
 @RestController
 @RequestMapping("/api/documents")
@@ -62,13 +66,17 @@ public class DocumentController {
     private CompetenciesDisciplinesEducationalProgramService competenciesDisciplinesEducationalProgramService;
 
     @PostMapping("/generate")
-    public ResponseEntity<String> generateAndSaveDocuments(@RequestBody Map<String, String> payload, HttpServletRequest request) throws IOException {
+    public ResponseEntity<byte[]> generateAndSaveDocuments(@RequestBody Map<String, String> payload, HttpServletRequest request) throws IOException {
         Long oopId = Long.valueOf(payload.get("oopId"));
         String protocolDate = String.valueOf(payload.get("protocolDate"));
         String protocolNumber = String.valueOf(payload.get("protocolNumber"));
         HttpSession session = request.getSession();
         String directorApprovalDate = "Test Директор";
         Long instituteId = (Long) session.getAttribute("instituteId");
+
+        List<File> folders = new ArrayList<>();
+        byte[] zipContent = null;
+        HttpHeaders headers = new HttpHeaders();
 
         List<DisciplineEducationalProgram> allDisciplineEducationalPrograms = disciplineEducationalProgramService.getAll();
 
@@ -78,44 +86,30 @@ public class DocumentController {
 
         if (!disciplinesEducationalPrograms.isEmpty()) {
             for (DisciplineEducationalProgram disciplineEducationalProgram : disciplinesEducationalPrograms) {
-
                 Institute institute = instituteService.findById(instituteId);
-                // Институт
                 String instituteName = institute.getName();
                 String instituteCity = institute.getCity();
                 String instituteApprovalText = institute.getApprovalText();
                 String instituteFooterText = institute.getFooterText();
-                // ===========================================================
-                // Сотрудник
                 Employee employee = institute.getDirector();
                 String directorName = employee.getNameTypeTwo();
                 String employeePosition = employee.getEmployeePosition().getPositionName();
-                // ===========================================================
-                // Направление
                 Direction direction = disciplineEducationalProgram.getBasicEducationalProgram().getProfile().getDirection();
                 String directionCode = direction.getEncryption();
                 String directionName = direction.getName();
-                // ===========================================================
-                // Тип обучения
                 EducationType educationType = disciplineEducationalProgram.getBasicEducationalProgram().getEducationType();
                 String educationTypeText = educationType.getText();
                 String educationTypeName = educationType.getText();
                 String educationTypeLearningPeriod = String.valueOf(educationType.getLearningPeriod());
-                // ===========================================================
-                // Профиль
                 Profile profile = disciplineEducationalProgram.getBasicEducationalProgram().getProfile();
                 String profileName = profile.getName();
-                // ===========================================================
                 Discipline discipline = disciplineEducationalProgram.getDiscipline();
                 String disciplineName = discipline.getName();
-                //============================================================
                 List<CompetenciesDisciplinesEducationalProgram> allCompetenciesOP = competenciesDisciplinesEducationalProgramService.getAll();
                 Integer disciplineOPActual = disciplineEducationalProgram.getId();
-
                 List<CompetenciesDisciplinesEducationalProgram> competenciesOPFilter = allCompetenciesOP.stream()
                         .filter(el -> el.getDisciplineEducationalProgram().getId().equals(disciplineOPActual))
                         .filter(el -> el.getDisabled().equals(false)).toList();
-
                 List<Map<String, String>> competenciesData = new ArrayList<>();
                 for (CompetenciesDisciplinesEducationalProgram cdep : competenciesOPFilter) {
                     Competencie competencie = cdep.getCompetencie();
@@ -126,31 +120,13 @@ public class DocumentController {
                     competencyData.put("competencyOwn", competencie.getOwn());
                     competenciesData.add(competencyData);
                 }
-
-                // получение данных для материально-технического обеспечения дисциплины
-//                List<Discipline> allDisciplines = disciplineService.getAll();
-//
-//                int disciplineId = disciplineEducationalProgram.getDiscipline().getId();
-//
-//                List<disciplineEducationalProgram> filteredDisciplines = allDisciplines.stream()
-//                        .filter(el -> el.getId().equals(disciplineOPActual))
-//                        .filter(el -> el.getDisabled().equals(false)).toList();
-//                List<Map<String, String>> techSupportData = new ArrayList<>();
-////                String roomNumber = techSupport.get("roomNumber");
-////                String specialEquipment = techSupport.get("specialEquipment");
-////                String softwareLicenses = techSupport.get("softwareLicenses");
-////                String confirmingDocuments = techSupport.get("confirmingDocuments");
-                //======================================================================
-
-                // Данные для подвала
                 Department department = disciplineEducationalProgram.getDiscipline().getDepartment();
                 String developerPosition = department.getManager().getEmployeePosition().getPositionName();
+
                 String abbreviation = department.getAbbreviation();
                 String developerName = disciplineEducationalProgram.getDiscipline().getDeveloper().getEmployee().getNameTypeTwo();
                 String managerName = department.getManager().getNameTypeTwo();
 
-
-                // Собираем данные в карту
                 Map<String, Object> dataMap = new HashMap<>();
                 dataMap.put("instituteName", instituteName);
                 dataMap.put("instituteCity", instituteCity);
@@ -164,7 +140,6 @@ public class DocumentController {
                 dataMap.put("profileName", profileName);
                 dataMap.put("disciplineName", disciplineName);
                 dataMap.put("protocolDate", protocolDate);
-                // Подвал
                 dataMap.put("educationTypeName", educationTypeName);
                 dataMap.put("developerPosition", developerPosition);
                 dataMap.put("abbreviation", abbreviation);
@@ -173,11 +148,68 @@ public class DocumentController {
                 dataMap.put("directorApprovalDate", directorApprovalDate);
                 dataMap.put("protocolNumber", protocolNumber);
                 dataMap.put("instituteFooterText", instituteFooterText);
-                // Передаем карту в метод генерации и сохранения документов
-                documentService.generateAndSaveDocuments(dataMap, disciplineEducationalProgram, competenciesData, competenciesData);
+                FileRPD fileRPD = documentService.generateAndSaveDocuments(dataMap, disciplineEducationalProgram, competenciesData, competenciesData);
+
+                String sanitizedDisciplineName = disciplineName.replaceAll("[^a-zA-Z0-9]", "_");
+                File folder = new File("generated_documents/" + disciplineName);
+                folder.mkdirs();
+                folders.add(folder);
+                saveDocumentPart(folder, "Section0.docx", fileRPD.getSection0());
+                saveDocumentPart(folder, "Section1.docx", fileRPD.getSection1());
+                saveDocumentPart(folder, "Section2.docx", fileRPD.getSection2());
+                saveDocumentPart(folder, "Section3.docx", fileRPD.getSection3());
+                saveDocumentPart(folder, "Section4.docx", fileRPD.getSection4());
+                saveDocumentPart(folder, "Section5.docx", fileRPD.getSection5());
+                saveDocumentPart(folder, "Section6.docx", fileRPD.getSection6());
+                saveDocumentPart(folder, "Section7.docx", fileRPD.getSection7());
+                saveDocumentPart(folder, "Section9.docx", fileRPD.getSection9());
+            }
+
+            File zipFile = new File("generated_documents/all_documents.zip");
+            try (FileOutputStream fos = new FileOutputStream(zipFile);
+                 ZipOutputStream zipOut = new ZipOutputStream(fos)) {
+                Set<String> entryNames = new HashSet<>();
+                for (File folder : folders) {
+                    zipFolder(folder, folder.getName(), zipOut, entryNames);
+                }
+            }
+            zipContent = Files.readAllBytes(zipFile.toPath());
+            headers.add(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=all_documents.zip");
+        }
+        return new ResponseEntity<>(zipContent, headers, HttpStatus.OK);
+    }
+
+    private void zipFolder(File folder, String parentFolder, ZipOutputStream zipOut, Set<String> entryNames) throws IOException {
+        File[] files = folder.listFiles();
+        if (files != null) {
+            for (File file : files) {
+                if (file.isDirectory()) {
+                    zipFolder(file, parentFolder + "/" + file.getName(), zipOut, entryNames);
+                } else {
+                    try (FileInputStream fis = new FileInputStream(file)) {
+                        String entryName = parentFolder + "/" + file.getName();
+                        if (entryNames.contains(entryName)) {
+                            continue; // Пропустить дублирующиеся записи
+                        }
+                        entryNames.add(entryName);
+                        zipOut.putNextEntry(new ZipEntry(entryName));
+                        byte[] bytes = new byte[1024];
+                        int length;
+                        while ((length = fis.read(bytes)) >= 0) {
+                            zipOut.write(bytes, 0, length);
+                        }
+                        zipOut.closeEntry();
+                    }
+                }
             }
         }
-        return ResponseEntity.ok("Documents generated and saved successfully.");
+    }
+
+    private void saveDocumentPart(File folder, String fileName, byte[] content) throws IOException {
+        File file = new File(folder, fileName);
+        try (FileOutputStream fos = new FileOutputStream(file)) {
+            fos.write(content);
+        }
     }
 
     @GetMapping("/download/{id}")
