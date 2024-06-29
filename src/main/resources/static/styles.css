@@ -3,17 +3,19 @@
     /*height: 100vh;*/
     display: grid;
     grid-template-columns: 1fr max-content;
-    grid-template-rows: repeat(2, max-content);
+    grid-template-rows: 60px 1fr;
     gap: 0;
 }
 .link{
     display: block;
     margin: 10px 0;
     color: #007bff;
+    text-align: center;
     text-decoration: none;
     padding: 5px;
     background-color: rgba(201, 201, 201, 0.66);
     border-radius: 5px;
+    width: 100px;
 }
 
 .link:hover {
@@ -96,4 +98,62 @@
     max-width: 90%;
     overflow: hidden;
     text-overflow: ellipsis;
+}
+
+
+.no-status{
+    font-size: 0.8em;
+    background-color: #dc3545;
+    color: white;
+    padding: 2px 5px;
+    border-radius: 3px;
+    margin-left: 10px;
+}
+
+.required-entities__wrapper{
+    display: flex;
+    gap: 40px;
+}
+
+.required-entities__item{
+    list-style-type: none;
+    padding: 0;
+    display: flex;
+    width: max-content;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.required-entities__name{
+    margin: 0;
+}
+
+.message-type{
+    width: max-content;
+}
+
+.message-wrapper{
+    display: flex;
+    align-items: center;
+    gap: 20px;
+}
+
+.discipline-op-element{
+    list-style-type: none;
+    padding: 10px;
+    border-radius: 12px;
+    display: flex;
+    width: max-content;
+    justify-content: space-between;
+    align-items: center;
+    gap: 20px;
+    margin: 20px 0;
+}
+
+p{
+    margin: 0;
+}
+
+.deletedItem{
+    background-color: #c82333;
 }
