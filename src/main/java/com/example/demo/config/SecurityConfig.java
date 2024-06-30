@@ -40,7 +40,12 @@ public class SecurityConfig {
                                 .failureUrl("/login?error=true")
                                 .permitAll()
                 )
-                .logout(LogoutConfigurer::permitAll);
+                .logout(logout ->
+                        logout
+                                .logoutUrl("/logout")
+                                .logoutSuccessUrl("/login")
+                                .permitAll()
+                );
 
         // Добавление настройки CORS
         http.cors();

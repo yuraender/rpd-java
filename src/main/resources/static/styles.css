@@ -170,3 +170,11 @@ p{
     align-items: center;
     gap: 10px;
 }
+
+.nav-item-role{
+    display: flex;
+    width: max-content;
+    justify-content: space-between;
+    gap: 10px;
+    align-items: center;
+}

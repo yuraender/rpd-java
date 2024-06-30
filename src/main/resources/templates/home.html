@@ -33,16 +33,16 @@
             <li class="nav-item">
                 <a class="nav-link" href="/background-information">Справочная информация</a>
             </li>
-            <li class="nav-item">
-                <a class="nav-link" href="/create-rpd">Формирование пакета РПД</a>
-            </li>
-            <li>
+            <li class="nav-item-role">
                 <div th:if="${isAdmin}" class="nav-item">
                     <p class="nav-link">Вы администратор</p>
                 </div>
                 <div th:unless="${isAdmin}" class="nav-item">
                     <p class="nav-link">Вы обычный пользователь</p>
                 </div>
+                <form th:action="@{/logout}" method="post">
+                    <button type="submit" class="nav-link btn btn-link" style="padding: 0;">Выйти</button>
+                </form>
             </li>
         </ul>
     </div>
