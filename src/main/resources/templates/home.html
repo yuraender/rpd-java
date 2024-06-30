@@ -4,6 +4,17 @@
     <title>Home</title>
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <link rel="stylesheet" href="/styles.css"/>
+    <style>
+        .form-control{
+            width: max-content;
+            max-width: 350px;
+        }
+        .filter-container{
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+    </style>
 </head>
 <body class="body-wrapper">
 <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
@@ -48,7 +59,11 @@
             <span class="required-entities__status-OOP"></span>
         </li>
     </ul>
-
+    <div class="filter-container">
+        <label for="filter1"></label>
+        <select class="form-control" id="filter1">
+        </select>
+    </div>
 </div>
 <div class="rightbar">
     <a href="/institutes" id="menu-institute">Институты
@@ -96,6 +111,7 @@
 <script src="/modalWindow.js"></script>
 <script>
     document.addEventListener('DOMContentLoaded', function () {
+        let filter1 = document.getElementById('filter1');
         let disciplinesOPList = [];
         const csrfToken = document.querySelector('input[name="_csrf"]').value;
         const container = document.querySelector('.container');
@@ -103,11 +119,13 @@
         const statusInstitute = document.querySelector('.required-entities__status-institute')
         const statusOOP = document.querySelector('.required-entities__status-OOP')
 
-
-
         let isChooseInstitute = 0;
         let oopId = 0;
         let isAdmin = false;
+
+        let dateProtocol = 0;
+        let numberProtocol = 0;
+
 
         function renderPage() {
             fetch('/home-data')
@@ -119,7 +137,6 @@
                 })
                 .then(function (data) {
                     checkAdmin(data)
-                    console.log(data)
                     if(data.instituteId !== null){
                         statusInstitute.textContent = "выбран"
                         statusInstitute.classList.add("institute-status")
@@ -142,8 +159,10 @@
                     oopId = data.oopId
                     const title = document.createElement('h2');
                     title.textContent = "Список дисциплин ОП для генерации РПД:";
+                    title.style.textAlign = "center"
                     container.appendChild(title);
                     let disciplinesList = document.createElement('ul')
+                    disciplinesList.classList.add('disciplines-list-container')
                     if(!data.disciplinesOP){
                         if(data.instituteId){
                             const title = document.createElement('h3');
@@ -174,6 +193,21 @@
                             container.append(messageWrapper)
                         }
                     }else{
+                        let filter1 = document.getElementById('filter1');
+                        filter1.innerHTML = '';
+                        let option = document.createElement('option');
+                        option.classList.add('choose-developer')
+                        option.textContent = "Выберите разработчика";
+                        option.value = "0";
+                        filter1.appendChild(option);
+
+                        data.teachers.forEach(function (teacher) {
+                            let option = document.createElement('option');
+                            option.textContent = `${teacher.employee.nameTypeOne}`;
+                            option.value = teacher.id;
+                            filter1.appendChild(option);
+                        });
+
                         data.disciplinesOP.forEach(el => {
                             let li = document.createElement('li');
                             li.classList.add('discipline-op-element')
@@ -188,26 +222,90 @@
 
                             btnDeleteDiscipline.addEventListener('click', () => deleteDisciplineFromGenerate(el.id, li))
 
-
                             disciplinesOPList.push(el.id)
                             disciplinesList.appendChild(li)
                         })
-                        container.appendChild(disciplinesList)
+                        const numberProtocolInput = document.createElement('input')
+                        numberProtocolInput.placeholder = "Номер протокола"
+                        numberProtocolInput.classList.add('form-control', 'number-protocol-input')
+                        disciplinesList.appendChild(numberProtocolInput)
+
+                        numberProtocolInput.addEventListener('change', function (e){
+                            numberProtocol = e.target.value
+                        })
+
+                        const dateProtocolInput = document.createElement('input')
+                        dateProtocolInput.placeholder = "Дата протокола"
+                        dateProtocolInput.classList.add('form-control', 'date-input')
+                        disciplinesList.appendChild(dateProtocolInput)
+
+                        dateProtocolInput.addEventListener('change', function (e){
+                            dateProtocol = e.target.value
+                        })
+
+
                         const buttonGenerate = document.createElement('button')
                         buttonGenerate.classList.add('btn-create', 'button', 'btn', 'btn-primary')
                         buttonGenerate.textContent = "Сгенерировать РПД для этих записей"
                         buttonGenerate.addEventListener('click', generateRPD)
-                        container.appendChild(buttonGenerate)
+                        disciplinesList.appendChild(buttonGenerate)
+                        container.appendChild(disciplinesList)
+
                     }
-
-
-
-
-
                 })
         }
 
         renderPage()
+
+
+        filter1.addEventListener('change', function () {
+            let filter1Id = this.value;
+            fetch('/api/home/teacher-filter/' + filter1Id)
+                .then(function (response) {
+                    if (!response.ok) {
+                        throw new Error('Ошибка HTTP ' + response.status);
+                    }
+                    return response.json();
+                })
+                .then(function (data) {
+                    let disciplinesList = document.querySelector('.disciplines-list-container')
+                    removeAllChildElements(disciplinesList)
+                    disciplinesOPList = []
+                    data.disciplinesOP.forEach(el => {
+                        let li = document.createElement('li');
+                        li.classList.add('discipline-op-element')
+                        li.setAttribute('disciplineopid', el.id)
+                        const disciplineName = document.createElement('p')
+                        disciplineName.textContent = el.discipline.name + '. Индекс: ' + el.discipline.indexDiscipline;
+                        li.appendChild(disciplineName)
+                        const btnDeleteDiscipline = document.createElement('button')
+                        btnDeleteDiscipline.textContent = "Не включать в генерацию"
+                        btnDeleteDiscipline.classList.add('btn-danger', 'btn')
+                        li.append(btnDeleteDiscipline)
+
+                        btnDeleteDiscipline.addEventListener('click', () => deleteDisciplineFromGenerate(el.id, li))
+
+                        disciplinesOPList.push(el.id)
+                        disciplinesList.appendChild(li)
+                    })
+                    const numberProtocolInput = document.createElement('input')
+                    numberProtocolInput.placeholder = "Номер протокола"
+                    numberProtocolInput.classList.add('form-control')
+                    disciplinesList.appendChild(numberProtocolInput)
+
+
+                    const buttonGenerate = document.createElement('button')
+                    buttonGenerate.classList.add('btn-create', 'button', 'btn', 'btn-primary')
+                    buttonGenerate.textContent = "Сгенерировать РПД для этих записей"
+                    buttonGenerate.addEventListener('click', generateRPD)
+                    disciplinesList.appendChild(buttonGenerate)
+                    container.appendChild(disciplinesList)
+                })
+                .catch(function (error) {
+                    console.error('Ошибка загрузки данных:', error);
+                    alert('Ошибка при загрузке данных');
+                });
+        });
 
         function deleteDisciplineFromGenerate(id, deletedElement) {
             if (!deletedElement.classList.contains('deletedItem')) {
@@ -219,10 +317,7 @@
                 disciplinesOPList.push(id);
                 deletedElement.classList.remove('deletedItem');
             }
-            console.log(disciplinesOPList);
         }
-
-
 
         function removeAllChildElements(parentElement) {
             while (parentElement.firstChild) {
@@ -243,8 +338,11 @@
         }
 
         function generateRPD() {
-            let yourDate = new Date()
-            yourDate.toISOString().split('T')[0]
+
+            if(!dateProtocol || !numberProtocol|| !disciplinesOPList.length){
+                showModalWithMessage("Введите номер и дату протокола")
+                return
+            }
             fetch('/api/documents/generate', {
                 method: 'POST',
                 headers: {
@@ -253,7 +351,9 @@
                 },
                 body: JSON.stringify({
                     oopId: oopId.toString(),
-                    dateProtocol: yourDate
+                    protocolDate: dateProtocol,
+                    protocolNumber: numberProtocol,
+                    disciplinesOPList: disciplinesOPList
                 })
             })
                 .then(response => response.blob())

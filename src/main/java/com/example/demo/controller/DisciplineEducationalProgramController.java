@@ -23,9 +23,7 @@ public class DisciplineEducationalProgramController {
     private EmployeeService employeeService;
 
     @Autowired
-    private DirectionService directionService;
-    @Autowired
-    private TeacherService teacherService;
+    private DirectionService directionService;;
 
     @Autowired
     private AudienceService audienceService;

@@ -148,6 +148,11 @@
     align-items: center;
     gap: 20px;
     margin: 20px 0;
+    border-bottom: 1px solid rgba(0,0,0,.5);
+}
+
+.discipline-op-element:hover{
+    cursor: pointer;
 }
 
 p{
@@ -156,4 +161,12 @@ p{
 
 .deletedItem{
     background-color: #c82333;
+}
+
+.disciplines-list-container{
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
 }

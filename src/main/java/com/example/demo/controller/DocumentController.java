@@ -2,6 +2,8 @@ package com.example.demo.controller;
 import com.example.demo.entity.*;
 import com.example.demo.repository.FileRPDRepository;
 import com.example.demo.service.*;
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -66,10 +68,13 @@ public class DocumentController {
     private CompetenciesDisciplinesEducationalProgramService competenciesDisciplinesEducationalProgramService;
 
     @PostMapping("/generate")
-    public ResponseEntity<byte[]> generateAndSaveDocuments(@RequestBody Map<String, String> payload, HttpServletRequest request) throws IOException {
-        Long oopId = Long.valueOf(payload.get("oopId"));
+    public ResponseEntity<byte[]> generateAndSaveDocuments(@RequestBody Map<String, Object> payload, HttpServletRequest request) throws IOException {
+        Long oopId = Long.valueOf((String) payload.get("oopId"));
         String protocolDate = String.valueOf(payload.get("protocolDate"));
         String protocolNumber = String.valueOf(payload.get("protocolNumber"));
+        ObjectMapper mapper = new ObjectMapper();
+        List<Long> disciplinesOpList = mapper.convertValue(payload.get("disciplinesOPList"), new TypeReference<List<Long>>() {});
+
         HttpSession session = request.getSession();
         String directorApprovalDate = "Test Директор";
         Long instituteId = (Long) session.getAttribute("instituteId");
@@ -82,7 +87,9 @@ public class DocumentController {
 
         List<DisciplineEducationalProgram> disciplinesEducationalPrograms = allDisciplineEducationalPrograms.stream()
                 .filter(el -> Long.valueOf(el.getBasicEducationalProgram().getId()).equals(oopId))
-                .filter(el -> el.getDisabled().equals(false)).collect(Collectors.toList());
+                .filter(el -> el.getDisabled().equals(false))
+                .filter(el -> disciplinesOpList.contains(Long.valueOf(el.getId())))
+                .collect(Collectors.toList());
 
         if (!disciplinesEducationalPrograms.isEmpty()) {
             for (DisciplineEducationalProgram disciplineEducationalProgram : disciplinesEducationalPrograms) {
