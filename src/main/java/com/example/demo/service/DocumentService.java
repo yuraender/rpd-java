@@ -144,7 +144,6 @@ public class DocumentService {
         placeholders.put("protocolNumber", (String) data.get("protocolNumber"));
         placeholders.put("directorApprovalDate", (String) data.get("directorApprovalDate"));
         placeholders.put("instituteFooterText", (String) data.get("instituteFooterText"));
-        placeholders.put("protocolDate", (String) data.get("protocolDate"));
 
         String titlePath = "src/main/resources/templates/tempDocs/title.docx";
         String missionsPath = "src/main/resources/templates/tempDocs/missions.docx";
@@ -233,7 +232,7 @@ public class DocumentService {
         int index = 1;
         for (Map<String, String> competency : competenciesData) {
             // Название компетенции
-            String competencyName = competency.get("competencyName");
+            String competencyName = competency.get("competencyName") + ' ' + competency.get("competencyCode");
 
             // Создание параграфа для названия компетенции
             XWPFParagraph competencyParagraph = document.createParagraph();

@@ -125,10 +125,11 @@ public class DocumentController {
                     competencyData.put("competencyKnow", competencie.getKnow());
                     competencyData.put("competencyBeAble", competencie.getBeAble());
                     competencyData.put("competencyOwn", competencie.getOwn());
+                    competencyData.put("competencyCode", competencie.getCode());
                     competenciesData.add(competencyData);
                 }
                 Department department = disciplineEducationalProgram.getDiscipline().getDepartment();
-                String developerPosition = department.getManager().getEmployeePosition().getPositionName();
+                String developerPosition = disciplineEducationalProgram.getDiscipline().getDeveloper().getEmployeePosition().getPositionName();
                 String abbreviation = department.getAbbreviation();
                 String developerName = disciplineEducationalProgram.getDiscipline().getDeveloper().getEmployee().getNameTypeTwo();
                 String managerName = department.getManager().getNameTypeTwo();
@@ -170,7 +171,6 @@ public class DocumentController {
                 dataMap.put("directorApprovalDate", directorApprovalDate);
                 dataMap.put("protocolNumber", protocolNumber);
                 dataMap.put("instituteFooterText", instituteFooterText);
-                dataMap.put("protocolDate", protocolDate);
 
                 FileRPD fileRPD = documentService.generateAndSaveDocuments(dataMap, disciplineEducationalProgram, competenciesData, audienciesData);
 
