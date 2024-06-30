@@ -144,6 +144,7 @@ public class DocumentService {
         placeholders.put("protocolNumber", (String) data.get("protocolNumber"));
         placeholders.put("directorApprovalDate", (String) data.get("directorApprovalDate"));
         placeholders.put("instituteFooterText", (String) data.get("instituteFooterText"));
+        placeholders.put("protocolDate", (String) data.get("protocolDate"));
 
         String titlePath = "src/main/resources/templates/tempDocs/title.docx";
         String missionsPath = "src/main/resources/templates/tempDocs/missions.docx";

@@ -170,6 +170,7 @@ public class DocumentController {
                 dataMap.put("directorApprovalDate", directorApprovalDate);
                 dataMap.put("protocolNumber", protocolNumber);
                 dataMap.put("instituteFooterText", instituteFooterText);
+                dataMap.put("protocolDate", protocolDate);
 
                 FileRPD fileRPD = documentService.generateAndSaveDocuments(dataMap, disciplineEducationalProgram, competenciesData, audienciesData);
 
