@@ -59,7 +59,6 @@ public class DocumentController {
     private DocumentService documentService;
     @Autowired
     private EducationTypeService educationTypeService;
-
     @Autowired
     private DisciplineEducationalProgramService disciplineEducationalProgramService;
     @Autowired
@@ -174,7 +173,9 @@ public class DocumentController {
 
                 FileRPD fileRPD = documentService.generateAndSaveDocuments(dataMap, disciplineEducationalProgram, competenciesData, audienciesData);
 
-                File folder = new File("generated_documents/" + disciplineName);
+                String sanitizedPath = disciplineName.replaceAll("[\\\\/:*?\"<>|]", "_");
+
+                File folder = new File("generated_documents/" + sanitizedPath);
                 folder.mkdirs();
 
                 saveDocumentPart(folder, "Титульный лист.docx", fileRPD.getSection0());
@@ -235,7 +236,9 @@ public class DocumentController {
     }
 
     private void saveDocumentPart(File folder, String fileName, byte[] content) throws IOException {
-        File file = new File(folder, fileName);
+        String sanitizedFileName = fileName.replaceAll("[\\\\/:*?\"<>|]", "_");
+
+        File file = new File(folder, sanitizedFileName);
         try (FileOutputStream fos = new FileOutputStream(file)) {
             fos.write(content);
         }
