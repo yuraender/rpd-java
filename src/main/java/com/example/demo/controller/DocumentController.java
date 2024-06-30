@@ -173,7 +173,7 @@ public class DocumentController {
 
                 FileRPD fileRPD = documentService.generateAndSaveDocuments(dataMap, disciplineEducationalProgram, competenciesData, audienciesData);
 
-                String sanitizedPath = disciplineName.replaceAll("[\\\\/:*?\"<>|]", "_");
+                String sanitizedPath = disciplineName.replaceAll("[\\\\/:*?\"<>|\\-]", "_");
 
                 File folder = new File("generated_documents/" + sanitizedPath);
                 folder.mkdirs();
