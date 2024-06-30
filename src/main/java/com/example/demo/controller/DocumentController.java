@@ -236,7 +236,7 @@ public class DocumentController {
     }
 
     private void saveDocumentPart(File folder, String fileName, byte[] content) throws IOException {
-        String sanitizedFileName = fileName.replaceAll("[\\\\/:*?\"<>|]", "_");
+        String sanitizedFileName = fileName.replaceAll("[\\\\/:*?\"<>|\\-]", "_");
 
         File file = new File(folder, sanitizedFileName);
         try (FileOutputStream fos = new FileOutputStream(file)) {
