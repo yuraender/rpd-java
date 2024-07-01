@@ -243,7 +243,6 @@
                             dateProtocol = e.target.value
                         })
 
-
                         const buttonGenerate = document.createElement('button')
                         buttonGenerate.classList.add('btn-create', 'button', 'btn', 'btn-primary')
                         buttonGenerate.textContent = "Сгенерировать РПД для этих записей"
@@ -290,9 +289,21 @@
                     })
                     const numberProtocolInput = document.createElement('input')
                     numberProtocolInput.placeholder = "Номер протокола"
-                    numberProtocolInput.classList.add('form-control')
+                    numberProtocolInput.classList.add('form-control', 'number-protocol-input')
                     disciplinesList.appendChild(numberProtocolInput)
 
+                    numberProtocolInput.addEventListener('change', function (e){
+                        numberProtocol = e.target.value
+                    })
+
+                    const dateProtocolInput = document.createElement('input')
+                    dateProtocolInput.placeholder = "Дата протокола"
+                    dateProtocolInput.classList.add('form-control', 'date-input')
+                    disciplinesList.appendChild(dateProtocolInput)
+
+                    dateProtocolInput.addEventListener('change', function (e){
+                        dateProtocol = e.target.value
+                    })
 
                     const buttonGenerate = document.createElement('button')
                     buttonGenerate.classList.add('btn-create', 'button', 'btn', 'btn-primary')
