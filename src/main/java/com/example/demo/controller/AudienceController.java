@@ -44,7 +44,7 @@ public class AudienceController {
 
     @GetMapping("/audiences-data-set-active/{entityId}")
     @ResponseBody
-    public ResponseEntity<Map<String, Object>> setActive(@PathVariable Long entityId, HttpServletRequest request) {
+    public ResponseEntity<Map<String, Object>> setActive(@PathVariable Integer entityId, HttpServletRequest request) {
         Map<String, Object> response = new HashMap<>();
 
         Audience audience = audienceService.getById(entityId);
@@ -64,7 +64,7 @@ public class AudienceController {
     public ResponseEntity<Map<String, Object>> getEntityData(HttpServletRequest request) {
         Map<String, Object> response = new HashMap<>();
         HttpSession session = request.getSession();
-        Long instituteIdFromSession = (Long) session.getAttribute("instituteId");
+        Integer instituteIdFromSession = (Integer) session.getAttribute("instituteId");
         List<Audience> audiences = audienceService.findAllByDisabledFalseAndInstituteId(instituteIdFromSession);
         response.put("data", audiences);
         List<Institute> institutes = instituteService.getAllInstitutes();
@@ -76,7 +76,7 @@ public class AudienceController {
 
     @GetMapping("/api/audiences/get-active/{audiencesId}")
     @ResponseBody
-    public ResponseEntity<Map<String, Object>> getActiveDepartment(@PathVariable Long audiencesId) {
+    public ResponseEntity<Map<String, Object>> getActiveDepartment(@PathVariable Integer audiencesId) {
         Map<String, Object> response = new HashMap<>();
         Audience audience = audienceService.getById(audiencesId);
         response.put("data", audience);
@@ -89,8 +89,8 @@ public class AudienceController {
     @GetMapping("/api/audience-support/update/{entityId}/{instituteId}/{numberAudience}/{tech}/{softwareLicense}")
     @ResponseBody
     public ResponseEntity<Map<String, Object>> updateRecord(
-            @PathVariable Long instituteId,
-            @PathVariable Long entityId,
+            @PathVariable Integer instituteId,
+            @PathVariable Integer entityId,
             @PathVariable String numberAudience,
             @PathVariable String tech,
             @PathVariable String softwareLicense) {
@@ -124,7 +124,7 @@ public class AudienceController {
     @PostMapping("/api/audience-support/save-new-record")
     public ResponseEntity<Map<String, Object>> createRecord(@RequestBody Map<String, String> payload, HttpSession session) {
         Map<String, Object> response = new HashMap<>();
-        Long instituteId = Long.valueOf(payload.get("0"));
+        Integer instituteId = Integer.parseInt(payload.get("0"));
         String numberAudience = payload.get("1");
         String tech = payload.get("2");
         String softwareLicense = payload.get("3");
@@ -150,7 +150,7 @@ public class AudienceController {
 
     @GetMapping("/api/audience-support/delete-record/{entityId}")
     @ResponseBody
-    public ResponseEntity<Map<String, Object>> deleteRecord(@PathVariable Long entityId) {
+    public ResponseEntity<Map<String, Object>> deleteRecord(@PathVariable Integer entityId) {
         Map<String, Object> response = new HashMap<>();
 
         // Получаем запись TechSupport по techSupportId

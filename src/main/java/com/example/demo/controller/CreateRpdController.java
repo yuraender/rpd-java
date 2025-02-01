@@ -63,10 +63,10 @@ public class CreateRpdController {
 
         Object oopIdObj = session.getAttribute("oopId");
 
-        Long oopId = null;
+        Integer oopId = null;
         if (oopIdObj != null) {
             try {
-                oopId = Long.parseLong(oopIdObj.toString());
+                oopId = Integer.parseInt(oopIdObj.toString());
                 response.put("oopId", oopId);
             } catch (NumberFormatException e) {
                 response.put("error", "Неверный формат OOP ID");
@@ -80,10 +80,10 @@ public class CreateRpdController {
         if (oopId != null) {
             //Список дисциплин ОП, для которых будет созданы пакеты РПД
             List<DisciplineEducationalProgram> allDisciplineEducationalPrograms = disciplineEducationalProgramService.getAll();
-            Long finalOopId = oopId;
+            Integer finalOopId = oopId;
             List<DisciplineEducationalProgram> disciplineEducationalPrograms = allDisciplineEducationalPrograms.stream()
-                    .filter(el -> Long.valueOf(el.getBasicEducationalProgram().getId()).equals(finalOopId))
-                    .filter(el -> el.getDisabled().equals(false)).toList();
+                    .filter(el -> el.getBasicEducationalProgram().getId() == finalOopId)
+                    .filter(el -> !el.isDisabled()).toList();
             response.put("disciplinesOP", disciplineEducationalPrograms);
             response.put("oopId", oopId);
         } else {
@@ -95,19 +95,19 @@ public class CreateRpdController {
 
 //    @GetMapping("/api/teacher/get-active/{entityId}")
 //    @ResponseBody
-//    public ResponseEntity<Map<String, Object>> getActiveEntity(@PathVariable Long entityId) {
+//    public ResponseEntity<Map<String, Object>> getActiveEntity(@PathVariable Integer entityId) {
 //        Map<String, Object> response = new HashMap<>();
 //        Teacher entity = teacherService.getById(entityId);
 //        response.put("data", entity);
 //
 //        List<Department> allDepartments = departmentService.getAll();
 //        List<Department> entityList = allDepartments.stream()
-//                .filter(el -> el.getId().equals(entity.getDepartment().getId()) && !el.getDisabled())
+//                .filter(el -> el.getId( == entity.getDepartment().getId()) && !el.getDisabled())
 //                .collect(Collectors.toList());
 //        response.put("entity1", entityList);
 //        List<EmployeePosition> allPositions = employeePositionService.getAll();
 //        List<EmployeePosition> entityList2 = allPositions.stream()
-//                .filter(el -> el.getId().equals(entity.getEmployeePosition().getId()) && !el.getDisabled()).toList();
+//                .filter(el -> el.getId( == entity.getEmployeePosition().getId()) && !el.getDisabled()).toList();
 //        response.put("entity2", entityList2);
 //        List<Employee> entity3 = employeeService.getAllEmployees();
 //        response.put("entity3", entity3);
@@ -118,10 +118,10 @@ public class CreateRpdController {
 //    @PostMapping("/api/teacher/update")
 //    public ResponseEntity<Map<String, Object>> updateRecord(@RequestBody Map<String, String> payload) {
 //        Map<String, Object> response = new HashMap<>();
-//        Long param0 = Long.valueOf(payload.get("0"));
-//        Long param1 = Long.valueOf(payload.get("1"));
-//        Long param2 = Long.valueOf(payload.get("2"));
-//        Long dataId = Long.valueOf(payload.get("dataId"));
+//        Integer param0 = Integer.parseInt(payload.get("0"));
+//        Integer param1 = Integer.parseInt(payload.get("1"));
+//        Integer param2 = Integer.parseInt(payload.get("2"));
+//        Integer dataId = Integer.parseInt(payload.get("dataId"));
 //
 //        Department department = departmentService.getById(param0);
 //        EmployeePosition employeePosition = employeePositionService.getById(param1);
@@ -148,9 +148,9 @@ public class CreateRpdController {
 //    @PostMapping("/api/teacher/save-new-record")
 //    public ResponseEntity<Map<String, Object>> createRecord(@RequestBody Map<String, String> payload) {
 //        Map<String, Object> response = new HashMap<>();
-//        Long param0 = Long.valueOf(payload.get("0"));
-//        Long param1 = Long.valueOf(payload.get("1"));
-//        Long param2 = Long.valueOf(payload.get("2"));
+//        Integer param0 = Integer.parseInt(payload.get("0"));
+//        Integer param1 = Integer.parseInt(payload.get("1"));
+//        Integer param2 = Integer.parseInt(payload.get("2"));
 //
 //        Department department = departmentService.getById(param0);
 //        EmployeePosition employeePosition = employeePositionService.getById(param1);

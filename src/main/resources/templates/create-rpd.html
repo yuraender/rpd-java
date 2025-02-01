@@ -315,7 +315,7 @@
                         let disciplinesList = document.createElement('ul')
                         data.disciplinesOP.forEach(el => {
                             let li = document.createElement('li');
-                            li.textContent = el.discipline.name + '. Индекс: ' + el.discipline.indexDiscipline;
+                            li.textContent = el.discipline.name + '. Индекс: ' + el.discipline.index;
                             disciplinesList.appendChild(li)
                         })
                         container.appendChild(disciplinesList)

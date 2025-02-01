@@ -5,7 +5,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;
 
-public interface CompetencieRepository extends JpaRepository<Competencie, Long> {
+public interface CompetencieRepository extends JpaRepository<Competencie, Integer> {
 
     List<Competencie> findAllByDisabledFalse();
 }

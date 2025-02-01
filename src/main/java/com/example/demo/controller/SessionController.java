@@ -12,11 +12,11 @@ public class SessionController {
 
     @GetMapping("/instituteId")
     @ResponseBody
-    public ResponseEntity<Long> getInstituteId(@SessionAttribute(name = "instituteId", required = false) Long instituteId) {
+    public ResponseEntity<Integer> getInstituteId(@SessionAttribute(name = "instituteId", required = false) Integer instituteId) {
         if (instituteId != null) {
             return ResponseEntity.ok(instituteId);
         } else {
-            return ResponseEntity.ok(0L);
+            return ResponseEntity.ok(0);
         }
     }
 
@@ -24,7 +24,7 @@ public class SessionController {
     public void setInstituteId(@RequestBody Map<String, String> payload, HttpSession session) {
         String id = payload.get("id");
         if (id != null) {
-            session.setAttribute("instituteId", Long.parseLong(id));
+            session.setAttribute("instituteId", Integer.parseInt(id));
         }
     }
 
@@ -36,7 +36,7 @@ public class SessionController {
 
     @GetMapping("/api/session/departmentId")
     @ResponseBody
-    public Long getDepartmentId(@SessionAttribute(name = "departmentId", required = false) Long departmentId) {
+    public Integer getDepartmentId(@SessionAttribute(name = "departmentId", required = false) Integer departmentId) {
         System.out.println("Department ID from session: " + departmentId);
         return departmentId != null ? departmentId : 0;
     }
@@ -46,7 +46,7 @@ public class SessionController {
         String id = payload.get("id");
         System.out.println("DepartmentId: " + id);
         if (id != null) {
-            session.setAttribute("departmentId", Long.parseLong(id));
+            session.setAttribute("departmentId", Integer.parseInt(id));
             System.out.println("DepartmentId Save: " + id);
         }
     }

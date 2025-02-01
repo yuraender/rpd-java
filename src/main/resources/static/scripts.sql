@@ -1,401 +1,359 @@
-CREATE DATABASE rpd_db;
-
-SHOW DATABASES LIKE 'rpd_db';
-use rpd_db;
--- таблица ролей
-CREATE TABLE roles (
-                       id INT AUTO_INCREMENT PRIMARY KEY,
-                       name VARCHAR(100) NOT NULL,
-                       disabled BOOLEAN NOT NULL DEFAULT 0
-);
-
-INSERT INTO roles (name, disabled) VALUES ('administrator', 0);
--- таблица пользователей
-CREATE TABLE app_users (
-                           id INT AUTO_INCREMENT PRIMARY KEY,
-                           role_id INT,
-                           username VARCHAR(100) NOT NULL UNIQUE,
-                           password VARCHAR(255) NOT NULL,
-                           disabled BOOLEAN NOT NULL DEFAULT 0,
-                           FOREIGN KEY (role_id) REFERENCES roles(id)
-);
-
-INSERT INTO app_users (role_id, username, password, disabled)
-VALUES (1, 'Администратор', '$2a$10$1TxF82jKJwpmHEPAKcY1..rxo8VXd51PE.qCKlJU35KhlmJOTJCpi', 0);
-
--- таблица сотрудников
-CREATE TABLE employees (
-                           id INT AUTO_INCREMENT PRIMARY KEY,
-                           last_name VARCHAR(100),
-                           first_name VARCHAR(100),
-                           middle_name VARCHAR(100),
-                           name_type_one VARCHAR(100),
-                           name_type_two VARCHAR(100),
-                           disabled BOOLEAN DEFAULT FALSE
-);
-
-ALTER TABLE employees DROP COLUMN password;
-ALTER TABLE employees DROP COLUMN username;
--- таблица должности
-CREATE TABLE employee_positions (
-                                    id INT AUTO_INCREMENT PRIMARY KEY,
-                                    position_name VARCHAR(255) NOT NULL,
-                                    disabled BOOLEAN DEFAULT FALSE
-);
-
--- таблица институтов
-CREATE TABLE institutes (
-                            id INT AUTO_INCREMENT PRIMARY KEY,
-                            name VARCHAR(255) NOT NULL,
-                            director_id INT,
-                            city VARCHAR(100),
-                            approval_text TEXT,
-                            footer_text TEXT,
-                            disabled BOOLEAN DEFAULT FALSE,
-                            FOREIGN KEY (director_id) REFERENCES employees(id)
-);
-
--- таблица кафедр
-CREATE TABLE departaments (
-                              id INT AUTO_INCREMENT PRIMARY KEY,
-                              code VARCHAR(200) NOT NULL,
-                              name VARCHAR(255) NOT NULL,
-                              abbreviation VARCHAR(50),
-                              institute_id INT,
-                              manager_id INT,
-                              disabled BOOLEAN DEFAULT FALSE,
-                              FOREIGN KEY (institute_id) REFERENCES institutes(id),
-                              FOREIGN KEY (manager_id) REFERENCES employees(id)
-);
-
--- Создать таблицу преподавателей
-CREATE TABLE teachers (
-                          id INT AUTO_INCREMENT PRIMARY KEY,
-                          employee_id INT,
-                          departament_id INT,
-                          employee_positions_id INT,
-                          disabled BOOLEAN DEFAULT FALSE,
-                          FOREIGN KEY (employee_id) REFERENCES employees(id),
-                          FOREIGN KEY (departament_id) REFERENCES departaments(id),
-                          FOREIGN KEY (employee_positions_id) REFERENCES employee_positions(id)
-);
-
-DESCRIBE teachers;
-
--- Создание таблицы направление
-CREATE TABLE directions (
-                            id INT AUTO_INCREMENT PRIMARY KEY,
-                            encryption VARCHAR(20) NOT NULL,
-                            name VARCHAR(255) NOT NULL,
-                            departament_id INT,
-                            disabled BOOLEAN DEFAULT FALSE,
-                            FOREIGN KEY (departament_id) REFERENCES departaments(id)
-);
-
--- Создание таблицы профиль
-CREATE TABLE profiles (
-                          id INT AUTO_INCREMENT PRIMARY KEY,
-                          name VARCHAR(255) NOT NULL,
-                          direction_id INT,
-                          disabled BOOLEAN DEFAULT FALSE,
-                          FOREIGN KEY (direction_id) REFERENCES directions(id)
-);
-
--- Создание таблицы аудитория
-CREATE TABLE audiences (
-                           id INT AUTO_INCREMENT PRIMARY KEY,
-                           institute_id INT,
-                           number_audience VARCHAR(50) NOT NULL,
-                           tech TEXT,
-                           software_license TEXT,
-                           disabled BOOLEAN DEFAULT FALSE,
-                           FOREIGN KEY (institute_id) REFERENCES institutes(id)
-);
-
--- Создание таблицы дисциплины
-CREATE TABLE disciplines (
-                             id INT AUTO_INCREMENT PRIMARY KEY,
-                             index_discipline VARCHAR(50) NOT NULL,
-                             name VARCHAR(255) NOT NULL,
-                             developer_rp_id INT,
-                             departament_id INT,
-                             disabled BOOLEAN DEFAULT FALSE,
-                             FOREIGN KEY (developer_rp_id) REFERENCES teachers(id),
-                             FOREIGN KEY (departament_id) REFERENCES departaments(id)
-);
-
--- Создание таблицы тех обеспечение
-CREATE TABLE tech_supports (
-                               id INT AUTO_INCREMENT PRIMARY KEY,
-                               discipline_id INT,
-                               audiences_id INT,
-                               disabled BOOLEAN DEFAULT FALSE,
-                               FOREIGN KEY (discipline_id) REFERENCES disciplines(id),
-                               FOREIGN KEY (audiences_id) REFERENCES audiences(id)
-);
-
--- Создание таблицы типы обучения
-CREATE TABLE education_types (
-                                 id INT AUTO_INCREMENT PRIMARY KEY,
-                                 name VARCHAR(255) NOT NULL,
-                                 learning_period INT,
-                                 text TEXT,
-                                 disabled BOOLEAN DEFAULT FALSE
-);
-
--- Создание таблицы основная обучающая программа (ООП)
-CREATE TABLE basic_educational_programs (
-                                            id INT AUTO_INCREMENT PRIMARY KEY,
-                                            profile_id INT,
-                                            academic_year INT NOT NULL,
-                                            education_type_id INT,
-                                            disabled BOOLEAN DEFAULT FALSE,
-                                            FOREIGN KEY (profile_id) REFERENCES profiles(id),
-                                            FOREIGN KEY (education_type_id) REFERENCES education_types(id)
-);
-
--- Создание таблицы ДисциплиныОП
-CREATE TABLE disciplines_educational_programs (
-                                                  id INT AUTO_INCREMENT PRIMARY KEY,
-                                                  discipline_id INT,
-                                                  basic_educational_program_id INT,
-                                                  disabled BOOLEAN DEFAULT FALSE,
-                                                  FOREIGN KEY (discipline_id) REFERENCES disciplines(id),
-                                                  FOREIGN KEY (basic_educational_program_id) REFERENCES basic_educational_programs(id)
-);
-
--- Создание таблицы Компетенции
-CREATE TABLE competencies (
-                              id INT AUTO_INCREMENT PRIMARY KEY,
-                              code VARCHAR(100) NOT NULL,
-                              essence TEXT NOT NULL,
-                              know TEXT,
-                              be_able TEXT,
-                              own TEXT,
-                              disabled BOOLEAN DEFAULT FALSE
-);
-
--- Создание таблицы Компетенции Дисциплин ОП
-CREATE TABLE competencies_disciplines_educational_programs (
-                                                               id INT AUTO_INCREMENT PRIMARY KEY,
-                                                               discipline_educational_program_id INT,
-                                                               competence_id INT,
-                                                               disabled BOOLEAN DEFAULT FALSE,
-                                                               FOREIGN KEY (discipline_educational_program_id) REFERENCES disciplines_educational_programs(id),
-                                                               FOREIGN KEY (competence_id) REFERENCES competencies(id)
-);
-
--- Создание таблицы ФайлыРПД
-CREATE TABLE files_rpd (
-                           id INT AUTO_INCREMENT PRIMARY KEY,
-                           discipline_educational_program_id INT,
-                           section_1 LONGBLOB,
-                           section_1_is_load BOOLEAN,
-                           section_2 LONGBLOB,
-                           section_2_is_load BOOLEAN,
-                           section_3 LONGBLOB,
-                           section_3_is_load BOOLEAN,
-                           section_4 LONGBLOB,
-                           section_4_is_load BOOLEAN,
-                           section_5 LONGBLOB,
-                           section_5_is_load BOOLEAN,
-                           section_6 LONGBLOB,
-                           section_6_is_load BOOLEAN,
-                           section_7 LONGBLOB,
-                           section_7_is_load BOOLEAN,
-                           section_8 LONGBLOB,
-                           section_8_is_load BOOLEAN,
-                           section_9 LONGBLOB,
-                           section_9_is_load BOOLEAN,
-                           disabled BOOLEAN DEFAULT FALSE,
-                           FOREIGN KEY (discipline_educational_program_id) REFERENCES disciplines_educational_programs(id)
-);
-
--- создание тестовых полей в таблицах
-
--- Вставка записи в таблицу employees
-INSERT INTO employees (last_name, first_name, middle_name, name_type_one, name_type_two)
-VALUES ('Петров', 'Иван', 'Степанович', 'ПетровИС', 'ИСПетров');
--- Вставка записи в таблицу employees (1)
-INSERT INTO employees (last_name, first_name, middle_name, name_type_one, name_type_two)
-VALUES ('Иванов', 'Алексей', 'Петрович', 'ИвановАП', 'АПИванов');
--- Вставка записи в таблицу employees (2)
-INSERT INTO employees (last_name, first_name, middle_name, name_type_one, name_type_two)
-VALUES ('Смирнова', 'Ольга', 'Сергеевна', 'СмирноваОС', 'ОССмирнова');
-
--- Вставка записи в таблицу institutes
-INSERT INTO institutes (name, director_id, city, approval_text, footer_text)
-VALUES ('ИМХИТ', 1, 'Егорьевск', 'тестовый текст утвержд', 'подвальный текст');
-INSERT INTO institutes (name, director_id, city, approval_text, footer_text)
-VALUES ('МИССиС', 1, 'Москва', 'тестовый текст утвержд2', 'подвальный текст2');
-INSERT INTO institutes (name, director_id, city, approval_text, footer_text)
-VALUES ('МИССиС', 2, 'Новосибирск', 'тестовый текст утвержд3', 'подвальный текст3');
-INSERT INTO institutes (name, director_id, city, approval_text, footer_text)
-VALUES ('МАИ', 2, 'Дмитров', 'тестовый текст утверждтестовый текст утверждтестовый текст утверждтестовый текст утвержд', 'подвальный текст');
-INSERT INTO institutes (name, director_id, city, approval_text, footer_text)
-VALUES ('ГАИ', 1, 'Подольск', 'тестовый текст утвержд2тестовый текст утверждтестовый текст утверждтестовый текст утверждтестовый текст утверждтестовый текст утвержд', 'подвальный текст2');
-INSERT INTO institutes (name, director_id, city, approval_text, footer_text)
-VALUES ('МФЮА', 2, 'Санкт-Петербург', 'тестовый текст тестовый текст утверждтестовый текст утверждтестовый текст утверждтестовый текст утверждутвержд3', 'подвальный текст3');
+/*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
+/*!40101 SET NAMES utf8 */;
+/*!50503 SET NAMES utf8mb4 */;
+/*!40014 SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0 */;
+/*!40101 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='NO_AUTO_VALUE_ON_ZERO' */;
 
 
-alter table institutes modify column id bigint not null auto_increment;
-ALTER TABLE departaments DROP FOREIGN KEY departaments_ibfk_1;
-ALTER TABLE audiences DROP FOREIGN KEY audiences_ibfk_1;
-ALTER TABLE app_users DROP FOREIGN KEY app_users_ibfk_1;
+-- Dumping database structure for rpd_db
+CREATE DATABASE IF NOT EXISTS `rpd_db` /*!40100 DEFAULT CHARACTER SET utf8 */;
+USE `rpd_db`;
 
+-- Dumping structure for table rpd_db.audiences
+CREATE TABLE IF NOT EXISTS `audiences` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `disabled` bit(1) NOT NULL,
+  `number_audience` varchar(50) NOT NULL,
+  `software_license` text,
+  `tech` text,
+  `institute_id` int(11) NOT NULL,
+  PRIMARY KEY (`id`),
+  KEY `FKprv8qsh4tgp1n7gev5j78fhc8` (`institute_id`),
+  CONSTRAINT `FKprv8qsh4tgp1n7gev5j78fhc8` FOREIGN KEY (`institute_id`) REFERENCES `institutes` (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
+-- Dumping data for table rpd_db.audiences: ~0 rows (approximately)
+DELETE FROM `audiences`;
+/*!40000 ALTER TABLE `audiences` DISABLE KEYS */;
+/*!40000 ALTER TABLE `audiences` ENABLE KEYS */;
 
-INSERT INTO departaments (code, name, abbreviation, institute_id, manager_id) VALUES
-                                                                                  ('CS101', 'Кафедра компьютерных наук', 'CS', 1, 1),
-                                                                                  ('ME201', 'Кафедра машиностроения', 'ME', 2, 2),
-                                                                                  ('EE301', 'Кафедра электротехники', 'EE', 3, 3),
-                                                                                  ('BA401', 'Кафедра бизнес-анализа', 'BA', 1, 4),
-                                                                                  ('MT501', 'Кафедра материаловедения', 'MT', 2, 3),
-                                                                                  ('CH601', 'Кафедра химии', 'CH', 3, 2);
+-- Dumping structure for table rpd_db.basic_educational_programs
+CREATE TABLE IF NOT EXISTS `basic_educational_programs` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `academic_year` int(11) DEFAULT NULL,
+  `disabled` bit(1) NOT NULL,
+  `education_type_id` int(11) NOT NULL,
+  `profile_id` int(11) NOT NULL,
+  PRIMARY KEY (`id`),
+  KEY `FKfets8o6qmg1bf27e4s3q63p3d` (`education_type_id`),
+  KEY `FK7nakdkd065su4kayv9dhwj8re` (`profile_id`),
+  CONSTRAINT `FK7nakdkd065su4kayv9dhwj8re` FOREIGN KEY (`profile_id`) REFERENCES `profiles` (`id`),
+  CONSTRAINT `FKfets8o6qmg1bf27e4s3q63p3d` FOREIGN KEY (`education_type_id`) REFERENCES `education_types` (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
+-- Dumping data for table rpd_db.basic_educational_programs: ~0 rows (approximately)
+DELETE FROM `basic_educational_programs`;
+/*!40000 ALTER TABLE `basic_educational_programs` DISABLE KEYS */;
+/*!40000 ALTER TABLE `basic_educational_programs` ENABLE KEYS */;
 
-INSERT INTO directions (encryption, name, departament_id) VALUES
-                                                              ('CS101', 'направление компьютерных наук', 1),
-                                                              ('D234', 'направление машиностроения', 2),
-                                                              ('EE3R', 'направление электротехники', 3);
+-- Dumping structure for table rpd_db.competencies
+CREATE TABLE IF NOT EXISTS `competencies` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `be_able` text,
+  `code` varchar(100) NOT NULL,
+  `disabled` bit(1) NOT NULL,
+  `essence` text NOT NULL,
+  `know` text,
+  `own` text,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-INSERT INTO profiles (name, direction_id) VALUES
-                                              ('Профиль 1', 1),
-                                              ('Профиль 2', 2),
-                                              ('Профиль 3', 3),
-                                              ('Профиль 4', 1),
-                                              ('Профиль 5', 2),
-                                              ('Профиль 6', 3);
+-- Dumping data for table rpd_db.competencies: ~0 rows (approximately)
+DELETE FROM `competencies`;
+/*!40000 ALTER TABLE `competencies` DISABLE KEYS */;
+/*!40000 ALTER TABLE `competencies` ENABLE KEYS */;
 
-INSERT INTO education_types (name, learning_period, text) VALUES
-                                                              ('Очный тип', 4, 'Тестовый текст'),
-                                                              ('Заочный тип', 5, 'Тестовый текст2');
+-- Dumping structure for table rpd_db.competencies_disciplines_educational_programs
+CREATE TABLE IF NOT EXISTS `competencies_disciplines_educational_programs` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `disabled` bit(1) NOT NULL,
+  `competence_id` int(11) NOT NULL,
+  `discipline_educational_program_id` int(11) NOT NULL,
+  PRIMARY KEY (`id`),
+  KEY `FKtk5wyy78d93b4so8vo0pudvbe` (`competence_id`),
+  KEY `FKb7okmd8efnpshqgb7xyuy54g4` (`discipline_educational_program_id`),
+  CONSTRAINT `FKb7okmd8efnpshqgb7xyuy54g4` FOREIGN KEY (`discipline_educational_program_id`) REFERENCES `disciplines_educational_programs` (`id`),
+  CONSTRAINT `FKtk5wyy78d93b4so8vo0pudvbe` FOREIGN KEY (`competence_id`) REFERENCES `competencies` (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-INSERT INTO employee_positions (position_name) VALUES
-                                                   ('Преподаватель'),
-                                                   ('Директор'),
-                                                   ('Заведующий кафедрой');
+-- Dumping data for table rpd_db.competencies_disciplines_educational_programs: ~0 rows (approximately)
+DELETE FROM `competencies_disciplines_educational_programs`;
+/*!40000 ALTER TABLE `competencies_disciplines_educational_programs` DISABLE KEYS */;
+/*!40000 ALTER TABLE `competencies_disciplines_educational_programs` ENABLE KEYS */;
 
-INSERT INTO teachers (employee_id, departament_id, employee_positions_id) VALUES
-                                                                              (1, 1, 1),
-                                                                              (2, 2, 2),
-                                                                              (3, 3, 3);
+-- Dumping structure for table rpd_db.departaments
+CREATE TABLE IF NOT EXISTS `departaments` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `abbreviation` varchar(50) DEFAULT NULL,
+  `code` varchar(10) NOT NULL,
+  `disabled` bit(1) NOT NULL,
+  `name` varchar(100) NOT NULL,
+  `institute_id` int(11) NOT NULL,
+  `manager_id` int(11) NOT NULL,
+  PRIMARY KEY (`id`),
+  KEY `FKcpc6li4r1l37siin11on2uh9o` (`institute_id`),
+  KEY `FKnh7vla4sfeagob4c8i95nmdrw` (`manager_id`),
+  CONSTRAINT `FKcpc6li4r1l37siin11on2uh9o` FOREIGN KEY (`institute_id`) REFERENCES `institutes` (`id`),
+  CONSTRAINT `FKnh7vla4sfeagob4c8i95nmdrw` FOREIGN KEY (`manager_id`) REFERENCES `employees` (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-ALTER TABLE disciplines DROP FOREIGN KEY disciplines_ibfk_1;
+-- Dumping data for table rpd_db.departaments: ~0 rows (approximately)
+DELETE FROM `departaments`;
+/*!40000 ALTER TABLE `departaments` DISABLE KEYS */;
+/*!40000 ALTER TABLE `departaments` ENABLE KEYS */;
 
-INSERT INTO disciplines (index_discipline, name, developer_rp_id, departament_id) VALUES
-                                                                                      ('1234', 'технологии машинного обучения', 1, 1),
-                                                                                      ('3454', 'менеджмент', 2, 2),
-                                                                                      ('5467', 'экономика', 3, 3);
+-- Dumping structure for table rpd_db.directions
+CREATE TABLE IF NOT EXISTS `directions` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `disabled` bit(1) NOT NULL,
+  `encryption` varchar(20) NOT NULL,
+  `name` varchar(100) NOT NULL,
+  `departament_id` int(11) NOT NULL,
+  PRIMARY KEY (`id`),
+  KEY `FK253s4oh4ih46qna06548l4i6v` (`departament_id`),
+  CONSTRAINT `FK253s4oh4ih46qna06548l4i6v` FOREIGN KEY (`departament_id`) REFERENCES `departaments` (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-select * from teachers;
-select * from employees;
-select * from departaments;
+-- Dumping data for table rpd_db.directions: ~0 rows (approximately)
+DELETE FROM `directions`;
+/*!40000 ALTER TABLE `directions` DISABLE KEYS */;
+/*!40000 ALTER TABLE `directions` ENABLE KEYS */;
 
-INSERT INTO disciplines (index_discipline, name, developer_rp_id, departament_id) VALUES
-                                                                                      ('2344', 'технологии машинного обучения 2', 1, 2),
-                                                                                      ('4324', 'технологии машинного обучения 3', 1, 2);
+-- Dumping structure for table rpd_db.disciplines
+CREATE TABLE IF NOT EXISTS `disciplines` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `disabled` bit(1) NOT NULL,
+  `index_discipline` varchar(10) NOT NULL,
+  `name` varchar(100) NOT NULL,
+  `departament_id` int(11) NOT NULL,
+  `developer_rp_id` int(11) NOT NULL,
+  PRIMARY KEY (`id`),
+  KEY `FKc5u8bqm1m2na2em6i6e9nww14` (`departament_id`),
+  KEY `FKl44gx2u2y9a96acvdridb3alx` (`developer_rp_id`),
+  CONSTRAINT `FKc5u8bqm1m2na2em6i6e9nww14` FOREIGN KEY (`departament_id`) REFERENCES `departaments` (`id`),
+  CONSTRAINT `FKl44gx2u2y9a96acvdridb3alx` FOREIGN KEY (`developer_rp_id`) REFERENCES `teachers` (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-INSERT INTO competencies (code, essence, know, be_able, own) VALUES
-                                                                 ('1234', 'какой-то текст1', 'знать что-то1', 'уметь что-то1', 'владеть 1'),
-                                                                 ('3454', 'какой-то текст1', 'знать что-то2', 'уметь что-то2', 'владеть 2'),
-                                                                 ('5467', 'какой-то текст1', 'знать что-то3', 'уметь что-то3', 'владеть 3');
+-- Dumping data for table rpd_db.disciplines: ~0 rows (approximately)
+DELETE FROM `disciplines`;
+/*!40000 ALTER TABLE `disciplines` DISABLE KEYS */;
+/*!40000 ALTER TABLE `disciplines` ENABLE KEYS */;
 
-INSERT INTO audiences (institute_id, number_audience, tech, software_license) VALUES
-                                                                                  ('1', '34', 'современные компьютеры1', 'текст лицензии'),
-                                                                                  ('2', '223', 'современные компьютеры2', 'текст лицензии2'),
-                                                                                  ('3', '19', 'современные компьютеры3', 'текст лицензии3');
+-- Dumping structure for table rpd_db.disciplines_educational_programs
+CREATE TABLE IF NOT EXISTS `disciplines_educational_programs` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `disabled` bit(1) NOT NULL,
+  `basic_educational_program_id` int(11) NOT NULL,
+  `discipline_id` int(11) NOT NULL,
+  PRIMARY KEY (`id`),
+  KEY `FKfhcouyye5c7aca8gnrrel0dnc` (`basic_educational_program_id`),
+  KEY `FKafs07f6107vehp5nc1s6xw6ca` (`discipline_id`),
+  CONSTRAINT `FKafs07f6107vehp5nc1s6xw6ca` FOREIGN KEY (`discipline_id`) REFERENCES `disciplines` (`id`),
+  CONSTRAINT `FKfhcouyye5c7aca8gnrrel0dnc` FOREIGN KEY (`basic_educational_program_id`) REFERENCES `basic_educational_programs` (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-INSERT INTO tech_supports (discipline_id, audiences_id) VALUES
-                                                            (1, 1),
-                                                            (2, 2),
-                                                            (3, 3);
+-- Dumping data for table rpd_db.disciplines_educational_programs: ~0 rows (approximately)
+DELETE FROM `disciplines_educational_programs`;
+/*!40000 ALTER TABLE `disciplines_educational_programs` DISABLE KEYS */;
+/*!40000 ALTER TABLE `disciplines_educational_programs` ENABLE KEYS */;
 
-INSERT INTO tech_supports (discipline_id, audiences_id) VALUES
-                                                            (2, 1),
-                                                            (3, 1);
+-- Dumping structure for table rpd_db.education_types
+CREATE TABLE IF NOT EXISTS `education_types` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `disabled` bit(1) NOT NULL,
+  `learning_period` int(11) NOT NULL,
+  `name` varchar(50) NOT NULL,
+  `text` text,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `name` (`name`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-INSERT INTO tech_supports (profile_id, academic_year) VALUES
-                                                          (1, 1),
-                                                          (2, 2),
-                                                          (3, 3);
+-- Dumping data for table rpd_db.education_types: ~0 rows (approximately)
+DELETE FROM `education_types`;
+/*!40000 ALTER TABLE `education_types` DISABLE KEYS */;
+/*!40000 ALTER TABLE `education_types` ENABLE KEYS */;
 
-INSERT INTO basic_educational_programs (profile_id, academic_year, education_type_id) VALUES
-                                                                                          (1, 2023, 1),
-                                                                                          (3, 2023, 1),
-                                                                                          (2, 2024, 2);
+-- Dumping structure for table rpd_db.employees
+CREATE TABLE IF NOT EXISTS `employees` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `disabled` bit(1) NOT NULL,
+  `first_name` varchar(100) NOT NULL,
+  `last_name` varchar(100) NOT NULL,
+  `middle_name` varchar(100) DEFAULT NULL,
+  `name_type_one` varchar(10) NOT NULL,
+  `name_type_two` varchar(10) NOT NULL,
+  `employee_position_id` int(11) NOT NULL,
+  PRIMARY KEY (`id`),
+  KEY `FKf408nylqjiwajq7165sa8ml4f` (`employee_position_id`),
+  CONSTRAINT `FKf408nylqjiwajq7165sa8ml4f` FOREIGN KEY (`employee_position_id`) REFERENCES `employee_positions` (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-INSERT INTO disciplines_educational_programs (discipline_id, basic_educational_program_id) VALUES
-                                                                                               (1, 4),
-                                                                                               (2, 5),
-                                                                                               (3, 6);
+-- Dumping data for table rpd_db.employees: ~0 rows (approximately)
+DELETE FROM `employees`;
+/*!40000 ALTER TABLE `employees` DISABLE KEYS */;
+/*!40000 ALTER TABLE `employees` ENABLE KEYS */;
 
-INSERT INTO competencies_disciplines_educational_programs (discipline_educational_program_id, competence_id) VALUES
-                                                                                                                 (13, 1),
-                                                                                                                 (14, 2),
-                                                                                                                 (15, 3);
+-- Dumping structure for table rpd_db.employee_positions
+CREATE TABLE IF NOT EXISTS `employee_positions` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `disabled` bit(1) NOT NULL,
+  `position_name` varchar(50) NOT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `position_name` (`position_name`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-INSERT INTO files_rpd (discipline_educational_program_id, section_1, section_1_isLoad, section_2, section_2_isLoad, section_3, section_3_isLoad, section_4, section_4_isLoad, section_5, section_5_isLoad, section_6, section_6_isLoad) VALUES
-                                                                                                                                                                                                                                            (13, null, 0, null, 0, null, 0, null, 0, null, 0, null, 0),
-                                                                                                                                                                                                                                            (14, null, 0, null, 0, null, 0, null, 0, null, 0, null, 0),
-                                                                                                                                                                                                                                            (15, null, 0, null, 0, null, 0, null, 0, null, 0, null, 0);
+-- Dumping data for table rpd_db.employee_positions: ~0 rows (approximately)
+DELETE FROM `employee_positions`;
+/*!40000 ALTER TABLE `employee_positions` DISABLE KEYS */;
+/*!40000 ALTER TABLE `employee_positions` ENABLE KEYS */;
 
+-- Dumping structure for table rpd_db.files_rpd
+CREATE TABLE IF NOT EXISTS `files_rpd` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `disabled` bit(1) NOT NULL,
+  `section_0` longblob,
+  `section_0_is_load` bit(1) NOT NULL,
+  `section_1` longblob,
+  `section_1_is_load` bit(1) NOT NULL,
+  `section_2` longblob,
+  `section_2_is_load` bit(1) NOT NULL,
+  `section_3` longblob,
+  `section_3_is_load` bit(1) NOT NULL,
+  `section_4` longblob,
+  `section_4_is_load` bit(1) NOT NULL,
+  `section_5` longblob,
+  `section_5_is_load` bit(1) NOT NULL,
+  `section_6` longblob,
+  `section_6_is_load` bit(1) NOT NULL,
+  `section_7` longblob,
+  `section_7_is_load` bit(1) NOT NULL,
+  `section_8` longblob,
+  `section_8_is_load` bit(1) NOT NULL,
+  `section_9` longblob,
+  `section_9_is_load` bit(1) NOT NULL,
+  `discipline_educational_program_id` int(11) NOT NULL,
+  PRIMARY KEY (`id`),
+  KEY `FK52r7yqr2bm8i86c67o6lqw1sf` (`discipline_educational_program_id`),
+  CONSTRAINT `FK52r7yqr2bm8i86c67o6lqw1sf` FOREIGN KEY (`discipline_educational_program_id`) REFERENCES `disciplines_educational_programs` (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-ALTER TABLE files_rpd
-    MODIFY COLUMN section_1_is_load BOOLEAN,
-    MODIFY COLUMN section_1_is_load BOOLEAN,
-    MODIFY COLUMN section_1_is_load BOOLEAN,
-    MODIFY COLUMN section_1_is_load BOOLEAN,
-    MODIFY COLUMN section_1_is_load BOOLEAN,
-    MODIFY COLUMN section_6_isLoad BOOLEAN,
-    MODIFY COLUMN section_7_isLoad BOOLEAN,
-    MODIFY COLUMN section_8_isLoad BOOLEAN,
-    MODIFY COLUMN section_9_isLoad BOOLEAN;
+-- Dumping data for table rpd_db.files_rpd: ~0 rows (approximately)
+DELETE FROM `files_rpd`;
+/*!40000 ALTER TABLE `files_rpd` DISABLE KEYS */;
+/*!40000 ALTER TABLE `files_rpd` ENABLE KEYS */;
 
+-- Dumping structure for table rpd_db.institutes
+CREATE TABLE IF NOT EXISTS `institutes` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `approval_text` text,
+  `city` varchar(100) NOT NULL,
+  `disabled` bit(1) NOT NULL,
+  `footer_text` text,
+  `name` varchar(255) NOT NULL,
+  `director_id` int(11) NOT NULL,
+  PRIMARY KEY (`id`),
+  KEY `FKg99p3it5xyv19ydons4ynei7n` (`director_id`),
+  CONSTRAINT `FKg99p3it5xyv19ydons4ynei7n` FOREIGN KEY (`director_id`) REFERENCES `employees` (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-SHOW CREATE TABLE files_rpd;
-SHOW VARIABLES LIKE 'max_allowed_packet';
+-- Dumping data for table rpd_db.institutes: ~0 rows (approximately)
+DELETE FROM `institutes`;
+/*!40000 ALTER TABLE `institutes` DISABLE KEYS */;
+/*!40000 ALTER TABLE `institutes` ENABLE KEYS */;
 
+-- Dumping structure for table rpd_db.profiles
+CREATE TABLE IF NOT EXISTS `profiles` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `disabled` bit(1) NOT NULL,
+  `name` varchar(100) NOT NULL,
+  `direction_id` int(11) NOT NULL,
+  PRIMARY KEY (`id`),
+  KEY `FKc038k5tfah7u6d6jpxqyam19l` (`direction_id`),
+  CONSTRAINT `FKc038k5tfah7u6d6jpxqyam19l` FOREIGN KEY (`direction_id`) REFERENCES `directions` (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-SET GLOBAL max_allowed_packet = 64*1024*1024;
+-- Dumping data for table rpd_db.profiles: ~0 rows (approximately)
+DELETE FROM `profiles`;
+/*!40000 ALTER TABLE `profiles` DISABLE KEYS */;
+/*!40000 ALTER TABLE `profiles` ENABLE KEYS */;
 
-SHOW VARIABLES LIKE 'secure_file_priv';
+-- Dumping structure for table rpd_db.roles
+CREATE TABLE IF NOT EXISTS `roles` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `disabled` bit(1) NOT NULL,
+  `name` varchar(100) NOT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `UKofx66keruapi6vyqpv6f2or37` (`name`)
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8;
 
-UPDATE files_rpd
-SET section_2 = LOAD_FILE('C:/ProgramData/MySQL/MySQL Server 8.0/Uploads/title.docx')
-WHERE id = 1;
+-- Dumping data for table rpd_db.roles: ~2 rows (approximately)
+DELETE FROM `roles`;
+/*!40000 ALTER TABLE `roles` DISABLE KEYS */;
+INSERT INTO `roles` (`id`, `disabled`, `name`) VALUES
+	(1, b'0', 'administrator'),
+	(2, b'0', 'user');
+/*!40000 ALTER TABLE `roles` ENABLE KEYS */;
 
+-- Dumping structure for table rpd_db.teachers
+CREATE TABLE IF NOT EXISTS `teachers` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `disabled` bit(1) NOT NULL,
+  `departament_id` int(11) NOT NULL,
+  `employee_id` int(11) NOT NULL,
+  `employee_positions_id` int(11) NOT NULL,
+  PRIMARY KEY (`id`),
+  KEY `FK24jsgsgfxo6einlvd2jugfq6v` (`departament_id`),
+  KEY `FKcr8lwab4nll2jdn7y2t9r6hu3` (`employee_id`),
+  KEY `FKpvpy63rn40xovdex23mwf7tu6` (`employee_positions_id`),
+  CONSTRAINT `FK24jsgsgfxo6einlvd2jugfq6v` FOREIGN KEY (`departament_id`) REFERENCES `departaments` (`id`),
+  CONSTRAINT `FKcr8lwab4nll2jdn7y2t9r6hu3` FOREIGN KEY (`employee_id`) REFERENCES `employees` (`id`),
+  CONSTRAINT `FKpvpy63rn40xovdex23mwf7tu6` FOREIGN KEY (`employee_positions_id`) REFERENCES `employee_positions` (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
--- 'C:\ProgramData\MySQL\MySQL Server 8.0\Uploads\'
+-- Dumping data for table rpd_db.teachers: ~0 rows (approximately)
+DELETE FROM `teachers`;
+/*!40000 ALTER TABLE `teachers` DISABLE KEYS */;
+/*!40000 ALTER TABLE `teachers` ENABLE KEYS */;
 
-drop table if exists files_rpd;
-select * from files_rpd;
+-- Dumping structure for table rpd_db.tech_supports
+CREATE TABLE IF NOT EXISTS `tech_supports` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `disabled` bit(1) NOT NULL,
+  `audiences_id` int(11) NOT NULL,
+  `discipline_id` int(11) NOT NULL,
+  PRIMARY KEY (`id`),
+  KEY `FKbdeb08h4nf98a151vhcud15ks` (`audiences_id`),
+  KEY `FKsi5qebgft20ygbgssyoo1evgf` (`discipline_id`),
+  CONSTRAINT `FKbdeb08h4nf98a151vhcud15ks` FOREIGN KEY (`audiences_id`) REFERENCES `audiences` (`id`),
+  CONSTRAINT `FKsi5qebgft20ygbgssyoo1evgf` FOREIGN KEY (`discipline_id`) REFERENCES `disciplines` (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
+-- Dumping data for table rpd_db.tech_supports: ~0 rows (approximately)
+DELETE FROM `tech_supports`;
+/*!40000 ALTER TABLE `tech_supports` DISABLE KEYS */;
+/*!40000 ALTER TABLE `tech_supports` ENABLE KEYS */;
 
+-- Dumping structure for table rpd_db.users
+CREATE TABLE IF NOT EXISTS `users` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `disabled` bit(1) NOT NULL,
+  `role_id` int(11) NOT NULL,
+  `password` varchar(255) NOT NULL,
+  `username` varchar(100) NOT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `UKr43af9ap4edm43mmtq01oddj6` (`username`),
+  KEY `FKp56c1712k691lhsyewcssf40f` (`role_id`),
+  CONSTRAINT `FKp56c1712k691lhsyewcssf40f` FOREIGN KEY (`role_id`) REFERENCES `roles` (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8;
 
--- Создание таблицы ФайлыРПД
-CREATE TABLE files_rpd (
-                           id INT AUTO_INCREMENT PRIMARY KEY,
-                           discipline_educational_program_id INT,
-                           section_1 LONGBLOB,
-                           section_1_is_load BOOLEAN,
-                           section_2 LONGBLOB,
-                           section_2_is_load BOOLEAN,
-                           section_3 LONGBLOB,
-                           section_3_is_load BOOLEAN,
-                           section_4 LONGBLOB,
-                           section_4_is_load BOOLEAN,
-                           section_5 LONGBLOB,
-                           section_5_is_load BOOLEAN,
-                           section_6 LONGBLOB,
-                           section_6_is_load BOOLEAN,
-                           section_7 LONGBLOB,
-                           section_7_is_load BOOLEAN,
-                           section_8 LONGBLOB,
-                           section_8_is_load BOOLEAN,
-                           section_9 LONGBLOB,
-                           section_9_is_load BOOLEAN,
-                           disabled BOOLEAN DEFAULT FALSE,
-                           FOREIGN KEY (discipline_educational_program_id) REFERENCES disciplines_educational_programs(id)
-);
+-- Dumping data for table rpd_db.users: ~2 rows (approximately)
+DELETE FROM `users`;
+/*!40000 ALTER TABLE `users` DISABLE KEYS */;
+INSERT INTO `users` (`id`, `disabled`, `role_id`, `password`, `username`) VALUES
+	(1, b'0', 1, '$2a$10$X7P45PLNGAjXTlxAjY.kjeOnpEeaJXcGaarNFCqsGW9GGUgwcSm.O', 'Администратор'),
+	(2, b'0', 2, '$2a$10$j3MvKjp0siFjLyk5CTdBQO3LnIHfwScm6bY7Dv3RAxZ7NDt8E.DXa', 'Пользователь');
+/*!40000 ALTER TABLE `users` ENABLE KEYS */;
 
+/*!40101 SET SQL_MODE=IFNULL(@OLD_SQL_MODE, '') */;
+/*!40014 SET FOREIGN_KEY_CHECKS=IF(@OLD_FOREIGN_KEY_CHECKS IS NULL, 1, @OLD_FOREIGN_KEY_CHECKS) */;
+/*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;

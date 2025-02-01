@@ -41,7 +41,7 @@ public class DepartmentController {
 
     @GetMapping("/departments-data-set-active/{departmentId}")
     @ResponseBody
-    public ResponseEntity<Map<String, Object>> setActive(@PathVariable Long departmentId, HttpServletRequest request) {
+    public ResponseEntity<Map<String, Object>> setActive(@PathVariable Integer departmentId, HttpServletRequest request) {
         Map<String, Object> response = new HashMap<>();
 
         Department department = departmentService.getById(departmentId);
@@ -61,7 +61,7 @@ public class DepartmentController {
     public ResponseEntity<Map<String, Object>> getDepartmentData(HttpServletRequest request) {
         Map<String, Object> response = new HashMap<>();
         HttpSession session = request.getSession();
-        Long instituteIdFromSession = (Long) session.getAttribute("instituteId");
+        Integer instituteIdFromSession = (Integer) session.getAttribute("instituteId");
         List<Department> departments = departmentService.getAll(instituteIdFromSession);
         response.put("data", departments);
         List<Institute> institutes = instituteService.getAllInstitutes();
@@ -76,7 +76,7 @@ public class DepartmentController {
 
     @GetMapping("/api/departments/get-active/{departmentsId}")
     @ResponseBody
-    public ResponseEntity<Map<String, Object>> getActiveDepartment(@PathVariable Long departmentsId) {
+    public ResponseEntity<Map<String, Object>> getActiveDepartment(@PathVariable Integer departmentsId) {
         Map<String, Object> response = new HashMap<>();
         Department department = departmentService.getById(departmentsId);
         response.put("data", department);
@@ -92,12 +92,12 @@ public class DepartmentController {
     @GetMapping("/api/department-support/update/{departmentId}/{code}/{departmentName}/{abbreviationName}/{instituteId}/{teacherId}")
     @ResponseBody
     public ResponseEntity<Map<String, Object>> updateRecord(
-            @PathVariable Long departmentId,
+            @PathVariable Integer departmentId,
             @PathVariable String code,
             @PathVariable String departmentName,
             @PathVariable String abbreviationName,
-            @PathVariable Long instituteId,
-            @PathVariable Long teacherId) {
+            @PathVariable Integer instituteId,
+            @PathVariable Integer teacherId) {
         Map<String, Object> response = new HashMap<>();
 
         if (code.isEmpty() || departmentName.isEmpty() || abbreviationName.isEmpty()) {
@@ -138,8 +138,8 @@ public class DepartmentController {
             @PathVariable String code,
             @PathVariable String departmentName,
             @PathVariable String abbreviationName,
-            @PathVariable Long instituteId,
-            @PathVariable Long teacherId) {
+            @PathVariable Integer instituteId,
+            @PathVariable Integer teacherId) {
         Map<String, Object> response = new HashMap<>();
         Institute institute = instituteService.findById(instituteId);
         Employee manager = employeeService.getById(teacherId);
@@ -169,7 +169,7 @@ public class DepartmentController {
 
     @GetMapping("/api/department-support/delete-record/{departmentId}")
     @ResponseBody
-    public ResponseEntity<Map<String, Object>> deleteRecord(@PathVariable Long departmentId) {
+    public ResponseEntity<Map<String, Object>> deleteRecord(@PathVariable Integer departmentId) {
         Map<String, Object> response = new HashMap<>();
 
         // Получаем запись TechSupport по techSupportId

@@ -1,6 +1,6 @@
 package com.example.demo.service;
 
-import com.example.demo.entity.AppUser;
+import com.example.demo.entity.User;
 import com.example.demo.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -23,14 +23,14 @@ public class UserDetailsServiceImpl implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        AppUser user = userRepository.findByUsername(username);
+        User user = userRepository.findByUsername(username);
         if (user == null) {
             throw new UsernameNotFoundException("User not found");
         }
         return new org.springframework.security.core.userdetails.User(user.getUsername(), user.getPassword(), getAuthorities(user));
     }
 
-    private List<SimpleGrantedAuthority> getAuthorities(AppUser user) {
-        return List.of(new SimpleGrantedAuthority(user.getRoleUser().getName()));
+    private List<SimpleGrantedAuthority> getAuthorities(User user) {
+        return List.of(new SimpleGrantedAuthority(user.getRole().getName()));
     }
 }

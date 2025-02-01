@@ -214,7 +214,7 @@
                             li.classList.add('discipline-op-element')
                             li.setAttribute('disciplineopid', el.id)
                             const disciplineName = document.createElement('p')
-                            disciplineName.textContent = el.discipline.name + '. Индекс: ' + el.discipline.indexDiscipline;
+                            disciplineName.textContent = el.discipline.name + '. Индекс: ' + el.discipline.index;
                             li.appendChild(disciplineName)
                             const btnDeleteDiscipline = document.createElement('button')
                             btnDeleteDiscipline.textContent = "Не включать в генерацию"
@@ -275,7 +275,7 @@
                         li.classList.add('discipline-op-element')
                         li.setAttribute('disciplineopid', el.id)
                         const disciplineName = document.createElement('p')
-                        disciplineName.textContent = el.discipline.name + '. Индекс: ' + el.discipline.indexDiscipline;
+                        disciplineName.textContent = el.discipline.name + '. Индекс: ' + el.discipline.index;
                         li.appendChild(disciplineName)
                         const btnDeleteDiscipline = document.createElement('button')
                         btnDeleteDiscipline.textContent = "Не включать в генерацию"

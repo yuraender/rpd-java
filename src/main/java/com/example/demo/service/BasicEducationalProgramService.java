@@ -19,7 +19,7 @@ public class BasicEducationalProgramService {
         return basicEducationalProgramRepository.findAllByDisabledFalse();
     }
 
-    public BasicEducationalProgram getById(Long id) {
+    public BasicEducationalProgram getById(Integer id) {
         return basicEducationalProgramRepository.findById(id).orElse(null);
     }
 

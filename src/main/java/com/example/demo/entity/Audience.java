@@ -1,69 +1,32 @@
 package com.example.demo.entity;
 
 import jakarta.persistence.*;
+import lombok.Getter;
+import lombok.Setter;
 
 @Entity
 @Table(name = "audiences")
+@Getter
+@Setter
 public class Audience {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id;
+    private int id;
 
-    @ManyToOne
-    @JoinColumn(name = "institute_id", referencedColumnName = "id")
-    private Institute institute;
+    @Column(length = 50, nullable = false)
     private String numberAudience;
+
+    @Column(columnDefinition = "TEXT")
     private String tech;
 
+    @Column(columnDefinition = "TEXT")
     private String softwareLicense;
-    private Boolean disabled;
 
-    public Boolean getDisabled() {
-        return disabled;
-    }
+    @ManyToOne
+    @JoinColumn(name = "institute_id", referencedColumnName = "id", nullable = false)
+    private Institute institute;
 
-    public void setDisabled(Boolean disabled) {
-        this.disabled = disabled;
-    }
-
-    public Integer getId() {
-        return id;
-    }
-
-    public void setId(Integer id) {
-        this.id = id;
-    }
-
-    public Institute getInstitute() {
-        return institute;
-    }
-
-    public void setInstitute(Institute institute) {
-        this.institute = institute;
-    }
-
-    public String getNumberAudience() {
-        return numberAudience;
-    }
-
-    public void setNumberAudience(String numberAudience) {
-        this.numberAudience = numberAudience;
-    }
-
-    public String getTech() {
-        return tech;
-    }
-
-    public void setTech(String tech) {
-        this.tech = tech;
-    }
-
-    public String getSoftwareLicense() {
-        return softwareLicense;
-    }
-
-    public void setSoftwareLicense(String softwareLicense) {
-        this.softwareLicense = softwareLicense;
-    }
+    @Column(nullable = false)
+    private boolean disabled;
 }

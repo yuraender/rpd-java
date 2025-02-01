@@ -19,7 +19,7 @@ public class EmployeeService {
         return employeeRepository.findAllByDisabledFalse();
     }
 
-    public Employee getById(Long id) {
+    public Employee getById(Integer id) {
         return employeeRepository.findById(id).orElse(null);
     }
 

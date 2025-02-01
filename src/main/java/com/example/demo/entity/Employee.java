@@ -1,93 +1,38 @@
 package com.example.demo.entity;
 
 import jakarta.persistence.*;
+import lombok.Getter;
+import lombok.Setter;
 
 @Entity
 @Table(name = "employees")
+@Getter
+@Setter
 public class Employee {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id;
+    private int id;
 
-    @Column(name = "last_name")
+    @Column(length = 100, nullable = false)
     private String lastName;
 
-    @Column(name = "first_name")
+    @Column(length = 100, nullable = false)
     private String firstName;
 
-    @Column(name = "middle_name")
+    @Column(length = 100)
     private String middleName;
 
-    @Column(name = "name_type_one")
+    @Column(length = 10, nullable = false)
     private String nameTypeOne;
 
-    @Column(name = "name_type_two")
+    @Column(length = 10, nullable = false)
     private String nameTypeTwo;
-    private Boolean disabled;
 
-    public EmployeePosition getEmployeePosition() {
-        return employeePosition;
-    }
+    @ManyToOne
+    @JoinColumn(name = "employee_position_id", referencedColumnName = "id", nullable = false)
+    private EmployeePosition employeePosition;
 
-    public void setEmployeePosition(EmployeePosition employeePosition) {
-        this.employeePosition = employeePosition;
-    }
-
-    public Boolean getDisabled() {
-        return disabled;
-    }
-
-    public void setDisabled(Boolean disabled) {
-        this.disabled = disabled;
-    }
-
-    // Геттеры и сеттеры
-    public Integer getId() {
-        return id;
-    }
-
-    public void setId(Integer id) {
-        this.id = id;
-    }
-
-    public String getLastName() {
-        return lastName;
-    }
-
-    public void setLastName(String lastName) {
-        this.lastName = lastName;
-    }
-
-    public String getFirstName() {
-        return firstName;
-    }
-
-    public void setFirstName(String firstName) {
-        this.firstName = firstName;
-    }
-
-    public String getMiddleName() {
-        return middleName;
-    }
-
-    public void setMiddleName(String middleName) {
-        this.middleName = middleName;
-    }
-
-    public String getNameTypeOne() {
-        return nameTypeOne;
-    }
-
-    public void setNameTypeOne(String nameTypeOne) {
-        this.nameTypeOne = nameTypeOne;
-    }
-
-    public String getNameTypeTwo() {
-        return nameTypeTwo;
-    }
-
-    public void setNameTypeTwo(String nameTypeTwo) {
-        this.nameTypeTwo = nameTypeTwo;
-    }
+    @Column(nullable = false)
+    private boolean disabled;
 }

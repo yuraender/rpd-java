@@ -1,74 +1,34 @@
 package com.example.demo.entity;
 
 import jakarta.persistence.*;
+import lombok.Getter;
+import lombok.Setter;
 
 @Entity
 @Table(name = "competencies")
+@Getter
+@Setter
 public class Competencie {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id;
+    private int id;
+
+    @Column(length = 100, nullable = false)
     private String code;
+
+    @Column(columnDefinition = "TEXT", nullable = false)
     private String essence;
+
+    @Column(columnDefinition = "TEXT")
     private String know;
+
+    @Column(columnDefinition = "TEXT")
     private String beAble;
+
+    @Column(columnDefinition = "TEXT")
     private String own;
-    private Boolean disabled;
 
-    public Boolean getDisabled() {
-        return disabled;
-    }
-
-    public void setDisabled(Boolean disabled) {
-        this.disabled = disabled;
-    }
-
-    public Integer getId() {
-        return id;
-    }
-
-    public void setId(Integer id) {
-        this.id = id;
-    }
-
-    public String getCode() {
-        return code;
-    }
-
-    public void setCode(String code) {
-        this.code = code;
-    }
-
-    public String getEssence() {
-        return essence;
-    }
-
-    public void setEssence(String essence) {
-        this.essence = essence;
-    }
-
-    public String getKnow() {
-        return know;
-    }
-
-    public void setKnow(String know) {
-        this.know = know;
-    }
-
-    public String getBeAble() {
-        return beAble;
-    }
-
-    public void setBeAble(String beAble) {
-        this.beAble = beAble;
-    }
-
-    public String getOwn() {
-        return own;
-    }
-
-    public void setOwn(String own) {
-        this.own = own;
-    }
+    @Column(nullable = false)
+    private boolean disabled;
 }

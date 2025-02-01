@@ -70,7 +70,7 @@ public class CompetencieController {
 
     @GetMapping("/api/competencies/get-active/{entityId}")
     @ResponseBody
-    public ResponseEntity<Map<String, Object>> getActiveEntity(@PathVariable Long entityId) {
+    public ResponseEntity<Map<String, Object>> getActiveEntity(@PathVariable Integer entityId) {
         Map<String, Object> response = new HashMap<>();
         Competencie entity = competencieService.getById(entityId);
         response.put("data", entity);
@@ -85,7 +85,7 @@ public class CompetencieController {
         String param2 = payload.get("2");
         String param3 = payload.get("3");
         String param4 = payload.get("4");
-        Long dataId = Long.valueOf(payload.get("dataId"));
+        Integer dataId = Integer.parseInt(payload.get("dataId"));
 
         Competencie entity = competencieService.getById(dataId);
 
@@ -133,7 +133,7 @@ public class CompetencieController {
 
     @GetMapping("/api/competencies/delete-record/{entityId}")
     @ResponseBody
-    public ResponseEntity<Map<String, Object>> deleteRecord(@PathVariable Long entityId) {
+    public ResponseEntity<Map<String, Object>> deleteRecord(@PathVariable Integer entityId) {
         Map<String, Object> response = new HashMap<>();
 
         // Получаем запись TechSupport по techSupportId

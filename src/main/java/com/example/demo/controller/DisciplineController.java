@@ -78,7 +78,7 @@ public class DisciplineController {
 
     @GetMapping("/api/discipline/get-active/{entityId}")
     @ResponseBody
-    public ResponseEntity<Map<String, Object>> getActiveEntity(@PathVariable Long entityId) {
+    public ResponseEntity<Map<String, Object>> getActiveEntity(@PathVariable Integer entityId) {
         Map<String, Object> response = new HashMap<>();
         Discipline entity = disciplineService.getById(entityId);
         response.put("data", entity);
@@ -93,7 +93,7 @@ public class DisciplineController {
 
     @GetMapping("/api/discipline/get-department/{entityId}")
     @ResponseBody
-    public ResponseEntity<Map<String, Object>> getDepartment(@PathVariable Long entityId) {
+    public ResponseEntity<Map<String, Object>> getDepartment(@PathVariable Integer entityId) {
         Map<String, Object> response = new HashMap<>();
 
         Department department = departmentService.getById(entityId);
@@ -108,9 +108,9 @@ public class DisciplineController {
         Map<String, Object> response = new HashMap<>();
         String param0 = payload.get("0");
         String param1 = payload.get("1");
-        Long param2 = Long.valueOf(payload.get("2"));
-        Long param3 = Long.valueOf(payload.get("3"));
-        Long dataId = Long.valueOf(payload.get("dataId"));
+        Integer param2 = Integer.parseInt(payload.get("2"));
+        Integer param3 = Integer.parseInt(payload.get("3"));
+        Integer dataId = Integer.parseInt(payload.get("dataId"));
 
         Department department = departmentService.getById(param2);
         Teacher teacher = teacherService.getById(param3);
@@ -122,7 +122,7 @@ public class DisciplineController {
             return ResponseEntity.ok(response);
         }
         // Обновляем поле audience у Department
-        entity.setIndexDiscipline(param0);
+        entity.setIndex(param0);
         entity.setName(param1);
         entity.setDepartment(department);
         entity.setDeveloper(teacher);
@@ -139,13 +139,13 @@ public class DisciplineController {
         Map<String, Object> response = new HashMap<>();
         String param0 = payload.get("0");
         String param1 = payload.get("1");
-        Long param2 = Long.valueOf(payload.get("2"));
-        Long param3 = Long.valueOf(payload.get("3"));
+        Integer param2 = Integer.parseInt(payload.get("2"));
+        Integer param3 = Integer.parseInt(payload.get("3"));
         Department department = departmentService.getById(param2);
         Teacher teacher = teacherService.getById(param3);
         Discipline entity = new Discipline();
         // Обновляем поле audience у Department
-        entity.setIndexDiscipline(param0);
+        entity.setIndex(param0);
         entity.setName(param1);
         entity.setDepartment(department);
         entity.setDeveloper(teacher);
@@ -159,7 +159,7 @@ public class DisciplineController {
 
     @GetMapping("/api/discipline/delete-record/{entityId}")
     @ResponseBody
-    public ResponseEntity<Map<String, Object>> deleteRecord(@PathVariable Long entityId) {
+    public ResponseEntity<Map<String, Object>> deleteRecord(@PathVariable Integer entityId) {
         Map<String, Object> response = new HashMap<>();
 
         // Получаем запись TechSupport по techSupportId

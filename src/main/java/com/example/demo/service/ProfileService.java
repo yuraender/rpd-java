@@ -19,10 +19,9 @@ public class ProfileService {
         return profileRepository.findAllByDisabledFalse();
     }
 
-    public Profile getById(Long id) {
+    public Profile getById(Integer id) {
         return profileRepository.findByIdAndDisabledFalse(id).orElse(null);
     }
-
 
     public Profile save(Profile profile) {
         return profileRepository.save(profile);

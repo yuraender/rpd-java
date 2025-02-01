@@ -36,7 +36,7 @@ public class HomeController {
 
     @GetMapping("/home")
     public String home(Model model, HttpSession session) {
-        Long instituteId = (Long) session.getAttribute("instituteId");
+        Integer instituteId = (Integer) session.getAttribute("instituteId");
         boolean isInstituteSelected = instituteId != null;
 
         model.addAttribute("isInstituteSelected", isInstituteSelected);
@@ -60,10 +60,10 @@ public class HomeController {
 
         Object oopIdObj = session.getAttribute("oopId");
 
-        Long oopId = null;
+        Integer oopId = null;
         if (oopIdObj != null) {
             try {
-                oopId = Long.parseLong(oopIdObj.toString());
+                oopId = Integer.parseInt(oopIdObj.toString());
                 response.put("oopId", oopId);
             } catch (NumberFormatException e) {
                 response.put("error", "Неверный формат OOP ID");
@@ -74,16 +74,16 @@ public class HomeController {
         String role = (String) session.getAttribute("role");
         response.put("role", role);
 
-        Long instituteId = (Long) session.getAttribute("instituteId");
+        Integer instituteId = (Integer) session.getAttribute("instituteId");
         response.put("instituteId", instituteId);
 
         if (oopId != null) {
             //Список дисциплин ОП, для которых будет созданы пакеты РПД
             List<DisciplineEducationalProgram> allDisciplineEducationalPrograms = disciplineEducationalProgramService.getAll();
-            Long finalOopId = oopId;
+            Integer finalOopId = oopId;
             List<DisciplineEducationalProgram> disciplineEducationalPrograms = allDisciplineEducationalPrograms.stream()
-                    .filter(el -> Long.valueOf(el.getBasicEducationalProgram().getId()).equals(finalOopId))
-                    .filter(el -> el.getDisabled().equals(false)).toList();
+                    .filter(el -> el.getBasicEducationalProgram().getId() == finalOopId)
+                    .filter(el -> !el.isDisabled()).toList();
             response.put("disciplinesOP", disciplineEducationalPrograms);
         } else {
             response.put("disciplinesOP", "");
@@ -98,17 +98,16 @@ public class HomeController {
 
     @GetMapping("/api/home/teacher-filter/{entityId}")
     @ResponseBody
-    public ResponseEntity<Map<String, Object>> filterByTeacher(@PathVariable Long entityId, HttpServletRequest request) {
+    public ResponseEntity<Map<String, Object>> filterByTeacher(@PathVariable Integer entityId, HttpServletRequest request) {
         Map<String, Object> response = new HashMap<>();
-        Teacher teacher = teacherService.getById(entityId);
         // Получаем запись entityId
         HttpSession session = request.getSession();
 
         Object oopIdObj = session.getAttribute("oopId");
-        Long oopId = null;
+        Integer oopId = null;
         if (oopIdObj != null) {
             try {
-                oopId = Long.parseLong(oopIdObj.toString());
+                oopId = Integer.parseInt(oopIdObj.toString());
                 response.put("oopId", oopId);
             } catch (NumberFormatException e) {
                 response.put("error", "Неверный формат OOP ID");
@@ -118,17 +117,17 @@ public class HomeController {
 
         if (oopId != null) {
             List<DisciplineEducationalProgram> allDisciplineEducationalPrograms = disciplineEducationalProgramService.getAll();
-            Long finalOopId = oopId;
+            Integer finalOopId = oopId;
             if (entityId == 0) {
                 List<DisciplineEducationalProgram> disciplineEducationalPrograms = allDisciplineEducationalPrograms.stream()
-                        .filter(el -> Long.valueOf(el.getBasicEducationalProgram().getId()).equals(finalOopId))
-                        .filter(el -> el.getDisabled().equals(false)).toList();
+                        .filter(el -> el.getBasicEducationalProgram().getId() == finalOopId)
+                        .filter(el -> !el.isDisabled()).toList();
                 response.put("disciplinesOP", disciplineEducationalPrograms);
             } else {
                 List<DisciplineEducationalProgram> disciplineEducationalPrograms = allDisciplineEducationalPrograms.stream()
-                        .filter(el -> Long.valueOf(el.getBasicEducationalProgram().getId()).equals(finalOopId))
-                        .filter(el -> Long.valueOf(el.getDiscipline().getDeveloper().getId()).equals(entityId))
-                        .filter(el -> el.getDisabled().equals(false)).toList();
+                        .filter(el -> el.getBasicEducationalProgram().getId() == finalOopId)
+                        .filter(el -> el.getDiscipline().getDeveloper().getId() == entityId)
+                        .filter(el -> !el.isDisabled()).toList();
                 response.put("disciplinesOP", disciplineEducationalPrograms);
             }
         } else {

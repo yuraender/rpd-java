@@ -19,7 +19,7 @@ public class FileRPDService {
         return fileRPDRepository.findAll();
     }
 
-    public FileRPD getById(Long id) {
+    public FileRPD getById(Integer id) {
         return fileRPDRepository.findById(id).orElse(null);
     }
 

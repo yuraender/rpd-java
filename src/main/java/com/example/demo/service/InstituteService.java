@@ -24,9 +24,9 @@ public class InstituteService {
         return instituteRepository.findByNameContainingOrCityContainingAndDisabledFalse(keyword, keyword);
     }
 
-    public Institute findById(Long id) {
+    public Institute findById(Integer id) {
         return instituteRepository.findById(id)
-                .filter(institute -> !institute.getDisabled())
+                .filter(institute -> !institute.isDisabled())
                 .orElse(null);
     }
 

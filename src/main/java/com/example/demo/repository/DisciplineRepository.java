@@ -5,9 +5,9 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;
 
-public interface DisciplineRepository extends JpaRepository<Discipline, Long> {
+public interface DisciplineRepository extends JpaRepository<Discipline, Integer> {
 
-    List<Discipline> findByDeveloperId(Long developerRpId);
+    List<Discipline> findByDeveloperId(Integer developerRpId);
 
     List<Discipline> findAllByDisabledFalse();
 }

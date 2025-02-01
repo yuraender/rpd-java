@@ -506,7 +506,7 @@
                         row.classList.add(`${data.id}`)
                         row.innerHTML =
                             '<td>' + data.id + '</td>' +
-                            '<td>' + data.indexDiscipline + '</td>' +
+                            '<td>' + data.index + '</td>' +
                             '<td>' + data.name + '</td>' +
                             '<td>' + data.developer.employee.nameTypeOne + '</td>' +
                             '<td>' + data.department.name + '</td>';
@@ -537,7 +537,7 @@
                 row.classList.add(`${data.id}`)
                 row.innerHTML =
                     '<td>' + data.id + '</td>' +
-                    '<td>' + data.indexDiscipline + '</td>' +
+                    '<td>' + data.index + '</td>' +
                     '<td>' + data.name + '</td>' +
                     '<td>' + data.developer.employee.nameTypeOne + '</td>' +
                     '<td>' + data.department.name + '</td>';
@@ -613,7 +613,7 @@
                     fieldTwoDesc.classList.add('field__desc')
                     fieldTwoDesc.textContent = `Индекс:`
                     fieldTwoWrapper.append(fieldTwoDesc)
-                    fieldTwoWrapper.append(createTextBoxForActiveRecord(data.data.indexDiscipline, 'index'))
+                    fieldTwoWrapper.append(createTextBoxForActiveRecord(data.data.index, 'index'))
                     form.append(fieldTwoWrapper)
 
                     //field3=========================================================
@@ -766,7 +766,7 @@
                             if (rows[i].getAttribute('dataid') == newRecord.updatedData.id) {
                                 rows[i].innerHTML =
                                     '<td>' + newRecord.updatedData.id + '</td>' +
-                                    '<td>' + newRecord.updatedData.indexDiscipline + '</td>' +
+                                    '<td>' + newRecord.updatedData.index + '</td>' +
                                     '<td>' + newRecord.updatedData.name + '</td>' +
                                     '<td>' + newRecord.updatedData.developer.employee.nameTypeOne + '</td>' +
                                     '<td>' + newRecord.updatedData.department.name + '</td>';

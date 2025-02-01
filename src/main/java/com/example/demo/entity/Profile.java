@@ -1,49 +1,26 @@
 package com.example.demo.entity;
 
 import jakarta.persistence.*;
+import lombok.Getter;
+import lombok.Setter;
 
 @Entity
 @Table(name = "profiles")
+@Getter
+@Setter
 public class Profile {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id;
+    private int id;
+
+    @Column(length = 100, nullable = false)
     private String name;
+
     @ManyToOne
-    @JoinColumn(name = "direction_id", referencedColumnName = "id")
+    @JoinColumn(name = "direction_id", referencedColumnName = "id", nullable = false)
     private Direction direction;
-    private Boolean disabled;
 
-    public Boolean getDisabled() {
-        return disabled;
-    }
-
-    public void setDisabled(Boolean disabled) {
-        this.disabled = disabled;
-    }
-
-    public Integer getId() {
-        return id;
-    }
-
-    public void setId(Integer id) {
-        this.id = id;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public Direction getDirection() {
-        return direction;
-    }
-
-    public void setDirection(Direction direction) {
-        this.direction = direction;
-    }
+    @Column(nullable = false)
+    private boolean disabled;
 }

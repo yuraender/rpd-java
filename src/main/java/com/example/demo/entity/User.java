@@ -1,62 +1,29 @@
 package com.example.demo.entity;
 
 import jakarta.persistence.*;
+import lombok.Getter;
+import lombok.Setter;
 
 @Entity
-@Table(name = "app_users")
-public class AppUser {
+@Table(name = "users")
+@Getter
+@Setter
+public class User {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
-    @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "role_id")
-    private RoleUser roleUser;
-    @Column(nullable = false, unique = true)
+    private int id;
+
+    @Column(length = 100, nullable = false, unique = true)
     private String username;
 
     @Column(nullable = false)
     private String password;
 
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "role_id", referencedColumnName = "id", nullable = false)
+    private Role role;
+
     @Column(nullable = false)
     private boolean disabled;
-
-    // Getters and Setters
-    public Long getId() {
-        return id;
-    }
-    public RoleUser getRoleUser() {
-        return roleUser;
-    }
-
-    public void setRoleUser(RoleUser roleUser) {
-        this.roleUser = roleUser;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public String getUsername() {
-        return username;
-    }
-
-    public void setUsername(String username) {
-        this.username = username;
-    }
-
-    public String getPassword() {
-        return password;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
-    }
-
-    public boolean isDisabled() {
-        return disabled;
-    }
-
-    public void setDisabled(boolean disabled) {
-        this.disabled = disabled;
-    }
 }

@@ -58,24 +58,25 @@ public class BackgroundInformationController {
 
     @GetMapping("/background-information")
     public String getBackgroundInformation(
-            @SessionAttribute(name = "instituteId", required = false) Long instituteId,
-            @SessionAttribute(name = "departmentId", required = false) Long departmentId,
-            @SessionAttribute(name = "directionId", required = false) Long directionId,
-            @SessionAttribute(name = "profileId", required = false) Long profileId,
-            @SessionAttribute(name = "educationTypeId", required = false) Long educationTypeId,
-            @SessionAttribute(name = "employeeId", required = false) Long employeeId,
-            @SessionAttribute(name = "employeePositionId", required = false) Long employeePositionId,
-            @SessionAttribute(name = "teacherId", required = false) Long teacherId,
-            @SessionAttribute(name = "disciplineId", required = false) Long disciplineId,
-            @SessionAttribute(name = "competencieId", required = false) Long competencieId,
-            @SessionAttribute(name = "audienceId", required = false) Long audienceId,
-            @SessionAttribute(name = "techSupportId", required = false) Long techSupportId,
-            @SessionAttribute(name = "basicEducationalProgramId", required = false) Long basicEducationalProgramId,
-            @SessionAttribute(name = "disciplinesEducationalProgramId", required = false) Long disciplinesEducationalProgramId,
-            @SessionAttribute(name = "competenciesDisciplinesEducationalProgramId", required = false) Long competenciesDisciplinesEducationalProgramId,
-            @SessionAttribute(name = "fileRPDId", required = false) Long fileRPDId,
+            @SessionAttribute(name = "instituteId", required = false) Integer instituteId,
+            @SessionAttribute(name = "departmentId", required = false) Integer departmentId,
+            @SessionAttribute(name = "directionId", required = false) Integer directionId,
+            @SessionAttribute(name = "profileId", required = false) Integer profileId,
+            @SessionAttribute(name = "educationTypeId", required = false) Integer educationTypeId,
+            @SessionAttribute(name = "employeeId", required = false) Integer employeeId,
+            @SessionAttribute(name = "employeePositionId", required = false) Integer employeePositionId,
+            @SessionAttribute(name = "teacherId", required = false) Integer teacherId,
+            @SessionAttribute(name = "disciplineId", required = false) Integer disciplineId,
+            @SessionAttribute(name = "competencieId", required = false) Integer competencieId,
+            @SessionAttribute(name = "audienceId", required = false) Integer audienceId,
+            @SessionAttribute(name = "techSupportId", required = false) Integer techSupportId,
+            @SessionAttribute(name = "basicEducationalProgramId", required = false) Integer basicEducationalProgramId,
+            @SessionAttribute(name = "disciplinesEducationalProgramId", required = false) Integer disciplinesEducationalProgramId,
+            @SessionAttribute(name = "competenciesDisciplinesEducationalProgramId", required = false) Integer competenciesDisciplinesEducationalProgramId,
+            @SessionAttribute(name = "fileRPDId", required = false) Integer fileRPDId,
             @SessionAttribute(name = "role", required = false) String role,
-            Model model) {
+            Model model
+    ) {
         // Получаем все институты
         List<Institute> institutes = instituteService.getAllInstitutes();
         model.addAttribute("institutes", institutes);

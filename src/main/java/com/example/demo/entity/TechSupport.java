@@ -1,53 +1,27 @@
 package com.example.demo.entity;
 
 import jakarta.persistence.*;
+import lombok.Getter;
+import lombok.Setter;
 
 @Entity
 @Table(name = "tech_supports")
+@Getter
+@Setter
 public class TechSupport {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private int id;
+
     @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "discipline_id", referencedColumnName = "id")
+    @JoinColumn(name = "discipline_id", referencedColumnName = "id", nullable = false)
     private Discipline discipline;
 
     @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "audiences_id", referencedColumnName = "id")
+    @JoinColumn(name = "audiences_id", referencedColumnName = "id", nullable = false)
     private Audience audience;
 
-    private Boolean disable;
-
-    public Boolean getDisable() {
-        return disable;
-    }
-
-    public void setDisable(Boolean disable) {
-        this.disable = disable;
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public Discipline getDiscipline() {
-        return discipline;
-    }
-
-    public void setDiscipline(Discipline discipline) {
-        this.discipline = discipline;
-    }
-
-    public Audience getAudience() {
-        return audience;
-    }
-
-    public void setAudience(Audience audience) {
-        this.audience = audience;
-    }
+    @Column(nullable = false)
+    private boolean disabled;
 }

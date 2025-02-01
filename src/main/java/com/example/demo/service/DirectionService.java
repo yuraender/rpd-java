@@ -20,7 +20,7 @@ public class DirectionService {
         return directionRepository.findAll();
     }
 
-    public Direction getById(Long id) {
+    public Direction getById(Integer id) {
         return directionRepository.findById(id).orElse(null);
     }
 

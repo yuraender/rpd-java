@@ -19,11 +19,11 @@ public class DisciplineService {
         return disciplineRepository.findAllByDisabledFalse();
     }
 
-    public Discipline getById(Long id) {
+    public Discipline getById(Integer id) {
         return disciplineRepository.findById(id).orElse(null);
     }
 
-    public List<Discipline> getByTeacherId(Long teacherId) {
+    public List<Discipline> getByTeacherId(Integer teacherId) {
         return disciplineRepository.findByDeveloperId(teacherId);
     }
 

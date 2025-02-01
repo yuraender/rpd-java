@@ -32,7 +32,7 @@ public class DirectionController {
 
     @GetMapping("/directions-data-set-active/{entityId}")
     @ResponseBody
-    public ResponseEntity<Map<String, Object>> setActive(@PathVariable Long entityId, HttpServletRequest request) {
+    public ResponseEntity<Map<String, Object>> setActive(@PathVariable Integer entityId, HttpServletRequest request) {
         Map<String, Object> response = new HashMap<>();
 
         Direction direction = directionService.getById(entityId);
@@ -63,7 +63,7 @@ public class DirectionController {
 
     @GetMapping("/api/directions/get-active/{entityId}")
     @ResponseBody
-    public ResponseEntity<Map<String, Object>> getActiveEntity(@PathVariable Long entityId) {
+    public ResponseEntity<Map<String, Object>> getActiveEntity(@PathVariable Integer entityId) {
         Map<String, Object> response = new HashMap<>();
         Direction direction = directionService.getById(entityId);
         response.put("data", direction);
@@ -78,8 +78,8 @@ public class DirectionController {
         Map<String, Object> response = new HashMap<>();
         String param1 = payload.get("0");
         String param2 = payload.get("1");
-        Long param3 = Long.valueOf(payload.get("2"));
-        Long dataId = Long.valueOf(payload.get("dataId"));
+        Integer param3 = Integer.parseInt(payload.get("2"));
+        Integer dataId = Integer.parseInt(payload.get("dataId"));
 
         Direction entity = directionService.getById(dataId);
         Department department = departmentService.getById(param3);
@@ -105,7 +105,7 @@ public class DirectionController {
         Map<String, Object> response = new HashMap<>();
         String param1 = payload.get("0");
         String param2 = payload.get("1");
-        Long param3 = Long.valueOf(payload.get("2"));
+        Integer param3 = Integer.parseInt(payload.get("2"));
         Department department = departmentService.getById(param3);
 
         if (department == null) {
@@ -128,7 +128,7 @@ public class DirectionController {
 
     @GetMapping("/api/direction-support/delete-record/{entityId}")
     @ResponseBody
-    public ResponseEntity<Map<String, Object>> deleteRecord(@PathVariable Long entityId) {
+    public ResponseEntity<Map<String, Object>> deleteRecord(@PathVariable Integer entityId) {
         Map<String, Object> response = new HashMap<>();
 
         // Получаем запись TechSupport по techSupportId

@@ -5,23 +5,17 @@ import lombok.Getter;
 import lombok.Setter;
 
 @Entity
-@Table(name = "education_types")
+@Table(name = "roles")
 @Getter
 @Setter
-public class EducationType {
+public class Role {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
-    @Column(length = 50, nullable = false, unique = true)
+    @Column(length = 100, nullable = false, unique = true)
     private String name;
-
-    @Column(nullable = false)
-    private int learningPeriod;
-
-    @Column(columnDefinition = "TEXT")
-    private String text;
 
     @Column(nullable = false)
     private boolean disabled;

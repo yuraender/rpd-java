@@ -16,17 +16,17 @@ public class AudienceService {
         this.audienceRepository = audienceRepository;
     }
 
-    public List<Audience> findAllByDisabledFalseAndInstituteId(Long instituteId) {
+    public List<Audience> findAllByDisabledFalseAndInstituteId(Integer instituteId) {
         return audienceRepository.findAllByDisabledFalseAndInstituteId(instituteId);
     }
 
     public List<Audience> getAll() {
         return audienceRepository.findAll().stream()
-                .filter(techSupport -> !techSupport.getDisabled())
+                .filter(techSupport -> !techSupport.isDisabled())
                 .collect(Collectors.toList());
     }
 
-    public Audience getById(Long id) {
+    public Audience getById(Integer id) {
         return audienceRepository.findByIdAndDisabledFalse(id).orElse(null);
     }
 

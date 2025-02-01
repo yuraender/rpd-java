@@ -68,7 +68,7 @@ public class EducationTypeController {
 
     @GetMapping("/api/education-type/get-active/{entityId}")
     @ResponseBody
-    public ResponseEntity<Map<String, Object>> getActiveEntity(@PathVariable Long entityId) {
+    public ResponseEntity<Map<String, Object>> getActiveEntity(@PathVariable Integer entityId) {
         Map<String, Object> response = new HashMap<>();
         EducationType entity = educationTypeService.getById(entityId);
         response.put("data", entity);
@@ -81,7 +81,7 @@ public class EducationTypeController {
         String param0 = payload.get("0");
         String param1 = payload.get("1");
         String param2 = payload.get("2");
-        Long dataId = Long.valueOf(payload.get("dataId"));
+        Integer dataId = Integer.parseInt(payload.get("dataId"));
 
         EducationType entity = educationTypeService.getById(dataId);
 
@@ -91,7 +91,7 @@ public class EducationTypeController {
         }
         // Обновляем поле audience у Department
         entity.setName(param0);
-        entity.setLearningPeriod(Integer.valueOf(param1));
+        entity.setLearningPeriod(Integer.parseInt(param1));
         entity.setText(param2);
         entity.setDisabled(false);
         // Сохраняем обновленную запись
@@ -110,7 +110,7 @@ public class EducationTypeController {
 
         EducationType entity = new EducationType();
         entity.setName(param0);
-        entity.setLearningPeriod(Integer.valueOf(param1));
+        entity.setLearningPeriod(Integer.parseInt(param1));
         entity.setText(param2);
         entity.setDisabled(false);
         // Сохраняем обновленную запись
@@ -122,7 +122,7 @@ public class EducationTypeController {
 
     @GetMapping("/api/education-type/delete-record/{entityId}")
     @ResponseBody
-    public ResponseEntity<Map<String, Object>> deleteRecord(@PathVariable Long entityId) {
+    public ResponseEntity<Map<String, Object>> deleteRecord(@PathVariable Integer entityId) {
         Map<String, Object> response = new HashMap<>();
 
         // Получаем запись TechSupport по techSupportId

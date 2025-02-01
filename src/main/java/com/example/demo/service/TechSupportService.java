@@ -16,65 +16,64 @@ public class TechSupportService {
 
     public List<TechSupport> getAll() {
         return techSupportRepository.findAll().stream()
-                .filter(techSupport -> !techSupport.getDisable())
+                .filter(techSupport -> !techSupport.isDisabled())
                 .collect(Collectors.toList());
     }
 
-    public List<TechSupport> getByDepartmentId(Long departmentId) {
+    public List<TechSupport> getByDepartmentId(Integer departmentId) {
         // Получаем все записи TechSupport
         List<TechSupport> allTechSupports = techSupportRepository.findAll();
 
         // Фильтруем по departmentId
         List<TechSupport> filteredTechSupports = allTechSupports.stream()
-                .filter(techSupport -> Long.valueOf(techSupport.getDiscipline().getDepartment().getId()).equals(departmentId))
-                .filter(techSupport -> techSupport.getDisable().equals(false))
-                .filter(techSupport -> techSupport.getDisable().equals(false))
+                .filter(techSupport -> techSupport.getDiscipline().getDepartment().getId() == departmentId)
+                .filter(techSupport -> !techSupport.isDisabled())
                 .collect(Collectors.toList());
 
         return filteredTechSupports;
     }
 
-    public List<TechSupport> getByTeacherId(Long departmentId, Long teacherId) {
+    public List<TechSupport> getByTeacherId(Integer departmentId, Integer teacherId) {
         // Получаем все записи TechSupport
         List<TechSupport> allTechSupports = techSupportRepository.findAll();
 
         // Фильтруем по departmentId и teacherId
         List<TechSupport> filteredTechSupports = allTechSupports.stream()
-                .filter(techSupport -> Long.valueOf(techSupport.getDiscipline().getDepartment().getId()).equals(departmentId))
-                .filter(techSupport -> Long.valueOf(techSupport.getDiscipline().getDeveloper().getId()).equals(teacherId))
-                .filter(techSupport -> techSupport.getDisable().equals(false))
+                .filter(techSupport -> techSupport.getDiscipline().getDepartment().getId() == departmentId)
+                .filter(techSupport -> techSupport.getDiscipline().getDeveloper().getId() == teacherId)
+                .filter(techSupport -> !techSupport.isDisabled())
                 .collect(Collectors.toList());
 
         return filteredTechSupports;
     }
 
-    public List<TechSupport> getByDisciplineId(Long departmentId, Long teacherId, Long disciplineId) {
+    public List<TechSupport> getByDisciplineId(Integer departmentId, Integer teacherId, Integer disciplineId) {
         // Получаем все записи TechSupport
         List<TechSupport> allTechSupports = techSupportRepository.findAll();
 
         // Фильтруем по departmentId и teacherId
         List<TechSupport> filteredTechSupports = allTechSupports.stream()
-                .filter(techSupport -> Long.valueOf(techSupport.getDiscipline().getDepartment().getId()).equals(departmentId))
-                .filter(techSupport -> Long.valueOf(techSupport.getDiscipline().getDeveloper().getId()).equals(teacherId))
-                .filter(techSupport -> Long.valueOf(techSupport.getDiscipline().getId()).equals(disciplineId))
-                .filter(techSupport -> techSupport.getDisable().equals(false))
+                .filter(techSupport -> techSupport.getDiscipline().getDepartment().getId() == departmentId)
+                .filter(techSupport -> techSupport.getDiscipline().getDeveloper().getId() == teacherId)
+                .filter(techSupport -> techSupport.getDiscipline().getId() == disciplineId)
+                .filter(techSupport -> !techSupport.isDisabled())
                 .collect(Collectors.toList());
 
         return filteredTechSupports;
     }
 
-    public List<TechSupport> findByAudienceAndDiscipline(Long audienceId, Long disciplineId) {
+    public List<TechSupport> findByAudienceAndDiscipline(Integer audienceId, Integer disciplineId) {
         // Фильтруем по departmentId и teacherId
         List<TechSupport> filteredTechSupports = techSupportRepository.findAll().stream()
-                .filter(techSupport -> Long.valueOf(techSupport.getAudience().getId()).equals(audienceId))
-                .filter(techSupport -> Long.valueOf(techSupport.getDiscipline().getId()).equals(disciplineId))
-                .filter(techSupport -> techSupport.getDisable().equals(false))
+                .filter(techSupport -> techSupport.getAudience().getId() == audienceId)
+                .filter(techSupport -> techSupport.getDiscipline().getId() == disciplineId)
+                .filter(techSupport -> !techSupport.isDisabled())
                 .collect(Collectors.toList());
 
         return filteredTechSupports;
     }
 
-    public TechSupport getById(Long id) {
+    public TechSupport getById(Integer id) {
         return techSupportRepository.findById(id).orElse(null);
     }
 

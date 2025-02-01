@@ -19,7 +19,7 @@ public class EducationTypeService {
         return educationTypeRepository.findAllByDisabledFalse();
     }
 
-    public EducationType getById(Long id) {
+    public EducationType getById(Integer id) {
         return educationTypeRepository.findById(id).orElse(null);
     }
 

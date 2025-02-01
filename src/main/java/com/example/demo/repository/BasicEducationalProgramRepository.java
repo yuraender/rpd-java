@@ -6,9 +6,9 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import java.util.List;
 import java.util.Optional;
 
-public interface BasicEducationalProgramRepository extends JpaRepository<BasicEducationalProgram, Long> {
+public interface BasicEducationalProgramRepository extends JpaRepository<BasicEducationalProgram, Integer> {
 
-    Optional<BasicEducationalProgram> findByIdAndDisabledFalse(Long id);
+    Optional<BasicEducationalProgram> findByIdAndDisabledFalse(Integer id);
 
     List<BasicEducationalProgram> findAllByDisabledFalse();
 }

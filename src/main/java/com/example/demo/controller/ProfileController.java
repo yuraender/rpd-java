@@ -32,7 +32,7 @@ public class ProfileController {
 
     @GetMapping("/profiles-data-set-active/{entityId}")
     @ResponseBody
-    public ResponseEntity<Map<String, Object>> setActive(@PathVariable Long entityId, HttpServletRequest request) {
+    public ResponseEntity<Map<String, Object>> setActive(@PathVariable Integer entityId, HttpServletRequest request) {
         Map<String, Object> response = new HashMap<>();
 
         Profile entity = profileService.getById(entityId);
@@ -63,7 +63,7 @@ public class ProfileController {
 
     @GetMapping("/api/profiles/get-active/{entityId}")
     @ResponseBody
-    public ResponseEntity<Map<String, Object>> getActiveEntity(@PathVariable Long entityId) {
+    public ResponseEntity<Map<String, Object>> getActiveEntity(@PathVariable Integer entityId) {
         Map<String, Object> response = new HashMap<>();
         Profile profile = profileService.getById(entityId);
         response.put("data", profile);
@@ -76,8 +76,8 @@ public class ProfileController {
     public ResponseEntity<Map<String, Object>> updateRecord(@RequestBody Map<String, String> payload) {
         Map<String, Object> response = new HashMap<>();
         String param1 = payload.get("0");
-        Long param2 = Long.valueOf(payload.get("1"));
-        Long dataId = Long.valueOf(payload.get("dataId"));
+        Integer param2 = Integer.parseInt(payload.get("1"));
+        Integer dataId = Integer.parseInt(payload.get("dataId"));
 
         Profile entity = profileService.getById(dataId);
         Direction direction = directionService.getById(param2);
@@ -101,7 +101,7 @@ public class ProfileController {
     public ResponseEntity<Map<String, Object>> createRecord(@RequestBody Map<String, String> payload) {
         Map<String, Object> response = new HashMap<>();
         String param1 = payload.get("0");
-        Long param2 = Long.valueOf(payload.get("1"));
+        Integer param2 = Integer.parseInt(payload.get("1"));
         Direction direction = directionService.getById(param2);
 
         if (direction == null) {
@@ -122,7 +122,7 @@ public class ProfileController {
 
     @GetMapping("/api/profile-support/delete-record/{entityId}")
     @ResponseBody
-    public ResponseEntity<Map<String, Object>> deleteRecord(@PathVariable Long entityId) {
+    public ResponseEntity<Map<String, Object>> deleteRecord(@PathVariable Integer entityId) {
         Map<String, Object> response = new HashMap<>();
 
         // Получаем запись TechSupport по techSupportId

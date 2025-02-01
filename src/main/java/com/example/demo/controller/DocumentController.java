@@ -69,16 +69,16 @@ public class DocumentController {
 
     @PostMapping("/generate")
     public ResponseEntity<byte[]> generateAndSaveDocuments(@RequestBody Map<String, Object> payload, HttpServletRequest request) throws IOException {
-        Long oopId = Long.valueOf((String) payload.get("oopId"));
-        String protocolDate = String.valueOf(payload.get("protocolDate"));
-        String protocolNumber = String.valueOf(payload.get("protocolNumber"));
+        Integer oopId = Integer.valueOf((String) payload.get("oopId"));
+        String protocolDate = (String) payload.get("protocolDate");
+        String protocolNumber = (String) payload.get("protocolNumber");
         ObjectMapper mapper = new ObjectMapper();
-        List<Long> disciplinesOpList = mapper.convertValue(payload.get("disciplinesOPList"), new TypeReference<>() {
+        List<Integer> disciplinesOpList = mapper.convertValue(payload.get("disciplinesOPList"), new TypeReference<>() {
         });
 
         HttpSession session = request.getSession();
         String directorApprovalDate = "Test Директор";
-        Long instituteId = (Long) session.getAttribute("instituteId");
+        Integer instituteId = (Integer) session.getAttribute("instituteId");
 
         List<File> folders = new ArrayList<>();
         byte[] zipContent = null;
@@ -87,9 +87,9 @@ public class DocumentController {
         List<DisciplineEducationalProgram> allDisciplineEducationalPrograms = disciplineEducationalProgramService.getAll();
 
         List<DisciplineEducationalProgram> disciplinesEducationalPrograms = allDisciplineEducationalPrograms.stream()
-                .filter(el -> Long.valueOf(el.getBasicEducationalProgram().getId()).equals(oopId))
-                .filter(el -> el.getDisabled().equals(false))
-                .filter(el -> disciplinesOpList.contains(Long.valueOf(el.getId())))
+                .filter(el -> el.getBasicEducationalProgram().getId() == oopId)
+                .filter(el -> !el.isDisabled())
+                .filter(el -> disciplinesOpList.contains(el.getId()))
                 .collect(Collectors.toList());
 
         if (!disciplinesEducationalPrograms.isEmpty()) {
@@ -116,8 +116,8 @@ public class DocumentController {
                 List<CompetenciesDisciplinesEducationalProgram> allCompetenciesOP = competenciesDisciplinesEducationalProgramService.getAll();
                 Integer disciplineOPActual = disciplineEducationalProgram.getId();
                 List<CompetenciesDisciplinesEducationalProgram> competenciesOPFilter = allCompetenciesOP.stream()
-                        .filter(el -> el.getDisciplineEducationalProgram().getId().equals(disciplineOPActual))
-                        .filter(el -> el.getDisabled().equals(false)).toList();
+                        .filter(el -> el.getDisciplineEducationalProgram().getId() == disciplineOPActual)
+                        .filter(el -> !el.isDisabled()).toList();
                 List<Map<String, String>> competenciesData = new ArrayList<>();
 
                 for (CompetenciesDisciplinesEducationalProgram cdep : competenciesOPFilter) {
@@ -139,8 +139,8 @@ public class DocumentController {
                 // Получение данных для тех обеспечения
                 List<Audience> allAudiencesList = audienceService.getAll();
                 List<Audience> audiencesFiltered = allAudiencesList.stream()
-                        .filter(el -> el.getId().equals(discipline.getId()))
-                        .filter(el -> el.getDisabled().equals(false)).toList();
+                        .filter(el -> el.getId() == discipline.getId())
+                        .filter(el -> !el.isDisabled()).toList();
                 List<Map<String, String>> audienciesData = new ArrayList<>();
 
                 for (Audience audience : audiencesFiltered) {

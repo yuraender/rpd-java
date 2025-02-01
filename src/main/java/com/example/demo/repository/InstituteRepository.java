@@ -7,7 +7,7 @@ import org.springframework.data.repository.query.Param;
 
 import java.util.List;
 
-public interface InstituteRepository extends JpaRepository<Institute, Long> {
+public interface InstituteRepository extends JpaRepository<Institute, Integer> {
 
     List<Institute> findByDisabledFalse();
 

@@ -6,9 +6,9 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import java.util.List;
 import java.util.Optional;
 
-public interface AudienceRepository extends JpaRepository<Audience, Long> {
+public interface AudienceRepository extends JpaRepository<Audience, Integer> {
 
-    Optional<Audience> findByIdAndDisabledFalse(Long id);
+    Optional<Audience> findByIdAndDisabledFalse(Integer id);
 
-    List<Audience> findAllByDisabledFalseAndInstituteId(Long instituteId);
+    List<Audience> findAllByDisabledFalseAndInstituteId(Integer instituteId);
 }

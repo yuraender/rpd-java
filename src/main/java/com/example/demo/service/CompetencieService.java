@@ -19,7 +19,7 @@ public class CompetencieService {
         return competencieRepository.findAllByDisabledFalse();
     }
 
-    public Competencie getById(Long id) {
+    public Competencie getById(Integer id) {
         return competencieRepository.findById(id).orElse(null);
     }
 

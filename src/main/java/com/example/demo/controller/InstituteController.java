@@ -45,7 +45,7 @@ public class InstituteController {
         String role = (String) session.getAttribute("role");
         response.put("role", role);
 
-        Long instituteId = (Long) session.getAttribute("instituteId");
+        Integer instituteId = (Integer) session.getAttribute("instituteId");
         response.put("instituteId", instituteId);
 
         return ResponseEntity.ok(response);
@@ -53,7 +53,7 @@ public class InstituteController {
 
     @GetMapping("/api/institute/get-active/{entityId}")
     @ResponseBody
-    public ResponseEntity<Map<String, Object>> getActiveEntity(@PathVariable Long entityId) {
+    public ResponseEntity<Map<String, Object>> getActiveEntity(@PathVariable Integer entityId) {
         Map<String, Object> response = new HashMap<>();
         Institute entity = instituteService.findById(entityId);
         List<Employee> entity1 = employeeService.getAllEmployees();
@@ -64,7 +64,7 @@ public class InstituteController {
 
     @GetMapping("/select-institute/{id}")
     @ResponseBody
-    public ResponseEntity<Map<String, Object>> setInstitute(@PathVariable Long id, HttpSession session) {
+    public ResponseEntity<Map<String, Object>> setInstitute(@PathVariable Integer id, HttpSession session) {
         Map<String, Object> response = new HashMap<>();
         session.setAttribute("instituteId", id);
         response.put("id", id);
@@ -76,10 +76,10 @@ public class InstituteController {
         Map<String, Object> response = new HashMap<>();
         String param0 = payload.get("0");
         String param1 = payload.get("1");
-        Long param2 = Long.valueOf(payload.get("2"));
+        Integer param2 = Integer.parseInt(payload.get("2"));
         String param3 = payload.get("3");
         String param4 = payload.get("4");
-        Long dataId = Long.valueOf(payload.get("dataId"));
+        Integer dataId = Integer.parseInt(payload.get("dataId"));
 
         Institute entity = instituteService.findById(dataId);
 
@@ -108,7 +108,7 @@ public class InstituteController {
         Map<String, Object> response = new HashMap<>();
         String param0 = payload.get("0");
         String param1 = payload.get("1");
-        Long param2 = Long.valueOf(payload.get("2"));
+        Integer param2 = Integer.parseInt(payload.get("2"));
         String param3 = payload.get("2");
         String param4 = payload.get("3");
 
@@ -131,7 +131,7 @@ public class InstituteController {
 
     @GetMapping("/api/institute/delete-record/{entityId}")
     @ResponseBody
-    public ResponseEntity<Map<String, Object>> deleteRecord(@PathVariable Long entityId) {
+    public ResponseEntity<Map<String, Object>> deleteRecord(@PathVariable Integer entityId) {
         Map<String, Object> response = new HashMap<>();
 
         // Получаем запись TechSupport по techSupportId

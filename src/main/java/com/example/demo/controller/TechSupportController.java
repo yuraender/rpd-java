@@ -65,7 +65,7 @@ public class TechSupportController {
 
     @GetMapping("/department-filter/{departmentId}")
     @ResponseBody
-    public ResponseEntity<Map<String, Object>> getTeachersAndTechSupportByDepartment(@PathVariable Long departmentId) {
+    public ResponseEntity<Map<String, Object>> getTeachersAndTechSupportByDepartment(@PathVariable Integer departmentId) {
         Map<String, Object> response = new HashMap<>();
 
         if (departmentId == 0) {
@@ -83,7 +83,7 @@ public class TechSupportController {
 
     @GetMapping("/teacher-filter/{departmentId}/{teacherId}")
     @ResponseBody
-    public ResponseEntity<Map<String, Object>> getTeachersAndTechSupportByGetTeachers(@PathVariable Long departmentId, @PathVariable Long teacherId) {
+    public ResponseEntity<Map<String, Object>> getTeachersAndTechSupportByGetTeachers(@PathVariable Integer departmentId, @PathVariable Integer teacherId) {
         Map<String, Object> response = new HashMap<>();
         if (teacherId == 0) {
             List<TechSupport> techSupports = techSupportService.getByDepartmentId(departmentId);
@@ -101,7 +101,7 @@ public class TechSupportController {
 
     @GetMapping("/teacher-filter/{departmentId}/{teacherId}/{disciplineId}")
     @ResponseBody
-    public ResponseEntity<Map<String, Object>> getTeachersAndTechSupportByGetDiscipline(@PathVariable Long departmentId, @PathVariable Long teacherId, @PathVariable Long disciplineId) {
+    public ResponseEntity<Map<String, Object>> getTeachersAndTechSupportByGetDiscipline(@PathVariable Integer departmentId, @PathVariable Integer teacherId, @PathVariable Integer disciplineId) {
         Map<String, Object> response = new HashMap<>();
         List<TechSupport> techSupports;
         if (disciplineId == 0) {
@@ -117,7 +117,7 @@ public class TechSupportController {
 
     @GetMapping("/api/tech-support/get-active/{techSupportId}")
     @ResponseBody
-    public ResponseEntity<Map<String, Object>> getActiveTechSupport(@PathVariable Long techSupportId) {
+    public ResponseEntity<Map<String, Object>> getActiveTechSupport(@PathVariable Integer techSupportId) {
         Map<String, Object> response = new HashMap<>();
         TechSupport techSupport = techSupportService.getById(techSupportId);
         List<Audience> audiences = audienceService.getAll();
@@ -128,7 +128,7 @@ public class TechSupportController {
 
     @GetMapping("/api/tech-support/update/{techSupportId}/{newAudienceId}")
     @ResponseBody
-    public ResponseEntity<Map<String, Object>> updateRecord(@PathVariable Long techSupportId, @PathVariable Long newAudienceId) {
+    public ResponseEntity<Map<String, Object>> updateRecord(@PathVariable Integer techSupportId, @PathVariable Integer newAudienceId) {
         Map<String, Object> response = new HashMap<>();
 
         // Получаем запись TechSupport по techSupportId
@@ -145,8 +145,7 @@ public class TechSupportController {
         }
 
         // Проверяем, существует ли уже запись с такими audience_id и discipline_id и disable=false
-        List<TechSupport> existingTechSupports = techSupportService.findByAudienceAndDiscipline(newAudienceId,
-                Long.valueOf(techSupport.getDiscipline().getId()));
+        List<TechSupport> existingTechSupports = techSupportService.findByAudienceAndDiscipline(newAudienceId, techSupport.getDiscipline().getId());
         if (!existingTechSupports.isEmpty()) {
             response.put("error", "Запись уже существует.");
             response.put("updatedTechSupport", techSupport);
@@ -163,7 +162,7 @@ public class TechSupportController {
 
     @GetMapping("/api/tech-support/save-new-record/{audienceSelectModalId}/{disciplineSelectModalId}")
     @ResponseBody
-    public ResponseEntity<Map<String, Object>> createRecord(@PathVariable Long audienceSelectModalId, @PathVariable Long disciplineSelectModalId) {
+    public ResponseEntity<Map<String, Object>> createRecord(@PathVariable Integer audienceSelectModalId, @PathVariable Integer disciplineSelectModalId) {
         Map<String, Object> response = new HashMap<>();
 
         // Проверяем, существует ли уже запись с такими audience_id и discipline_id и disable=false
@@ -205,7 +204,7 @@ public class TechSupportController {
 
     @GetMapping("/api/tech-support/delete-record/{techSupportId}")
     @ResponseBody
-    public ResponseEntity<Map<String, Object>> deleteRecord(@PathVariable Long techSupportId) {
+    public ResponseEntity<Map<String, Object>> deleteRecord(@PathVariable Integer techSupportId) {
         Map<String, Object> response = new HashMap<>();
 
         // Получаем запись TechSupport по techSupportId

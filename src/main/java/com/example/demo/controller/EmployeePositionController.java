@@ -49,7 +49,7 @@ public class EmployeePositionController {
 
     @GetMapping("/api/employees-position/get-active/{entityId}")
     @ResponseBody
-    public ResponseEntity<Map<String, Object>> getActiveEntity(@PathVariable Long entityId) {
+    public ResponseEntity<Map<String, Object>> getActiveEntity(@PathVariable Integer entityId) {
         Map<String, Object> response = new HashMap<>();
         EmployeePosition entity = employeePositionService.getById(entityId);
         response.put("data", entity);
@@ -60,7 +60,7 @@ public class EmployeePositionController {
     public ResponseEntity<Map<String, Object>> updateRecord(@RequestBody Map<String, String> payload) {
         Map<String, Object> response = new HashMap<>();
         String param0 = payload.get("0");
-        Long dataId = Long.valueOf(payload.get("dataId"));
+        Integer dataId = Integer.parseInt(payload.get("dataId"));
 
         EmployeePosition entity = employeePositionService.getById(dataId);
 
@@ -95,7 +95,7 @@ public class EmployeePositionController {
 
     @GetMapping("/api/employees-position/delete-record/{entityId}")
     @ResponseBody
-    public ResponseEntity<Map<String, Object>> deleteRecord(@PathVariable Long entityId) {
+    public ResponseEntity<Map<String, Object>> deleteRecord(@PathVariable Integer entityId) {
         Map<String, Object> response = new HashMap<>();
 
         // Получаем запись TechSupport по techSupportId

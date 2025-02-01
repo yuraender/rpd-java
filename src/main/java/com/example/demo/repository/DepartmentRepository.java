@@ -6,11 +6,11 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import java.util.List;
 import java.util.Optional;
 
-public interface DepartmentRepository extends JpaRepository<Department, Long> {
+public interface DepartmentRepository extends JpaRepository<Department, Integer> {
 
-    Optional<Department> findByIdAndDisabledFalseAndInstituteId(Long id, Long instituteId);
+    Optional<Department> findByIdAndDisabledFalseAndInstituteId(Integer id, Integer instituteId);
 
-    List<Department> findAllByDisabledFalseAndInstituteId(Long instituteId);
+    List<Department> findAllByDisabledFalseAndInstituteId(Integer instituteId);
 
     Optional<Department> findByCodeAndDisabledFalse(String code);
 }

@@ -19,11 +19,11 @@ public class DepartmentService {
 
     public List<Department> getAll() {
         return departmentRepository.findAll().stream()
-                .filter(department -> !department.getDisabled())
+                .filter(department -> !department.isDisabled())
                 .collect(Collectors.toList());
     }
 
-    public Department getById(Long id) {
+    public Department getById(Integer id) {
         return departmentRepository.findById(id).orElse(null);
     }
 
@@ -35,11 +35,11 @@ public class DepartmentService {
         return departmentRepository.save(department);
     }
 
-    public List<Department> getAll(Long instituteId) {
+    public List<Department> getAll(Integer instituteId) {
         return departmentRepository.findAllByDisabledFalseAndInstituteId(instituteId);
     }
 
-    public Department getById(Long id, Long instituteId) {
+    public Department getById(Integer id, Integer instituteId) {
         return departmentRepository.findByIdAndDisabledFalseAndInstituteId(id, instituteId).orElse(null);
     }
 }

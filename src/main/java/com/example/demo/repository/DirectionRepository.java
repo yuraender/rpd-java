@@ -6,7 +6,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;
 
-public interface DirectionRepository extends JpaRepository<Direction, Long> {
+public interface DirectionRepository extends JpaRepository<Direction, Integer> {
 
     List<Direction> findAllByDisabledFalse();
 

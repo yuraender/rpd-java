@@ -6,9 +6,9 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import java.util.List;
 import java.util.Optional;
 
-public interface CompetenciesDisciplinesEducationalProgramRepository extends JpaRepository<CompetenciesDisciplinesEducationalProgram, Long> {
+public interface CompetenciesDisciplinesEducationalProgramRepository extends JpaRepository<CompetenciesDisciplinesEducationalProgram, Integer> {
 
-    Optional<CompetenciesDisciplinesEducationalProgram> findByIdAndDisabledFalse(Long id);
+    Optional<CompetenciesDisciplinesEducationalProgram> findByIdAndDisabledFalse(Integer id);
 
     List<CompetenciesDisciplinesEducationalProgram> findAllByDisabledFalse();
 }

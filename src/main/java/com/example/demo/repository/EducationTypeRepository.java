@@ -5,7 +5,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;
 
-public interface EducationTypeRepository extends JpaRepository<EducationType, Long> {
+public interface EducationTypeRepository extends JpaRepository<EducationType, Integer> {
 
     List<EducationType> findAllByDisabledFalse();
 }

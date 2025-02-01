@@ -76,7 +76,7 @@ public class EmployeeController {
 
     @GetMapping("/api/employees/get-active/{entityId}")
     @ResponseBody
-    public ResponseEntity<Map<String, Object>> getActiveEntity(@PathVariable Long entityId) {
+    public ResponseEntity<Map<String, Object>> getActiveEntity(@PathVariable Integer entityId) {
         Map<String, Object> response = new HashMap<>();
         Employee entity = employeeService.getById(entityId);
         response.put("data", entity);
@@ -89,7 +89,7 @@ public class EmployeeController {
         String param0 = payload.get("0");
         String param1 = payload.get("1");
         String param2 = payload.get("2");
-        Long dataId = Long.valueOf(payload.get("dataId"));
+        Integer dataId = Integer.parseInt(payload.get("dataId"));
 
         Employee entity = employeeService.getById(dataId);
 
@@ -115,7 +115,7 @@ public class EmployeeController {
         String param0 = payload.get("0");
         String param1 = payload.get("1");
         String param2 = payload.get("2");
-        Long param3 = Long.valueOf(payload.get("3"));
+        Integer param3 = Integer.parseInt(payload.get("3"));
 
         Employee entity = new Employee();
         entity.setLastName(param0);
@@ -126,11 +126,11 @@ public class EmployeeController {
         String nameTypeOne = param0;
         String nameTypeTwo = "";
 
-        if (param1 != null && param1.length() > 0) {
+        if (param1 != null && !param1.isEmpty()) {
             nameTypeOne += " " + param1.charAt(0) + ". ";
             nameTypeTwo += param1.charAt(0) + ". ";
         }
-        if (param2 != null && param2.length() > 1) {
+        if (param2 != null && !param2.isEmpty()) {
             nameTypeOne += param2.charAt(0) + ". ";
             nameTypeTwo += param2.charAt(0) + ". ";
         }
@@ -150,7 +150,7 @@ public class EmployeeController {
 
     @GetMapping("/api/employees/delete-record/{entityId}")
     @ResponseBody
-    public ResponseEntity<Map<String, Object>> deleteRecord(@PathVariable Long entityId) {
+    public ResponseEntity<Map<String, Object>> deleteRecord(@PathVariable Integer entityId) {
         Map<String, Object> response = new HashMap<>();
 
         // Получаем запись TechSupport по techSupportId

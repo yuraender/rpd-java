@@ -1,78 +1,35 @@
 package com.example.demo.entity;
 
 import jakarta.persistence.*;
+import lombok.Getter;
+import lombok.Setter;
 
 @Entity
 @Table(name = "institutes")
+@Getter
+@Setter
 public class Institute {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id;
+    private int id;
+
+    @Column(nullable = false)
     private String name;
 
+    @Column(length = 100, nullable = false)
+    private String city;
+
+    @Column(columnDefinition = "TEXT")
+    private String approvalText;
+
+    @Column(columnDefinition = "TEXT")
+    private String footerText;
+
     @ManyToOne
-    @JoinColumn(name = "director_id", referencedColumnName = "id")
+    @JoinColumn(name = "director_id", referencedColumnName = "id", nullable = false)
     private Employee director;
 
-    private String city;
-    private String approvalText;
-    private String footerText;
-    private Boolean disabled;
-
-    public Boolean getDisabled() {
-        return disabled;
-    }
-
-    public void setDisabled(Boolean disabled) {
-        this.disabled = disabled;
-    }
-
-    public Integer getId() {
-        return id;
-    }
-
-    public void setId(Integer id) {
-        this.id = id;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public Employee getDirector() {
-        return director;
-    }
-
-    public void setDirector(Employee director) {
-        this.director = director;
-    }
-
-    public String getCity() {
-        return city;
-    }
-
-    public void setCity(String city) {
-        this.city = city;
-    }
-
-    public String getApprovalText() {
-        return approvalText;
-    }
-
-    public void setApprovalText(String approvalText) {
-        this.approvalText = approvalText;
-    }
-
-    public String getFooterText() {
-        return footerText;
-    }
-
-    public void setFooterText(String footerText) {
-        this.footerText = footerText;
-    }
+    @Column(nullable = false)
+    private boolean disabled;
 }

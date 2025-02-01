@@ -19,7 +19,7 @@ public class CompetenciesDisciplinesEducationalProgramService {
         return competenciesDisciplinesEducationalProgramRepository.findAllByDisabledFalse();
     }
 
-    public CompetenciesDisciplinesEducationalProgram getById(Long id) {
+    public CompetenciesDisciplinesEducationalProgram getById(Integer id) {
         return competenciesDisciplinesEducationalProgramRepository.findById(id).orElse(null);
     }
 

@@ -5,7 +5,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;
 
-public interface EmployeePositionRepository extends JpaRepository<EmployeePosition, Long> {
+public interface EmployeePositionRepository extends JpaRepository<EmployeePosition, Integer> {
 
     List<EmployeePosition> findAllByDisabledFalse();
 }
