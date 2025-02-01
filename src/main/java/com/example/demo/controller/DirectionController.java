@@ -1,10 +1,9 @@
 package com.example.demo.controller;
 
-import com.example.demo.entity.Audience;
 import com.example.demo.entity.Department;
 import com.example.demo.entity.Direction;
-import com.example.demo.entity.Institute;
-import com.example.demo.service.*;
+import com.example.demo.service.DepartmentService;
+import com.example.demo.service.DirectionService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,6 +18,7 @@ import java.util.Map;
 
 @Controller
 public class DirectionController {
+
     @Autowired
     private DirectionService directionService;
 
@@ -46,6 +46,7 @@ public class DirectionController {
         session.setAttribute("directionId", entityId);
         return ResponseEntity.ok(response);
     }
+
     @GetMapping("/directions-data")
     @ResponseBody
     public ResponseEntity<Map<String, Object>> getEntityData(HttpServletRequest request) {
@@ -98,9 +99,6 @@ public class DirectionController {
         response.put("updatedData", entity);
         return ResponseEntity.ok(response);
     }
-
-
-
 
     @PostMapping("/api/direction-support/save-new-record")
     public ResponseEntity<Map<String, Object>> createRecord(@RequestBody Map<String, String> payload, HttpSession session) {

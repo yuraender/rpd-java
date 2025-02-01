@@ -4,12 +4,12 @@
     <title>Справочная информация</title>
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <style>
-
         .scrollable-table {
             max-height: 50vh;
             overflow-y: auto;
             position: relative;
         }
+
         .sticky-header {
             position: -webkit-sticky;
             position: sticky;
@@ -17,11 +17,13 @@
             background-color: #fff;
             z-index: 10;
         }
+
         .active-record {
             margin-top: 20px;
             padding: 10px;
             border: 1px solid #ddd;
         }
+
         h1, h2, h3, h4, h5, h6 {
             text-align: center;
         }
@@ -56,9 +58,12 @@
             <table class="table table-bordered" id="institutesTable">
                 <thead>
                 <tr class="sticky-header">
-                    <th><input type="text" class="form-control" placeholder="ID" onkeyup="filterTable('institutesTable', 0)"></th>
-                    <th><input type="text" class="form-control" placeholder="Название" onkeyup="filterTable('institutesTable', 1)"></th>
-                    <th><input type="text" class="form-control" placeholder="Город" onkeyup="filterTable('institutesTable', 2)"></th>
+                    <th><input type="text" class="form-control" placeholder="ID"
+                               onkeyup="filterTable('institutesTable', 0)"></th>
+                    <th><input type="text" class="form-control" placeholder="Название"
+                               onkeyup="filterTable('institutesTable', 1)"></th>
+                    <th><input type="text" class="form-control" placeholder="Город"
+                               onkeyup="filterTable('institutesTable', 2)"></th>
                 </tr>
                 <tr class="sticky-header">
                     <th>ID</th>
@@ -93,12 +98,18 @@
             <table class="table table-bordered" id="departmentsTable">
                 <thead>
                 <tr class="sticky-header">
-                    <th><input type="text" class="form-control" placeholder="ID" onkeyup="filterTable('departmentsTable', 0)"></th>
-                    <th><input type="text" class="form-control" placeholder="Код" onkeyup="filterTable('departmentsTable', 1)"></th>
-                    <th><input type="text" class="form-control" placeholder="Название" onkeyup="filterTable('departmentsTable', 2)"></th>
-                    <th><input type="text" class="form-control" placeholder="Аббревиатура" onkeyup="filterTable('departmentsTable', 3)"></th>
-                    <th><input type="text" class="form-control" placeholder="Институт" onkeyup="filterTable('departmentsTable', 4)"></th>
-                    <th><input type="text" class="form-control" placeholder="Заведующий" onkeyup="filterTable('departmentsTable', 5)"></th>
+                    <th><input type="text" class="form-control" placeholder="ID"
+                               onkeyup="filterTable('departmentsTable', 0)"></th>
+                    <th><input type="text" class="form-control" placeholder="Код"
+                               onkeyup="filterTable('departmentsTable', 1)"></th>
+                    <th><input type="text" class="form-control" placeholder="Название"
+                               onkeyup="filterTable('departmentsTable', 2)"></th>
+                    <th><input type="text" class="form-control" placeholder="Аббревиатура"
+                               onkeyup="filterTable('departmentsTable', 3)"></th>
+                    <th><input type="text" class="form-control" placeholder="Институт"
+                               onkeyup="filterTable('departmentsTable', 4)"></th>
+                    <th><input type="text" class="form-control" placeholder="Заведующий"
+                               onkeyup="filterTable('departmentsTable', 5)"></th>
                 </tr>
                 <tr class="sticky-header">
                     <th>ID</th>
@@ -138,9 +149,12 @@
             <table class="table table-bordered" id="directionsTable">
                 <thead>
                 <tr class="sticky-header">
-                    <th><input type="text" class="form-control" placeholder="Шифр" onkeyup="filterTable('directionsTable', 0)"></th>
-                    <th><input type="text" class="form-control" placeholder="Название" onkeyup="filterTable('directionsTable', 1)"></th>
-                    <th><input type="text" class="form-control" placeholder="Кафедра" onkeyup="filterTable('directionsTable', 2)"></th>
+                    <th><input type="text" class="form-control" placeholder="Шифр"
+                               onkeyup="filterTable('directionsTable', 0)"></th>
+                    <th><input type="text" class="form-control" placeholder="Название"
+                               onkeyup="filterTable('directionsTable', 1)"></th>
+                    <th><input type="text" class="form-control" placeholder="Кафедра"
+                               onkeyup="filterTable('directionsTable', 2)"></th>
                 </tr>
                 <tr class="sticky-header">
                     <th>Шифр</th>
@@ -172,8 +186,10 @@
             <table class="table table-bordered" id="profilesTable">
                 <thead>
                 <tr class="sticky-header">
-                    <th><input type="text" class="form-control" placeholder="Название" onkeyup="filterTable('profilesTable', 0)"></th>
-                    <th><input type="text" class="form-control" placeholder="Направление" onkeyup="filterTable('profilesTable', 1)"></th>
+                    <th><input type="text" class="form-control" placeholder="Название"
+                               onkeyup="filterTable('profilesTable', 0)"></th>
+                    <th><input type="text" class="form-control" placeholder="Направление"
+                               onkeyup="filterTable('profilesTable', 1)"></th>
                 </tr>
                 <tr class="sticky-header">
                     <th>Название</th>
@@ -192,7 +208,8 @@
             <h3>Активный профиль</h3>
             <p><strong>ID:</strong> <span th:text="${activeProfile.id}"></span></p>
             <p><strong>Название:</strong> <span th:text="${activeProfile.name}"></span></p>
-            <p><strong>Шифр:</strong> <span th:text="${profile.direction.encryption + ' ' + profile.direction.name}"></span></p>
+            <p><strong>Шифр:</strong> <span
+                    th:text="${profile.direction.encryption + ' ' + profile.direction.name}"></span></p>
         </div>
     </section>
     <!-- Типы обучения -->
@@ -202,8 +219,10 @@
             <table class="table table-bordered" id="educationTypesTable">
                 <thead>
                 <tr class="sticky-header">
-                    <th><input type="text" class="form-control" placeholder="Название" onkeyup="filterTable('educationTypesTable', 0)"></th>
-                    <th><input type="text" class="form-control" placeholder="Срок освоения" onkeyup="filterTable('educationTypesTable', 1)"></th>
+                    <th><input type="text" class="form-control" placeholder="Название"
+                               onkeyup="filterTable('educationTypesTable', 0)"></th>
+                    <th><input type="text" class="form-control" placeholder="Срок освоения"
+                               onkeyup="filterTable('educationTypesTable', 1)"></th>
                 </tr>
                 <tr class="sticky-header">
                     <th>Название</th>
@@ -233,9 +252,12 @@
             <table class="table table-bordered" id="employeesTable">
                 <thead>
                 <tr class="sticky-header">
-                    <th><input type="text" class="form-control" placeholder="Фамилия" onkeyup="filterTable('employeesTable', 0)"></th>
-                    <th><input type="text" class="form-control" placeholder="Имя" onkeyup="filterTable('employeesTable', 1)"></th>
-                    <th><input type="text" class="form-control" placeholder="Отчество" onkeyup="filterTable('employeesTable', 2)"></th>
+                    <th><input type="text" class="form-control" placeholder="Фамилия"
+                               onkeyup="filterTable('employeesTable', 0)"></th>
+                    <th><input type="text" class="form-control" placeholder="Имя"
+                               onkeyup="filterTable('employeesTable', 1)"></th>
+                    <th><input type="text" class="form-control" placeholder="Отчество"
+                               onkeyup="filterTable('employeesTable', 2)"></th>
                 </tr>
                 <tr class="sticky-header">
                     <th>Фамилия</th>
@@ -270,7 +292,8 @@
             <table class="table table-bordered" id="employeePositionsTable">
                 <thead>
                 <tr class="sticky-header">
-                    <th><input type="text" class="form-control" placeholder="Название должности" onkeyup="filterTable('employeePositionsTable', 0)"></th>
+                    <th><input type="text" class="form-control" placeholder="Название должности"
+                               onkeyup="filterTable('employeePositionsTable', 0)"></th>
                 </tr>
                 <tr class="sticky-header">
                     <th>Название должности</th>
@@ -297,9 +320,12 @@
             <table class="table table-bordered" id="teachersTable">
                 <thead>
                 <tr class="sticky-header">
-                    <th><input type="text" class="form-control" placeholder="Кафедра" onkeyup="filterTable('teachersTable', 0)"></th>
-                    <th><input type="text" class="form-control" placeholder="Должность" onkeyup="filterTable('teachersTable', 1)"></th>
-                    <th><input type="text" class="form-control" placeholder="ФамилияИО" onkeyup="filterTable('teachersTable', 2)"></th>
+                    <th><input type="text" class="form-control" placeholder="Кафедра"
+                               onkeyup="filterTable('teachersTable', 0)"></th>
+                    <th><input type="text" class="form-control" placeholder="Должность"
+                               onkeyup="filterTable('teachersTable', 1)"></th>
+                    <th><input type="text" class="form-control" placeholder="ФамилияИО"
+                               onkeyup="filterTable('teachersTable', 2)"></th>
                 </tr>
                 <tr class="sticky-header">
                     <th>Кафедра</th>
@@ -332,10 +358,14 @@
             <table class="table table-bordered" id="disciplinesTable">
                 <thead>
                 <tr class="sticky-header">
-                    <th><input type="text" class="form-control" placeholder="Индекс" onkeyup="filterTable('disciplinesTable', 0)"></th>
-                    <th><input type="text" class="form-control" placeholder="Дисциплина" onkeyup="filterTable('disciplinesTable', 1)"></th>
-                    <th><input type="text" class="form-control" placeholder="ФамилияИО" onkeyup="filterTable('disciplinesTable', 2)"></th>
-                    <th><input type="text" class="form-control" placeholder="Кафедра" onkeyup="filterTable('disciplinesTable', 3)"></th>
+                    <th><input type="text" class="form-control" placeholder="Индекс"
+                               onkeyup="filterTable('disciplinesTable', 0)"></th>
+                    <th><input type="text" class="form-control" placeholder="Дисциплина"
+                               onkeyup="filterTable('disciplinesTable', 1)"></th>
+                    <th><input type="text" class="form-control" placeholder="ФамилияИО"
+                               onkeyup="filterTable('disciplinesTable', 2)"></th>
+                    <th><input type="text" class="form-control" placeholder="Кафедра"
+                               onkeyup="filterTable('disciplinesTable', 3)"></th>
                 </tr>
                 <tr class="sticky-header">
                     <th>Индекс</th>
@@ -371,8 +401,10 @@
             <table class="table table-bordered" id="competenciesTable">
                 <thead>
                 <tr class="sticky-header">
-                    <th><input type="text" class="form-control" placeholder="Код" onkeyup="filterTable('competenciesTable', 0)"></th>
-                    <th><input type="text" class="form-control" placeholder="Текст" onkeyup="filterTable('competenciesTable', 1)"></th>
+                    <th><input type="text" class="form-control" placeholder="Код"
+                               onkeyup="filterTable('competenciesTable', 0)"></th>
+                    <th><input type="text" class="form-control" placeholder="Текст"
+                               onkeyup="filterTable('competenciesTable', 1)"></th>
                 </tr>
                 <tr class="sticky-header">
                     <th>Код</th>
@@ -405,10 +437,14 @@
             <table class="table table-bordered" id="audiencesTable">
                 <thead>
                 <tr class="sticky-header">
-                    <th><input type="text" class="form-control" placeholder="Институт" onkeyup="filterTable('audiencesTable', 0)"></th>
-                    <th><input type="text" class="form-control" placeholder="Аудитория №" onkeyup="filterTable('audiencesTable', 1)"></th>
-                    <th><input type="text" class="form-control" placeholder="Техника" onkeyup="filterTable('audiencesTable', 2)"></th>
-                    <th><input type="text" class="form-control" placeholder="Лицензия ПО в аудитории" onkeyup="filterTable('audiencesTable', 3)"></th>
+                    <th><input type="text" class="form-control" placeholder="Институт"
+                               onkeyup="filterTable('audiencesTable', 0)"></th>
+                    <th><input type="text" class="form-control" placeholder="Аудитория №"
+                               onkeyup="filterTable('audiencesTable', 1)"></th>
+                    <th><input type="text" class="form-control" placeholder="Техника"
+                               onkeyup="filterTable('audiencesTable', 2)"></th>
+                    <th><input type="text" class="form-control" placeholder="Лицензия ПО в аудитории"
+                               onkeyup="filterTable('audiencesTable', 3)"></th>
                 </tr>
                 <tr class="sticky-header">
                     <th>Институт</th>
@@ -444,9 +480,12 @@
             <table class="table table-bordered" id="basicEducationalProgramsTable">
                 <thead>
                 <tr class="sticky-header">
-                    <th><input type="text" class="form-control" placeholder="Учебный год" onkeyup="filterTable('basicEducationalProgramsTable', 0)"></th>
-                    <th><input type="text" class="form-control" placeholder="Профиль" onkeyup="filterTable('basicEducationalProgramsTable', 1)"></th>
-                    <th><input type="text" class="form-control" placeholder="Тип Обучения" onkeyup="filterTable('basicEducationalProgramsTable', 2)"></th>
+                    <th><input type="text" class="form-control" placeholder="Учебный год"
+                               onkeyup="filterTable('basicEducationalProgramsTable', 0)"></th>
+                    <th><input type="text" class="form-control" placeholder="Профиль"
+                               onkeyup="filterTable('basicEducationalProgramsTable', 1)"></th>
+                    <th><input type="text" class="form-control" placeholder="Тип Обучения"
+                               onkeyup="filterTable('basicEducationalProgramsTable', 2)"></th>
                 </tr>
                 <tr class="sticky-header">
                     <th>Учебный год</th>
@@ -479,10 +518,14 @@
             <table class="table table-bordered" id="disciplinesEducationalProgramsTable">
                 <thead>
                 <tr class="sticky-header">
-                    <th><input type="text" class="form-control" placeholder="Профиль" onkeyup="filterTable('disciplinesEducationalProgramsTable', 0)"></th>
-                    <th><input type="text" class="form-control" placeholder="Учебный год" onkeyup="filterTable('disciplinesEducationalProgramsTable', 1)"></th>
-                    <th><input type="text" class="form-control" placeholder="Тип обучения " onkeyup="filterTable('disciplinesEducationalProgramsTable', 2)"></th>
-                    <th><input type="text" class="form-control" placeholder="Дисциплина" onkeyup="filterTable('disciplinesEducationalProgramsTable', 3)"></th>
+                    <th><input type="text" class="form-control" placeholder="Профиль"
+                               onkeyup="filterTable('disciplinesEducationalProgramsTable', 0)"></th>
+                    <th><input type="text" class="form-control" placeholder="Учебный год"
+                               onkeyup="filterTable('disciplinesEducationalProgramsTable', 1)"></th>
+                    <th><input type="text" class="form-control" placeholder="Тип обучения "
+                               onkeyup="filterTable('disciplinesEducationalProgramsTable', 2)"></th>
+                    <th><input type="text" class="form-control" placeholder="Дисциплина"
+                               onkeyup="filterTable('disciplinesEducationalProgramsTable', 3)"></th>
                 </tr>
                 <tr class="sticky-header">
                     <th>Профиль</th>
@@ -504,10 +547,15 @@
         <div class="active-record" th:if="${activeDisciplineEducationalProgram}">
             <h3>Активная дисциплинаОП</h3>
             <p><strong>ID:</strong> <span th:text="${activeDisciplineEducationalProgram.id}"></span></p>
-            <p><strong>Профиль:</strong> <span th:text="${activeDisciplineEducationalProgram.basicEducationalProgram.profile.name}"></span></p>
-            <p><strong>Учебный год:</strong> <span th:text="${activeDisciplineEducationalProgram.basicEducationalProgram.academicYear}"></span></p>
-            <p><strong>Тип обучения:</strong> <span th:text="${activeDisciplineEducationalProgram.basicEducationalProgram.educationType.name}"></span></p>
-            <p><strong>Дисциплина:</strong> <span th:text="${activeDisciplineEducationalProgram.discipline.name}"></span></p>
+            <p><strong>Профиль:</strong> <span
+                    th:text="${activeDisciplineEducationalProgram.basicEducationalProgram.profile.name}"></span></p>
+            <p><strong>Учебный год:</strong> <span
+                    th:text="${activeDisciplineEducationalProgram.basicEducationalProgram.academicYear}"></span></p>
+            <p><strong>Тип обучения:</strong> <span
+                    th:text="${activeDisciplineEducationalProgram.basicEducationalProgram.educationType.name}"></span>
+            </p>
+            <p><strong>Дисциплина:</strong> <span
+                    th:text="${activeDisciplineEducationalProgram.discipline.name}"></span></p>
         </div>
     </section>
 
@@ -518,11 +566,16 @@
             <table class="table table-bordered" id="competenciesDisciplinesEducationalProgramsTable">
                 <thead>
                 <tr class="sticky-header">
-                    <th><input type="text" class="form-control" placeholder="Профиль" onkeyup="filterTable('competenciesDisciplinesEducationalProgramsTable', 0)"></th>
-                    <th><input type="text" class="form-control" placeholder="Учебный год" onkeyup="filterTable('competenciesDisciplinesEducationalProgramsTable', 1)"></th>
-                    <th><input type="text" class="form-control" placeholder="Тип обучения " onkeyup="filterTable('competenciesDisciplinesEducationalProgramsTable', 2)"></th>
-                    <th><input type="text" class="form-control" placeholder="Дисциплина" onkeyup="filterTable('competenciesDisciplinesEducationalProgramsTable', 3)"></th>
-                    <th><input type="text" class="form-control" placeholder="Компетенция" onkeyup="filterTable('competenciesDisciplinesEducationalProgramsTable', 4)"></th>
+                    <th><input type="text" class="form-control" placeholder="Профиль"
+                               onkeyup="filterTable('competenciesDisciplinesEducationalProgramsTable', 0)"></th>
+                    <th><input type="text" class="form-control" placeholder="Учебный год"
+                               onkeyup="filterTable('competenciesDisciplinesEducationalProgramsTable', 1)"></th>
+                    <th><input type="text" class="form-control" placeholder="Тип обучения "
+                               onkeyup="filterTable('competenciesDisciplinesEducationalProgramsTable', 2)"></th>
+                    <th><input type="text" class="form-control" placeholder="Дисциплина"
+                               onkeyup="filterTable('competenciesDisciplinesEducationalProgramsTable', 3)"></th>
+                    <th><input type="text" class="form-control" placeholder="Компетенция"
+                               onkeyup="filterTable('competenciesDisciplinesEducationalProgramsTable', 4)"></th>
                 </tr>
                 <tr class="sticky-header">
                     <th>Профиль</th>
@@ -546,11 +599,21 @@
         <div class="active-record" th:if="${activeCompetenciesDisciplinesEducationalProgram}">
             <h3>Активная дисциплинаОП</h3>
             <p><strong>ID:</strong> <span th:text="${activeDisciplineEducationalProgram.id}"></span></p>
-            <p><strong>Профиль:</strong> <span th:text="${activeCompetenciesDisciplinesEducationalProgram.disciplineEducationalProgram.basicEducationalProgram.profile.name}"></span></p>
-            <p><strong>Учебный год:</strong> <span th:text="${activeCompetenciesDisciplinesEducationalProgram.disciplineEducationalProgram.basicEducationalProgram.academicYear}"></span></p>
-            <p><strong>Тип обучения:</strong> <span th:text="${activeCompetenciesDisciplinesEducationalProgram.disciplineEducationalProgram.basicEducationalProgram.educationType.name}"></span></p>
-            <p><strong>Дисциплина:</strong> <span th:text="${activeCompetenciesDisciplinesEducationalProgram.disciplineEducationalProgram.discipline.name}"></span></p>
-            <p><strong>Компетенция:</strong> <span th:text="${activeCompetenciesDisciplinesEducationalProgram.disciplineEducationalProgram.discipline.name}"></span></p>
+            <p><strong>Профиль:</strong> <span
+                    th:text="${activeCompetenciesDisciplinesEducationalProgram.disciplineEducationalProgram.basicEducationalProgram.profile.name}"></span>
+            </p>
+            <p><strong>Учебный год:</strong> <span
+                    th:text="${activeCompetenciesDisciplinesEducationalProgram.disciplineEducationalProgram.basicEducationalProgram.academicYear}"></span>
+            </p>
+            <p><strong>Тип обучения:</strong> <span
+                    th:text="${activeCompetenciesDisciplinesEducationalProgram.disciplineEducationalProgram.basicEducationalProgram.educationType.name}"></span>
+            </p>
+            <p><strong>Дисциплина:</strong> <span
+                    th:text="${activeCompetenciesDisciplinesEducationalProgram.disciplineEducationalProgram.discipline.name}"></span>
+            </p>
+            <p><strong>Компетенция:</strong> <span
+                    th:text="${activeCompetenciesDisciplinesEducationalProgram.disciplineEducationalProgram.discipline.name}"></span>
+            </p>
         </div>
     </section>
 
@@ -561,16 +624,26 @@
             <table class="table table-bordered" id="filesRpdTable">
                 <thead>
                 <tr class="sticky-header">
-                    <th><input type="text" class="form-control" placeholder="Профиль" onkeyup="filterTable('filesRpdTable', 0)"></th>
-                    <th><input type="text" class="form-control" placeholder="Учебный год" onkeyup="filterTable('filesRpdTable', 1)"></th>
-                    <th><input type="text" class="form-control" placeholder="Тип обучения " onkeyup="filterTable('filesRpdTable', 2)"></th>
-                    <th><input type="text" class="form-control" placeholder="Дисциплина" onkeyup="filterTable('filesRpdTable', 3)"></th>
-                    <th><input type="text" class="form-control" placeholder="Раздел 1. Цели" onkeyup="filterTable('filesRpdTable', 4)"></th>
-                    <th><input type="text" class="form-control" placeholder="Раздел 2. Место в ООП" onkeyup="filterTable('filesRpdTable', 5)"></th>
-                    <th><input type="text" class="form-control" placeholder="Раздел 3. Структура" onkeyup="filterTable('filesRpdTable', 6)"></th>
-                    <th><input type="text" class="form-control" placeholder="Раздел 4. ОбрТехнолог" onkeyup="filterTable('filesRpdTable', 7)"></th>
-                    <th><input type="text" class="form-control" placeholder="Раздел 5. ФОС" onkeyup="filterTable('filesRpdTable', 8)"></th>
-                    <th><input type="text" class="form-control" placeholder="Раздел 6. Уч-мет ОД" onkeyup="filterTable('filesRpdTable', 9)"></th>
+                    <th><input type="text" class="form-control" placeholder="Профиль"
+                               onkeyup="filterTable('filesRpdTable', 0)"></th>
+                    <th><input type="text" class="form-control" placeholder="Учебный год"
+                               onkeyup="filterTable('filesRpdTable', 1)"></th>
+                    <th><input type="text" class="form-control" placeholder="Тип обучения "
+                               onkeyup="filterTable('filesRpdTable', 2)"></th>
+                    <th><input type="text" class="form-control" placeholder="Дисциплина"
+                               onkeyup="filterTable('filesRpdTable', 3)"></th>
+                    <th><input type="text" class="form-control" placeholder="Раздел 1. Цели"
+                               onkeyup="filterTable('filesRpdTable', 4)"></th>
+                    <th><input type="text" class="form-control" placeholder="Раздел 2. Место в ООП"
+                               onkeyup="filterTable('filesRpdTable', 5)"></th>
+                    <th><input type="text" class="form-control" placeholder="Раздел 3. Структура"
+                               onkeyup="filterTable('filesRpdTable', 6)"></th>
+                    <th><input type="text" class="form-control" placeholder="Раздел 4. ОбрТехнолог"
+                               onkeyup="filterTable('filesRpdTable', 7)"></th>
+                    <th><input type="text" class="form-control" placeholder="Раздел 5. ФОС"
+                               onkeyup="filterTable('filesRpdTable', 8)"></th>
+                    <th><input type="text" class="form-control" placeholder="Раздел 6. Уч-мет ОД"
+                               onkeyup="filterTable('filesRpdTable', 9)"></th>
                 </tr>
                 <tr class="sticky-header">
                     <th>Профиль</th>
@@ -622,11 +695,21 @@
         <div class="active-record" th:if="${activeCompetenciesDisciplinesEducationalProgram}">
             <h3>Активная дисциплинаОП</h3>
             <p><strong>ID:</strong> <span th:text="${activeDisciplineEducationalProgram.id}"></span></p>
-            <p><strong>Профиль:</strong> <span th:text="${activeCompetenciesDisciplinesEducationalProgram.disciplineEducationalProgram.basicEducationalProgram.profile.name}"></span></p>
-            <p><strong>Учебный год:</strong> <span th:text="${activeCompetenciesDisciplinesEducationalProgram.disciplineEducationalProgram.basicEducationalProgram.academicYear}"></span></p>
-            <p><strong>Тип обучения:</strong> <span th:text="${activeCompetenciesDisciplinesEducationalProgram.disciplineEducationalProgram.basicEducationalProgram.educationType.name}"></span></p>
-            <p><strong>Дисциплина:</strong> <span th:text="${activeCompetenciesDisciplinesEducationalProgram.disciplineEducationalProgram.discipline.name}"></span></p>
-            <p><strong>Компетенция:</strong> <span th:text="${activeCompetenciesDisciplinesEducationalProgram.disciplineEducationalProgram.discipline.name}"></span></p>
+            <p><strong>Профиль:</strong> <span
+                    th:text="${activeCompetenciesDisciplinesEducationalProgram.disciplineEducationalProgram.basicEducationalProgram.profile.name}"></span>
+            </p>
+            <p><strong>Учебный год:</strong> <span
+                    th:text="${activeCompetenciesDisciplinesEducationalProgram.disciplineEducationalProgram.basicEducationalProgram.academicYear}"></span>
+            </p>
+            <p><strong>Тип обучения:</strong> <span
+                    th:text="${activeCompetenciesDisciplinesEducationalProgram.disciplineEducationalProgram.basicEducationalProgram.educationType.name}"></span>
+            </p>
+            <p><strong>Дисциплина:</strong> <span
+                    th:text="${activeCompetenciesDisciplinesEducationalProgram.disciplineEducationalProgram.discipline.name}"></span>
+            </p>
+            <p><strong>Компетенция:</strong> <span
+                    th:text="${activeCompetenciesDisciplinesEducationalProgram.disciplineEducationalProgram.discipline.name}"></span>
+            </p>
         </div>
     </section>
 
@@ -635,21 +718,21 @@
     <a href="/institutes" id="menu-institute">Институты
         <span id="institute-chosen" class="institute-status">выбран</span>
     </a>
-    <a href="/departments" id="menu-departments" >Кафедры</a>
-    <a href="/audiences" id="menu-auditoriums" >Аудитории</a>
-    <a href="/tech-support" id="menu-tech-support" >Тех.обеспечение</a>
-    <a href="/directions" id="menu-direction" >Направления</a>
-    <a href="/profiles" id="menu-profiles" >Профили</a>
-    <a href="/bep" id="menu-bep" >ООП</a>
+    <a href="/departments" id="menu-departments">Кафедры</a>
+    <a href="/audiences" id="menu-auditoriums">Аудитории</a>
+    <a href="/tech-support" id="menu-tech-support">Тех.обеспечение</a>
+    <a href="/directions" id="menu-direction">Направления</a>
+    <a href="/profiles" id="menu-profiles">Профили</a>
+    <a href="/bep" id="menu-bep">ООП</a>
     <a href="/files-rpd" class="link-rightbar">РПД</a>
-    <a href="/dep" id="menu-dep" >ДисциплиныОП</a>
-    <a href="/cdep" id="menu-cdep" >Компетенции дисциплин ОП</a>
-    <a href="/education-type" id="menu-education-type" >Типы обучения</a>
-    <a href="/employees" id="menu-employees" >Сотрудники</a>
-    <a href="/employees-positions" id="menu-employees-positions" >Должности</a>
-    <a href="/teachers" id="menu-teachers" >Преподаватели</a>
-    <a href="/disciplines" id="menu-disciplines" >Дисциплины</a>
-    <a href="/competencies" id="menu-competencies" >Компетенции</a>
+    <a href="/dep" id="menu-dep">ДисциплиныОП</a>
+    <a href="/cdep" id="menu-cdep">Компетенции дисциплин ОП</a>
+    <a href="/education-type" id="menu-education-type">Типы обучения</a>
+    <a href="/employees" id="menu-employees">Сотрудники</a>
+    <a href="/employees-positions" id="menu-employees-positions">Должности</a>
+    <a href="/teachers" id="menu-teachers">Преподаватели</a>
+    <a href="/disciplines" id="menu-disciplines">Дисциплины</a>
+    <a href="/competencies" id="menu-competencies">Компетенции</a>
 </div>
 
 <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>

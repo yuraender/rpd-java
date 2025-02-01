@@ -5,11 +5,12 @@
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <link rel="stylesheet" href="/styles.css"/>
     <style>
-        .form-control{
+        .form-control {
             width: max-content;
             max-width: 350px;
         }
-        .filter-container{
+
+        .filter-container {
             display: flex;
             justify-content: center;
             align-items: center;
@@ -137,18 +138,18 @@
                 })
                 .then(function (data) {
                     checkAdmin(data)
-                    if(data.instituteId !== null){
+                    if (data.instituteId !== null) {
                         statusInstitute.textContent = "выбран"
                         statusInstitute.classList.add("institute-status")
-                        if(data.oopId){
+                        if (data.oopId) {
                             statusOOP.textContent = "выбран"
                             statusOOP.classList.add("institute-status")
                             oopId = data.oopId
-                        }else{
+                        } else {
                             statusOOP.textContent = "не выбран"
                             statusOOP.classList.add("no-status")
                         }
-                    }else{
+                    } else {
                         statusOOP.textContent = "не выбран"
                         statusInstitute.textContent = "не выбран"
                         statusInstitute.classList.remove("institute-status")
@@ -163,8 +164,8 @@
                     container.appendChild(title);
                     let disciplinesList = document.createElement('ul')
                     disciplinesList.classList.add('disciplines-list-container')
-                    if(!data.disciplinesOP){
-                        if(data.instituteId){
+                    if (!data.disciplinesOP) {
+                        if (data.instituteId) {
                             const title = document.createElement('h3');
                             title.textContent = "Нужно выбрать ООП";
                             title.classList.add('message-type')
@@ -177,7 +178,7 @@
                             link.classList.add('link')
                             messageWrapper.append(link)
                             container.append(messageWrapper)
-                        }else{
+                        } else {
                             const title = document.createElement('h3');
                             title.textContent = "Нужно выбрать институт";
                             title.classList.add('message-type')
@@ -192,7 +193,7 @@
                             messageWrapper.append(link)
                             container.append(messageWrapper)
                         }
-                    }else{
+                    } else {
                         let filter1 = document.getElementById('filter1');
                         filter1.innerHTML = '';
                         let option = document.createElement('option');
@@ -230,7 +231,7 @@
                         numberProtocolInput.classList.add('form-control', 'number-protocol-input')
                         disciplinesList.appendChild(numberProtocolInput)
 
-                        numberProtocolInput.addEventListener('change', function (e){
+                        numberProtocolInput.addEventListener('change', function (e) {
                             numberProtocol = e.target.value
                         })
 
@@ -239,7 +240,7 @@
                         dateProtocolInput.classList.add('form-control', 'date-input')
                         disciplinesList.appendChild(dateProtocolInput)
 
-                        dateProtocolInput.addEventListener('change', function (e){
+                        dateProtocolInput.addEventListener('change', function (e) {
                             dateProtocol = e.target.value
                         })
 
@@ -255,7 +256,6 @@
         }
 
         renderPage()
-
 
         filter1.addEventListener('change', function () {
             let filter1Id = this.value;
@@ -292,7 +292,7 @@
                     numberProtocolInput.classList.add('form-control', 'number-protocol-input')
                     disciplinesList.appendChild(numberProtocolInput)
 
-                    numberProtocolInput.addEventListener('change', function (e){
+                    numberProtocolInput.addEventListener('change', function (e) {
                         numberProtocol = e.target.value
                     })
 
@@ -301,7 +301,7 @@
                     dateProtocolInput.classList.add('form-control', 'date-input')
                     disciplinesList.appendChild(dateProtocolInput)
 
-                    dateProtocolInput.addEventListener('change', function (e){
+                    dateProtocolInput.addEventListener('change', function (e) {
                         dateProtocol = e.target.value
                     })
 
@@ -350,7 +350,7 @@
 
         function generateRPD() {
 
-            if(!dateProtocol || !numberProtocol|| !disciplinesOPList.length){
+            if (!dateProtocol || !numberProtocol || !disciplinesOPList.length) {
                 showModalWithMessage("Введите номер и дату протокола")
                 return
             }

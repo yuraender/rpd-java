@@ -5,6 +5,7 @@ import jakarta.persistence.*;
 @Entity
 @Table(name = "files_rpd")
 public class FileRPD {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
@@ -97,6 +98,7 @@ public class FileRPD {
     public Boolean getSection0IsLoad() {
         return section0IsLoad;
     }
+
     public byte[] getSection7() {
         return section7;
     }
@@ -152,8 +154,8 @@ public class FileRPD {
     public void setDisabled(Boolean disabled) {
         this.disabled = disabled;
     }
-    // Геттеры и сеттеры
 
+    // Геттеры и сеттеры
     public Integer getId() {
         return id;
     }

@@ -5,6 +5,7 @@ import jakarta.persistence.*;
 @Entity
 @Table(name = "institutes")
 public class Institute {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
@@ -18,6 +19,7 @@ public class Institute {
     private String approvalText;
     private String footerText;
     private Boolean disabled;
+
     public Boolean getDisabled() {
         return disabled;
     }

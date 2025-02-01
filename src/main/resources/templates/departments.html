@@ -1,30 +1,32 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html>
 <head>
     <meta charset="UTF-8">
     <title>departments</title>
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <style>
-
-        *{
+        * {
             box-sizing: border-box;
         }
-        .textbox{
+
+        .textbox {
             min-width: 100px;
             height: auto;
             max-height: 70px;
             overflow-y: auto;
         }
 
-        .field__desc{
+        .field__desc {
             width: 40%;
             min-width: min-content;
         }
-        textarea{
+
+        textarea {
             width: 60%;
             max-width: max-content;
         }
-        p{
+
+        p {
             margin: 0;
             width: max-content;
             max-width: 100px;
@@ -107,13 +109,15 @@
             border-bottom: 1px solid #ccc;
             padding-bottom: 10px;
         }
-        .standard__active-record-wrapper{
+
+        .standard__active-record-wrapper {
             display: flex;
             margin: 10px 0;
             width: 100%;
             gap: 15px;
             align-items: center;
         }
+
         .close-btn {
             cursor: pointer;
             font-size: 1.5em;
@@ -134,7 +138,8 @@
             padding-top: 10px;
             margin-top: 20px;
         }
-        .form-control{
+
+        .form-control {
             width: max-content !important;
             max-width: 100%;
         }
@@ -205,21 +210,21 @@
     <a href="/institutes" id="menu-institute">Институты
         <span id="institute-chosen" class="institute-status">выбран</span>
     </a>
-    <a href="/departments" id="menu-departments" >Кафедры</a>
-    <a href="/audiences" id="menu-auditoriums" >Аудитории</a>
-    <a href="/tech-support" id="menu-tech-support" >Тех.обеспечение</a>
-    <a href="/directions" id="menu-direction" >Направления</a>
-    <a href="/profiles" id="menu-profiles" >Профили</a>
-    <a href="/bep" id="menu-bep" >ООП</a>
+    <a href="/departments" id="menu-departments">Кафедры</a>
+    <a href="/audiences" id="menu-auditoriums">Аудитории</a>
+    <a href="/tech-support" id="menu-tech-support">Тех.обеспечение</a>
+    <a href="/directions" id="menu-direction">Направления</a>
+    <a href="/profiles" id="menu-profiles">Профили</a>
+    <a href="/bep" id="menu-bep">ООП</a>
     <a href="/files-rpd" class="link-rightbar">РПД</a>
-    <a href="/dep" id="menu-dep" >ДисциплиныОП</a>
-    <a href="/cdep" id="menu-cdep" >Компетенции дисциплин ОП</a>
-    <a href="/education-type" id="menu-education-type" >Типы обучения</a>
-    <a href="/employees" id="menu-employees" >Сотрудники</a>
-    <a href="/employees-positions" id="menu-employees-positions" >Должности</a>
-    <a href="/teachers" id="menu-teachers" >Преподаватели</a>
-    <a href="/disciplines" id="menu-disciplines" >Дисциплины</a>
-    <a href="/competencies" id="menu-competencies" >Компетенции</a>
+    <a href="/dep" id="menu-dep">ДисциплиныОП</a>
+    <a href="/cdep" id="menu-cdep">Компетенции дисциплин ОП</a>
+    <a href="/education-type" id="menu-education-type">Типы обучения</a>
+    <a href="/employees" id="menu-employees">Сотрудники</a>
+    <a href="/employees-positions" id="menu-employees-positions">Должности</a>
+    <a href="/teachers" id="menu-teachers">Преподаватели</a>
+    <a href="/disciplines" id="menu-disciplines">Дисциплины</a>
+    <a href="/competencies" id="menu-competencies">Компетенции</a>
 </div>
 <div id="createModal" class="modal" style="display: none;">
     <div class="modal-content">
@@ -243,14 +248,14 @@
 <script src="/modalWindow.js"></script>
 <script>
     document.addEventListener('DOMContentLoaded', function () {
-        
         let btnChoose = document.querySelector('.btn-choose')
         btnChoose.addEventListener('click', chooseRecord)
+
         function chooseRecord() {
             let form = document.querySelector('.active-form')
-            if(form){
+            if (form) {
                 let activeRecordId = form.getAttribute('activerecordid')
-                fetch('/departments-data-set-active/'+ activeRecordId)
+                fetch('/departments-data-set-active/' + activeRecordId)
                     .then(function (response) {
                         if (!response.ok) {
                             throw new Error('Ошибка HTTP ' + response.status);
@@ -260,18 +265,20 @@
                     .then(function (data) {
                         showModalWithMessage('Вы выбрали кафедру: ' + data.dataName)
                     })
-            }else{
+            } else {
                 showModalWithMessage('Выберите запись, кликнув по записи из таблицы. Затем нажмите "выбрать кафедру".')
             }
         }
-        
+
         let editMode = false;
         let isAdmin = false;
+
         function removeAllChildElements(parentElement) {
             while (parentElement.firstChild) {
                 parentElement.removeChild(parentElement.firstChild);
             }
         }
+
         function checkAdmin(data) {
             if (data.role === 'administrator') {
                 isAdmin = true;
@@ -311,12 +318,13 @@
                 let activeRecord = document.querySelector('.active-record');
                 let fields = activeRecord.querySelectorAll('.field');
 
-                fields.forEach(function(field) {
+                fields.forEach(function (field) {
                     field.disabled = false;
                     field.readOnly = false;
                 });
 
                 activeFieldsChange()
+
                 function activeFieldsChange() {
                     let form = document.querySelector('.active-form')
                     let btnSuccess = document.createElement('button');
@@ -331,6 +339,7 @@
                     btnCansel.addEventListener('click', cancelUpdate)
                     form.appendChild(btnCansel);
                 }
+
                 function cancelUpdate() {
                     let dataId = document.querySelector('.active-form').getAttribute('activerecordid')
                     changeActiveRowTable(dataId)
@@ -489,14 +498,15 @@
             let fields = activeRecord.querySelectorAll('.field');
             let emptyFields = false;
             let query = '/api/department-support/save-new-record'
-            fields.forEach(function(field) {
-                if(field.value){
+            fields.forEach(function (field) {
+                if (field.value) {
                     query += '/' + field.value;
-                }else{
+                } else {
                     showModalWithMessage('Поля должны быть заполнены.', document)
                     emptyFields = true
-                }})
-            if(emptyFields) return
+                }
+            })
+            if (emptyFields) return
 
             createNewRecord(query)
         }
@@ -584,7 +594,7 @@
                     form.classList.add('form-table', 'active-form');
 
                     //field1=======================================================
-                    function createIdFieldForActiveRecord(data){
+                    function createIdFieldForActiveRecord(data) {
                         let fieldOneWrapper = document.createElement('div')
                         fieldOneWrapper.classList.add('standard__active-record-wrapper')
                         let fieldOneDesc = document.createElement('p')
@@ -596,6 +606,7 @@
                         idField.textContent = data.id;
                         return fieldOneWrapper
                     }
+
                     form.setAttribute('activeRecordId', data.data.id)
                     form.appendChild(createIdFieldForActiveRecord(data.data));
 
@@ -643,7 +654,7 @@
                     institutSelect.classList.add('form-control')
                     institutSelect.id = 'institute';
                     data.instituteList.forEach(function (optionData) {
-                        if(data.data.institute.id == optionData.id){
+                        if (data.data.institute.id == optionData.id) {
                             let text = optionData.name;
                             let id = optionData.id;
                             let parentDataId = data.data.institute.id
@@ -690,11 +701,11 @@
                     // Показываем контейнер
                     activeRecordWrapper.style.display = 'block';
 
-                    if(editMode && isAdmin){
+                    if (editMode && isAdmin) {
                         let activeRecord = document.querySelector('.active-record');
                         let fields = activeRecord.querySelectorAll('.field');
 
-                        fields.forEach(function(field) {
+                        fields.forEach(function (field) {
                             field.disabled = true;
                             field.readOnly = true;
                         });
@@ -732,16 +743,16 @@
             let dataId = document.querySelector('.active-form').getAttribute('activerecordid')
 
             let query = '/api/department-support/update/' + dataId
-            fields.forEach(function(field) {
-                if(field.value){
+            fields.forEach(function (field) {
+                if (field.value) {
                     query += '/' + field.value;
-                }else{
+                } else {
                     changeActiveRowTable(dataId)
                     showModalWithMessage('Поля должны быть заполнены.', document)
                     emptyFields = true
                 }
             });
-            if(emptyFields) return
+            if (emptyFields) return
             fetch(query)
                 .then(function (response) {
                     if (!response.ok) {

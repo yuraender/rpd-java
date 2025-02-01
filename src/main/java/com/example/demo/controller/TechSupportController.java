@@ -44,7 +44,7 @@ public class TechSupportController {
     @ResponseBody
     public ResponseEntity<Map<String, Object>> getTechSupportData(HttpServletRequest request) {
         Map<String, Object> response = new HashMap<>();
-        HttpSession session = (HttpSession) request.getSession();
+        HttpSession session = request.getSession();
         List<TechSupport> techSupports = techSupportService.getAll();
         response.put("techSupports", techSupports);
 
@@ -63,17 +63,16 @@ public class TechSupportController {
         return ResponseEntity.ok(response);
     }
 
-
     @GetMapping("/department-filter/{departmentId}")
     @ResponseBody
     public ResponseEntity<Map<String, Object>> getTeachersAndTechSupportByDepartment(@PathVariable Long departmentId) {
         Map<String, Object> response = new HashMap<>();
 
-        if(departmentId == 0 ){
+        if (departmentId == 0) {
             response.put("teachersFilter", new ArrayList<Teacher>());
             List<TechSupport> techSupports = techSupportService.getAll();
             response.put("techSupports", techSupports);
-        }else{
+        } else {
             List<Teacher> teachersFilter = teacherService.findByDepartmentId(departmentId);
             response.put("teachersFilter", teachersFilter);
             List<TechSupport> techSupports = techSupportService.getByDepartmentId(departmentId);
@@ -86,12 +85,12 @@ public class TechSupportController {
     @ResponseBody
     public ResponseEntity<Map<String, Object>> getTeachersAndTechSupportByGetTeachers(@PathVariable Long departmentId, @PathVariable Long teacherId) {
         Map<String, Object> response = new HashMap<>();
-        if(teacherId == 0 ){
+        if (teacherId == 0) {
             List<TechSupport> techSupports = techSupportService.getByDepartmentId(departmentId);
             response.put("disciplines", new ArrayList<Teacher>());
             response.put("techSupports", techSupports);
             return ResponseEntity.ok(response);
-        }else{
+        } else {
             List<TechSupport> techSupports = techSupportService.getByTeacherId(departmentId, teacherId);
             List<Discipline> disciplines = disciplineService.getByTeacherId(teacherId);
             response.put("disciplines", disciplines);
@@ -105,11 +104,11 @@ public class TechSupportController {
     public ResponseEntity<Map<String, Object>> getTeachersAndTechSupportByGetDiscipline(@PathVariable Long departmentId, @PathVariable Long teacherId, @PathVariable Long disciplineId) {
         Map<String, Object> response = new HashMap<>();
         List<TechSupport> techSupports;
-        if(disciplineId == 0 ){
+        if (disciplineId == 0) {
             techSupports = techSupportService.getByTeacherId(departmentId, teacherId);
             List<Discipline> disciplines = disciplineService.getByTeacherId(teacherId);
             response.put("disciplines", disciplines);
-        }else{
+        } else {
             techSupports = techSupportService.getByDisciplineId(departmentId, teacherId, disciplineId);
         }
         response.put("techSupports", techSupports);
@@ -126,7 +125,6 @@ public class TechSupportController {
         response.put("audiences", audiences);
         return ResponseEntity.ok(response);
     }
-
 
     @GetMapping("/api/tech-support/update/{techSupportId}/{newAudienceId}")
     @ResponseBody
@@ -195,7 +193,7 @@ public class TechSupportController {
         // Обновляем поле audience и discipline у TechSupport
         techSupport.setAudience(newAudience);
         techSupport.setDiscipline(newDiscipline);
-        techSupport.setDisable(false); // Устанавливаем disabled в false при создании новой записи
+        techSupport.setDisabled(false); // Устанавливаем disabled в false при создании новой записи
 
         // Сохраняем новую запись
         techSupportService.save(techSupport);
@@ -216,7 +214,7 @@ public class TechSupportController {
             response.put("error", "TechSupport not found");
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
         }
-        techSupport.setDisable(true);
+        techSupport.setDisabled(true);
         techSupportService.save(techSupport);
         response.put("deletedTechSupport", techSupport.getId());
         return ResponseEntity.ok(response);

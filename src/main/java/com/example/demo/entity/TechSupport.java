@@ -5,6 +5,7 @@ import jakarta.persistence.*;
 @Entity
 @Table(name = "tech_supports")
 public class TechSupport {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -49,5 +50,4 @@ public class TechSupport {
     public void setAudience(Audience audience) {
         this.audience = audience;
     }
-
 }

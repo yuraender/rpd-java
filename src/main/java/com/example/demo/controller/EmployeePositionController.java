@@ -1,9 +1,9 @@
 package com.example.demo.controller;
 
-import com.example.demo.entity.EducationType;
-import com.example.demo.entity.Employee;
 import com.example.demo.entity.EmployeePosition;
-import com.example.demo.service.*;
+import com.example.demo.service.EducationTypeService;
+import com.example.demo.service.EmployeePositionService;
+import com.example.demo.service.EmployeeService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,6 +18,7 @@ import java.util.Map;
 
 @Controller
 public class EmployeePositionController {
+
     @Autowired
     private EmployeeService employeeService;
 

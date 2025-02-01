@@ -1,15 +1,10 @@
 package com.example.demo.controller;
 
-import com.example.demo.entity.Institute;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
 import java.util.Map;
-
 
 @RestController
 @RequestMapping("/api/session")
@@ -38,6 +33,7 @@ public class SessionController {
         String activeInstitute = (String) session.getAttribute("activeInstitute");
         return ResponseEntity.ok(activeInstitute);
     }
+
     @GetMapping("/api/session/departmentId")
     @ResponseBody
     public Long getDepartmentId(@SessionAttribute(name = "departmentId", required = false) Long departmentId) {

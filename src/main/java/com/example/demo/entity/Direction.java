@@ -5,6 +5,7 @@ import jakarta.persistence.*;
 @Entity
 @Table(name = "directions")
 public class Direction {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
@@ -14,6 +15,7 @@ public class Direction {
     @JoinColumn(name = "departament_id", referencedColumnName = "id")
     private Department department;
     private Boolean disabled;
+
     public Boolean getDisabled() {
         return disabled;
     }
@@ -53,5 +55,4 @@ public class Direction {
     public void setDepartment(Department department) {
         this.department = department;
     }
-
 }

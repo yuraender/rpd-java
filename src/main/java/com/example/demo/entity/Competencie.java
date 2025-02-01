@@ -5,6 +5,7 @@ import jakarta.persistence.*;
 @Entity
 @Table(name = "competencies")
 public class Competencie {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
@@ -14,6 +15,7 @@ public class Competencie {
     private String beAble;
     private String own;
     private Boolean disabled;
+
     public Boolean getDisabled() {
         return disabled;
     }
@@ -69,7 +71,4 @@ public class Competencie {
     public void setOwn(String own) {
         this.own = own;
     }
-
-
 }
-

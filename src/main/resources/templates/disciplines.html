@@ -214,21 +214,21 @@
     <a href="/institutes" id="menu-institute">Институты
         <span id="institute-chosen" class="institute-status">выбран</span>
     </a>
-    <a href="/departments" id="menu-departments" >Кафедры</a>
-    <a href="/audiences" id="menu-auditoriums" >Аудитории</a>
-    <a href="/tech-support" id="menu-tech-support" >Тех.обеспечение</a>
-    <a href="/directions" id="menu-direction" >Направления</a>
-    <a href="/profiles" id="menu-profiles" >Профили</a>
-    <a href="/bep" id="menu-bep" >ООП</a>
+    <a href="/departments" id="menu-departments">Кафедры</a>
+    <a href="/audiences" id="menu-auditoriums">Аудитории</a>
+    <a href="/tech-support" id="menu-tech-support">Тех.обеспечение</a>
+    <a href="/directions" id="menu-direction">Направления</a>
+    <a href="/profiles" id="menu-profiles">Профили</a>
+    <a href="/bep" id="menu-bep">ООП</a>
     <a href="/files-rpd" class="link-rightbar">РПД</a>
-    <a href="/dep" id="menu-dep" >ДисциплиныОП</a>
-    <a href="/cdep" id="menu-cdep" >Компетенции дисциплин ОП</a>
-    <a href="/education-type" id="menu-education-type" >Типы обучения</a>
-    <a href="/employees" id="menu-employees" >Сотрудники</a>
-    <a href="/employees-positions" id="menu-employees-positions" >Должности</a>
-    <a href="/teachers" id="menu-teachers" >Преподаватели</a>
-    <a href="/disciplines" id="menu-disciplines" >Дисциплины</a>
-    <a href="/competencies" id="menu-competencies" >Компетенции</a>
+    <a href="/dep" id="menu-dep">ДисциплиныОП</a>
+    <a href="/cdep" id="menu-cdep">Компетенции дисциплин ОП</a>
+    <a href="/education-type" id="menu-education-type">Типы обучения</a>
+    <a href="/employees" id="menu-employees">Сотрудники</a>
+    <a href="/employees-positions" id="menu-employees-positions">Должности</a>
+    <a href="/teachers" id="menu-teachers">Преподаватели</a>
+    <a href="/disciplines" id="menu-disciplines">Дисциплины</a>
+    <a href="/competencies" id="menu-competencies">Компетенции</a>
 </div>
 <div id="createModal" class="modal" style="display: none;">
     <div class="modal-content">
@@ -441,12 +441,11 @@
                         select2.classList.add('form-control', 'field');
                         select2.classList.add('depend')
                         data.entity1.forEach(function (optionData) {
-                                let text = optionData.employee.nameTypeOne + ' ' + optionData.employeePosition.positionName;
-                                let id = optionData.id;
-                                let option = createOptionForCreate(text, id)
-                                option.classList.add('option-depend')
-                                select2.appendChild(option);
-
+                            let text = optionData.employee.nameTypeOne + ' ' + optionData.employeePosition.positionName;
+                            let id = optionData.id;
+                            let option = createOptionForCreate(text, id)
+                            option.classList.add('option-depend')
+                            select2.appendChild(option);
                         });
                         fieldFiveWrapper.append(select2)
                         form.append(fieldFiveWrapper)
@@ -562,7 +561,7 @@
                     let select = document.querySelector('.depend')
                     removeAllChildElements(select)
                     data.teachers?.forEach(function (optionData) {
-                        if(optionData.department.id == data.department.id){
+                        if (optionData.department.id == data.department.id) {
                             let text = optionData.employee.nameTypeOne + ' ' + optionData.employeePosition.positionName;
                             let id = optionData.id;
                             let option = document.createElement('option');
@@ -574,7 +573,6 @@
                     });
                 })
         }
-
 
         function changeActiveRowTable(dataId) {
             fetch('/api/discipline/get-active/' + dataId)
@@ -604,6 +602,7 @@
                         idField.textContent = data.id;
                         return fieldOneWrapper
                     }
+
                     form.setAttribute('activeRecordId', data.data.id)
                     form.appendChild(createIdFieldForActiveRecord(data.data));
 
@@ -626,7 +625,6 @@
                     fieldThreeWrapper.append(fieldThreeDesc)
                     fieldThreeWrapper.append(createTextBoxForActiveRecord(data.data.name, 'name'))
                     form.append(fieldThreeWrapper)
-
 
                     //field4=========================================================
                     let fieldFourWrapper = document.createElement('div')
@@ -664,7 +662,7 @@
                     select2.classList.add('form-control', 'field');
                     select2.classList.add('depend')
                     data.entity2.forEach(function (optionData) {
-                        if(optionData.department.id == data.data.department.id){
+                        if (optionData.department.id == data.data.department.id) {
                             let text = optionData.employee.nameTypeOne + ' ' + optionData.employeePosition.positionName;
                             let id = optionData.id;
                             let parentDataId = data.data.developer.id

@@ -1,9 +1,11 @@
 package com.example.demo.entity;
+
 import jakarta.persistence.*;
 
 @Entity
 @Table(name = "departaments")
 public class Department {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
@@ -19,6 +21,7 @@ public class Department {
     private Employee manager;
 
     private Boolean disabled;
+
     public Boolean getDisabled() {
         return disabled;
     }

@@ -5,6 +5,7 @@ import jakarta.persistence.*;
 @Entity
 @Table(name = "employees")
 public class Employee {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
@@ -24,9 +25,6 @@ public class Employee {
     @Column(name = "name_type_two")
     private String nameTypeTwo;
     private Boolean disabled;
-    @ManyToOne
-    @JoinColumn(name = "employee_position_id", referencedColumnName = "id")
-    private EmployeePosition employeePosition;
 
     public EmployeePosition getEmployeePosition() {
         return employeePosition;
@@ -43,8 +41,8 @@ public class Employee {
     public void setDisabled(Boolean disabled) {
         this.disabled = disabled;
     }
-    // Геттеры и сеттеры
 
+    // Геттеры и сеттеры
     public Integer getId() {
         return id;
     }

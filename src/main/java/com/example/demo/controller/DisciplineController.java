@@ -1,6 +1,8 @@
 package com.example.demo.controller;
 
-import com.example.demo.entity.*;
+import com.example.demo.entity.Department;
+import com.example.demo.entity.Discipline;
+import com.example.demo.entity.Teacher;
 import com.example.demo.service.*;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
@@ -13,10 +15,10 @@ import org.springframework.web.bind.annotation.*;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 @Controller
 public class DisciplineController {
+
     @Autowired
     private TechSupportService techSupportService;
     @Autowired

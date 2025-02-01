@@ -1,9 +1,11 @@
 package com.example.demo.entity;
+
 import jakarta.persistence.*;
 
 @Entity
 @Table(name = "education_types")
 public class EducationType {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
@@ -11,6 +13,7 @@ public class EducationType {
     private Integer learningPeriod;
     private String text;
     private Boolean disabled;
+
     public Boolean getDisabled() {
         return disabled;
     }
@@ -18,6 +21,7 @@ public class EducationType {
     public void setDisabled(Boolean disabled) {
         this.disabled = disabled;
     }
+
     public Integer getId() {
         return id;
     }

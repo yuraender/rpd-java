@@ -1,6 +1,8 @@
 package com.example.demo.controller;
 
-import com.example.demo.entity.*;
+import com.example.demo.entity.DisciplineEducationalProgram;
+import com.example.demo.entity.Institute;
+import com.example.demo.entity.Teacher;
 import com.example.demo.service.*;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
@@ -31,6 +33,7 @@ public class HomeController {
     private DisciplineEducationalProgramService disciplineEducationalProgramService;
     @Autowired
     private EmployeePositionService employeePositionService;
+
     @GetMapping("/home")
     public String home(Model model, HttpSession session) {
         Long instituteId = (Long) session.getAttribute("instituteId");
@@ -74,7 +77,7 @@ public class HomeController {
         Long instituteId = (Long) session.getAttribute("instituteId");
         response.put("instituteId", instituteId);
 
-        if(oopId != null){
+        if (oopId != null) {
             //Список дисциплин ОП, для которых будет созданы пакеты РПД
             List<DisciplineEducationalProgram> allDisciplineEducationalPrograms = disciplineEducationalProgramService.getAll();
             Long finalOopId = oopId;
@@ -82,7 +85,7 @@ public class HomeController {
                     .filter(el -> Long.valueOf(el.getBasicEducationalProgram().getId()).equals(finalOopId))
                     .filter(el -> el.getDisabled().equals(false)).toList();
             response.put("disciplinesOP", disciplineEducationalPrograms);
-        }else{
+        } else {
             response.put("disciplinesOP", "");
         }
         response.put("oopId", oopId);
@@ -113,22 +116,22 @@ public class HomeController {
             }
         }
 
-        if(oopId != null){
+        if (oopId != null) {
             List<DisciplineEducationalProgram> allDisciplineEducationalPrograms = disciplineEducationalProgramService.getAll();
             Long finalOopId = oopId;
-            if(entityId == 0){
+            if (entityId == 0) {
                 List<DisciplineEducationalProgram> disciplineEducationalPrograms = allDisciplineEducationalPrograms.stream()
                         .filter(el -> Long.valueOf(el.getBasicEducationalProgram().getId()).equals(finalOopId))
                         .filter(el -> el.getDisabled().equals(false)).toList();
                 response.put("disciplinesOP", disciplineEducationalPrograms);
-            }else{
+            } else {
                 List<DisciplineEducationalProgram> disciplineEducationalPrograms = allDisciplineEducationalPrograms.stream()
                         .filter(el -> Long.valueOf(el.getBasicEducationalProgram().getId()).equals(finalOopId))
                         .filter(el -> Long.valueOf(el.getDiscipline().getDeveloper().getId()).equals(entityId))
                         .filter(el -> el.getDisabled().equals(false)).toList();
                 response.put("disciplinesOP", disciplineEducationalPrograms);
             }
-        }else{
+        } else {
             response.put("disciplinesOP", "");
         }
 

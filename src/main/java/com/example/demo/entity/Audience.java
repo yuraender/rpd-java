@@ -5,6 +5,7 @@ import jakarta.persistence.*;
 @Entity
 @Table(name = "audiences")
 public class Audience {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
@@ -17,6 +18,7 @@ public class Audience {
 
     private String softwareLicense;
     private Boolean disabled;
+
     public Boolean getDisabled() {
         return disabled;
     }

@@ -5,6 +5,7 @@ import jakarta.persistence.*;
 @Entity
 @Table(name = "teachers")
 public class Teacher {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -21,6 +22,7 @@ public class Teacher {
     @JoinColumn(name = "employee_positions_id", referencedColumnName = "id")
     private EmployeePosition employeePosition;
     private Boolean disabled;
+
     public Boolean getDisabled() {
         return disabled;
     }

@@ -1,6 +1,5 @@
 package com.example.demo.controller;
 
-import com.example.demo.entity.EducationType;
 import com.example.demo.entity.Employee;
 import com.example.demo.entity.EmployeePosition;
 import com.example.demo.service.*;
@@ -18,6 +17,7 @@ import java.util.Map;
 
 @Controller
 public class EmployeeController {
+
     @Autowired
     private TechSupportService techSupportService;
     @Autowired
@@ -83,8 +83,6 @@ public class EmployeeController {
         return ResponseEntity.ok(response);
     }
 
-
-
     @PostMapping("/api/employees/update")
     public ResponseEntity<Map<String, Object>> updateRecord(@RequestBody Map<String, String> payload) {
         Map<String, Object> response = new HashMap<>();
@@ -136,7 +134,7 @@ public class EmployeeController {
             nameTypeOne += param2.charAt(0) + ". ";
             nameTypeTwo += param2.charAt(0) + ". ";
         }
-        nameTypeTwo+=param0;
+        nameTypeTwo += param0;
 
         EmployeePosition employeePosition = employeePositionService.getById(param3);
         entity.setEmployeePosition(employeePosition);

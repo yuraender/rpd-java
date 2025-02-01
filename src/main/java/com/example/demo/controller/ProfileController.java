@@ -1,9 +1,9 @@
 package com.example.demo.controller;
 
-import com.example.demo.entity.Department;
 import com.example.demo.entity.Direction;
 import com.example.demo.entity.Profile;
-import com.example.demo.service.*;
+import com.example.demo.service.DirectionService;
+import com.example.demo.service.ProfileService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,6 +18,7 @@ import java.util.Map;
 
 @Controller
 public class ProfileController {
+
     @Autowired
     private ProfileService profileService;
 
@@ -118,7 +119,6 @@ public class ProfileController {
         response.put("createdData", entity);
         return ResponseEntity.ok(response);
     }
-
 
     @GetMapping("/api/profile-support/delete-record/{entityId}")
     @ResponseBody

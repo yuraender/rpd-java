@@ -1,7 +1,6 @@
 package com.example.demo.controller;
 
 import com.example.demo.entity.Competencie;
-import com.example.demo.entity.EducationType;
 import com.example.demo.service.*;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
@@ -17,6 +16,7 @@ import java.util.Map;
 
 @Controller
 public class CompetencieController {
+
     @Autowired
     private TechSupportService techSupportService;
     @Autowired

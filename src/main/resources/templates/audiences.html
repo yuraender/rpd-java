@@ -148,97 +148,97 @@
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
 </head>
 <body class="body-wrapper">
-    <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
-    <nav class="navbar navbar-expand-lg navbar-light bg-light">
-        <a class="navbar-brand" href="/home">Главная</a>
-        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav"
-                aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-            <span class="navbar-toggler-icon"></span>
-        </button>
-        <div class="collapse navbar-collapse" id="navbarNav">
-            <ul class="navbar-nav">
-                <li class="nav-item">
-                    <a class="nav-link" href="/institutes">Выбор института</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="/background-information">Справочная информация</a>
-                </li>
-            </ul>
-        </div>
-    </nav>
-    <section class="container">
-        <h2>Аудитории:</h2>
-        <div class="scrollable-table">
-            <table class="table table-bordered" id="dataTable">
-                <thead>
-                <tr class="sticky-header">
-                    <th><input type="text" class="form-control" placeholder="ID"
-                               onkeyup="filterTable('dataTable', 0)"></th>
-                    <th><input type="text" class="form-control" placeholder="Институт"
-                               onkeyup="filterTable('dataTable', 1)"></th>
-                    <th><input type="text" class="form-control" placeholder="Аудитория"
-                               onkeyup="filterTable('dataTable', 2)"></th>
-                    <th><input type="text" class="form-control" placeholder="Техника"
-                               onkeyup="filterTable('dataTable', 3)"></th>
-                    <th><input type="text" class="form-control" placeholder="Лицензии"
-                               onkeyup="filterTable('dataTable', 4)"></th>
-                </tr>
-                <tr class="sticky-header">
-                    <th>ID</th>
-                    <th>Институт</th>
-                    <th>Аудитория</th>
-                    <th>Техника</th>
-                    <th>Лицензии</th>
-                </tr>
-                </thead>
-                <tbody>
-                </tbody>
-            </table>
-        </div>
-        <div class="edit-buttons-wrapper no-visible">
-            <button class="button-edit btn-edit button btn btn-primary">Редактировать</button>
-            <button class="btn-create button btn btn-primary">Добавить</button>
-            <button class="btn-delete button btn btn-primary">Удалить</button>
-            <button class="btn-choose button btn btn-primary d-none">Выбрать аудиторию</button>
-        </div>
-        <div class="active-record">
-        </div>
-    </section>
-    <div class="rightbar">
-        <a href="/institutes" id="menu-institute">Институты
-            <span id="institute-chosen" class="institute-status">выбран</span>
-        </a>
-        <a href="/departments" id="menu-departments">Кафедры</a>
-        <a href="/audiences" id="menu-auditoriums">Аудитории</a>
-        <a href="/tech-support" id="menu-tech-support">Тех.обеспечение</a>
-        <a href="/directions" id="menu-direction">Направления</a>
-        <a href="/profiles" id="menu-profiles">Профили</a>
-        <a href="/bep" id="menu-bep">ООП</a>
-        <a href="/files-rpd" class="link-rightbar">РПД</a>
-        <a href="/dep" id="menu-dep">ДисциплиныОП</a>
-        <a href="/cdep" id="menu-cdep">Компетенции дисциплин ОП</a>
-        <a href="/education-type" id="menu-education-type">Типы обучения</a>
-        <a href="/employees" id="menu-employees">Сотрудники</a>
-        <a href="/employees-positions" id="menu-employees-positions">Должности</a>
-        <a href="/teachers" id="menu-teachers">Преподаватели</a>
-        <a href="/disciplines" id="menu-disciplines">Дисциплины</a>
-        <a href="/competencies" id="menu-competencies">Компетенции</a>
+<input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
+<nav class="navbar navbar-expand-lg navbar-light bg-light">
+    <a class="navbar-brand" href="/home">Главная</a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav"
+            aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarNav">
+        <ul class="navbar-nav">
+            <li class="nav-item">
+                <a class="nav-link" href="/institutes">Выбор института</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="/background-information">Справочная информация</a>
+            </li>
+        </ul>
     </div>
-    <div id="createModal" class="modal" style="display: none;">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5>Добавить запись</h5>
-                <span class="close-btn">&times;</span>
-            </div>
-            <div class="modal-body createForm">
+</nav>
+<section class="container">
+    <h2>Аудитории:</h2>
+    <div class="scrollable-table">
+        <table class="table table-bordered" id="dataTable">
+            <thead>
+            <tr class="sticky-header">
+                <th><input type="text" class="form-control" placeholder="ID"
+                           onkeyup="filterTable('dataTable', 0)"></th>
+                <th><input type="text" class="form-control" placeholder="Институт"
+                           onkeyup="filterTable('dataTable', 1)"></th>
+                <th><input type="text" class="form-control" placeholder="Аудитория"
+                           onkeyup="filterTable('dataTable', 2)"></th>
+                <th><input type="text" class="form-control" placeholder="Техника"
+                           onkeyup="filterTable('dataTable', 3)"></th>
+                <th><input type="text" class="form-control" placeholder="Лицензии"
+                           onkeyup="filterTable('dataTable', 4)"></th>
+            </tr>
+            <tr class="sticky-header">
+                <th>ID</th>
+                <th>Институт</th>
+                <th>Аудитория</th>
+                <th>Техника</th>
+                <th>Лицензии</th>
+            </tr>
+            </thead>
+            <tbody>
+            </tbody>
+        </table>
+    </div>
+    <div class="edit-buttons-wrapper no-visible">
+        <button class="button-edit btn-edit button btn btn-primary">Редактировать</button>
+        <button class="btn-create button btn btn-primary">Добавить</button>
+        <button class="btn-delete button btn btn-primary">Удалить</button>
+        <button class="btn-choose button btn btn-primary d-none">Выбрать аудиторию</button>
+    </div>
+    <div class="active-record">
+    </div>
+</section>
+<div class="rightbar">
+    <a href="/institutes" id="menu-institute">Институты
+        <span id="institute-chosen" class="institute-status">выбран</span>
+    </a>
+    <a href="/departments" id="menu-departments">Кафедры</a>
+    <a href="/audiences" id="menu-auditoriums">Аудитории</a>
+    <a href="/tech-support" id="menu-tech-support">Тех.обеспечение</a>
+    <a href="/directions" id="menu-direction">Направления</a>
+    <a href="/profiles" id="menu-profiles">Профили</a>
+    <a href="/bep" id="menu-bep">ООП</a>
+    <a href="/files-rpd" class="link-rightbar">РПД</a>
+    <a href="/dep" id="menu-dep">ДисциплиныОП</a>
+    <a href="/cdep" id="menu-cdep">Компетенции дисциплин ОП</a>
+    <a href="/education-type" id="menu-education-type">Типы обучения</a>
+    <a href="/employees" id="menu-employees">Сотрудники</a>
+    <a href="/employees-positions" id="menu-employees-positions">Должности</a>
+    <a href="/teachers" id="menu-teachers">Преподаватели</a>
+    <a href="/disciplines" id="menu-disciplines">Дисциплины</a>
+    <a href="/competencies" id="menu-competencies">Компетенции</a>
+</div>
+<div id="createModal" class="modal" style="display: none;">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h5>Добавить запись</h5>
+            <span class="close-btn">&times;</span>
+        </div>
+        <div class="modal-body createForm">
 
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="cancel-create-modal btn btn-danger">Отмена</button>
-                <button type="button" class="save-modal-record btn btn-success">Сохранить</button>
-            </div>
+        </div>
+        <div class="modal-footer">
+            <button type="button" class="cancel-create-modal btn btn-danger">Отмена</button>
+            <button type="button" class="save-modal-record btn btn-success">Сохранить</button>
         </div>
     </div>
+</div>
 </body>
 
 <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>

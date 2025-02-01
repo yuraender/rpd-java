@@ -56,7 +56,6 @@ public class BackgroundInformationController {
     @Autowired
     private FileRPDService fileRPDService;
 
-
     @GetMapping("/background-information")
     public String getBackgroundInformation(
             @SessionAttribute(name = "instituteId", required = false) Long instituteId,
@@ -236,9 +235,6 @@ public class BackgroundInformationController {
             FileRPD activeFileRPD = fileRPDService.getById(fileRPDId);
             model.addAttribute("activeFileRPD", activeFileRPD);
         }
-
-
-
 
         return "background-information";
     }

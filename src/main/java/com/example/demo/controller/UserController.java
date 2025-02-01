@@ -1,5 +1,6 @@
 package com.example.demo.controller;
-import com.example.demo.entity.AppUser;
+
+import com.example.demo.entity.User;
 import com.example.demo.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -16,7 +17,7 @@ public class UserController {
     private UserRepository userRepository;
 
     @GetMapping
-    public List<AppUser> getAllUsers() {
+    public List<User> getAllUsers() {
         return userRepository.findAll();
     }
 }

@@ -5,6 +5,7 @@ import jakarta.persistence.*;
 @Entity
 @Table(name = "competencies_disciplines_educational_programs")
 public class CompetenciesDisciplinesEducationalProgram {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
@@ -16,6 +17,7 @@ public class CompetenciesDisciplinesEducationalProgram {
     @JoinColumn(name = "competence_id", referencedColumnName = "id")
     private Competencie competencie;
     private Boolean disabled;
+
     public Boolean getDisabled() {
         return disabled;
     }

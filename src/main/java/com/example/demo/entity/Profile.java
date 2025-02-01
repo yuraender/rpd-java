@@ -5,6 +5,7 @@ import jakarta.persistence.*;
 @Entity
 @Table(name = "profiles")
 public class Profile {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
@@ -13,6 +14,7 @@ public class Profile {
     @JoinColumn(name = "direction_id", referencedColumnName = "id")
     private Direction direction;
     private Boolean disabled;
+
     public Boolean getDisabled() {
         return disabled;
     }
@@ -20,6 +22,7 @@ public class Profile {
     public void setDisabled(Boolean disabled) {
         this.disabled = disabled;
     }
+
     public Integer getId() {
         return id;
     }

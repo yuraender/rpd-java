@@ -257,7 +257,7 @@
         function changePermitLink(action) {
             let linkList = document.querySelectorAll('.link-rightbar');
             linkList.forEach(link => {
-                if(action === "visibleOn"){
+                if (action === "visibleOn") {
                     link.classList.remove('d-none');
                     document.querySelector('.institute-status').classList.remove('d-none')
                 } else {
@@ -496,15 +496,6 @@
                         fieldSixWrapper.append(createTextBoxForCreate())
                         form.append(fieldSixWrapper)
 
-
-
-
-
-
-
-
-
-
                         let closeBtn = document.querySelector('.close-btn');
                         cancelCreateModal.addEventListener('click', () => closeModal(createModal))
                         closeBtn.addEventListener('click', () => closeModal(createModal))
@@ -590,7 +581,7 @@
                 let row = document.createElement('tr');
                 row.setAttribute('dataId', data.id);
                 row.classList.add(`${data.id}`)
-                if(instituteId == data.id){
+                if (instituteId == data.id) {
                     row.classList.add('choosed-record')
                     changePermitLink("visibleOn")
                 }
@@ -599,9 +590,9 @@
                     '<td>' + data.name + '</td>' +
                     '<td>' + data.city + '</td>';
                 row.addEventListener('click', function (e) {
-                    if (e.target.classList.contains('button')){
+                    if (e.target.classList.contains('button')) {
                         chooseInstitute(data.id, dataTable)
-                    }else{
+                    } else {
                         changeActiveRowTable(data.id, e);
                     }
 

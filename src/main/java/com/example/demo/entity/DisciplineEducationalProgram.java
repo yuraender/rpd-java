@@ -5,6 +5,7 @@ import jakarta.persistence.*;
 @Entity
 @Table(name = "disciplines_educational_programs")
 public class DisciplineEducationalProgram {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
@@ -17,6 +18,7 @@ public class DisciplineEducationalProgram {
     @JoinColumn(name = "basic_educational_program_id", referencedColumnName = "id")
     private BasicEducationalProgram basicEducationalProgram;
     private Boolean disabled;
+
     public Boolean getDisabled() {
         return disabled;
     }
@@ -24,6 +26,7 @@ public class DisciplineEducationalProgram {
     public void setDisabled(Boolean disabled) {
         this.disabled = disabled;
     }
+
     public Integer getId() {
         return id;
     }

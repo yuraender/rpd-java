@@ -8,12 +8,14 @@
         * {
             box-sizing: border-box;
         }
-        .btn-download{
+
+        .btn-download {
             width: 45%;
             height: 60px;
             overflow: hidden;
             text-overflow: ellipsis;
         }
+
         .big-option {
             max-width: 30%;
             height: max-content;
@@ -679,6 +681,7 @@
                         idField.textContent = data.id;
                         return fieldOneWrapper
                     }
+
                     //field1=======================================================
                     form.setAttribute('activeRecordId', data.data.id)
                     form.appendChild(createIdFieldForActiveRecord(data.data));
@@ -713,7 +716,7 @@
                     fieldFourWrapper.append(createInactiveTextBox(data.data.disciplineEducationalProgram.basicEducationalProgram.educationType.name, 'academicYear'))
                     form.append(fieldFourWrapper)
 
-                    function createChangersFiles(data, numberSection){
+                    function createChangersFiles(data, numberSection) {
                         let fieldWrapper = document.createElement('div')
                         fieldWrapper.classList.add('standard__active-record-wrapper')
                         let isLoadedSection = !!data.data["section" + numberSection + "IsLoad"];
@@ -727,6 +730,7 @@
                         fieldWrapper.append(uploadSection)
                         return fieldWrapper
                     }
+
                     // добавляем кнопки загрузки и выгрузки файлов
                     form.append(createChangersFiles(data, 1))
                     form.append(createChangersFiles(data, 2))
@@ -955,7 +959,7 @@
                     .then(data => {
                         let buttons = document.querySelectorAll('.btn-download')
                         buttons.forEach(el => {
-                            if(el.getAttribute('downloadid') == data){
+                            if (el.getAttribute('downloadid') == data) {
                                 el.removeAttribute('disabled')
                             }
                         })
@@ -968,6 +972,7 @@
                     });
             }
         }
+
         function createBtnDownloadForActiveRecord(numberSection, text, status, recordId) {
             let button = document.createElement('button');
             button.textContent = 'Скачать: ' + text;
@@ -977,6 +982,7 @@
             button.addEventListener('click', (e) => fileDownload(numberSection, recordId))
             return button;
         }
+
         function createInactiveTextBox(text, id) {
             let textBox = document.createElement('p');
             textBox.textContent = text;

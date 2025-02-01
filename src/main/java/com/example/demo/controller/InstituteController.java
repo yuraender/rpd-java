@@ -1,7 +1,6 @@
 package com.example.demo.controller;
 
 import com.example.demo.entity.Employee;
-import com.example.demo.entity.EmployeePosition;
 import com.example.demo.entity.Institute;
 import com.example.demo.service.EmployeeService;
 import com.example.demo.service.InstituteService;
@@ -12,7 +11,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.bind.support.SessionStatus;
 
 import java.util.HashMap;
 import java.util.List;
@@ -21,6 +19,7 @@ import java.util.Map;
 @Controller
 @SessionAttributes("instituteId")
 public class InstituteController {
+
     @Autowired
     private InstituteService instituteService;
     @Autowired
@@ -71,7 +70,6 @@ public class InstituteController {
         response.put("id", id);
         return ResponseEntity.ok(response);
     }
-
 
     @PostMapping("/api/institute/update")
     public ResponseEntity<Map<String, Object>> updateRecord(@RequestBody Map<String, String> payload) {

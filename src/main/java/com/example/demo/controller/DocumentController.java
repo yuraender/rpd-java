@@ -1,4 +1,5 @@
 package com.example.demo.controller;
+
 import com.example.demo.entity.*;
 import com.example.demo.repository.FileRPDRepository;
 import com.example.demo.service.*;
@@ -72,7 +73,8 @@ public class DocumentController {
         String protocolDate = String.valueOf(payload.get("protocolDate"));
         String protocolNumber = String.valueOf(payload.get("protocolNumber"));
         ObjectMapper mapper = new ObjectMapper();
-        List<Long> disciplinesOpList = mapper.convertValue(payload.get("disciplinesOPList"), new TypeReference<List<Long>>() {});
+        List<Long> disciplinesOpList = mapper.convertValue(payload.get("disciplinesOPList"), new TypeReference<>() {
+        });
 
         HttpSession session = request.getSession();
         String directorApprovalDate = "Test Директор";
@@ -148,7 +150,6 @@ public class DocumentController {
                     audiences.put("softwareLicenses", audience.getSoftwareLicense());
                     audienciesData.add(audiences);
                 }
-
 
                 Map<String, Object> dataMap = new HashMap<>();
                 dataMap.put("instituteName", instituteName);
@@ -273,5 +274,4 @@ public class DocumentController {
 
         return new ResponseEntity<>(fileContent, headers, HttpStatus.OK);
     }
-
 }

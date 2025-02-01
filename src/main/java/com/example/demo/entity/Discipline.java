@@ -5,6 +5,7 @@ import jakarta.persistence.*;
 @Entity
 @Table(name = "disciplines")
 public class Discipline {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
@@ -19,6 +20,7 @@ public class Discipline {
     private Department department;
 
     private Boolean disabled;
+
     public Boolean getDisabled() {
         return disabled;
     }
@@ -26,6 +28,7 @@ public class Discipline {
     public void setDisabled(Boolean disabled) {
         this.disabled = disabled;
     }
+
     public Integer getId() {
         return id;
     }

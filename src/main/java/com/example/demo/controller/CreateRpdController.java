@@ -1,6 +1,6 @@
 package com.example.demo.controller;
 
-import com.example.demo.entity.*;
+import com.example.demo.entity.DisciplineEducationalProgram;
 import com.example.demo.service.*;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
@@ -8,15 +8,16 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 @Controller
 public class CreateRpdController {
+
     @Autowired
     private TechSupportService techSupportService;
     @Autowired
@@ -76,7 +77,7 @@ public class CreateRpdController {
         String role = (String) session.getAttribute("role");
         response.put("role", role);
 
-        if(oopId != null){
+        if (oopId != null) {
             //Список дисциплин ОП, для которых будет созданы пакеты РПД
             List<DisciplineEducationalProgram> allDisciplineEducationalPrograms = disciplineEducationalProgramService.getAll();
             Long finalOopId = oopId;
@@ -85,7 +86,7 @@ public class CreateRpdController {
                     .filter(el -> el.getDisabled().equals(false)).toList();
             response.put("disciplinesOP", disciplineEducationalPrograms);
             response.put("oopId", oopId);
-        }else{
+        } else {
             response.put("error", "Нужно выбрать ООП");
         }
 
@@ -167,6 +168,4 @@ public class CreateRpdController {
 //        response.put("createdData", entity);
 //        return ResponseEntity.ok(response);
 //    }
-
-
 }

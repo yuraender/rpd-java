@@ -1,6 +1,11 @@
 package com.example.demo.controller;
-import com.example.demo.entity.*;
-import com.example.demo.service.*;
+
+import com.example.demo.entity.Department;
+import com.example.demo.entity.Employee;
+import com.example.demo.entity.Institute;
+import com.example.demo.service.DepartmentService;
+import com.example.demo.service.EmployeeService;
+import com.example.demo.service.InstituteService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,6 +16,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.ResponseBody;
+
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -49,6 +55,7 @@ public class DepartmentController {
         session.setAttribute("departmentId", departmentId);
         return ResponseEntity.ok(response);
     }
+
     @GetMapping("/departments-data")
     @ResponseBody
     public ResponseEntity<Map<String, Object>> getDepartmentData(HttpServletRequest request) {
@@ -93,7 +100,7 @@ public class DepartmentController {
             @PathVariable Long teacherId) {
         Map<String, Object> response = new HashMap<>();
 
-        if(code.isEmpty() || departmentName.isEmpty() || abbreviationName.isEmpty()){
+        if (code.isEmpty() || departmentName.isEmpty() || abbreviationName.isEmpty()) {
             response.put("error", "Заполните все поля. Запись не обновлена.");
             return ResponseEntity.ok(response);
         }
@@ -132,8 +139,7 @@ public class DepartmentController {
             @PathVariable String departmentName,
             @PathVariable String abbreviationName,
             @PathVariable Long instituteId,
-            @PathVariable Long teacherId)
-    {
+            @PathVariable Long teacherId) {
         Map<String, Object> response = new HashMap<>();
         Institute institute = instituteService.findById(instituteId);
         Employee manager = employeeService.getById(teacherId);

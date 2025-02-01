@@ -1,6 +1,9 @@
 package com.example.demo.controller;
 
-import com.example.demo.entity.*;
+import com.example.demo.entity.Department;
+import com.example.demo.entity.Employee;
+import com.example.demo.entity.EmployeePosition;
+import com.example.demo.entity.Teacher;
 import com.example.demo.service.*;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
@@ -17,6 +20,7 @@ import java.util.stream.Collectors;
 
 @Controller
 public class TeacherController {
+
     @Autowired
     private TechSupportService techSupportService;
     @Autowired

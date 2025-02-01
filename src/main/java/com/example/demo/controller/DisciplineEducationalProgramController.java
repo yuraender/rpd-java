@@ -9,12 +9,14 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 @Controller
 public class DisciplineEducationalProgramController {
+
     @Autowired
     private TechSupportService techSupportService;
     @Autowired
@@ -23,7 +25,7 @@ public class DisciplineEducationalProgramController {
     private EmployeeService employeeService;
 
     @Autowired
-    private DirectionService directionService;;
+    private DirectionService directionService;
 
     @Autowired
     private AudienceService audienceService;
@@ -76,6 +78,7 @@ public class DisciplineEducationalProgramController {
 
         return ResponseEntity.ok(response);
     }
+
     @GetMapping("/dep-data-set-active/{entityId}")
     @ResponseBody
     public ResponseEntity<Map<String, Object>> setActive(@PathVariable Long entityId, HttpServletRequest request) {

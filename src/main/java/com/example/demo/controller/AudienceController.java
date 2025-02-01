@@ -1,14 +1,11 @@
 package com.example.demo.controller;
 
 import com.example.demo.entity.Audience;
-import com.example.demo.entity.Department;
-import com.example.demo.entity.Employee;
 import com.example.demo.entity.Institute;
 import com.example.demo.service.*;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -17,10 +14,10 @@ import org.springframework.web.bind.annotation.*;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 
 @Controller
 public class AudienceController {
+
     @Autowired
     private TechSupportService techSupportService;
 
@@ -61,6 +58,7 @@ public class AudienceController {
         session.setAttribute("audienceId", entityId);
         return ResponseEntity.ok(response);
     }
+
     @GetMapping("/audiences-data")
     @ResponseBody
     public ResponseEntity<Map<String, Object>> getEntityData(HttpServletRequest request) {
@@ -98,7 +96,7 @@ public class AudienceController {
             @PathVariable String softwareLicense) {
         Map<String, Object> response = new HashMap<>();
 
-        if(numberAudience.isEmpty() || tech.isEmpty() || softwareLicense.isEmpty()){
+        if (numberAudience.isEmpty() || tech.isEmpty() || softwareLicense.isEmpty()) {
             response.put("error", "Заполните все поля. Запись не обновлена.");
             return ResponseEntity.ok(response);
         }

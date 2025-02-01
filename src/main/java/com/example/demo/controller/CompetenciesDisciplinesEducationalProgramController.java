@@ -16,6 +16,7 @@ import java.util.Map;
 
 @Controller
 public class CompetenciesDisciplinesEducationalProgramController {
+
     @Autowired
     private TechSupportService techSupportService;
     @Autowired
@@ -85,6 +86,7 @@ public class CompetenciesDisciplinesEducationalProgramController {
 
         return ResponseEntity.ok(response);
     }
+
     @GetMapping("/cdep-data-set-active/{entityId}")
     @ResponseBody
     public ResponseEntity<Map<String, Object>> setActive(@PathVariable Long entityId, HttpServletRequest request) {

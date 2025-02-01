@@ -1,6 +1,6 @@
 package com.example.demo.controller;
 
-import com.example.demo.entity.*;
+import com.example.demo.entity.EducationType;
 import com.example.demo.service.*;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
@@ -16,6 +16,7 @@ import java.util.Map;
 
 @Controller
 public class EducationTypeController {
+
     @Autowired
     private TechSupportService techSupportService;
     @Autowired
@@ -73,8 +74,6 @@ public class EducationTypeController {
         response.put("data", entity);
         return ResponseEntity.ok(response);
     }
-
-
 
     @PostMapping("/api/education-type/update")
     public ResponseEntity<Map<String, Object>> updateRecord(@RequestBody Map<String, String> payload) {
