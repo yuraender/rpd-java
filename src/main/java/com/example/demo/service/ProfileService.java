@@ -1,8 +1,6 @@
 package com.example.demo.service;
 
-import com.example.demo.entity.Direction;
 import com.example.demo.entity.Profile;
-import com.example.demo.repository.DirectionRepository;
 import com.example.demo.repository.ProfileRepository;
 import org.springframework.stereotype.Service;
 
@@ -10,6 +8,7 @@ import java.util.List;
 
 @Service
 public class ProfileService {
+
     private final ProfileRepository profileRepository;
 
     public ProfileService(ProfileRepository profileRepository) {

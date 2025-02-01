@@ -1,19 +1,19 @@
 package com.example.demo.service;
 
-import com.example.demo.entity.*;
+import com.example.demo.entity.DisciplineEducationalProgram;
+import com.example.demo.entity.FileRPD;
 import com.example.demo.repository.FileRPDRepository;
-import org.apache.poi.util.Units;
 import org.apache.poi.xwpf.usermodel.*;
-import org.apache.xmlbeans.XmlCursor;
 import org.openxmlformats.schemas.wordprocessingml.x2006.main.CTTcPr;
 import org.openxmlformats.schemas.wordprocessingml.x2006.main.CTText;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.io.*;
+import java.io.ByteArrayOutputStream;
+import java.io.FileInputStream;
+import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -121,7 +121,7 @@ public class DocumentService {
             DisciplineEducationalProgram disciplineEducationalProgram,
             List<Map<String, String>> competenciesData,
             List<Map<String, String>> audienciesData
-            ) throws IOException {
+    ) throws IOException {
         Map<String, String> placeholders = new HashMap<>();
         placeholders.put("instituteName", (String) data.get("instituteName"));
         placeholders.put("instituteCity", (String) data.get("instituteCity"));
@@ -270,11 +270,11 @@ public class DocumentService {
 
                 // Значения для каждой компетенции
                 String detail = "";
-                if(point.equals("знать")){
+                if (point.equals("знать")) {
                     detail = competency.get("competencyKnow");
                 } else if (point.equals("уметь")) {
                     detail = competency.get("competencyBeAble");
-                }else{
+                } else {
                     detail = competency.get("competencyOwn");
                 }
                 XWPFParagraph detailParagraph = document.createParagraph();
@@ -349,5 +349,4 @@ public class DocumentService {
             tcPr.setTcBorders(templateTcPr.getTcBorders());
         }
     }
-
 }

@@ -9,6 +9,7 @@ import java.util.List;
 
 @Service
 public class DirectionService {
+
     private final DirectionRepository directionRepository;
 
     public DirectionService(DirectionRepository directionRepository) {
@@ -26,6 +27,7 @@ public class DirectionService {
     public List<Direction> findAllByDisabledFalse() {
         return directionRepository.findAllByDisabledFalse();
     }
+
     public List<Direction> getByDepartment(Department department) {
         return directionRepository.findAllByDisabledFalseAndDepartment(department);
     }

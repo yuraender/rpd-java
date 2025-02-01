@@ -33,6 +33,7 @@ public class TechSupportService {
 
         return filteredTechSupports;
     }
+
     public List<TechSupport> getByTeacherId(Long departmentId, Long teacherId) {
         // Получаем все записи TechSupport
         List<TechSupport> allTechSupports = techSupportRepository.findAll();
@@ -76,6 +77,7 @@ public class TechSupportService {
     public TechSupport getById(Long id) {
         return techSupportRepository.findById(id).orElse(null);
     }
+
     public TechSupport save(TechSupport techSupport) {
         return techSupportRepository.save(techSupport);
     }

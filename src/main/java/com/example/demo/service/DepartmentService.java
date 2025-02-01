@@ -1,7 +1,6 @@
 package com.example.demo.service;
 
 import com.example.demo.entity.Department;
-import com.example.demo.entity.TechSupport;
 import com.example.demo.repository.DepartmentRepository;
 import org.springframework.stereotype.Service;
 
@@ -11,6 +10,7 @@ import java.util.stream.Collectors;
 
 @Service
 public class DepartmentService {
+
     private final DepartmentRepository departmentRepository;
 
     public DepartmentService(DepartmentRepository departmentRepository) {
@@ -26,9 +26,11 @@ public class DepartmentService {
     public Department getById(Long id) {
         return departmentRepository.findById(id).orElse(null);
     }
+
     public Optional<Department> findByCode(String code) {
         return departmentRepository.findByCodeAndDisabledFalse(code);
     }
+
     public Department save(Department department) {
         return departmentRepository.save(department);
     }
@@ -41,9 +43,3 @@ public class DepartmentService {
         return departmentRepository.findByIdAndDisabledFalseAndInstituteId(id, instituteId).orElse(null);
     }
 }
-
-
-
-
-
-

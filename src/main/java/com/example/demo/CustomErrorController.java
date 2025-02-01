@@ -9,8 +9,6 @@ public class CustomErrorController implements ErrorController {
 
     @RequestMapping("/error")
     public String handleError() {
-        // Handle the error and return the appropriate view
         return "error";
     }
-
 }
