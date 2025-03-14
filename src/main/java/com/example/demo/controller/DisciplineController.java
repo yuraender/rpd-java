@@ -56,7 +56,7 @@ public class DisciplineController {
         return "disciplines";
     }
 
-    @GetMapping("/discipline-data")
+    @GetMapping("/disciplines-data")
     @ResponseBody
     public ResponseEntity<Map<String, Object>> getEntityData(HttpServletRequest request) {
         Map<String, Object> response = new HashMap<>();

@@ -74,11 +74,11 @@ public class AudienceController {
         return ResponseEntity.ok(response);
     }
 
-    @GetMapping("/api/audiences/get-active/{audiencesId}")
+    @GetMapping("/api/audience/get-active/{entityId}")
     @ResponseBody
-    public ResponseEntity<Map<String, Object>> getActiveDepartment(@PathVariable Integer audiencesId) {
+    public ResponseEntity<Map<String, Object>> getActiveDepartment(@PathVariable Integer entityId) {
         Map<String, Object> response = new HashMap<>();
-        Audience audience = audienceService.getById(audiencesId);
+        Audience audience = audienceService.getById(entityId);
         response.put("data", audience);
 
         List<Institute> instituteList = instituteService.getAllInstitutes();
@@ -86,33 +86,33 @@ public class AudienceController {
         return ResponseEntity.ok(response);
     }
 
-    @GetMapping("/api/audience-support/update/{entityId}/{instituteId}/{numberAudience}/{tech}/{softwareLicense}")
+    @PostMapping("/api/audience/update")
     @ResponseBody
-    public ResponseEntity<Map<String, Object>> updateRecord(
-            @PathVariable Integer instituteId,
-            @PathVariable Integer entityId,
-            @PathVariable String numberAudience,
-            @PathVariable String tech,
-            @PathVariable String softwareLicense) {
+    public ResponseEntity<Map<String, Object>> updateRecord(@RequestBody Map<String, String> payload) {
         Map<String, Object> response = new HashMap<>();
+        String param0 = payload.get("0");
+        String param1 = payload.get("1");
+        String param2 = payload.get("2");
+        Integer param3 = Integer.parseInt(payload.get("3"));
+        Integer dataId = Integer.parseInt(payload.get("dataId"));
 
-        if (numberAudience.isEmpty() || tech.isEmpty() || softwareLicense.isEmpty()) {
+        if (param0.isEmpty() || param1.isEmpty() || param2.isEmpty()) {
             response.put("error", "Заполните все поля. Запись не обновлена.");
             return ResponseEntity.ok(response);
         }
 
-        Audience entity = audienceService.getById(entityId);
-        Institute institute = instituteService.findById(instituteId);
+        Audience entity = audienceService.getById(dataId);
+        Institute institute = instituteService.findById(param3);
 
         if (entity == null || institute == null) {
             response.put("error", "Запись не найдена. Запись не обновлена.");
             return ResponseEntity.ok(response);
         }
         // Обновляем поле audience у Department
-        entity.setNumberAudience(numberAudience);
+        entity.setNumberAudience(param0);
+        entity.setTech(param1);
+        entity.setSoftwareLicense(param2);
         entity.setInstitute(institute);
-        entity.setTech(tech);
-        entity.setSoftwareLicense(softwareLicense);
         entity.setDisabled(false);
         // Сохраняем обновленную запись
         audienceService.save(entity);
@@ -121,7 +121,7 @@ public class AudienceController {
         return ResponseEntity.ok(response);
     }
 
-    @PostMapping("/api/audience-support/save-new-record")
+    @PostMapping("/api/audience/save-new-record")
     public ResponseEntity<Map<String, Object>> createRecord(@RequestBody Map<String, String> payload, HttpSession session) {
         Map<String, Object> response = new HashMap<>();
         Integer instituteId = Integer.parseInt(payload.get("0"));
@@ -148,7 +148,7 @@ public class AudienceController {
     }
 
 
-    @GetMapping("/api/audience-support/delete-record/{entityId}")
+    @GetMapping("/api/audience/delete-record/{entityId}")
     @ResponseBody
     public ResponseEntity<Map<String, Object>> deleteRecord(@PathVariable Integer entityId) {
         Map<String, Object> response = new HashMap<>();

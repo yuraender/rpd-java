@@ -14,12 +14,13 @@ import java.io.IOException;
 public class CustomAuthenticationSuccessHandler implements AuthenticationSuccessHandler {
 
     @Override
-    public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException {
+    public void onAuthenticationSuccess(HttpServletRequest request,
+                                        HttpServletResponse response, Authentication authentication)
+            throws IOException {
         HttpSession session = request.getSession();
         UserDetails userDetails = (UserDetails) authentication.getPrincipal();
         String role = userDetails.getAuthorities().iterator().next().getAuthority();
         session.setAttribute("role", role);
-        session.setAttribute("isAdmin", true);
         response.sendRedirect("/home");
     }
 }

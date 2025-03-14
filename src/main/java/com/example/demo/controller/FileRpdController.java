@@ -58,12 +58,12 @@ public class FileRpdController {
     @Autowired
     private FileRPDService fileRPDService;
 
-    @GetMapping("/files-rpd")
+    @GetMapping("/rpd")
     public String getTablePage(Model model) {
-        return "files-rpd";
+        return "rpd";
     }
 
-    @GetMapping("/files-rpd-data")
+    @GetMapping("/rpd-data")
     @ResponseBody
     public ResponseEntity<Map<String, Object>> getEntityData(HttpServletRequest request) {
         Map<String, Object> response = new HashMap<>();
@@ -122,8 +122,7 @@ public class FileRpdController {
         return ResponseEntity.ok(response);
     }
 
-
-    @PostMapping("/api/files-rpd/uploadFile")
+    @PostMapping("/api/rpd/uploadFile")
     @ResponseBody
     public ResponseEntity<String> uploadFileRPD(
             @RequestParam("file") MultipartFile file,
@@ -191,7 +190,7 @@ public class FileRpdController {
         }
     }
 
-    @PostMapping("/api/files-rpd/download")
+    @PostMapping("/api/rpd/download")
     @ResponseBody
     public ResponseEntity<byte[]> downloadFile(@RequestBody Map<String, String> payload) {
         Integer fileRPDId = Integer.parseInt(payload.get("recordId"));
@@ -247,8 +246,7 @@ public class FileRpdController {
         return new ResponseEntity<>(fileContent, headers, HttpStatus.OK);
     }
 
-    //
-//    @PostMapping("/api/files-rpd/update")
+    //    @PostMapping("/api/rpd/update")
 //    public ResponseEntity<Map<String, Object>> updateRecord(@RequestBody Map<String, String> payload) {
 //        Map<String, Object> response = new HashMap<>();
 //        Integer param0 = Integer.parseInt(payload.get("0"));
@@ -315,6 +313,7 @@ public class FileRpdController {
 //    }
 //
     @GetMapping("/api/files-rpd/department-filter/{entityId}")
+    @GetMapping("/api/rpd/department-filter/{entityId}")
     @ResponseBody
     public ResponseEntity<Map<String, Object>> filterByDepartment(@PathVariable Integer entityId) {
         Map<String, Object> response = new HashMap<>();
@@ -340,7 +339,7 @@ public class FileRpdController {
         return ResponseEntity.ok(response);
     }
 
-    @GetMapping("/api/files-rpd/direction-filter/{filter1}/{filter2}")
+    @GetMapping("/api/rpd/teacher-filter/{filter1}/{filter2}")
     @ResponseBody
     public ResponseEntity<Map<String, Object>> filterByDirection(@PathVariable Integer filter1, @PathVariable Integer filter2) {
         Map<String, Object> response = new HashMap<>();
@@ -375,8 +374,7 @@ public class FileRpdController {
         return ResponseEntity.ok(response);
     }
 
-
-    @GetMapping("/api/files-rpd/discipline-filter/{filter1}/{filter2}/{filter3}")
+    @GetMapping("/api/rpd/discipline-filter/{filter1}/{filter2}/{filter3}")
     @ResponseBody
     public ResponseEntity<Map<String, Object>> filterByDiscipline(@PathVariable Integer filter1, @PathVariable Integer filter2, @PathVariable Integer filter3) {
         Map<String, Object> response = new HashMap<>();
@@ -412,8 +410,7 @@ public class FileRpdController {
         return ResponseEntity.ok(response);
     }
 
-
-    @GetMapping("/api/files-rpd/oop-filter/{filter1}/{filter2}/{filter3}/{filter4}")
+    @GetMapping("/api/rpd/oop-filter/{filter1}/{filter2}/{filter3}/{filter4}")
     @ResponseBody
     public ResponseEntity<Map<String, Object>> filterByOOP(@PathVariable Integer filter1, @PathVariable Integer filter2, @PathVariable Integer filter3, @PathVariable Integer filter4) {
         Map<String, Object> response = new HashMap<>();

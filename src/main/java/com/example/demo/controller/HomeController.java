@@ -31,8 +31,11 @@ public class HomeController {
     private EmployeeService employeeService;
     @Autowired
     private DisciplineEducationalProgramService disciplineEducationalProgramService;
-    @Autowired
-    private EmployeePositionService employeePositionService;
+
+    @GetMapping("/")
+    public String home() {
+        return "redirect:/home";
+    }
 
     @GetMapping("/home")
     public String home(Model model, HttpSession session) {

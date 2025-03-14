@@ -46,12 +46,12 @@ public class EducationTypeController {
     @Autowired
     private DisciplineEducationalProgramService disciplineEducationalProgramService;
 
-    @GetMapping("/education-type")
+    @GetMapping("/education-types")
     public String getTablePage(Model model) {
         return "education-types";
     }
 
-    @GetMapping("/education-type-data")
+    @GetMapping("/education-types-data")
     @ResponseBody
     public ResponseEntity<Map<String, Object>> getEntityData(HttpServletRequest request) {
         Map<String, Object> response = new HashMap<>();

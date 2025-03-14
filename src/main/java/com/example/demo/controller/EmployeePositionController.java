@@ -27,12 +27,12 @@ public class EmployeePositionController {
     @Autowired
     private EmployeePositionService employeePositionService;
 
-    @GetMapping("/employees-positions")
+    @GetMapping("/employee-positions")
     public String getTablePage(Model model) {
         return "employee-positions";
     }
 
-    @GetMapping("/employees-position-data")
+    @GetMapping("/employee-positions-data")
     @ResponseBody
     public ResponseEntity<Map<String, Object>> getEntityData(HttpServletRequest request) {
         Map<String, Object> response = new HashMap<>();
@@ -47,7 +47,7 @@ public class EmployeePositionController {
         return ResponseEntity.ok(response);
     }
 
-    @GetMapping("/api/employees-position/get-active/{entityId}")
+    @GetMapping("/api/employee-position/get-active/{entityId}")
     @ResponseBody
     public ResponseEntity<Map<String, Object>> getActiveEntity(@PathVariable Integer entityId) {
         Map<String, Object> response = new HashMap<>();
@@ -56,7 +56,7 @@ public class EmployeePositionController {
         return ResponseEntity.ok(response);
     }
 
-    @PostMapping("/api/employees-position/update")
+    @PostMapping("/api/employee-position/update")
     public ResponseEntity<Map<String, Object>> updateRecord(@RequestBody Map<String, String> payload) {
         Map<String, Object> response = new HashMap<>();
         String param0 = payload.get("0");
@@ -78,7 +78,7 @@ public class EmployeePositionController {
         return ResponseEntity.ok(response);
     }
 
-    @PostMapping("/api/employees-position/save-new-record")
+    @PostMapping("/api/employee-position/save-new-record")
     public ResponseEntity<Map<String, Object>> createRecord(@RequestBody Map<String, String> payload) {
         Map<String, Object> response = new HashMap<>();
         String param0 = payload.get("0");
@@ -93,7 +93,7 @@ public class EmployeePositionController {
         return ResponseEntity.ok(response);
     }
 
-    @GetMapping("/api/employees-position/delete-record/{entityId}")
+    @GetMapping("/api/employee-position/delete-record/{entityId}")
     @ResponseBody
     public ResponseEntity<Map<String, Object>> deleteRecord(@PathVariable Integer entityId) {
         Map<String, Object> response = new HashMap<>();

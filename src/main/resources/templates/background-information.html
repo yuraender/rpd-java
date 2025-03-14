@@ -1,36 +1,18 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html lang="ru" xmlns:th="http://www.thymeleaf.org">
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Справочная информация</title>
+    <link rel="icon" type="image/png" href="/image/favicon-96x96.png" sizes="96x96"/>
+    <link rel="icon" type="image/svg+xml" href="/image/favicon.svg"/>
+    <link rel="shortcut icon" href="/image/favicon.ico"/>
+    <link rel="apple-touch-icon" sizes="180x180" href="/image/apple-touch-icon.png"/>
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
-    <style>
-        .scrollable-table {
-            max-height: 50vh;
-            overflow-y: auto;
-            position: relative;
-        }
-
-        .sticky-header {
-            position: -webkit-sticky;
-            position: sticky;
-            top: 0;
-            background-color: #fff;
-            z-index: 10;
-        }
-
-        .active-record {
-            margin-top: 20px;
-            padding: 10px;
-            border: 1px solid #ddd;
-        }
-
-        h1, h2, h3, h4, h5, h6 {
-            text-align: center;
-        }
-    </style>
-    <link rel="stylesheet" href="/styles.css"/>
+    <link rel="stylesheet" href="/css/style.css"/>
+    <link rel="stylesheet" href="/css/entity.css"/>
 </head>
-<body class="body-wrapper">
+<body>
 <nav class="navbar navbar-expand-lg navbar-light bg-light">
     <a class="navbar-brand" href="/home">Главная</a>
     <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav"
@@ -53,7 +35,7 @@
 
     <!-- Секция институтов -->
     <section>
-        <h2>Институты:</h2>
+        <h2>Институты</h2>
         <div class="scrollable-table">
             <table class="table table-bordered" id="institutesTable">
                 <thead>
@@ -93,7 +75,7 @@
 
     <!-- Секция кафедр -->
     <section>
-        <h2>Кафедры:</h2>
+        <h2>Кафедры</h2>
         <div class="scrollable-table">
             <table class="table table-bordered" id="departmentsTable">
                 <thead>
@@ -144,7 +126,7 @@
     </section>
     <!-- Направления -->
     <section>
-        <h2>Направления:</h2>
+        <h2>Направления</h2>
         <div class="scrollable-table">
             <table class="table table-bordered" id="directionsTable">
                 <thead>
@@ -181,7 +163,7 @@
     </section>
     <!-- Профили -->
     <section>
-        <h2>Профили:</h2>
+        <h2>Профили</h2>
         <div class="scrollable-table">
             <table class="table table-bordered" id="profilesTable">
                 <thead>
@@ -214,7 +196,7 @@
     </section>
     <!-- Типы обучения -->
     <section>
-        <h2>Типы обучения:</h2>
+        <h2>Типы обучения</h2>
         <div class="scrollable-table">
             <table class="table table-bordered" id="educationTypesTable">
                 <thead>
@@ -247,7 +229,7 @@
 
     <!-- Сотрудники -->
     <section>
-        <h2>Сотрудники:</h2>
+        <h2>Сотрудники</h2>
         <div class="scrollable-table">
             <table class="table table-bordered" id="employeesTable">
                 <thead>
@@ -287,7 +269,7 @@
 
     <!-- Должности -->
     <section>
-        <h2>Должности:</h2>
+        <h2>Должности</h2>
         <div class="scrollable-table">
             <table class="table table-bordered" id="employeePositionsTable">
                 <thead>
@@ -315,7 +297,7 @@
 
     <!-- Преподаватели -->
     <section>
-        <h2>Преподаватели:</h2>
+        <h2>Преподаватели</h2>
         <div class="scrollable-table">
             <table class="table table-bordered" id="teachersTable">
                 <thead>
@@ -353,7 +335,7 @@
 
     <!-- Дисциплины -->
     <section>
-        <h2>Дисциплины:</h2>
+        <h2>Дисциплины</h2>
         <div class="scrollable-table">
             <table class="table table-bordered" id="disciplinesTable">
                 <thead>
@@ -388,7 +370,8 @@
             <h3>Активная дисциплина</h3>
             <p><strong>ID:</strong> <span th:text="${activeDiscipline.id}"></span></p>
             <p><strong>Индекс:</strong> <span th:text="${activeDiscipline.department.name}"></span></p>
-            <p><strong>Дисциплина:</strong> <span th:text="${activeDiscipline.employeePosition.positionName}"></span></p>
+            <p><strong>Дисциплина:</strong> <span th:text="${activeDiscipline.employeePosition.positionName}"></span>
+            </p>
             <p><strong>ФамилияИО:</strong> <span th:text="${activeDiscipline.employee.nameTypeOne}"></span></p>
             <p><strong>Кафедра:</strong> <span th:text="${activeDiscipline.employee.nameTypeOne}"></span></p>
         </div>
@@ -396,7 +379,7 @@
 
     <!-- Компетенции -->
     <section>
-        <h2>Компетенции:</h2>
+        <h2>Компетенции</h2>
         <div class="scrollable-table">
             <table class="table table-bordered" id="competenciesTable">
                 <thead>
@@ -432,7 +415,7 @@
 
     <!-- Аудитории -->
     <section>
-        <h2>Аудитории:</h2>
+        <h2>Аудитории</h2>
         <div class="scrollable-table">
             <table class="table table-bordered" id="audiencesTable">
                 <thead>
@@ -475,7 +458,7 @@
 
     <!-- ООП -->
     <section>
-        <h2>ООП:</h2>
+        <h2>ООП</h2>
         <div class="scrollable-table">
             <table class="table table-bordered" id="basicEducationalProgramsTable">
                 <thead>
@@ -511,9 +494,9 @@
         </div>
     </section>
 
-    <!-- ДисциплиныОП -->
+    <!-- Дисциплины ОП -->
     <section>
-        <h2>ДисциплиныОП:</h2>
+        <h2>Дисциплины ОП</h2>
         <div class="scrollable-table">
             <table class="table table-bordered" id="disciplinesEducationalProgramsTable">
                 <thead>
@@ -545,7 +528,7 @@
             </table>
         </div>
         <div class="active-record" th:if="${activeDisciplineEducationalProgram}">
-            <h3>Активная дисциплинаОП</h3>
+            <h3>Активная дисциплина ОП</h3>
             <p><strong>ID:</strong> <span th:text="${activeDisciplineEducationalProgram.id}"></span></p>
             <p><strong>Профиль:</strong> <span
                     th:text="${activeDisciplineEducationalProgram.basicEducationalProgram.profile.name}"></span></p>
@@ -559,9 +542,9 @@
         </div>
     </section>
 
-    <!-- Компетенции дисциплинОП -->
+    <!-- Компетенции дисциплин ОП -->
     <section>
-        <h2>Компетенции дисциплинОП:</h2>
+        <h2>Компетенции дисциплин ОП</h2>
         <div class="scrollable-table">
             <table class="table table-bordered" id="competenciesDisciplinesEducationalProgramsTable">
                 <thead>
@@ -597,7 +580,7 @@
             </table>
         </div>
         <div class="active-record" th:if="${activeCompetenciesDisciplinesEducationalProgram}">
-            <h3>Активная дисциплинаОП</h3>
+            <h3>Активная дисциплина ОП</h3>
             <p><strong>ID:</strong> <span th:text="${activeDisciplineEducationalProgram.id}"></span></p>
             <p><strong>Профиль:</strong> <span
                     th:text="${activeCompetenciesDisciplinesEducationalProgram.disciplineEducationalProgram.basicEducationalProgram.profile.name}"></span>
@@ -619,7 +602,7 @@
 
     <!-- файлы РПД -->
     <section>
-        <h2>файлы РПД:</h2>
+        <h2>файлы РПД</h2>
         <div class="scrollable-table">
             <table class="table table-bordered" id="filesRpdTable">
                 <thead>
@@ -693,7 +676,7 @@
             </table>
         </div>
         <div class="active-record" th:if="${activeCompetenciesDisciplinesEducationalProgram}">
-            <h3>Активная дисциплинаОП</h3>
+            <h3>Активная дисциплина ОП</h3>
             <p><strong>ID:</strong> <span th:text="${activeDisciplineEducationalProgram.id}"></span></p>
             <p><strong>Профиль:</strong> <span
                     th:text="${activeCompetenciesDisciplinesEducationalProgram.disciplineEducationalProgram.basicEducationalProgram.profile.name}"></span>
@@ -712,53 +695,30 @@
             </p>
         </div>
     </section>
-
 </div>
 <div class="rightbar">
-    <a href="/institutes" id="menu-institute">Институты
-        <span id="institute-chosen" class="institute-status">выбран</span>
+    <a href="/institutes">Институты
+        <span id="institute-chosen" class="yes-status">выбран</span>
     </a>
-    <a href="/departments" id="menu-departments">Кафедры</a>
-    <a href="/audiences" id="menu-auditoriums">Аудитории</a>
-    <a href="/tech-support" id="menu-tech-support">Тех.обеспечение</a>
-    <a href="/directions" id="menu-direction">Направления</a>
-    <a href="/profiles" id="menu-profiles">Профили</a>
-    <a href="/bep" id="menu-bep">ООП</a>
-    <a href="/files-rpd" class="link-rightbar">РПД</a>
-    <a href="/dep" id="menu-dep">ДисциплиныОП</a>
-    <a href="/cdep" id="menu-cdep">Компетенции дисциплин ОП</a>
-    <a href="/education-type" id="menu-education-type">Типы обучения</a>
-    <a href="/employees" id="menu-employees">Сотрудники</a>
-    <a href="/employees-positions" id="menu-employees-positions">Должности</a>
-    <a href="/teachers" id="menu-teachers">Преподаватели</a>
-    <a href="/disciplines" id="menu-disciplines">Дисциплины</a>
-    <a href="/competencies" id="menu-competencies">Компетенции</a>
+    <a href="/departments">Кафедры</a>
+    <a href="/audiences">Аудитории</a>
+    <a href="/tech-support">Тех. обеспечение</a>
+    <a href="/directions">Направления</a>
+    <a href="/profiles">Профили</a>
+    <a href="/bep">ООП</a>
+    <a href="/rpd">РПД</a>
+    <a href="/dep">Дисциплины ОП</a>
+    <a href="/cdep">Компетенции дисциплин ОП</a>
+    <a href="/education-types">Типы обучения</a>
+    <a href="/employees">Сотрудники</a>
+    <a href="/employee-positions">Должности</a>
+    <a href="/teachers">Преподаватели</a>
+    <a href="/disciplines">Дисциплины</a>
+    <a href="/competencies">Компетенции</a>
 </div>
-
-<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
-<script src="/modalWindow.js"></script>
-<script>
-    function filterTable(tableId, colIndex) {
-        var input, filter, table, tr, td, i, txtValue;
-        table = document.getElementById(tableId);
-        input = table.querySelectorAll('thead input')[colIndex];
-        filter = input.value.toUpperCase();
-        tr = table.getElementsByTagName("tr");
-
-        for (i = 2; i < tr.length; i++) {
-            td = tr[i].getElementsByTagName("td")[colIndex];
-            if (td) {
-                txtValue = td.textContent || td.innerText;
-                if (txtValue.toUpperCase().indexOf(filter) > -1) {
-                    tr[i].style.display = "";
-                } else {
-                    tr[i].style.display = "none";
-                }
-            }
-        }
-    }
-</script>
+<script src="/js/modalWindow.js"></script>
+<script src="/js/filterTable.js"></script>
 </body>
 </html>

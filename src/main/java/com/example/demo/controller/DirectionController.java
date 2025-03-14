@@ -61,7 +61,7 @@ public class DirectionController {
         return ResponseEntity.ok(response);
     }
 
-    @GetMapping("/api/directions/get-active/{entityId}")
+    @GetMapping("/api/direction/get-active/{entityId}")
     @ResponseBody
     public ResponseEntity<Map<String, Object>> getActiveEntity(@PathVariable Integer entityId) {
         Map<String, Object> response = new HashMap<>();
@@ -73,7 +73,7 @@ public class DirectionController {
         return ResponseEntity.ok(response);
     }
 
-    @PostMapping("/api/direction-support/update")
+    @PostMapping("/api/direction/update")
     public ResponseEntity<Map<String, Object>> updateRecord(@RequestBody Map<String, String> payload, HttpSession session) {
         Map<String, Object> response = new HashMap<>();
         String param1 = payload.get("0");
@@ -100,7 +100,7 @@ public class DirectionController {
         return ResponseEntity.ok(response);
     }
 
-    @PostMapping("/api/direction-support/save-new-record")
+    @PostMapping("/api/direction/save-new-record")
     public ResponseEntity<Map<String, Object>> createRecord(@RequestBody Map<String, String> payload, HttpSession session) {
         Map<String, Object> response = new HashMap<>();
         String param1 = payload.get("0");
@@ -126,7 +126,7 @@ public class DirectionController {
     }
 
 
-    @GetMapping("/api/direction-support/delete-record/{entityId}")
+    @GetMapping("/api/direction/delete-record/{entityId}")
     @ResponseBody
     public ResponseEntity<Map<String, Object>> deleteRecord(@PathVariable Integer entityId) {
         Map<String, Object> response = new HashMap<>();

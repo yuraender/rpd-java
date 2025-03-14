@@ -58,7 +58,7 @@ public class TeacherController {
         return "teachers";
     }
 
-    @GetMapping("/teacher-data")
+    @GetMapping("/teachers-data")
     @ResponseBody
     public ResponseEntity<Map<String, Object>> getEntityData(HttpServletRequest request) {
         Map<String, Object> response = new HashMap<>();

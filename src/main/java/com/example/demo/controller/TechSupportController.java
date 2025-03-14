@@ -9,9 +9,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -63,7 +61,7 @@ public class TechSupportController {
         return ResponseEntity.ok(response);
     }
 
-    @GetMapping("/department-filter/{departmentId}")
+    @GetMapping("/api/tech-support/department-filter/{departmentId}")
     @ResponseBody
     public ResponseEntity<Map<String, Object>> getTeachersAndTechSupportByDepartment(@PathVariable Integer departmentId) {
         Map<String, Object> response = new HashMap<>();
@@ -81,7 +79,7 @@ public class TechSupportController {
         return ResponseEntity.ok(response);
     }
 
-    @GetMapping("/teacher-filter/{departmentId}/{teacherId}")
+    @GetMapping("/api/tech-support/teacher-filter/{departmentId}/{teacherId}")
     @ResponseBody
     public ResponseEntity<Map<String, Object>> getTeachersAndTechSupportByGetTeachers(@PathVariable Integer departmentId, @PathVariable Integer teacherId) {
         Map<String, Object> response = new HashMap<>();
@@ -99,7 +97,7 @@ public class TechSupportController {
         }
     }
 
-    @GetMapping("/teacher-filter/{departmentId}/{teacherId}/{disciplineId}")
+    @GetMapping("/api/tech-support/teacher-filter/{departmentId}/{teacherId}/{disciplineId}")
     @ResponseBody
     public ResponseEntity<Map<String, Object>> getTeachersAndTechSupportByGetDiscipline(@PathVariable Integer departmentId, @PathVariable Integer teacherId, @PathVariable Integer disciplineId) {
         Map<String, Object> response = new HashMap<>();
@@ -115,90 +113,96 @@ public class TechSupportController {
         return ResponseEntity.ok(response);
     }
 
-    @GetMapping("/api/tech-support/get-active/{techSupportId}")
+    @GetMapping("/api/tech-support/get-active/{entityId}")
     @ResponseBody
-    public ResponseEntity<Map<String, Object>> getActiveTechSupport(@PathVariable Integer techSupportId) {
+    public ResponseEntity<Map<String, Object>> getActiveTechSupport(@PathVariable Integer entityId) {
         Map<String, Object> response = new HashMap<>();
-        TechSupport techSupport = techSupportService.getById(techSupportId);
+        TechSupport entity = techSupportService.getById(entityId);
+        List<Discipline> disciplines = disciplineService.getAll();
         List<Audience> audiences = audienceService.getAll();
-        response.put("techSupport", techSupport);
+        response.put("data", entity);
+        response.put("disciplines", disciplines);
         response.put("audiences", audiences);
         return ResponseEntity.ok(response);
     }
 
-    @GetMapping("/api/tech-support/update/{techSupportId}/{newAudienceId}")
+    @PostMapping("/api/tech-support/update")
     @ResponseBody
-    public ResponseEntity<Map<String, Object>> updateRecord(@PathVariable Integer techSupportId, @PathVariable Integer newAudienceId) {
+    public ResponseEntity<Map<String, Object>> updateRecord(@RequestBody Map<String, String> payload) {
         Map<String, Object> response = new HashMap<>();
+        Integer param0 = Integer.parseInt(payload.get("0"));
+        Integer dataId = Integer.parseInt(payload.get("dataId"));
 
         // Получаем запись TechSupport по techSupportId
-        TechSupport techSupport = techSupportService.getById(techSupportId);
-        if (techSupport == null) {
+        TechSupport entity = techSupportService.getById(dataId);
+        if (entity == null) {
             response.put("error", "TechSupport not found");
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
         }
         // Получаем запись Audience по newAudienceId
-        Audience newAudience = audienceService.getById(newAudienceId);
+        Audience newAudience = audienceService.getById(param0);
         if (newAudience == null) {
             response.put("error", "Audience not found");
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
         }
 
         // Проверяем, существует ли уже запись с такими audience_id и discipline_id и disable=false
-        List<TechSupport> existingTechSupports = techSupportService.findByAudienceAndDiscipline(newAudienceId, techSupport.getDiscipline().getId());
+        List<TechSupport> existingTechSupports = techSupportService
+                .findByAudienceAndDiscipline(entity.getDiscipline().getId(), newAudience.getId());
         if (!existingTechSupports.isEmpty()) {
             response.put("error", "Запись уже существует.");
-            response.put("updatedTechSupport", techSupport);
+            response.put("updatedData", entity);
             return ResponseEntity.ok(response);
         }
         // Обновляем поле audience у TechSupport
-        techSupport.setAudience(newAudience);
+        entity.setAudience(newAudience);
         // Сохраняем обновленную запись
-        techSupportService.save(techSupport);
+        techSupportService.save(entity);
         // Добавляем обновленную запись в ответ
-        response.put("updatedTechSupport", techSupport);
+        response.put("updatedData", entity);
         return ResponseEntity.ok(response);
     }
 
-    @GetMapping("/api/tech-support/save-new-record/{audienceSelectModalId}/{disciplineSelectModalId}")
+    @PostMapping("/api/tech-support/save-new-record")
     @ResponseBody
-    public ResponseEntity<Map<String, Object>> createRecord(@PathVariable Integer audienceSelectModalId, @PathVariable Integer disciplineSelectModalId) {
+    public ResponseEntity<Map<String, Object>> createRecord(@RequestBody Map<String, String> payload) {
         Map<String, Object> response = new HashMap<>();
+        Integer param0 = Integer.parseInt(payload.get("0"));
+        Integer param1 = Integer.parseInt(payload.get("1"));
 
-        // Проверяем, существует ли уже запись с такими audience_id и discipline_id и disable=false
-        List<TechSupport> existingTechSupports = techSupportService.findByAudienceAndDiscipline(audienceSelectModalId, disciplineSelectModalId);
+        // Проверяем, существует ли уже запись с такими discipline_id и audience_id и disable=false
+        List<TechSupport> existingTechSupports = techSupportService.findByAudienceAndDiscipline(param1, param0);
         if (!existingTechSupports.isEmpty()) {
             response.put("error", "Запись уже существует.");
             return ResponseEntity.ok(response);
         }
 
-        // Создаем новую запись TechSupport
-        TechSupport techSupport = new TechSupport();
-
-        // Получаем запись Audience по newAudienceId
-        Audience newAudience = audienceService.getById(audienceSelectModalId);
-        if (newAudience == null) {
-            response.put("error", "Audience not found");
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
-        }
-
         // Получаем запись Discipline по newDisciplineId
-        Discipline newDiscipline = disciplineService.getById(disciplineSelectModalId);
+        Discipline newDiscipline = disciplineService.getById(param0);
         if (newDiscipline == null) {
             response.put("error", "Discipline not found");
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
         }
 
+        // Получаем запись Audience по newAudienceId
+        Audience newAudience = audienceService.getById(param1);
+        if (newAudience == null) {
+            response.put("error", "Audience not found");
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
+        }
+
+        // Создаем новую запись TechSupport
+        TechSupport entity = new TechSupport();
         // Обновляем поле audience и discipline у TechSupport
-        techSupport.setAudience(newAudience);
-        techSupport.setDiscipline(newDiscipline);
-        techSupport.setDisabled(false); // Устанавливаем disabled в false при создании новой записи
+        entity.setDiscipline(newDiscipline);
+        entity.setAudience(newAudience);
+        entity.setDisabled(false); // Устанавливаем disabled в false при создании новой записи
 
         // Сохраняем новую запись
-        techSupportService.save(techSupport);
+        techSupportService.save(entity);
 
         // Добавляем созданную запись в ответ
-        response.put("createdTechSupport", techSupport);
+        response.put("createdData", entity);
         return ResponseEntity.ok(response);
     }
 

@@ -132,22 +132,23 @@ public class DepartmentController {
         return ResponseEntity.ok(response);
     }
 
-    @GetMapping("/api/department-support/save-new-record/{code}/{departmentName}/{abbreviationName}/{instituteId}/{teacherId}")
+    @PostMapping("/api/department/save-new-record")
     @ResponseBody
-    public ResponseEntity<Map<String, Object>> createRecord(
-            @PathVariable String code,
-            @PathVariable String departmentName,
-            @PathVariable String abbreviationName,
-            @PathVariable Integer instituteId,
-            @PathVariable Integer teacherId) {
+    public ResponseEntity<Map<String, Object>> createRecord(@RequestBody Map<String, String> payload) {
         Map<String, Object> response = new HashMap<>();
-        Institute institute = instituteService.findById(instituteId);
-        Employee manager = employeeService.getById(teacherId);
+        String param0 = payload.get("0");
+        String param1 = payload.get("1");
+        String param2 = payload.get("2");
+        Integer param3 = Integer.parseInt(payload.get("3"));
+        Integer param4 = Integer.parseInt(payload.get("4"));
+
+        Institute institute = instituteService.findById(param3);
+        Employee manager = employeeService.getById(param4);
         if (institute == null || manager == null) {
             response.put("error", "Запись не найдена. Запись не обновлена.");
             return ResponseEntity.ok(response);
         }
-        Optional<Department> existingDepartment = departmentService.findByCode(code);
+        Optional<Department> existingDepartment = departmentService.findByCode(param0);
         if (existingDepartment.isPresent()) {
             response.put("error", "Запись с таким кодом уже есть.");
             return ResponseEntity.ok(response);
@@ -167,7 +168,7 @@ public class DepartmentController {
         return ResponseEntity.ok(response);
     }
 
-    @GetMapping("/api/department-support/delete-record/{departmentId}")
+    @GetMapping("/api/department/delete-record/{departmentId}")
     @ResponseBody
     public ResponseEntity<Map<String, Object>> deleteRecord(@PathVariable Integer departmentId) {
         Map<String, Object> response = new HashMap<>();

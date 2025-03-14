@@ -61,7 +61,7 @@ public class ProfileController {
         return ResponseEntity.ok(response);
     }
 
-    @GetMapping("/api/profiles/get-active/{entityId}")
+    @GetMapping("/api/profile/get-active/{entityId}")
     @ResponseBody
     public ResponseEntity<Map<String, Object>> getActiveEntity(@PathVariable Integer entityId) {
         Map<String, Object> response = new HashMap<>();
@@ -72,7 +72,7 @@ public class ProfileController {
         return ResponseEntity.ok(response);
     }
 
-    @PostMapping("/api/profile-support/update")
+    @PostMapping("/api/profile/update")
     public ResponseEntity<Map<String, Object>> updateRecord(@RequestBody Map<String, String> payload) {
         Map<String, Object> response = new HashMap<>();
         String param1 = payload.get("0");
@@ -97,7 +97,7 @@ public class ProfileController {
         return ResponseEntity.ok(response);
     }
 
-    @PostMapping("/api/profile-support/save-new-record")
+    @PostMapping("/api/profile/save-new-record")
     public ResponseEntity<Map<String, Object>> createRecord(@RequestBody Map<String, String> payload) {
         Map<String, Object> response = new HashMap<>();
         String param1 = payload.get("0");
@@ -120,7 +120,7 @@ public class ProfileController {
         return ResponseEntity.ok(response);
     }
 
-    @GetMapping("/api/profile-support/delete-record/{entityId}")
+    @GetMapping("/api/profile/delete-record/{entityId}")
     @ResponseBody
     public ResponseEntity<Map<String, Object>> deleteRecord(@PathVariable Integer entityId) {
         Map<String, Object> response = new HashMap<>();

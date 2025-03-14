@@ -68,7 +68,7 @@ public class CompetencieController {
         return ResponseEntity.ok(response);
     }
 
-    @GetMapping("/api/competencies/get-active/{entityId}")
+    @GetMapping("/api/competencie/get-active/{entityId}")
     @ResponseBody
     public ResponseEntity<Map<String, Object>> getActiveEntity(@PathVariable Integer entityId) {
         Map<String, Object> response = new HashMap<>();
@@ -77,7 +77,7 @@ public class CompetencieController {
         return ResponseEntity.ok(response);
     }
 
-    @PostMapping("/api/competencies/update")
+    @PostMapping("/api/competencie/update")
     public ResponseEntity<Map<String, Object>> updateRecord(@RequestBody Map<String, String> payload) {
         Map<String, Object> response = new HashMap<>();
         String param0 = payload.get("0");
@@ -108,7 +108,7 @@ public class CompetencieController {
         return ResponseEntity.ok(response);
     }
 
-    @PostMapping("/api/competencies/save-new-record")
+    @PostMapping("/api/competencie/save-new-record")
     public ResponseEntity<Map<String, Object>> createRecord(@RequestBody Map<String, String> payload) {
         Map<String, Object> response = new HashMap<>();
         String param0 = payload.get("0");
@@ -131,7 +131,7 @@ public class CompetencieController {
         return ResponseEntity.ok(response);
     }
 
-    @GetMapping("/api/competencies/delete-record/{entityId}")
+    @GetMapping("/api/competencie/delete-record/{entityId}")
     @ResponseBody
     public ResponseEntity<Map<String, Object>> deleteRecord(@PathVariable Integer entityId) {
         Map<String, Object> response = new HashMap<>();

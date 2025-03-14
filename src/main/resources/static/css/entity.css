@@ -1,0 +1,139 @@
+* {
+    box-sizing: border-box;
+}
+
+.filters {
+    display: flex;
+    flex-wrap: wrap;
+    padding: 20px 0;
+    gap: 20px;
+    justify-content: center;
+}
+
+.textbox {
+    min-width: 100px;
+    height: auto;
+    max-height: 70px;
+    overflow-y: auto;
+}
+
+.field__desc {
+    width: 40%;
+    min-width: min-content;
+}
+
+textarea {
+    width: 60%;
+    max-width: max-content;
+}
+
+p {
+    margin: 0;
+    width: max-content;
+    max-width: 100px;
+}
+
+.edit-buttons-wrapper {
+    display: flex;
+    justify-content: space-between;
+    gap: 20px;
+    max-width: max-content;
+    margin: 20px auto;
+}
+
+.btn-cancel {
+    margin-left: 20px;
+}
+
+.scrollable-table {
+    max-height: 50vh;
+    overflow-y: auto;
+    position: relative;
+}
+
+.sticky-header {
+    position: -webkit-sticky;
+    position: sticky;
+    top: 0;
+    background-color: #fff;
+    z-index: 10;
+}
+
+.active-record {
+    margin-top: 20px;
+    padding: 10px;
+    border: 1px solid #ddd;
+}
+
+h1, h2, h3, h4, h5, h6 {
+    text-align: center;
+}
+
+table:hover {
+    cursor: pointer;
+}
+
+#dataTable td {
+    align-content: center;
+}
+
+.modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.modal-content {
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 5px;
+    width: 500px;
+    max-width: 90%;
+}
+
+.modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid #ccc;
+    padding-bottom: 10px;
+}
+
+.standard__active-record-wrapper {
+    display: flex;
+    margin: 10px 0;
+    width: 100%;
+    gap: 15px;
+    align-items: center;
+}
+
+.close-btn {
+    cursor: pointer;
+    font-size: 1.5em;
+}
+
+.modal-body {
+    margin-top: 20px;
+}
+
+.no-visible {
+    display: none;
+}
+
+.modal-footer {
+    display: flex;
+    justify-content: flex-end;
+    border-top: 1px solid #ccc;
+    padding-top: 10px;
+    margin-top: 20px;
+}
+
+.form-control {
+    max-width: 100%;
+}

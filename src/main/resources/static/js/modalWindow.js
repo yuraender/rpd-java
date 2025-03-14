@@ -1,16 +1,16 @@
-function showModalWithMessage(message, thisPage) {
-    showModal(message, thisPage);
+function showModalWithMessage(message) {
+    showModal(message);
     setTimeout(() => {
         document.getElementById('successModal').remove();
         document.querySelector('.modal-backdrop').remove();
-        document.body.style.overflow = 'auto'
-        document.documentElement.style.overflow = 'auto'
-        document.body.style.padding = '0px'
-    }, 2000)
+        document.body.style.overflow = 'auto';
+        document.documentElement.style.overflow = 'auto';
+        document.body.style.padding = '0px';
+    }, 2000);
 }
 
-//модальное окно
-function showModal(message, thisPage) {
+// Модальное окно
+function showModal(message) {
     let modalHtml = `
         <div class="modal fade" id="successModal" tabindex="-1" aria-labelledby="successModalLabel" aria-hidden="true">
             <div class="modal-dialog">
@@ -34,7 +34,7 @@ function showModal(message, thisPage) {
     successModal.show();
 
     // Удалить модальное окно после закрытия
-    document.getElementById('successModal').addEventListener('hidden.bs.modal', function (event) {
+    document.getElementById('successModal').addEventListener('hidden.bs.modal', () => {
         document.getElementById('successModal').remove();
     });
 }
