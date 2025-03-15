@@ -23,7 +23,6 @@ public class AuthController {
             session.setAttribute("isAdmin", true);
             return "redirect:/home";
         }
-
         return "redirect:/home";
     }
 }
