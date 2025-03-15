@@ -16,10 +16,7 @@ CREATE TABLE IF NOT EXISTS `audiences` (
   `number_audience` varchar(50) NOT NULL,
   `software_license` text,
   `tech` text,
-  `institute_id` int(11) NOT NULL,
-  PRIMARY KEY (`id`),
-  KEY `FKprv8qsh4tgp1n7gev5j78fhc8` (`institute_id`),
-  CONSTRAINT `FKprv8qsh4tgp1n7gev5j78fhc8` FOREIGN KEY (`institute_id`) REFERENCES `institutes` (`id`)
+  PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- Dumping data for table rpd_db.audiences: ~0 rows (approximately)
@@ -88,12 +85,9 @@ CREATE TABLE IF NOT EXISTS `departaments` (
   `code` varchar(10) NOT NULL,
   `disabled` bit(1) NOT NULL,
   `name` varchar(100) NOT NULL,
-  `institute_id` int(11) NOT NULL,
   `manager_id` int(11) NOT NULL,
   PRIMARY KEY (`id`),
-  KEY `FKcpc6li4r1l37siin11on2uh9o` (`institute_id`),
   KEY `FKnh7vla4sfeagob4c8i95nmdrw` (`manager_id`),
-  CONSTRAINT `FKcpc6li4r1l37siin11on2uh9o` FOREIGN KEY (`institute_id`) REFERENCES `institutes` (`id`),
   CONSTRAINT `FKnh7vla4sfeagob4c8i95nmdrw` FOREIGN KEY (`manager_id`) REFERENCES `employees` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
@@ -241,25 +235,6 @@ CREATE TABLE IF NOT EXISTS `files_rpd` (
 DELETE FROM `files_rpd`;
 /*!40000 ALTER TABLE `files_rpd` DISABLE KEYS */;
 /*!40000 ALTER TABLE `files_rpd` ENABLE KEYS */;
-
--- Dumping structure for table rpd_db.institutes
-CREATE TABLE IF NOT EXISTS `institutes` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `approval_text` text,
-  `city` varchar(100) NOT NULL,
-  `disabled` bit(1) NOT NULL,
-  `footer_text` text,
-  `name` varchar(255) NOT NULL,
-  `director_id` int(11) NOT NULL,
-  PRIMARY KEY (`id`),
-  KEY `FKg99p3it5xyv19ydons4ynei7n` (`director_id`),
-  CONSTRAINT `FKg99p3it5xyv19ydons4ynei7n` FOREIGN KEY (`director_id`) REFERENCES `employees` (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
--- Dumping data for table rpd_db.institutes: ~0 rows (approximately)
-DELETE FROM `institutes`;
-/*!40000 ALTER TABLE `institutes` DISABLE KEYS */;
-/*!40000 ALTER TABLE `institutes` ENABLE KEYS */;
 
 -- Dumping structure for table rpd_db.profiles
 CREATE TABLE IF NOT EXISTS `profiles` (

@@ -1,7 +1,6 @@
 package com.example.demo.controller;
 
 import com.example.demo.entity.Audience;
-import com.example.demo.entity.Institute;
 import com.example.demo.service.*;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
@@ -34,8 +33,6 @@ public class AudienceController {
     private DepartmentService departmentService;
     @Autowired
     private DisciplineService disciplineService;
-    @Autowired
-    private InstituteService instituteService;
 
     @GetMapping("/audiences")
     public String getDepartmentPage(Model model) {
@@ -64,11 +61,8 @@ public class AudienceController {
     public ResponseEntity<Map<String, Object>> getEntityData(HttpServletRequest request) {
         Map<String, Object> response = new HashMap<>();
         HttpSession session = request.getSession();
-        Integer instituteIdFromSession = (Integer) session.getAttribute("instituteId");
-        List<Audience> audiences = audienceService.findAllByDisabledFalseAndInstituteId(instituteIdFromSession);
+        List<Audience> audiences = audienceService.findAllByDisabledFalse();
         response.put("data", audiences);
-        List<Institute> institutes = instituteService.getAllInstitutes();
-        response.put("institutes", institutes);
         String role = (String) session.getAttribute("role");
         response.put("role", role);
         return ResponseEntity.ok(response);
@@ -80,9 +74,6 @@ public class AudienceController {
         Map<String, Object> response = new HashMap<>();
         Audience audience = audienceService.getById(entityId);
         response.put("data", audience);
-
-        List<Institute> instituteList = instituteService.getAllInstitutes();
-        response.put("instituteList", instituteList);
         return ResponseEntity.ok(response);
     }
 
@@ -93,7 +84,6 @@ public class AudienceController {
         String param0 = payload.get("0");
         String param1 = payload.get("1");
         String param2 = payload.get("2");
-        Integer param3 = Integer.parseInt(payload.get("3"));
         Integer dataId = Integer.parseInt(payload.get("dataId"));
 
         if (param0.isEmpty() || param1.isEmpty() || param2.isEmpty()) {
@@ -102,9 +92,8 @@ public class AudienceController {
         }
 
         Audience entity = audienceService.getById(dataId);
-        Institute institute = instituteService.findById(param3);
 
-        if (entity == null || institute == null) {
+        if (entity == null) {
             response.put("error", "Запись не найдена. Запись не обновлена.");
             return ResponseEntity.ok(response);
         }
@@ -112,7 +101,6 @@ public class AudienceController {
         entity.setNumberAudience(param0);
         entity.setTech(param1);
         entity.setSoftwareLicense(param2);
-        entity.setInstitute(institute);
         entity.setDisabled(false);
         // Сохраняем обновленную запись
         audienceService.save(entity);
@@ -124,18 +112,11 @@ public class AudienceController {
     @PostMapping("/api/audience/save-new-record")
     public ResponseEntity<Map<String, Object>> createRecord(@RequestBody Map<String, String> payload, HttpSession session) {
         Map<String, Object> response = new HashMap<>();
-        Integer instituteId = Integer.parseInt(payload.get("0"));
-        String numberAudience = payload.get("1");
-        String tech = payload.get("2");
-        String softwareLicense = payload.get("3");
-        Institute institute = instituteService.findById(instituteId);
+        String numberAudience = payload.get("0");
+        String tech = payload.get("1");
+        String softwareLicense = payload.get("2");
 
-        if (institute == null) {
-            response.put("error", "Запись не найдена. Запись не обновлена.");
-            return ResponseEntity.ok(response);
-        }
         Audience entity = new Audience();
-        entity.setInstitute(institute);
         entity.setNumberAudience(numberAudience);
         entity.setTech(tech);
         entity.setSoftwareLicense(softwareLicense);

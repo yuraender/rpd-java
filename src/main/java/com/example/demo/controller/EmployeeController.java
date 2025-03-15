@@ -38,8 +38,6 @@ public class EmployeeController {
     @Autowired
     private DisciplineService disciplineService;
     @Autowired
-    private InstituteService instituteService;
-    @Autowired
     private BasicEducationalProgramService basicEducationalProgramService;
 
     @Autowired

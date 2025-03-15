@@ -10,5 +10,5 @@ public interface AudienceRepository extends JpaRepository<Audience, Integer> {
 
     Optional<Audience> findByIdAndDisabledFalse(Integer id);
 
-    List<Audience> findAllByDisabledFalseAndInstituteId(Integer instituteId);
+    List<Audience> findAllByDisabledFalse();
 }

@@ -14,9 +14,6 @@ import java.util.List;
 public class BackgroundInformationController {
 
     @Autowired
-    private InstituteService instituteService;
-
-    @Autowired
     private DepartmentService departmentService;
 
     @Autowired
@@ -58,7 +55,6 @@ public class BackgroundInformationController {
 
     @GetMapping("/background-information")
     public String getBackgroundInformation(
-            @SessionAttribute(name = "instituteId", required = false) Integer instituteId,
             @SessionAttribute(name = "departmentId", required = false) Integer departmentId,
             @SessionAttribute(name = "directionId", required = false) Integer directionId,
             @SessionAttribute(name = "profileId", required = false) Integer profileId,
@@ -77,16 +73,6 @@ public class BackgroundInformationController {
             @SessionAttribute(name = "role", required = false) String role,
             Model model
     ) {
-        // Получаем все институты
-        List<Institute> institutes = instituteService.getAllInstitutes();
-        model.addAttribute("institutes", institutes);
-
-        // Устанавливаем активный институт, если он есть
-        if (instituteId != null) {
-            Institute activeInstitute = instituteService.findById(instituteId);
-            model.addAttribute("activeInstitute", activeInstitute);
-        }
-
         // Получаем все кафедры
         List<Department> departments = departmentService.getAll();
         model.addAttribute("departments", departments);

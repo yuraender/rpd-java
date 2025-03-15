@@ -22,8 +22,6 @@ import java.util.Map;
 public class DocumentService {
 
     @Autowired
-    private InstituteService instituteService;
-    @Autowired
     private EmployeeService employeeService;
     @Autowired
     private DirectionService directionService;
@@ -123,11 +121,11 @@ public class DocumentService {
             List<Map<String, String>> audienciesData
     ) throws IOException {
         Map<String, String> placeholders = new HashMap<>();
-        placeholders.put("instituteName", (String) data.get("instituteName"));
-        placeholders.put("instituteCity", (String) data.get("instituteCity"));
-        placeholders.put("instituteApprovalText", (String) data.get("instituteApprovalText"));
-        placeholders.put("director", (String) data.get("directorName"));
-        placeholders.put("employeePosition", (String) data.get("employeePosition"));
+//        placeholders.put("instituteName", (String) data.get("instituteName"));
+//        placeholders.put("instituteCity", (String) data.get("instituteCity"));
+//        placeholders.put("instituteApprovalText", (String) data.get("instituteApprovalText"));
+//        placeholders.put("director", (String) data.get("directorName"));
+//        placeholders.put("employeePosition", (String) data.get("employeePosition"));
         placeholders.put("directionCode", (String) data.get("directionCode"));
         placeholders.put("directionName", (String) data.get("directionName"));
         placeholders.put("educationTypeText", (String) data.get("educationTypeText"));
@@ -142,8 +140,7 @@ public class DocumentService {
         placeholders.put("developerName", (String) data.get("developerName"));
         placeholders.put("managerName", (String) data.get("managerName"));
         placeholders.put("protocolNumber", (String) data.get("protocolNumber"));
-        placeholders.put("directorApprovalDate", (String) data.get("directorApprovalDate"));
-        placeholders.put("instituteFooterText", (String) data.get("instituteFooterText"));
+//        placeholders.put("instituteFooterText", (String) data.get("instituteFooterText"));
 
         String titlePath = "src/main/resources/templates/tempDocs/title.docx";
         String missionsPath = "src/main/resources/templates/tempDocs/missions.docx";

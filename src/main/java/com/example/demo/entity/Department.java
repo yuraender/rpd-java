@@ -24,10 +24,6 @@ public class Department {
     private String abbreviation;
 
     @ManyToOne
-    @JoinColumn(name = "institute_id", referencedColumnName = "id", nullable = false)
-    private Institute institute;
-
-    @ManyToOne
     @JoinColumn(name = "manager_id", referencedColumnName = "id", nullable = false)
     private Employee manager;
 

@@ -22,9 +22,6 @@
     <div class="collapse navbar-collapse" id="navbarNav">
         <ul class="navbar-nav">
             <li class="nav-item">
-                <a class="nav-link" href="/institutes">Выбор института</a>
-            </li>
-            <li class="nav-item">
                 <a class="nav-link" href="/background-information">Справочная информация</a>
             </li>
         </ul>
@@ -33,46 +30,6 @@
 <div class="container">
     <h1>Справочная информация</h1>
 
-    <!-- Секция институтов -->
-    <section>
-        <h2>Институты</h2>
-        <div class="scrollable-table">
-            <table class="table table-bordered" id="institutesTable">
-                <thead>
-                <tr class="sticky-header">
-                    <th><input type="text" class="form-control" placeholder="ID"
-                               onkeyup="filterTable('institutesTable', 0)"></th>
-                    <th><input type="text" class="form-control" placeholder="Название"
-                               onkeyup="filterTable('institutesTable', 1)"></th>
-                    <th><input type="text" class="form-control" placeholder="Город"
-                               onkeyup="filterTable('institutesTable', 2)"></th>
-                </tr>
-                <tr class="sticky-header">
-                    <th>ID</th>
-                    <th>Название</th>
-                    <th>Город</th>
-                </tr>
-                </thead>
-                <tbody>
-                <tr th:each="institute : ${institutes}">
-                    <td th:text="${institute.id}"></td>
-                    <td th:text="${institute.name}"></td>
-                    <td th:text="${institute.city}"></td>
-                </tr>
-                </tbody>
-            </table>
-        </div>
-        <div class="active-record" th:if="${activeInstitute}">
-            <h3>Активный институт</h3>
-            <p><strong>ID:</strong> <span th:text="${activeInstitute.id}"></span></p>
-            <p><strong>Название:</strong> <span th:text="${activeInstitute.name}"></span></p>
-            <p><strong>Город:</strong> <span th:text="${activeInstitute.city}"></span></p>
-            <p><strong>Директор:</strong> <span th:text="${activeInstitute.director.nameTypeOne}"></span></p>
-            <p><strong>Текст утверждено:</strong> <span th:text="${activeInstitute.approvalText}"></span></p>
-            <p><strong>Текст подвал:</strong> <span th:text="${activeInstitute.footerText}"></span></p>
-        </div>
-    </section>
-
     <!-- Секция кафедр -->
     <section>
         <h2>Кафедры</h2>
@@ -80,35 +37,27 @@
             <table class="table table-bordered" id="departmentsTable">
                 <thead>
                 <tr class="sticky-header">
-                    <th><input type="text" class="form-control" placeholder="ID"
-                               onkeyup="filterTable('departmentsTable', 0)"></th>
                     <th><input type="text" class="form-control" placeholder="Код"
-                               onkeyup="filterTable('departmentsTable', 1)"></th>
+                               onkeyup="filterTable('departmentsTable', 0)"></th>
                     <th><input type="text" class="form-control" placeholder="Название"
-                               onkeyup="filterTable('departmentsTable', 2)"></th>
+                               onkeyup="filterTable('departmentsTable', 1)"></th>
                     <th><input type="text" class="form-control" placeholder="Аббревиатура"
-                               onkeyup="filterTable('departmentsTable', 3)"></th>
-                    <th><input type="text" class="form-control" placeholder="Институт"
-                               onkeyup="filterTable('departmentsTable', 4)"></th>
+                               onkeyup="filterTable('departmentsTable', 2)"></th>
                     <th><input type="text" class="form-control" placeholder="Заведующий"
-                               onkeyup="filterTable('departmentsTable', 5)"></th>
+                               onkeyup="filterTable('departmentsTable', 3)"></th>
                 </tr>
                 <tr class="sticky-header">
-                    <th>ID</th>
                     <th>Код</th>
                     <th>Название</th>
                     <th>Аббревиатура</th>
-                    <th>Институт</th>
                     <th>Заведующий</th>
                 </tr>
                 </thead>
                 <tbody>
                 <tr th:each="department : ${departments}">
-                    <td th:text="${department.id}"></td>
                     <td th:text="${department.code}"></td>
                     <td th:text="${department.name}"></td>
                     <td th:text="${department.abbreviation}"></td>
-                    <td th:text="${department.institute.name}"></td>
                     <td th:text="${department.manager.nameTypeOne}"></td>
                 </tr>
                 </tbody>
@@ -120,8 +69,7 @@
             <p><strong>Код:</strong> <span th:text="${activeDepartment.code}"></span></p>
             <p><strong>Название:</strong> <span th:text="${activeDepartment.name}"></span></p>
             <p><strong>Аббревиатура:</strong> <span th:text="${activeDepartment.abbreviation}"></span></p>
-            <p><strong>Институт:</strong> <span th:text="${activeDepartment.institute.name}"></span></p>
-            <p><strong>Заведующий:</strong> <span th:text="${activeDepartment.manager.name}"></span></p>
+            <p><strong>Заведующий:</strong> <span th:text="${activeDepartment.manager.nameTypeOne}"></span></p>
         </div>
     </section>
     <!-- Направления -->
@@ -420,17 +368,14 @@
             <table class="table table-bordered" id="audiencesTable">
                 <thead>
                 <tr class="sticky-header">
-                    <th><input type="text" class="form-control" placeholder="Институт"
-                               onkeyup="filterTable('audiencesTable', 0)"></th>
                     <th><input type="text" class="form-control" placeholder="Аудитория №"
-                               onkeyup="filterTable('audiencesTable', 1)"></th>
+                               onkeyup="filterTable('audiencesTable', 0)"></th>
                     <th><input type="text" class="form-control" placeholder="Техника"
-                               onkeyup="filterTable('audiencesTable', 2)"></th>
+                               onkeyup="filterTable('audiencesTable', 1)"></th>
                     <th><input type="text" class="form-control" placeholder="Лицензия ПО в аудитории"
-                               onkeyup="filterTable('audiencesTable', 3)"></th>
+                               onkeyup="filterTable('audiencesTable', 2)"></th>
                 </tr>
                 <tr class="sticky-header">
-                    <th>Институт</th>
                     <th>Аудитория №</th>
                     <th>Техника</th>
                     <th>Лицензия ПО в аудитории</th>
@@ -438,7 +383,6 @@
                 </thead>
                 <tbody>
                 <tr th:each="audience : ${audiences}">
-                    <td th:text="${audience.institute.name}"></td>
                     <td th:text="${audience.numberAudience}"></td>
                     <td th:text="${audience.tech}"></td>
                     <td th:text="${audience.softwareLicense}"></td>
@@ -449,7 +393,6 @@
         <div class="active-record" th:if="${activeCompetencie}">
             <h3>Активная аудитория</h3>
             <p><strong>ID:</strong> <span th:text="${activeCompetencie.id}"></span></p>
-            <p><strong>Институт:</strong> <span th:text="${audience.institute.name}"></span></p>
             <p><strong>Аудитория №:</strong> <span th:text="${audience.numberAudience}"></span></p>
             <p><strong>Техника:</strong> <span th:text="${audience.tech}"></span></p>
             <p><strong>Лицензия ПО в аудитории:</strong> <span th:text="${audience.softwareLicense}"></span></p>
@@ -697,9 +640,6 @@
     </section>
 </div>
 <div class="rightbar">
-    <a href="/institutes">Институты
-        <span id="institute-chosen" class="yes-status">выбран</span>
-    </a>
     <a href="/departments">Кафедры</a>
     <a href="/audiences">Аудитории</a>
     <a href="/tech-support">Тех. обеспечение</a>

@@ -23,10 +23,6 @@ public class Audience {
     @Column(columnDefinition = "TEXT")
     private String softwareLicense;
 
-    @ManyToOne
-    @JoinColumn(name = "institute_id", referencedColumnName = "id", nullable = false)
-    private Institute institute;
-
     @Column(nullable = false)
     private boolean disabled;
 }

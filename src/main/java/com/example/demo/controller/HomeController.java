@@ -1,7 +1,6 @@
 package com.example.demo.controller;
 
 import com.example.demo.entity.DisciplineEducationalProgram;
-import com.example.demo.entity.Institute;
 import com.example.demo.entity.Teacher;
 import com.example.demo.service.*;
 import jakarta.servlet.http.HttpServletRequest;
@@ -13,22 +12,16 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.bind.annotation.SessionAttributes;
 
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 @Controller
-@SessionAttributes("instituteId")
 public class HomeController {
 
     @Autowired
     private TeacherService teacherService;
-    @Autowired
-    private InstituteService instituteService;
-    @Autowired
-    private EmployeeService employeeService;
     @Autowired
     private DisciplineEducationalProgramService disciplineEducationalProgramService;
 
@@ -39,18 +32,9 @@ public class HomeController {
 
     @GetMapping("/home")
     public String home(Model model, HttpSession session) {
-        Integer instituteId = (Integer) session.getAttribute("instituteId");
-        boolean isInstituteSelected = instituteId != null;
-
-        model.addAttribute("isInstituteSelected", isInstituteSelected);
         String role = (String) session.getAttribute("role");
-
         if (role.equals("administrator")) {
             model.addAttribute("isAdmin", true);
-        }
-        if (isInstituteSelected) {
-            Institute institute = instituteService.findById(instituteId);
-            model.addAttribute("institute", institute);
         }
         return "home";
     }
@@ -76,9 +60,6 @@ public class HomeController {
 
         String role = (String) session.getAttribute("role");
         response.put("role", role);
-
-        Integer instituteId = (Integer) session.getAttribute("instituteId");
-        response.put("instituteId", instituteId);
 
         if (oopId != null) {
             //Список дисциплин ОП, для которых будет созданы пакеты РПД

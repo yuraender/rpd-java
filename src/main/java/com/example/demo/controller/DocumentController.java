@@ -52,8 +52,6 @@ public class DocumentController {
     @Autowired
     private DisciplineService disciplineService;
     @Autowired
-    private InstituteService instituteService;
-    @Autowired
     private BasicEducationalProgramService basicEducationalProgramService;
 
     @Autowired
@@ -76,10 +74,6 @@ public class DocumentController {
         List<Integer> disciplinesOpList = mapper.convertValue(payload.get("disciplinesOPList"), new TypeReference<>() {
         });
 
-        HttpSession session = request.getSession();
-        String directorApprovalDate = "Test Директор";
-        Integer instituteId = (Integer) session.getAttribute("instituteId");
-
         List<File> folders = new ArrayList<>();
         byte[] zipContent = null;
         HttpHeaders headers = new HttpHeaders();
@@ -94,14 +88,14 @@ public class DocumentController {
 
         if (!disciplinesEducationalPrograms.isEmpty()) {
             for (DisciplineEducationalProgram disciplineEducationalProgram : disciplinesEducationalPrograms) {
-                Institute institute = instituteService.findById(instituteId);
-                String instituteName = institute.getName();
-                String instituteCity = institute.getCity();
-                String instituteApprovalText = institute.getApprovalText();
-                String instituteFooterText = institute.getFooterText();
-                Employee employee = institute.getDirector();
-                String directorName = employee.getNameTypeTwo();
-                String employeePosition = employee.getEmployeePosition().getPositionName();
+//                Institute institute = instituteService.findById(instituteId);
+//                String instituteName = institute.getName();
+//                String instituteCity = institute.getCity();
+//                String instituteApprovalText = institute.getApprovalText();
+//                String instituteFooterText = institute.getFooterText();
+//                Employee employee = institute.getDirector();
+//                String directorName = employee.getNameTypeTwo();
+//                String employeePosition = employee.getEmployeePosition().getPositionName();
                 Direction direction = disciplineEducationalProgram.getBasicEducationalProgram().getProfile().getDirection();
                 String directionCode = direction.getEncryption();
                 String directionName = direction.getName();
@@ -152,11 +146,11 @@ public class DocumentController {
                 }
 
                 Map<String, Object> dataMap = new HashMap<>();
-                dataMap.put("instituteName", instituteName);
-                dataMap.put("instituteCity", instituteCity);
-                dataMap.put("employeePosition", employeePosition);
-                dataMap.put("instituteApprovalText", instituteApprovalText);
-                dataMap.put("directorName", directorName);
+//                dataMap.put("instituteName", instituteName);
+//                dataMap.put("instituteCity", instituteCity);
+//                dataMap.put("employeePosition", employeePosition);
+//                dataMap.put("instituteApprovalText", instituteApprovalText);
+//                dataMap.put("directorName", directorName);
                 dataMap.put("directionCode", directionCode);
                 dataMap.put("directionName", directionName);
                 dataMap.put("educationTypeText", educationTypeText);
@@ -169,9 +163,8 @@ public class DocumentController {
                 dataMap.put("abbreviation", abbreviation);
                 dataMap.put("developerName", developerName);
                 dataMap.put("managerName", managerName);
-                dataMap.put("directorApprovalDate", directorApprovalDate);
                 dataMap.put("protocolNumber", protocolNumber);
-                dataMap.put("instituteFooterText", instituteFooterText);
+//                dataMap.put("instituteFooterText", instituteFooterText);
 
                 FileRPD fileRPD = documentService.generateAndSaveDocuments(dataMap, disciplineEducationalProgram, competenciesData, audienciesData);
 

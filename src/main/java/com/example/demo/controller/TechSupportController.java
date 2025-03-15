@@ -36,6 +36,7 @@ public class TechSupportController {
     @GetMapping("/tech-support")
     public String getTechSupportPage(Model model) {
         return "techSupport";
+        return "tech-support";
     }
 
     @GetMapping("/tech-support-data")

@@ -42,8 +42,6 @@ public class FileRpdController {
     @Autowired
     private DisciplineService disciplineService;
     @Autowired
-    private InstituteService instituteService;
-    @Autowired
     private BasicEducationalProgramService basicEducationalProgramService;
 
     @Autowired

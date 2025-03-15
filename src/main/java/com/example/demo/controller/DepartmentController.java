@@ -2,10 +2,8 @@ package com.example.demo.controller;
 
 import com.example.demo.entity.Department;
 import com.example.demo.entity.Employee;
-import com.example.demo.entity.Institute;
 import com.example.demo.service.DepartmentService;
 import com.example.demo.service.EmployeeService;
-import com.example.demo.service.InstituteService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,9 +11,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
 import java.util.List;
@@ -30,9 +26,6 @@ public class DepartmentController {
 
     @Autowired
     private DepartmentService departmentService;
-
-    @Autowired
-    private InstituteService instituteService;
 
     @GetMapping("/departments")
     public String getDepartmentPage(Model model) {
@@ -61,11 +54,8 @@ public class DepartmentController {
     public ResponseEntity<Map<String, Object>> getDepartmentData(HttpServletRequest request) {
         Map<String, Object> response = new HashMap<>();
         HttpSession session = request.getSession();
-        Integer instituteIdFromSession = (Integer) session.getAttribute("instituteId");
-        List<Department> departments = departmentService.getAll(instituteIdFromSession);
+        List<Department> departments = departmentService.getAll();
         response.put("data", departments);
-        List<Institute> institutes = instituteService.getAllInstitutes();
-        response.put("institutes", institutes);
         List<Employee> employees = employeeService.getAllEmployees();
         response.put("employees", employees);
 
@@ -82,8 +72,6 @@ public class DepartmentController {
         response.put("data", department);
         List<Department> departmentList = departmentService.getAll();
         response.put("departmentList", departmentList);
-        List<Institute> instituteList = instituteService.getAllInstitutes();
-        response.put("instituteList", instituteList);
         List<Employee> teacherList = employeeService.getAllEmployees();
         response.put("teacherList", teacherList);
         return ResponseEntity.ok(response);
@@ -91,24 +79,22 @@ public class DepartmentController {
 
     @PostMapping("/api/department/update")
     @ResponseBody
-    public ResponseEntity<Map<String, Object>> updateRecord(
-            @PathVariable Integer departmentId,
-            @PathVariable String code,
-            @PathVariable String departmentName,
-            @PathVariable String abbreviationName,
-            @PathVariable Integer instituteId,
-            @PathVariable Integer teacherId) {
+    public ResponseEntity<Map<String, Object>> updateRecord(@RequestBody Map<String, String> payload) {
         Map<String, Object> response = new HashMap<>();
+        String param0 = payload.get("0");
+        String param1 = payload.get("1");
+        String param2 = payload.get("2");
+        Integer param3 = Integer.parseInt(payload.get("3"));
+        Integer dataId = Integer.parseInt(payload.get("dataId"));
 
-        if (code.isEmpty() || departmentName.isEmpty() || abbreviationName.isEmpty()) {
+        if (param0.isEmpty() || param1.isEmpty() || param2.isEmpty()) {
             response.put("error", "Заполните все поля. Запись не обновлена.");
             return ResponseEntity.ok(response);
         }
 
-        Department department = departmentService.getById(departmentId);
-        Institute institute = instituteService.findById(instituteId);
-        Employee manager = employeeService.getById(teacherId);
-        if (institute == null || department == null || manager == null) {
+        Department entity = departmentService.getById(dataId);
+        Employee manager = employeeService.getById(param3);
+        if (entity == null || manager == null) {
             response.put("error", "Запись не найдена. Запись не обновлена.");
             return ResponseEntity.ok(response);
         }
@@ -119,12 +105,11 @@ public class DepartmentController {
         }
 
         // Обновляем поле audience у Department
-        department.setCode(code);
-        department.setName(departmentName);
-        department.setAbbreviation(abbreviationName);
-        department.setInstitute(institute);
-        department.setManager(manager);
-        department.setDisabled(false);
+        entity.setCode(param0);
+        entity.setName(param1);
+        entity.setAbbreviation(param2);
+        entity.setManager(manager);
+        entity.setDisabled(false);
         // Сохраняем обновленную запись
         departmentService.save(department);
         // Добавляем обновленную запись в ответ
@@ -140,11 +125,9 @@ public class DepartmentController {
         String param1 = payload.get("1");
         String param2 = payload.get("2");
         Integer param3 = Integer.parseInt(payload.get("3"));
-        Integer param4 = Integer.parseInt(payload.get("4"));
 
-        Institute institute = instituteService.findById(param3);
-        Employee manager = employeeService.getById(param4);
-        if (institute == null || manager == null) {
+        Employee manager = employeeService.getById(param3);
+        if (manager == null) {
             response.put("error", "Запись не найдена. Запись не обновлена.");
             return ResponseEntity.ok(response);
         }

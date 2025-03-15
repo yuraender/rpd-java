@@ -35,9 +35,6 @@
     <div class="collapse navbar-collapse" id="navbarNav">
         <ul class="navbar-nav">
             <li class="nav-item">
-                <a class="nav-link" href="/institutes">Выбор института</a>
-            </li>
-            <li class="nav-item">
                 <a class="nav-link" href="/background-information">Справочная информация</a>
             </li>
             <li class="nav-item-role">
@@ -57,12 +54,8 @@
 <div class="container">
     <ul class="required-entities__wrapper">
         <li class="required-entities__item">
-            <p class="required-entities__name">Институт:</p>
-            <span class="required-entities__status-institute"></span>
-        </li>
-        <li class="required-entities__item">
             <p class="required-entities__name">ООП:</p>
-            <span class="required-entities__status-OOP"></span>
+            <span class="required-entities__status"></span>
         </li>
     </ul>
     <div class="filter-container">
@@ -72,24 +65,21 @@
     </div>
 </div>
 <div class="rightbar">
-    <a href="/institutes">Институты
-        <span th:if="${isInstituteSelected}" class="yes-status">выбран</span>
-    </a>
-    <a href="/departments" th:classappend="${isInstituteSelected} ? '' : 'disabled'">Кафедры</a>
-    <a href="/audiences" th:classappend="${isInstituteSelected} ? '' : 'disabled'">Аудитории</a>
-    <a href="/tech-support" th:classappend="${isInstituteSelected} ? '' : 'disabled'">Тех. обеспечение</a>
-    <a href="/directions" th:classappend="${isInstituteSelected} ? '' : 'disabled'">Направления</a>
-    <a href="/profiles" th:classappend="${isInstituteSelected} ? '' : 'disabled'">Профили</a>
-    <a href="/bep" th:classappend="${isInstituteSelected} ? '' : 'disabled'">ООП</a>
-    <a href="/rpd" th:classappend="${isInstituteSelected} ? '' : 'disabled'">РПД</a>
-    <a href="/dep" th:classappend="${isInstituteSelected} ? '' : 'disabled'">Дисциплины ОП</a>
-    <a href="/cdep" th:classappend="${isInstituteSelected} ? '' : 'disabled'">Компетенции дисциплин ОП</a>
-    <a href="/education-types" th:classappend="${isInstituteSelected} ? '' : 'disabled'">Типы обучения</a>
-    <a href="/employees" th:classappend="${isInstituteSelected} ? '' : 'disabled'">Сотрудники</a>
-    <a href="/employee-positions" th:classappend="${isInstituteSelected} ? '' : 'disabled'">Должности</a>
-    <a href="/teachers" th:classappend="${isInstituteSelected} ? '' : 'disabled'">Преподаватели</a>
-    <a href="/disciplines" th:classappend="${isInstituteSelected} ? '' : 'disabled'">Дисциплины</a>
-    <a href="/competencies" th:classappend="${isInstituteSelected} ? '' : 'disabled'">Компетенции</a>
+    <a href="/departments">Кафедры</a>
+    <a href="/audiences">Аудитории</a>
+    <a href="/tech-support">Тех. обеспечение</a>
+    <a href="/directions">Направления</a>
+    <a href="/profiles">Профили</a>
+    <a href="/bep">ООП</a>
+    <a href="/rpd">РПД</a>
+    <a href="/dep">Дисциплины ОП</a>
+    <a href="/cdep">Компетенции дисциплин ОП</a>
+    <a href="/education-types">Типы обучения</a>
+    <a href="/employees">Сотрудники</a>
+    <a href="/employee-positions">Должности</a>
+    <a href="/teachers">Преподаватели</a>
+    <a href="/disciplines">Дисциплины</a>
+    <a href="/competencies">Компетенции</a>
 </div>
 <div id="createModal" class="modal" style="display: none;">
     <div class="modal-content">
@@ -116,8 +106,7 @@
         const csrfToken = document.querySelector('input[name="_csrf"]').value;
         const container = document.querySelector('.container');
 
-        const statusInstitute = document.querySelector('.required-entities__status-institute')
-        const statusOOP = document.querySelector('.required-entities__status-OOP')
+        const status = document.querySelector('.required-entities__status')
 
         let oopId = 0;
         let isAdmin = false;
@@ -135,26 +124,14 @@
                 })
                 .then(function (data) {
                     checkAdmin(data)
-                    if (data.instituteId !== null) {
-                        statusInstitute.textContent = "выбран"
-                        statusInstitute.classList.add("yes-status")
-                        if (data.oopId) {
-                            oopId = data.oopId
-                            statusOOP.textContent = "выбрана"
-                            statusOOP.classList.add("yes-status")
-                        } else {
-                            statusOOP.textContent = "не выбрана"
-                            statusOOP.classList.add("no-status")
-                        }
+                    if (data.oopId) {
+                        oopId = data.oopId
+                        status.textContent = "выбрана"
+                        status.classList.add("yes-status")
                     } else {
-                        statusInstitute.textContent = "не выбран"
-                        statusInstitute.classList.remove("yes-status")
-                        statusInstitute.classList.add("no-status")
-                        statusOOP.textContent = "не выбрана"
-                        statusOOP.classList.remove("yes-status")
-                        statusOOP.classList.add("no-status")
+                        status.textContent = "не выбрана"
+                        status.classList.add("no-status")
                     }
-                    oopId = data.oopId
                     const title = document.createElement('h2');
                     title.textContent = "Список дисциплин ОП для генерации РПД:";
                     title.style.textAlign = "center"
@@ -162,34 +139,19 @@
                     let disciplinesList = document.createElement('ul')
                     disciplinesList.classList.add('disciplines-list-container')
                     if (!data.disciplinesOP) {
-                        if (data.instituteId) {
-                            const title = document.createElement('h3');
-                            title.textContent = "Нужно выбрать ООП";
-                            title.classList.add('message-type')
-                            const messageWrapper = document.createElement('div')
-                            messageWrapper.classList.add('message-wrapper')
-                            messageWrapper.appendChild(title);
-                            const link = document.createElement('a')
-                            link.href = '/bep'
-                            link.textContent = 'Выбрать'
-                            link.classList.add('link')
-                            messageWrapper.append(link)
-                            container.append(messageWrapper)
-                        } else {
-                            const title = document.createElement('h3');
-                            title.textContent = "Нужно выбрать институт";
-                            title.classList.add('message-type')
-                            const messageWrapper = document.createElement('div')
-                            messageWrapper.classList.add('message-wrapper')
-                            messageWrapper.appendChild(title);
+                        const title = document.createElement('h3');
+                        title.textContent = "Нужно выбрать ООП";
+                        title.classList.add('message-type')
+                        const messageWrapper = document.createElement('div')
+                        messageWrapper.classList.add('message-wrapper')
+                        messageWrapper.appendChild(title);
 
-                            const link = document.createElement('a')
-                            link.href = '/institutes'
-                            link.textContent = 'Выбрать'
-                            link.classList.add('link')
-                            messageWrapper.append(link)
-                            container.append(messageWrapper)
-                        }
+                        const link = document.createElement('a')
+                        link.href = '/bep'
+                        link.textContent = 'Выбрать'
+                        link.classList.add('link')
+                        messageWrapper.append(link)
+                        container.append(messageWrapper)
                     } else {
                         let filter1 = document.getElementById('filter1');
                         filter1.innerHTML = '';

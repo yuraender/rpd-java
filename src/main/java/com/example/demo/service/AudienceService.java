@@ -16,8 +16,8 @@ public class AudienceService {
         this.audienceRepository = audienceRepository;
     }
 
-    public List<Audience> findAllByDisabledFalseAndInstituteId(Integer instituteId) {
-        return audienceRepository.findAllByDisabledFalseAndInstituteId(instituteId);
+    public List<Audience> findAllByDisabledFalse() {
+        return audienceRepository.findAllByDisabledFalse();
     }
 
     public List<Audience> getAll() {

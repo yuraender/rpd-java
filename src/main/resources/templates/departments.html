@@ -24,9 +24,6 @@
     <div class="collapse navbar-collapse" id="navbarNav">
         <ul class="navbar-nav">
             <li class="nav-item">
-                <a class="nav-link" href="/institutes">Выбор института</a>
-            </li>
-            <li class="nav-item">
                 <a class="nav-link" href="/background-information">Справочная информация</a>
             </li>
         </ul>
@@ -46,17 +43,14 @@
                            onkeyup="filterTable('dataTable', 2)"></th>
                 <th><input type="text" class="form-control" placeholder="Аббревиатура"
                            onkeyup="filterTable('dataTable', 3)"></th>
-                <th><input type="text" class="form-control" placeholder="Институт"
-                           onkeyup="filterTable('dataTable', 4)"></th>
                 <th><input type="text" class="form-control" placeholder="Заведующий"
-                           onkeyup="filterTable('dataTable', 5)"></th>
+                           onkeyup="filterTable('dataTable', 4)"></th>
             </tr>
             <tr class="sticky-header">
                 <th>ID</th>
                 <th>Код</th>
                 <th>Название</th>
                 <th>Аббревиатура</th>
-                <th>Институт</th>
                 <th>Заведующий</th>
             </tr>
             </thead>
@@ -74,9 +68,6 @@
     </div>
 </section>
 <div class="rightbar">
-    <a href="/institutes">Институты
-        <span id="institute-chosen" class="yes-status">выбран</span>
-    </a>
     <a href="/departments">Кафедры</a>
     <a href="/audiences">Аудитории</a>
     <a href="/tech-support">Тех. обеспечение</a>
@@ -303,26 +294,9 @@
                         fieldWrapper.classList.add('standard__active-record-wrapper')
                         fieldDesc = document.createElement('p')
                         fieldDesc.classList.add('field__desc')
-                        fieldDesc.textContent = `Институт:`
-                        fieldWrapper.append(fieldDesc)
-                        let fieldSelect = document.createElement('select');
-                        fieldSelect.classList.add('form-control', 'field');
-                        data.institutes.forEach(function (optionData) {
-                            let text = optionData.name;
-                            let id = optionData.id;
-                            let option = createOptionForCreate(text, id)
-                            fieldSelect.append(option);
-                        });
-                        fieldWrapper.append(fieldSelect)
-                        form.append(fieldWrapper)
-
-                        fieldWrapper = document.createElement('div')
-                        fieldWrapper.classList.add('standard__active-record-wrapper')
-                        fieldDesc = document.createElement('p')
-                        fieldDesc.classList.add('field__desc')
                         fieldDesc.textContent = `Заведующий:`
                         fieldWrapper.append(fieldDesc)
-                        fieldSelect = document.createElement('select');
+                        let fieldSelect = document.createElement('select');
                         fieldSelect.classList.add('form-control', 'field')
                         data.employees.forEach(function (optionData) {
                             let text = optionData.nameTypeOne;
@@ -393,7 +367,6 @@
                             '<td>' + data.code + '</td>' +
                             '<td>' + data.name + '</td>' +
                             '<td>' + data.abbreviation + '</td>' +
-                            '<td>' + data.institute.name + '</td>' +
                             '<td>' + data.manager.nameTypeOne + '</td>';
                         row.addEventListener('click', function () {
                             changeActiveRowTable(data.id);
@@ -424,7 +397,6 @@
                     '<td>' + data.code + '</td>' +
                     '<td>' + data.name + '</td>' +
                     '<td>' + data.abbreviation + '</td>' +
-                    '<td>' + data.institute.name + '</td>' +
                     '<td>' + data.manager.nameTypeOne + '</td>';
                 row.addEventListener('click', function () {
                     changeActiveRowTable(data.id);
@@ -495,28 +467,9 @@
                     fieldWrapper.classList.add('standard__active-record-wrapper')
                     fieldDesc = document.createElement('p')
                     fieldDesc.classList.add('field__desc')
-                    fieldDesc.textContent = `Институт:`
-                    fieldWrapper.append(fieldDesc)
-                    let fieldSelect = document.createElement('select');
-                    fieldSelect.classList.add('form-control', 'field');
-                    data.instituteList.forEach(function (optionData) {
-                        let text = optionData.name;
-                        let id = optionData.id;
-                        let parentDataId = data.data.institute.id
-                        let option = createOptionForActiveRecord(text, id, parentDataId)
-                        fieldSelect.append(option);
-                    });
-                    fieldSelect.disabled = !editMode;
-                    fieldWrapper.append(fieldSelect)
-                    form.append(fieldWrapper)
-
-                    fieldWrapper = document.createElement('div')
-                    fieldWrapper.classList.add('standard__active-record-wrapper')
-                    fieldDesc = document.createElement('p')
-                    fieldDesc.classList.add('field__desc')
                     fieldDesc.textContent = `Заведующий:`
                     fieldWrapper.append(fieldDesc)
-                    fieldSelect = document.createElement('select');
+                    let fieldSelect = document.createElement('select');
                     fieldSelect.classList.add('form-control', 'field')
                     data.teacherList.forEach(function (optionData) {
                         let text = optionData.nameTypeOne;
@@ -623,7 +576,6 @@
                                     '<td>' + newRecord.updatedData.code + '</td>' +
                                     '<td>' + newRecord.updatedData.name + '</td>' +
                                     '<td>' + newRecord.updatedData.abbreviation + '</td>' +
-                                    '<td>' + newRecord.updatedData.institute.name + '</td>' +
                                     '<td>' + newRecord.updatedData.manager.nameTypeOne + '</td>';
                                 break;
                             }

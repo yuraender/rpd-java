@@ -6,7 +6,6 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 @Service
 public class DepartmentService {
@@ -18,13 +17,11 @@ public class DepartmentService {
     }
 
     public List<Department> getAll() {
-        return departmentRepository.findAll().stream()
-                .filter(department -> !department.isDisabled())
-                .collect(Collectors.toList());
+        return departmentRepository.findAllByDisabledFalse();
     }
 
     public Department getById(Integer id) {
-        return departmentRepository.findById(id).orElse(null);
+        return departmentRepository.findByIdAndDisabledFalse(id).orElse(null);
     }
 
     public Optional<Department> findByCode(String code) {
@@ -33,13 +30,5 @@ public class DepartmentService {
 
     public Department save(Department department) {
         return departmentRepository.save(department);
-    }
-
-    public List<Department> getAll(Integer instituteId) {
-        return departmentRepository.findAllByDisabledFalseAndInstituteId(instituteId);
-    }
-
-    public Department getById(Integer id, Integer instituteId) {
-        return departmentRepository.findByIdAndDisabledFalseAndInstituteId(id, instituteId).orElse(null);
     }
 }
