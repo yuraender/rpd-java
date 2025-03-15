@@ -23,10 +23,10 @@ public class Employee {
     @Column(length = 100)
     private String middleName;
 
-    @Column(length = 10, nullable = false)
+    @Column(length = 105, nullable = false)
     private String nameTypeOne;
 
-    @Column(length = 10, nullable = false)
+    @Column(length = 105, nullable = false)
     private String nameTypeTwo;
 
     @ManyToOne

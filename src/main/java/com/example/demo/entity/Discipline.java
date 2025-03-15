@@ -14,7 +14,7 @@ public class Discipline {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
-    @Column(length = 10, nullable = false)
+    @Column(name = "discipline_index", length = 10, nullable = false)
     private String index;
 
     @Column(length = 100, nullable = false)
