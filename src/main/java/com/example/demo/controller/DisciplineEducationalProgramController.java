@@ -180,10 +180,6 @@ public class DisciplineEducationalProgramController {
         Department department = departmentService.getById(entityId);
         // Получаем запись entityId
         List<Direction> filterList = directionService.getByDepartment(department);
-        if (filterList.isEmpty()) {
-            response.put("error", "Запись не найдена");
-            return ResponseEntity.ok(response);
-        }
         response.put("filterList", filterList);
 
         List<DisciplineEducationalProgram> allEntityForTable = disciplineEducationalProgramService.getAll();
@@ -211,10 +207,6 @@ public class DisciplineEducationalProgramController {
                 .filter(el -> el.getDirection().getId() == filter2)
                 .filter(el -> !el.isDisabled()).toList();
 
-        if (filterList.isEmpty()) {
-            response.put("error", "Запись не найдена");
-            return ResponseEntity.ok(response);
-        }
         response.put("filterList", filterList);
 
         List<DisciplineEducationalProgram> allTableEntity = disciplineEducationalProgramService.getAll();

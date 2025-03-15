@@ -170,10 +170,6 @@ public class BasicEducationalProgramController {
         Department department = departmentService.getById(entityId);
         // Получаем запись entityId
         List<Direction> filterList = directionService.getByDepartment(department);
-        if (filterList.isEmpty()) {
-            response.put("error", "Запись не найдена");
-            return ResponseEntity.ok(response);
-        }
         response.put("filterList", filterList);
 
         List<BasicEducationalProgram> allBasicEducationalPrograms = basicEducationalProgramService.getAll();

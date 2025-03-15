@@ -219,10 +219,6 @@ public class CompetenciesDisciplinesEducationalProgramController {
                 .filter(el -> el.getDeveloper().getId() == filter2)
                 .filter(el -> !el.isDisabled()).toList();
 
-        if (filterList.isEmpty()) {
-            response.put("error", "Запись не найдена");
-            return ResponseEntity.ok(response);
-        }
         response.put("filterList", filterList);
 
         List<CompetenciesDisciplinesEducationalProgram> allTableEntity = competenciesDisciplinesEducationalProgramService.getAll();
@@ -254,10 +250,6 @@ public class CompetenciesDisciplinesEducationalProgramController {
                 .filter(el -> el.getDiscipline().getId() == filter3)
                 .filter(el -> !el.isDisabled()).toList();
 
-        if (filterList.isEmpty()) {
-            response.put("error", "Запись не найдена");
-            return ResponseEntity.ok(response);
-        }
         response.put("filterList", filterList);
 
         List<CompetenciesDisciplinesEducationalProgram> allTableEntity = competenciesDisciplinesEducationalProgramService.getAll();

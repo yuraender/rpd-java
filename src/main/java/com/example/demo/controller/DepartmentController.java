@@ -74,11 +74,11 @@ public class DepartmentController {
         return ResponseEntity.ok(response);
     }
 
-    @GetMapping("/api/departments/get-active/{departmentsId}")
+    @GetMapping("/api/department/get-active/{entityId}")
     @ResponseBody
-    public ResponseEntity<Map<String, Object>> getActiveDepartment(@PathVariable Integer departmentsId) {
+    public ResponseEntity<Map<String, Object>> getActiveDepartment(@PathVariable Integer entityId) {
         Map<String, Object> response = new HashMap<>();
-        Department department = departmentService.getById(departmentsId);
+        Department department = departmentService.getById(entityId);
         response.put("data", department);
         List<Department> departmentList = departmentService.getAll();
         response.put("departmentList", departmentList);
@@ -89,7 +89,7 @@ public class DepartmentController {
         return ResponseEntity.ok(response);
     }
 
-    @GetMapping("/api/department-support/update/{departmentId}/{code}/{departmentName}/{abbreviationName}/{instituteId}/{teacherId}")
+    @PostMapping("/api/department/update")
     @ResponseBody
     public ResponseEntity<Map<String, Object>> updateRecord(
             @PathVariable Integer departmentId,

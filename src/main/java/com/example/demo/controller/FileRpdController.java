@@ -351,10 +351,6 @@ public class FileRpdController {
                 .filter(el -> el.getDeveloper().getId() == filter2)
                 .filter(el -> !el.isDisabled()).toList();
 
-        if (filterList.isEmpty()) {
-            response.put("error", "Запись не найдена");
-            return ResponseEntity.ok(response);
-        }
         response.put("filterList", filterList);
 
         List<FileRPD> allTableEntity = fileRPDService.getAll();
@@ -385,10 +381,6 @@ public class FileRpdController {
                 .filter(el -> el.getDiscipline().getId() == filter3)
                 .filter(el -> !el.isDisabled()).toList();
 
-        if (filterList.isEmpty()) {
-            response.put("error", "Запись не найдена");
-            return ResponseEntity.ok(response);
-        }
         response.put("filterList", filterList);
 
         List<FileRPD> allTableEntity = fileRPDService.getAll();
