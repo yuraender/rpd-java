@@ -8,14 +8,9 @@
     <link rel="icon" type="image/svg+xml" href="/image/favicon.svg"/>
     <link rel="shortcut icon" href="/image/favicon.ico"/>
     <link rel="apple-touch-icon" sizes="180x180" href="/image/apple-touch-icon.png"/>
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
-    <style>
-        .big-option {
-            max-width: 30%;
-            height: max-content;
-            overflow: auto;
-        }
-    </style>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css">
+    <link rel="stylesheet"
+          href="https://cdn.jsdelivr.net/npm/bootstrap-select@1.13.18/dist/css/bootstrap-select.min.css">
     <link rel="stylesheet" href="/css/style.css"/>
     <link rel="stylesheet" href="/css/entity.css"/>
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
@@ -41,26 +36,25 @@
     <div class="container filters">
         <div class="filter-container">
             <label for="filter1">Кафедра:</label>
-            <select class="form-control" id="filter1">
+            <select class="form-control" id="filter1" data-live-search="true" data-selected-text-format="count">
             </select>
         </div>
         <div class="filter-container">
             <label for="filter2">Разработчик РП:</label>
-                <option value="0">Выберите разработчика</option>
+            <select class="form-control" id="filter2" data-live-search="true" data-selected-text-format="count">
+                <option value="0" selected>Выберите разработчика</option>
             </select>
         </div>
         <div class="filter-container">
-            <label for="filter3">Дисциплина:</label>
-                <option value="0">Выберите дисциплину</option>
             <label for="filter3">ООП:</label>
-                <option value="0">Выберите ООП</option>
+            <select class="form-control" id="filter3" data-live-search="true" data-selected-text-format="count">
+                <option value="0" selected>Выберите ООП</option>
             </select>
         </div>
         <div class="filter-container">
-            <label for="filter4">ООП:</label>
-                <option value="0">Выберите ООП</option>
             <label for="filter4">Дисциплина:</label>
-                <option value="0">Выберите дисциплину</option>
+            <select class="form-control" id="filter4" data-live-search="true" data-selected-text-format="count">
+                <option value="0" selected>Выберите дисциплину</option>
             </select>
         </div>
     </div>
@@ -136,8 +130,10 @@
         </div>
     </div>
 </div>
-<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
-<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap-select@1.13.18/dist/js/bootstrap-select.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap-select@1.13.18/dist/js/i18n/defaults-ru_RU.min.js"></script>
 <script src="/js/modalWindow.js"></script>
 <script>
     document.addEventListener('DOMContentLoaded', function () {
@@ -202,6 +198,7 @@
                     let option = document.createElement('option');
                     option.textContent = "Выберите кафедру";
                     option.value = "0";
+                    option.selected = true;
                     filter1.appendChild(option);
                     data.departments.forEach(function (department) {
                         let option = document.createElement('option');
@@ -210,6 +207,7 @@
                         filter1.appendChild(option);
                     });
                     renderTable(data.data)
+                    $('select').selectpicker('refresh');
                 })
                 .catch(function (error) {
                     console.error('Ошибка загрузки данных:', error);
@@ -279,7 +277,8 @@
                         fieldWrapper.append(fieldDesc)
                         let fieldSelect = document.createElement('select');
                         fieldSelect.classList.add('form-control', 'field');
-                        data.entity4.forEach(function (optionData) {
+                        fieldSelect.setAttribute('data-live-search', 'true');
+                        fieldSelect.setAttribute('data-selected-text-format', 'count');
                         data.deps.forEach(function (optionData) {
                             let text = optionData.basicEducationalProgram.academicYear + ', ' +
                                 optionData.basicEducationalProgram.profile.name + ', ' +
@@ -300,7 +299,8 @@
                         fieldWrapper.append(fieldDesc)
                         fieldSelect = document.createElement('select');
                         fieldSelect.classList.add('form-control', 'field');
-                        data.entity3.forEach(function (optionData) {
+                        fieldSelect.setAttribute('data-live-search', 'true');
+                        fieldSelect.setAttribute('data-selected-text-format', 'count');
                         data.competencies.forEach(function (optionData) {
                             let text = optionData.code + ' ' + optionData.essence;
                             let id = optionData.id;
@@ -314,6 +314,9 @@
                         cancelCreateModal.addEventListener('click', () => closeModal(createModal))
                         closeBtn.addEventListener('click', () => closeModal(createModal))
                         createModal.style.display = 'flex';
+
+                        $('select', form).selectpicker();
+                        $('.bootstrap-select', form).removeClass(['form-control', 'field']);
                     })
                     .catch(error => {
                         console.error('Ошибка загрузки данных:', error);
@@ -328,7 +331,13 @@
             let emptyFields = false;
             let data = {}
             fields.forEach(function (field, index) {
-                if (field.value) {
+                if (field.multiple) {
+                    const values = [];
+                    for (let selectedOption of field.selectedOptions) {
+                        values.push(selectedOption.value);
+                    }
+                    data[index] = values;
+                } else if (field.value) {
                     data[index] = field.value
                 } else {
                     showModalWithMessage('Поля должны быть заполнены.')
@@ -491,6 +500,8 @@
                     // Показываем контейнер
                     activeRecordWrapper.style.display = 'block';
 
+                    $('select', form).selectpicker();
+
                     if (editMode && isAdmin) {
                         let activeRecord = document.querySelector('.active-record');
                         let fields = activeRecord.querySelectorAll('.field');
@@ -498,8 +509,10 @@
                         fields.forEach(function (field) {
                             field.disabled = true;
                             field.readOnly = true;
+                            $(field).selectpicker('refresh');
                         });
                     }
+                    $('.bootstrap-select', form).removeClass(['form-control', 'field'])
 
                     function createTextBoxForActiveRecord(text, maxLength) {
                         let textBox = document.createElement('textarea');
@@ -525,6 +538,16 @@
                         }
                         return option;
                     }
+
+                    function createOptionMultipleForActiveRecord(text, id, selected) {
+                        let option = document.createElement('option');
+                        option.textContent = text;
+                        option.value = id;
+                        if (selected) {
+                            option.selected = true;
+                        }
+                        return option;
+                    }
                 })
                 .catch(function (error) {
                     console.error('Ошибка загрузки данных:', error);
@@ -546,6 +569,7 @@
             filter2.disabled = true;
             filter3.disabled = true;
             filter4.disabled = true;
+            $('select', '.filters').selectpicker('refresh');
 
             fetch('/api/cdep/department-filter/' + filter1Id)
                 .then(function (response) {
@@ -560,11 +584,10 @@
                     let option = document.createElement('option');
                     option.textContent = "Выберите разработчика";
                     option.value = "0";
-                    filterElement.appendChild(option);
+                    option.selected = true;
                     filter2.appendChild(option);
                     data.filterList.forEach(function (entity) {
                         let option = document.createElement('option');
-                        option.classList.add('big-option')
                         option.textContent = entity.employee.nameTypeOne;
                         option.value = entity.id;
                         filter2.appendChild(option);
@@ -578,6 +601,7 @@
                     } else {
                         filter2.disabled = false;
                     }
+                    $('select', '.filters').selectpicker('refresh');
                 })
                 .catch(function (error) {
                     console.error('Ошибка загрузки данных:', error);
@@ -592,6 +616,7 @@
             // Заблокировать списки, пока не придет ответ
             filter3.disabled = true;
             filter4.disabled = true;
+            $('select', '.filters').selectpicker('refresh');
 
             fetch('/api/cdep/direction-filter/' + filter1Global + '/' + filter2Id)
             fetch('/api/cdep/developer-filter/' + filter1Global + '/' + filter2Id)
@@ -601,7 +626,7 @@
                     let option = document.createElement('option');
                     option.textContent = "Выберите ООП";
                     option.value = "0";
-                    filterElement.appendChild(option);
+                    option.selected = true;
                     filter3.appendChild(option);
                     data.filterList.forEach(function (entity) {
                         let option = document.createElement('option');
@@ -617,6 +642,7 @@
                     } else {
                         filter3.disabled = false;
                     }
+                    $('select', '.filters').selectpicker('refresh');
                 })
                 .catch(function (error) {
                     console.error('Ошибка загрузки данных:', error);
@@ -631,6 +657,7 @@
             fetch('/api/cdep/discipline-filter/' + filter1Global + '/' + filter2Global + '/' + filter3Id)
             // Заблокировать списки, пока не придет ответ
             filter4.disabled = true;
+            $('select', '.filters').selectpicker('refresh');
 
             fetch('/api/cdep/oop-filter/' + filter1Global + '/' + filter2Global + '/' + filter3Id)
                 .then(function (data) {
@@ -639,7 +666,7 @@
                     let option = document.createElement('option');
                     option.textContent = "Выберите дисциплину";
                     option.value = "0";
-                    filterElement.appendChild(option);
+                    option.selected = true;
                     filter4.appendChild(option);
                     data.filterList.forEach(function (entity) {
                         let option = document.createElement('option');
@@ -654,6 +681,7 @@
                     } else {
                         filter4.disabled = false;
                     }
+                    $('select', '.filters').selectpicker('refresh');
                 })
                 .catch(function (error) {
                     console.error('Ошибка загрузки данных:', error);

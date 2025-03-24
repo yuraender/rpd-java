@@ -141,3 +141,11 @@ table:hover {
 .form-control {
     max-width: 100%;
 }
+
+.createForm .dropdown-toggle {
+    width: 142% !important;
+}
+
+.active-form .dropdown-toggle {
+    width: 442% !important;
+}
