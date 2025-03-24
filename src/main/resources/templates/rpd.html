@@ -197,12 +197,7 @@
             if (form) {
                 let activeRecordId = form.getAttribute('activeRecordId')
                 fetch('/rpd-data-set-active/' + activeRecordId)
-                    .then(function (response) {
-                        if (!response.ok) {
-                            throw new Error('Ошибка HTTP ' + response.status);
-                        }
-                        return response.json();
-                    })
+                    .then(response => response.json())
                     .then(function (data) {
                         showModalWithMessage('Вы выбрали: ' + data.dataName)
                     })
@@ -236,12 +231,7 @@
             saveModalRecord.addEventListener('click', () => saveNewRecord())
 
             fetch('/rpd-data')
-                .then(function (response) {
-                    if (!response.ok) {
-                        throw new Error('Ошибка HTTP ' + response.status);
-                    }
-                    return response.json();
-                })
+                .then(response => response.json())
                 .then(function (data) {
                     checkAdmin(data)
                     let filter1 = document.getElementById('filter1');
@@ -278,12 +268,7 @@
                     let dataId = recordElement.getAttribute('activeRecordId')
                     if (!dataId) return null;
                     fetch('/api/rpd/delete-record/' + dataId)
-                        .then(function (response) {
-                            if (!response.ok) {
-                                throw new Error('Ошибка HTTP ' + response.status);
-                            }
-                            return response.json();
-                        })
+                        .then(response => response.json())
                         .then(deletedRecord => {
                             showModalWithMessage('Запись удалена.')
                             document.querySelector('.active-form').remove()
@@ -316,12 +301,7 @@
 
             function showCreateModal() {
                 fetch('/rpd-data')
-                    .then(function (response) {
-                        if (!response.ok) {
-                            throw new Error('Ошибка HTTP ' + response.status);
-                        }
-                        return response.json();
-                    })
+                    .then(response => response.json())
                     .then(data => {
                         const form = document.querySelector('.createForm')
 
@@ -404,12 +384,7 @@
                 },
                 body: JSON.stringify(data)
             })
-                .then(function (response) {
-                    if (!response.ok) {
-                        throw new Error('Ошибка HTTP ' + response.status);
-                    }
-                    return response.json();
-                })
+                .then(response => response.json())
                 .then(data => {
                     if (data.error) {
                         showModalWithMessage(data.error);
@@ -481,12 +456,7 @@
 
         function changeActiveRowTable(dataId) {
             fetch('/api/rpd/get-active/' + dataId)
-                .then(function (response) {
-                    if (!response.ok) {
-                        throw new Error('Ошибка HTTP ' + response.status);
-                    }
-                    return response.json();
-                })
+                .then(response => response.json())
                 .then(function (data) {
                     let activeRecordWrapper = document.querySelector('.active-record');
                     activeRecordWrapper.innerHTML = '';
@@ -660,12 +630,7 @@
             $('select', '.filters').selectpicker('refresh');
 
             fetch('/api/rpd/department-filter/' + filter1Id)
-                .then(function (response) {
-                    if (!response.ok) {
-                        throw new Error('Ошибка HTTP ' + response.status);
-                    }
-                    return response.json();
-                })
+                .then(response => response.json())
                 .then(function (data) {
                     let filter2 = document.getElementById('filter2');
                     filter2.innerHTML = '';
@@ -708,6 +673,7 @@
 
             fetch('/api/rpd/teacher-filter/' + filter1Global + '/' + filter2Id)
             fetch('/api/rpd/developer-filter/' + filter1Global + '/' + filter2Id)
+                .then(response => response.json())
                 .then(function (data) {
                     let filter3 = document.getElementById('filter3');
                     filter3.innerHTML = '';
@@ -748,6 +714,7 @@
             $('select', '.filters').selectpicker('refresh');
 
             fetch('/api/rpd/oop-filter/' + filter1Global + '/' + filter2Global + '/' + filter3Id)
+                .then(response => response.json())
                 .then(function (data) {
                     let filter4 = document.getElementById('filter4');
                     filter4.innerHTML = '';
@@ -782,6 +749,7 @@
 
             fetch('/api/rpd/oop-filter/' + filter1Global + '/' + filter2Global + '/' + filter3Global + '/' + filter4Id)
             fetch('/api/rpd/discipline-filter/' + filter1Global + '/' + filter2Global + '/' + filter3Global + '/' + filter4Id)
+                .then(response => response.json())
                 .then(function (data) {
                     renderTable(data.entityList)
                 })
@@ -840,7 +808,7 @@
                     },
                     body: formData
                 })
-                    .then(res => res.json())
+                    .then(response => response.json())
                     .then(data => {
                         let buttons = document.querySelectorAll('.btn-download')
                         buttons.forEach(el => {

@@ -154,12 +154,7 @@
             saveModalRecord.addEventListener('click', () => saveNewRecord())
 
             fetch('/tech-support-data')
-                .then(function (response) {
-                    if (!response.ok) {
-                        throw new Error('Ошибка HTTP ' + response.status);
-                    }
-                    return response.json();
-                })
+                .then(response => response.json())
                 .then(function (data) {
                     checkAdmin(data)
                     let filter1 = document.getElementById('filter1');
@@ -197,12 +192,7 @@
                     let dataId = recordElement.getAttribute('activeRecordId')
                     if (!dataId) return null;
                     fetch('/api/tech-support/delete-record/' + dataId)
-                        .then(function (response) {
-                            if (!response.ok) {
-                                throw new Error('Ошибка HTTP ' + response.status);
-                            }
-                            return response.json();
-                        })
+                        .then(response => response.json())
                         .then(deletedRecord => {
                             showModalWithMessage('Запись удалена.')
                             document.querySelector('.active-form').remove()
@@ -235,12 +225,7 @@
 
             function showCreateModal() {
                 fetch('/tech-support-data')
-                    .then(function (response) {
-                        if (!response.ok) {
-                            throw new Error('Ошибка HTTP ' + response.status);
-                        }
-                        return response.json();
-                    })
+                    .then(response => response.json())
                     .then(data => {
                         const form = document.querySelector('.createForm')
 
@@ -330,12 +315,7 @@
                 },
                 body: JSON.stringify(data)
             })
-                .then(function (response) {
-                    if (!response.ok) {
-                        throw new Error('Ошибка HTTP ' + response.status);
-                    }
-                    return response.json();
-                })
+                .then(response => response.json())
                 .then(data => {
                     if (data.error) {
                         showModalWithMessage(data.error);
@@ -387,12 +367,7 @@
 
         function changeActiveRowTable(dataId) {
             fetch('/api/tech-support/get-active/' + dataId)
-                .then(function (response) {
-                    if (!response.ok) {
-                        throw new Error('Ошибка HTTP ' + response.status);
-                    }
-                    return response.json();
-                })
+                .then(response => response.json())
                 .then(function (data) {
                     let activeRecordWrapper = document.querySelector('.active-record');
                     activeRecordWrapper.innerHTML = '';
@@ -510,12 +485,7 @@
             $('select', '.filters').selectpicker('refresh');
 
             fetch('/api/tech-support/department-filter/' + filter1Id)
-                .then(function (response) {
-                    if (!response.ok) {
-                        throw new Error('Ошибка HTTP ' + response.status);
-                    }
-                    return response.json();
-                })
+                .then(response => response.json())
                 .then(function (data) {
                     let filter2 = document.getElementById('filter2');
                     filter2.innerHTML = '';
@@ -556,6 +526,7 @@
 
             fetch('/api/tech-support/teacher-filter/' + filter1Global + '/' + filter2Id)
             fetch('/api/tech-support/developer-filter/' + filter1Global + '/' + filter2Id)
+                .then(response => response.json())
                 .then(function (data) {
                     let filter3 = document.getElementById('filter3');
                     filter3.innerHTML = '';
@@ -590,6 +561,7 @@
 
             fetch('/api/tech-support/teacher-filter/' + filter1Global + '/' + filter2Global + '/' + filter3Id)
             fetch('/api/tech-support/discipline-filter/' + filter1Global + '/' + filter2Global + '/' + filter3Id)
+                .then(response => response.json())
                 .then(function (data) {
                     renderTable(data.entityList)
                 })

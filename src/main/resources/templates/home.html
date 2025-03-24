@@ -122,12 +122,7 @@
 
         function renderPage() {
             fetch('/home-data')
-                .then(function (response) {
-                    if (!response.ok) {
-                        throw new Error('Ошибка HTTP ' + response.status);
-                    }
-                    return response.json();
-                })
+                .then(response => response.json())
                 .then(function (data) {
                     checkAdmin(data)
                     if (data.oopId) {
@@ -224,12 +219,7 @@
             let filter1Id = this.value;
 
             fetch('/api/home/teacher-filter/' + filter1Id)
-                .then(function (response) {
-                    if (!response.ok) {
-                        throw new Error('Ошибка HTTP ' + response.status);
-                    }
-                    return response.json();
-                })
+                .then(response => response.json())
                 .then(function (data) {
                     let disciplinesList = document.querySelector('.disciplines-list-container')
                     removeAllChildElements(disciplinesList)

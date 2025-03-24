@@ -145,6 +145,7 @@
                 let activeRecordId = form.getAttribute('activeRecordId')
                 fetch('/dep-data-set-active/' + activeRecordId)
                 fetch('/api/dep/set-active/' + activeRecordId)
+                    .then(response => response.json())
                     .then(function (data) {
                         showModalWithMessage('Вы выбрали: ' + data.dataName)
                     })
@@ -179,6 +180,7 @@
 
             fetch('/dep-data')
             fetch('/deps-data')
+                .then(response => response.json())
                 .then(function (data) {
                     checkAdmin(data)
                     let filter1 = document.getElementById('filter1');
@@ -215,12 +217,7 @@
                     let dataId = recordElement.getAttribute('activeRecordId')
                     if (!dataId) return null;
                     fetch('/api/dep/delete-record/' + dataId)
-                        .then(function (response) {
-                            if (!response.ok) {
-                                throw new Error('Ошибка HTTP ' + response.status);
-                            }
-                            return response.json();
-                        })
+                        .then(response => response.json())
                         .then(deletedRecord => {
                             showModalWithMessage('Запись удалена.')
                             document.querySelector('.active-form').remove()
@@ -254,6 +251,7 @@
             function showCreateModal() {
                 fetch('/dep-data')
                 fetch('/deps-data')
+                    .then(response => response.json())
                     .then(data => {
                         const form = document.querySelector('.createForm')
 
@@ -345,12 +343,7 @@
                 },
                 body: JSON.stringify(data)
             })
-                .then(function (response) {
-                    if (!response.ok) {
-                        throw new Error('Ошибка HTTP ' + response.status);
-                    }
-                    return response.json();
-                })
+                .then(response => response.json())
                 .then(data => {
                     if (data.error) {
                         showModalWithMessage(data.error);
@@ -406,12 +399,7 @@
 
         function changeActiveRowTable(dataId) {
             fetch('/api/dep/get-active/' + dataId)
-                .then(function (response) {
-                    if (!response.ok) {
-                        throw new Error('Ошибка HTTP ' + response.status);
-                    }
-                    return response.json();
-                })
+                .then(response => response.json())
                 .then(function (data) {
                     let activeRecordWrapper = document.querySelector('.active-record');
                     activeRecordWrapper.innerHTML = '';
@@ -547,12 +535,7 @@
             $('select', '.filters').selectpicker('refresh');
 
             fetch('/api/dep/department-filter/' + filter1Id)
-                .then(function (response) {
-                    if (!response.ok) {
-                        throw new Error('Ошибка HTTP ' + response.status);
-                    }
-                    return response.json();
-                })
+                .then(response => response.json())
                 .then(function (data) {
                     let filter2 = document.getElementById('filter2');
                     filter2.innerHTML = '';
@@ -592,12 +575,7 @@
             $('select', '.filters').selectpicker('refresh');
 
             fetch('/api/dep/direction-filter/' + filter1Global + '/' + filter2Id)
-                .then(function (response) {
-                    if (!response.ok) {
-                        throw new Error('Ошибка HTTP ' + response.status);
-                    }
-                    return response.json();
-                })
+                .then(response => response.json())
                 .then(function (data) {
                     let filter3 = document.getElementById('filter3');
                     filter3.innerHTML = '';
@@ -631,12 +609,7 @@
             let filter3Id = this.value;
 
             fetch('/api/dep/profile-filter/' + filter1Global + '/' + filter2Global + '/' + filter3Id)
-                .then(function (response) {
-                    if (!response.ok) {
-                        throw new Error('Ошибка HTTP ' + response.status);
-                    }
-                    return response.json();
-                })
+                .then(response => response.json())
                 .then(function (data) {
                     filter3.disabled = false;
                     renderTable(data.entityList)

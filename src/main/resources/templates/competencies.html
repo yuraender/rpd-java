@@ -129,12 +129,7 @@
             saveModalRecord.addEventListener('click', () => saveNewRecord())
 
             fetch('/competencies-data')
-                .then(function (response) {
-                    if (!response.ok) {
-                        throw new Error('Ошибка HTTP ' + response.status);
-                    }
-                    return response.json();
-                })
+                .then(response => response.json())
                 .then(function (data) {
                     checkAdmin(data)
                     renderTable(data.data)
@@ -196,12 +191,7 @@
                     let dataId = recordElement.getAttribute('activeRecordId')
                     if (!dataId) return null;
                     fetch('/api/competencie/delete-record/' + dataId)
-                        .then(function (response) {
-                            if (!response.ok) {
-                                throw new Error('Ошибка HTTP ' + response.status);
-                            }
-                            return response.json();
-                        })
+                        .then(response => response.json())
                         .then(deletedRecord => {
                             showModalWithMessage('Запись удалена.')
                             document.querySelector('.active-form').remove()
@@ -234,12 +224,7 @@
 
             function showCreateModal() {
                 fetch('/competencies-data')
-                    .then(function (response) {
-                        if (!response.ok) {
-                            throw new Error('Ошибка HTTP ' + response.status);
-                        }
-                        return response.json();
-                    })
+                    .then(response => response.json())
                     .then(data => {
                         const form = document.querySelector('.createForm')
 
@@ -336,12 +321,7 @@
                 },
                 body: JSON.stringify(data)
             })
-                .then(function (response) {
-                    if (!response.ok) {
-                        throw new Error('Ошибка HTTP ' + response.status);
-                    }
-                    return response.json();
-                })
+                .then(response => response.json())
                 .then(data => {
                     if (data.error) {
                         showModalWithMessage(data.error);
@@ -393,12 +373,7 @@
 
         function changeActiveRowTable(dataId) {
             fetch('/api/competencie/get-active/' + dataId)
-                .then(function (response) {
-                    if (!response.ok) {
-                        throw new Error('Ошибка HTTP ' + response.status);
-                    }
-                    return response.json();
-                })
+                .then(response => response.json())
                 .then(function (data) {
                     document.querySelector('.button-edit').disabled = false;
                     let activeRecordWrapper = document.querySelector('.active-record');
@@ -560,12 +535,7 @@
                 },
                 body: JSON.stringify(data)
             })
-                .then(function (response) {
-                    if (!response.ok) {
-                        throw new Error('Ошибка HTTP ' + response.status);
-                    }
-                    return response.json();
-                })
+                .then(response => response.json())
                 .then(function (newRecord) {
                     if (newRecord.error) {
                         showModalWithMessage(newRecord.error)
