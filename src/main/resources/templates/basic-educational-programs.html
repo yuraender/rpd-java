@@ -87,8 +87,6 @@
     <a href="/profiles">Профили</a>
     <a href="/beps">ООП</a>
     <a href="/rpd">РПД</a>
-    <a href="/dep">Дисциплины ОП</a>
-    <a href="/cdep">Компетенции дисциплин ОП</a>
     <a href="/deps">Дисциплины ОП</a>
     <a href="/cdeps">Компетенции дисциплин ОП</a>
     <a href="/education-types">Типы обучения</a>
@@ -132,7 +130,6 @@
             let form = document.querySelector('.active-form')
             if (form) {
                 let activeRecordId = form.getAttribute('activeRecordId')
-                fetch('/bep-data-set-active/' + activeRecordId)
                 fetch('/api/bep/set-active/' + activeRecordId)
                     .then(response => response.json())
                     .then(function (data) {
@@ -168,7 +165,6 @@
             let saveModalRecord = document.querySelector('.save-modal-record');
             saveModalRecord.addEventListener('click', () => saveNewRecord())
 
-            fetch('/bep-data')
             fetch('/beps-data')
                 .then(response => response.json())
                 .then(function (data) {
@@ -277,7 +273,6 @@
             }
 
             function showCreateModal() {
-                fetch('/bep-data')
                 fetch('/beps-data')
                     .then(response => response.json())
                     .then(data => {

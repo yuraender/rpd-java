@@ -104,8 +104,6 @@
     <a href="/profiles">Профили</a>
     <a href="/beps">ООП</a>
     <a href="/rpd">РПД</a>
-    <a href="/dep">Дисциплины ОП</a>
-    <a href="/cdep">Компетенции дисциплин ОП</a>
     <a href="/deps">Дисциплины ОП</a>
     <a href="/cdeps">Компетенции дисциплин ОП</a>
     <a href="/education-types">Типы обучения</a>
@@ -155,7 +153,6 @@
             let form = document.querySelector('.active-form')
             if (form) {
                 let activeRecordId = form.getAttribute('activeRecordId')
-                fetch('/cdep-data-set-active/' + activeRecordId)
                 fetch('/api/cdep/set-active/' + activeRecordId)
                     .then(response => response.json())
                     .then(function (data) {
@@ -190,7 +187,6 @@
             let saveModalRecord = document.querySelector('.save-modal-record');
             saveModalRecord.addEventListener('click', () => saveNewRecord())
 
-            fetch('/cdep-data')
             fetch('/cdeps-data')
                 .then(response => response.json())
                 .then(function (data) {
@@ -261,7 +257,6 @@
             }
 
             function showCreateModal() {
-                fetch('/cdep-data')
                 fetch('/cdeps-data')
                     .then(response => response.json())
                     .then(data => {
@@ -601,7 +596,6 @@
             filter4.disabled = true;
             $('select', '.filters').selectpicker('refresh');
 
-            fetch('/api/cdep/direction-filter/' + filter1Global + '/' + filter2Id)
             fetch('/api/cdep/developer-filter/' + filter1Global + '/' + filter2Id)
                 .then(response => response.json())
                 .then(function (data) {
@@ -638,7 +632,6 @@
             let filter3Id = this.value;
             filter3Global = filter3Id
 
-            fetch('/api/cdep/discipline-filter/' + filter1Global + '/' + filter2Global + '/' + filter3Id)
             // Заблокировать списки, пока не придет ответ
             filter4.disabled = true;
             $('select', '.filters').selectpicker('refresh');
@@ -677,7 +670,6 @@
         filter4.addEventListener('change', function () {
             let filter4Id = this.value;
 
-            fetch('/api/cdep/oop-filter/' + filter1Global + '/' + filter2Global + '/' + filter3Global + '/' + filter4Id)
             fetch('/api/cdep/discipline-filter/' + filter1Global + '/' + filter2Global + '/' + filter3Global + '/' + filter4Id)
                 .then(response => response.json())
                 .then(function (data) {

@@ -25,7 +25,7 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
 @RestController
-@RequestMapping("/api/documents")
+@RequestMapping("/api/document")
 public class DocumentController {
 
     @Autowired

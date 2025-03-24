@@ -74,8 +74,6 @@
     <a href="/profiles">Профили</a>
     <a href="/beps">ООП</a>
     <a href="/rpd">РПД</a>
-    <a href="/dep">Дисциплины ОП</a>
-    <a href="/cdep">Компетенции дисциплин ОП</a>
     <a href="/deps">Дисциплины ОП</a>
     <a href="/cdeps">Компетенции дисциплин ОП</a>
     <a href="/education-types">Типы обучения</a>
@@ -114,7 +112,6 @@
             let form = document.querySelector('.active-form')
             if (form) {
                 let activeRecordId = form.getAttribute('activeRecordId')
-                fetch('/directions-data-set-active/' + activeRecordId)
                 fetch('/api/direction/set-active/' + activeRecordId)
                     .then(response => response.json())
                     .then(function (data) {
