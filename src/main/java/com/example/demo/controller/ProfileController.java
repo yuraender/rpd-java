@@ -6,41 +6,41 @@ import com.example.demo.service.DirectionService;
 import com.example.demo.service.ProfileService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 @Controller
+@RequiredArgsConstructor
 public class ProfileController {
 
-    @Autowired
-    private ProfileService profileService;
-
-    @Autowired
-    private DirectionService directionService;
+    private final ProfileService profileService;
+    private final DirectionService directionService;
 
     @GetMapping("/profiles")
-    public String getTablePage(Model model) {
+    public String getTablePage() {
         return "profiles";
     }
 
-    @GetMapping("/profiles-data-set-active/{entityId}")
-    @ResponseBody
+    @GetMapping("/api/profile/set-active/{entityId}")
     public ResponseEntity<Map<String, Object>> setActive(@PathVariable Integer entityId, HttpServletRequest request) {
         Map<String, Object> response = new HashMap<>();
 
-        Profile entity = profileService.getById(entityId);
-        if (entity == null) {
-            response.put("error", "Запись не найдена");
-            return ResponseEntity.ok(response);
+        Profile profile = profileService.getById(entityId);
+        if (profile == null) {
+            response.put("error", "Запись не найдена.");
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
         }
-        response.put("dataName", entity.getName());
+        response.put("dataName", profile.getName());
 
         HttpSession session = request.getSession();
         session.setAttribute("profileId", entityId);
@@ -48,92 +48,106 @@ public class ProfileController {
     }
 
     @GetMapping("/profiles-data")
-    @ResponseBody
     public ResponseEntity<Map<String, Object>> getEntityData(HttpServletRequest request) {
         Map<String, Object> response = new HashMap<>();
-        HttpSession session = request.getSession();
-        List<Profile> profiles = profileService.getAllProfiles();
+
+        List<Profile> profiles = profileService.getAll();
         response.put("data", profiles);
-        List<Direction> directions = directionService.getAllDirections();
+
+        List<Direction> directions = directionService.getAll();
         response.put("directions", directions);
+
+        HttpSession session = request.getSession();
         String role = (String) session.getAttribute("role");
         response.put("role", role);
+
         return ResponseEntity.ok(response);
     }
 
     @GetMapping("/api/profile/get-active/{entityId}")
-    @ResponseBody
     public ResponseEntity<Map<String, Object>> getActiveEntity(@PathVariable Integer entityId) {
         Map<String, Object> response = new HashMap<>();
+
         Profile profile = profileService.getById(entityId);
         response.put("data", profile);
-        List<Direction> directions = directionService.getAllDirections();
+
+        List<Direction> directions = directionService.getAll();
         response.put("directions", directions);
+
         return ResponseEntity.ok(response);
     }
 
     @PostMapping("/api/profile/update")
     public ResponseEntity<Map<String, Object>> updateRecord(@RequestBody Map<String, String> payload) {
         Map<String, Object> response = new HashMap<>();
-        String param1 = payload.get("0");
-        Integer param2 = Integer.parseInt(payload.get("1"));
+
+        String name = payload.get("0");
+        int param1;
+        try {
+            param1 = Integer.parseInt(payload.get("1"));
+        } catch (NumberFormatException ex) {
+            response.put("error", "Неверный формат данных.");
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
+        }
         Integer dataId = Integer.parseInt(payload.get("dataId"));
 
-        Profile entity = profileService.getById(dataId);
-        Direction direction = directionService.getById(param2);
-
-        if (entity == null || direction == null) {
-            response.put("error", "Запись не найдена. Запись не обновлена.");
-            return ResponseEntity.ok(response);
+        Profile profile = profileService.getById(dataId);
+        Direction direction = directionService.getById(param1);
+        if (profile == null || direction == null) {
+            response.put("error", "Запись не найдена.");
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
         }
-        // Обновляем поле audience у Department
-        entity.setName(param1);
-        entity.setDirection(direction);
-        entity.setDisabled(false);
-        // Сохраняем обновленную запись
-        profileService.save(entity);
-        // Добавляем обновленную запись в ответ
-        response.put("updatedData", entity);
+        profile.setName(name);
+        profile.setDirection(direction);
+        profile.setDisabled(false);
+        profileService.save(profile);
+
+        response.put("updatedData", profile);
         return ResponseEntity.ok(response);
     }
 
     @PostMapping("/api/profile/save-new-record")
     public ResponseEntity<Map<String, Object>> createRecord(@RequestBody Map<String, String> payload) {
         Map<String, Object> response = new HashMap<>();
-        String param1 = payload.get("0");
-        Integer param2 = Integer.parseInt(payload.get("1"));
-        Direction direction = directionService.getById(param2);
 
-        if (direction == null) {
-            response.put("error", "Запись не найдена. Запись не обновлена.");
-            return ResponseEntity.ok(response);
+        String name = payload.get("0");
+        int param1;
+        try {
+            param1 = Integer.parseInt(payload.get("1"));
+        } catch (NumberFormatException ex) {
+            response.put("error", "Неверный формат данных.");
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
         }
 
-        Profile entity = new Profile();
-        entity.setName(param1);
-        entity.setDirection(direction);
-        entity.setDisabled(false);
-        // Сохраняем обновленную запись
-        profileService.save(entity);
-        // Добавляем обновленную запись в ответ
-        response.put("createdData", entity);
+        Direction direction = directionService.getById(param1);
+        if (direction == null) {
+            response.put("error", "Запись не найдена.");
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
+        }
+
+        Profile profile = new Profile();
+        profile.setName(name);
+        profile.setDirection(direction);
+        profile.setDisabled(false);
+        profileService.save(profile);
+
+        response.put("createdData", profile);
         return ResponseEntity.ok(response);
     }
 
     @GetMapping("/api/profile/delete-record/{entityId}")
-    @ResponseBody
     public ResponseEntity<Map<String, Object>> deleteRecord(@PathVariable Integer entityId) {
         Map<String, Object> response = new HashMap<>();
 
-        // Получаем запись TechSupport по techSupportId
-        Profile entity = profileService.getById(entityId);
-        if (entity == null) {
-            response.put("error", "Запись не найдена");
-            return ResponseEntity.ok(response);
+        Profile profile = profileService.getById(entityId);
+        if (profile == null) {
+            response.put("error", "Запись не найдена.");
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
         }
-        entity.setDisabled(true);
-        profileService.save(entity);
-        response.put("deletedData", entity.getId());
+        profile.setDisabled(true);
+        profileService.save(profile);
+
+        response.put("deletedData", profile.getId());
         return ResponseEntity.ok(response);
     }
 }

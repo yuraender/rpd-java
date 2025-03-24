@@ -20,6 +20,7 @@
 .field__desc {
     width: 40%;
     min-width: min-content;
+    max-width: 100px;
 }
 
 textarea {
@@ -30,7 +31,6 @@ textarea {
 p {
     margin: 0;
     width: max-content;
-    max-width: 100px;
 }
 
 .edit-buttons-wrapper {
@@ -73,8 +73,12 @@ table:hover {
     cursor: pointer;
 }
 
-#dataTable td {
+#dataTable td, #dataTable th {
     align-content: center;
+}
+
+#dataTable th:first-of-type {
+    width: 100px;
 }
 
 .modal {

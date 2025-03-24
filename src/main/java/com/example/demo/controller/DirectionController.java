@@ -6,39 +6,39 @@ import com.example.demo.service.DepartmentService;
 import com.example.demo.service.DirectionService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 @Controller
+@RequiredArgsConstructor
 public class DirectionController {
 
-    @Autowired
-    private DirectionService directionService;
-
-    @Autowired
-    private DepartmentService departmentService;
+    private final DirectionService directionService;
+    private final DepartmentService departmentService;
 
     @GetMapping("/directions")
-    public String getDepartmentPage(Model model) {
+    public String getTablePage() {
         return "directions";
     }
 
-    @GetMapping("/directions-data-set-active/{entityId}")
-    @ResponseBody
+    @GetMapping("/api/direction/set-active/{entityId}")
     public ResponseEntity<Map<String, Object>> setActive(@PathVariable Integer entityId, HttpServletRequest request) {
         Map<String, Object> response = new HashMap<>();
 
         Direction direction = directionService.getById(entityId);
         if (direction == null) {
-            response.put("error", "Запись не найдена");
-            return ResponseEntity.ok(response);
+            response.put("error", "Запись не найдена.");
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
         }
         response.put("dataName", direction.getName());
 
@@ -48,98 +48,110 @@ public class DirectionController {
     }
 
     @GetMapping("/directions-data")
-    @ResponseBody
     public ResponseEntity<Map<String, Object>> getEntityData(HttpServletRequest request) {
         Map<String, Object> response = new HashMap<>();
-        HttpSession session = request.getSession();
-        List<Direction> directions = directionService.findAllByDisabledFalse();
+
+        List<Direction> directions = directionService.getAll();
         response.put("data", directions);
+
         List<Department> departments = departmentService.getAll();
         response.put("departments", departments);
+
+        HttpSession session = request.getSession();
         String role = (String) session.getAttribute("role");
         response.put("role", role);
+
         return ResponseEntity.ok(response);
     }
 
     @GetMapping("/api/direction/get-active/{entityId}")
-    @ResponseBody
     public ResponseEntity<Map<String, Object>> getActiveEntity(@PathVariable Integer entityId) {
         Map<String, Object> response = new HashMap<>();
+
         Direction direction = directionService.getById(entityId);
         response.put("data", direction);
 
-        List<Department> departmentList = departmentService.getAll();
-        response.put("departmentList", departmentList);
+        List<Department> departments = departmentService.getAll();
+        response.put("departments", departments);
+
         return ResponseEntity.ok(response);
     }
 
     @PostMapping("/api/direction/update")
-    public ResponseEntity<Map<String, Object>> updateRecord(@RequestBody Map<String, String> payload, HttpSession session) {
+    public ResponseEntity<Map<String, Object>> updateRecord(@RequestBody Map<String, String> payload) {
         Map<String, Object> response = new HashMap<>();
-        String param1 = payload.get("0");
-        String param2 = payload.get("1");
-        Integer param3 = Integer.parseInt(payload.get("2"));
+
+        String encryption = payload.get("0");
+        String name = payload.get("1");
+        int param2;
+        try {
+            param2 = Integer.parseInt(payload.get("2"));
+        } catch (NumberFormatException ex) {
+            response.put("error", "Неверный формат данных.");
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
+        }
         Integer dataId = Integer.parseInt(payload.get("dataId"));
 
-        Direction entity = directionService.getById(dataId);
-        Department department = departmentService.getById(param3);
-
-        if (entity == null || department == null) {
-            response.put("error", "Запись не найдена. Запись не обновлена.");
-            return ResponseEntity.ok(response);
+        Direction direction = directionService.getById(dataId);
+        Department department = departmentService.getById(param2);
+        if (direction == null || department == null) {
+            response.put("error", "Запись не найдена.");
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
         }
-        // Обновляем поле audience у Department
-        entity.setEncryption(param1);
-        entity.setName(param2);
-        entity.setDepartment(department);
-        entity.setDisabled(false);
-        // Сохраняем обновленную запись
-        directionService.save(entity);
-        // Добавляем обновленную запись в ответ
-        response.put("updatedData", entity);
+        direction.setEncryption(encryption);
+        direction.setName(name);
+        direction.setDepartment(department);
+        direction.setDisabled(false);
+        directionService.save(direction);
+
+        response.put("updatedData", direction);
         return ResponseEntity.ok(response);
     }
 
     @PostMapping("/api/direction/save-new-record")
-    public ResponseEntity<Map<String, Object>> createRecord(@RequestBody Map<String, String> payload, HttpSession session) {
+    public ResponseEntity<Map<String, Object>> createRecord(@RequestBody Map<String, String> payload) {
         Map<String, Object> response = new HashMap<>();
-        String param1 = payload.get("0");
-        String param2 = payload.get("1");
-        Integer param3 = Integer.parseInt(payload.get("2"));
-        Department department = departmentService.getById(param3);
 
-        if (department == null) {
-            response.put("error", "Запись не найдена. Запись не обновлена.");
-            return ResponseEntity.ok(response);
+        String encryption = payload.get("0");
+        String name = payload.get("1");
+        int param2;
+        try {
+            param2 = Integer.parseInt(payload.get("2"));
+        } catch (NumberFormatException ex) {
+            response.put("error", "Неверный формат данных.");
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
         }
 
-        Direction entity = new Direction();
-        entity.setName(param2);
-        entity.setDepartment(department);
-        entity.setEncryption(param1);
-        entity.setDisabled(false);
-        // Сохраняем обновленную запись
-        directionService.save(entity);
-        // Добавляем обновленную запись в ответ
-        response.put("createdData", entity);
+        Department department = departmentService.getById(param2);
+        if (department == null) {
+            response.put("error", "Запись не найдена.");
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
+        }
+
+        Direction direction = new Direction();
+        direction.setEncryption(encryption);
+        direction.setName(name);
+        direction.setDepartment(department);
+        direction.setDisabled(false);
+        directionService.save(direction);
+
+        response.put("createdData", direction);
         return ResponseEntity.ok(response);
     }
 
-
     @GetMapping("/api/direction/delete-record/{entityId}")
-    @ResponseBody
     public ResponseEntity<Map<String, Object>> deleteRecord(@PathVariable Integer entityId) {
         Map<String, Object> response = new HashMap<>();
 
-        // Получаем запись TechSupport по techSupportId
-        Direction entity = directionService.getById(entityId);
-        if (entity == null) {
-            response.put("error", "Запись не найдена");
-            return ResponseEntity.ok(response);
+        Direction direction = directionService.getById(entityId);
+        if (direction == null) {
+            response.put("error", "Запись не найдена.");
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
         }
-        entity.setDisabled(true);
-        directionService.save(entity);
-        response.put("deletedData", entity.getId());
+        direction.setDisabled(true);
+        directionService.save(direction);
+
+        response.put("deletedData", direction.getId());
         return ResponseEntity.ok(response);
     }
 }

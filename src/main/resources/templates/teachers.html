@@ -37,18 +37,18 @@
             <tr class="sticky-header">
                 <th><input type="text" class="form-control" placeholder="ID"
                            onkeyup="filterTable('dataTable', 0)"></th>
-                <th><input type="text" class="form-control" placeholder="Кафедра"
-                           onkeyup="filterTable('dataTable', 1)"></th>
-                <th><input type="text" class="form-control" placeholder="Должность"
-                           onkeyup="filterTable('dataTable', 2)"></th>
                 <th><input type="text" class="form-control" placeholder="Сотрудник"
+                           onkeyup="filterTable('dataTable', 1)"></th>
+                <th><input type="text" class="form-control" placeholder="Кафедра"
+                           onkeyup="filterTable('dataTable', 2)"></th>
+                <th><input type="text" class="form-control" placeholder="Должность"
                            onkeyup="filterTable('dataTable', 3)"></th>
             </tr>
             <tr class="sticky-header">
                 <th>ID</th>
+                <th>Сотрудник</th>
                 <th>Кафедра</th>
                 <th>Должность</th>
-                <th>Сотрудник</th>
             </tr>
             </thead>
             <tbody>
@@ -69,10 +69,12 @@
     <a href="/tech-support">Тех. обеспечение</a>
     <a href="/directions">Направления</a>
     <a href="/profiles">Профили</a>
-    <a href="/bep">ООП</a>
+    <a href="/beps">ООП</a>
     <a href="/rpd">РПД</a>
     <a href="/dep">Дисциплины ОП</a>
     <a href="/cdep">Компетенции дисциплин ОП</a>
+    <a href="/deps">Дисциплины ОП</a>
+    <a href="/cdeps">Компетенции дисциплин ОП</a>
     <a href="/education-types">Типы обучения</a>
     <a href="/employees">Сотрудники</a>
     <a href="/employee-positions">Должности</a>
@@ -241,12 +243,14 @@
                         fieldWrapper.classList.add('standard__active-record-wrapper')
                         let fieldDesc = document.createElement('p')
                         fieldDesc.classList.add('field__desc')
-                        fieldDesc.textContent = `Кафедра:`
+                        fieldDesc.textContent = `Сотрудник:`
                         fieldWrapper.append(fieldDesc)
                         let fieldSelect = document.createElement('select');
                         fieldSelect.classList.add('form-control', 'field');
                         data.entity1.forEach(function (optionData) {
                             let text = optionData.name;
+                        data.employees.forEach(function (optionData) {
+                            let text = optionData.nameTypeOne;
                             let id = optionData.id;
                             let option = createOptionForCreate(text, id)
                             fieldSelect.append(option);
@@ -258,12 +262,14 @@
                         fieldWrapper.classList.add('standard__active-record-wrapper')
                         fieldDesc = document.createElement('p')
                         fieldDesc.classList.add('field__desc')
-                        fieldDesc.textContent = `Должность:`
+                        fieldDesc.textContent = `Кафедра:`
                         fieldWrapper.append(fieldDesc)
                         fieldSelect = document.createElement('select');
                         fieldSelect.classList.add('form-control', 'field');
                         data.entity3.forEach(function (optionData) {
                             let text = optionData.positionName;
+                        data.departments.forEach(function (optionData) {
+                            let text = optionData.name;
                             let id = optionData.id;
                             let option = createOptionForCreate(text, id)
                             fieldSelect.append(option);
@@ -281,6 +287,8 @@
                         fieldSelect.classList.add('form-control', 'field');
                         data.entity2.forEach(function (optionData) {
                             let text = optionData.nameTypeOne;
+                        data.employeePositions.forEach(function (optionData) {
+                            let text = optionData.name;
                             let id = optionData.id;
                             let option = createOptionForCreate(text, id)
                             fieldSelect.append(option);
@@ -345,9 +353,9 @@
                         row.classList.add(`${data.id}`)
                         row.innerHTML =
                             '<td>' + data.id + '</td>' +
+                            '<td>' + data.employee.nameTypeOne + '</td>' +
                             '<td>' + data.department.name + '</td>' +
-                            '<td>' + data.employeePosition.positionName + '</td>' +
-                            '<td>' + data.employee.nameTypeOne + '</td>';
+                            '<td>' + data.employeePosition.name + '</td>';
                         row.addEventListener('click', function () {
                             changeActiveRowTable(data.id);
                         });
@@ -374,9 +382,9 @@
                 row.classList.add(`${data.id}`)
                 row.innerHTML =
                     '<td>' + data.id + '</td>' +
+                    '<td>' + data.employee.nameTypeOne + '</td>' +
                     '<td>' + data.department.name + '</td>' +
-                    '<td>' + data.employeePosition.positionName + '</td>' +
-                    '<td>' + data.employee.nameTypeOne + '</td>';
+                    '<td>' + data.employeePosition.name + '</td>';
                 row.addEventListener('click', function () {
                     changeActiveRowTable(data.id);
                 });
@@ -419,11 +427,22 @@
                     fieldWrapper.classList.add('standard__active-record-wrapper')
                     let fieldDesc = document.createElement('p')
                     fieldDesc.classList.add('field__desc')
+                    fieldDesc.textContent = `Сотрудник:`
+                    fieldWrapper.append(fieldDesc)
+                    fieldWrapper.append(createInactiveTextBox(data.data.employee.nameTypeOne))
+                    form.append(fieldWrapper)
+
+                    fieldWrapper = document.createElement('div')
+                    fieldWrapper.classList.add('standard__active-record-wrapper')
+                    fieldDesc = document.createElement('p')
+                    fieldDesc.classList.add('field__desc')
                     fieldDesc.textContent = `Кафедра:`
                     fieldWrapper.append(fieldDesc)
                     let fieldSelect = document.createElement('select');
                     fieldSelect.classList.add('form-control', 'field');
-                    data.entity1.forEach(function (optionData) {
+                    data.entity2.forEach(function (optionData) {
+                        let text = optionData.positionName;
+                    data.departments.forEach(function (optionData) {
                         let text = optionData.name;
                         let id = optionData.id;
                         let parentDataId = data.data.department.id
@@ -442,29 +461,12 @@
                     fieldWrapper.append(fieldDesc)
                     fieldSelect = document.createElement('select');
                     fieldSelect.classList.add('form-control', 'field');
-                    data.entity2.forEach(function (optionData) {
-                        let text = optionData.positionName;
-                        let id = optionData.id;
-                        let parentDataId = data.data.employeePosition.id
-                        let option = createOptionForActiveRecord(text, id, parentDataId)
-                        fieldSelect.append(option);
-                    });
-                    fieldSelect.disabled = !editMode;
-                    fieldWrapper.append(fieldSelect)
-                    form.append(fieldWrapper)
-
-                    fieldWrapper = document.createElement('div')
-                    fieldWrapper.classList.add('standard__active-record-wrapper')
-                    fieldDesc = document.createElement('p')
-                    fieldDesc.classList.add('field__desc')
-                    fieldDesc.textContent = `Сотрудник:`
-                    fieldWrapper.append(fieldDesc)
-                    fieldSelect = document.createElement('select');
-                    fieldSelect.classList.add('form-control', 'field');
                     data.entity3.forEach(function (optionData) {
                         let text = optionData.nameTypeOne;
+                    data.employeePositions.forEach(function (optionData) {
+                        let text = optionData.name;
                         let id = optionData.id;
-                        let parentDataId = data.data.employee.id
+                        let parentDataId = data.data.employeePosition.id
                         let option = createOptionForActiveRecord(text, id, parentDataId)
                         fieldSelect.append(option);
                     });
@@ -563,9 +565,9 @@
                             if (rows[i].getAttribute('dataid') == newRecord.updatedData.id) {
                                 rows[i].innerHTML =
                                     '<td>' + newRecord.updatedData.id + '</td>' +
+                                    '<td>' + newRecord.updatedData.employee.nameTypeOne + '</td>' +
                                     '<td>' + newRecord.updatedData.department.name + '</td>' +
-                                    '<td>' + newRecord.updatedData.employeePosition.positionName + '</td>' +
-                                    '<td>' + newRecord.updatedData.employee.nameTypeOne + '</td>';
+                                    '<td>' + newRecord.updatedData.employeePosition.name + '</td>';
                                 break;
                             }
                         }

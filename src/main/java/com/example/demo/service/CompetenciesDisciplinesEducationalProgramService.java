@@ -2,25 +2,28 @@ package com.example.demo.service;
 
 import com.example.demo.entity.CompetenciesDisciplinesEducationalProgram;
 import com.example.demo.repository.CompetenciesDisciplinesEducationalProgramRepository;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
 @Service
+@RequiredArgsConstructor
 public class CompetenciesDisciplinesEducationalProgramService {
 
     private final CompetenciesDisciplinesEducationalProgramRepository competenciesDisciplinesEducationalProgramRepository;
 
-    public CompetenciesDisciplinesEducationalProgramService(CompetenciesDisciplinesEducationalProgramRepository competenciesDisciplinesEducationalProgramRepository) {
-        this.competenciesDisciplinesEducationalProgramRepository = competenciesDisciplinesEducationalProgramRepository;
-    }
-
     public List<CompetenciesDisciplinesEducationalProgram> getAll() {
-        return competenciesDisciplinesEducationalProgramRepository.findAllByDisabledFalse();
+        return competenciesDisciplinesEducationalProgramRepository.findAllByDisabledFalse()
+                .stream()
+                .filter(cdep -> !cdep.isDisabled())
+                .toList();
     }
 
     public CompetenciesDisciplinesEducationalProgram getById(Integer id) {
-        return competenciesDisciplinesEducationalProgramRepository.findById(id).orElse(null);
+        return competenciesDisciplinesEducationalProgramRepository.findByIdAndDisabledFalse(id)
+                .filter(cdep -> !cdep.isDisabled())
+                .orElse(null);
     }
 
     public CompetenciesDisciplinesEducationalProgram save(CompetenciesDisciplinesEducationalProgram competenciesDisciplinesEducationalProgram) {

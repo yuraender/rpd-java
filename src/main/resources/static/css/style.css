@@ -4,10 +4,6 @@ body {
     grid-template-columns: 1fr max-content;
     grid-template-rows: 60px 1fr;
     row-gap: 12px;
-    transform: scale(1.1);
-    transform-origin: top left;
-    width: 90.909%;
-    height: 90.909%;
 }
 
 .container {

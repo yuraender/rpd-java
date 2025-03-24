@@ -78,7 +78,6 @@
         </table>
     </div>
     <div class="edit-buttons-wrapper no-visible">
-        <button class="button-edit btn-edit button btn btn-primary">Редактировать</button>
         <button class="btn-create button btn btn-primary">Добавить</button>
         <button class="btn-delete button btn btn-primary">Удалить</button>
         <button class="btn-choose button btn btn-primary d-none">Выбрать запись</button>
@@ -92,10 +91,12 @@
     <a href="/tech-support">Тех. обеспечение</a>
     <a href="/directions">Направления</a>
     <a href="/profiles">Профили</a>
-    <a href="/bep">ООП</a>
+    <a href="/beps">ООП</a>
     <a href="/rpd">РПД</a>
     <a href="/dep">Дисциплины ОП</a>
     <a href="/cdep">Компетенции дисциплин ОП</a>
+    <a href="/deps">Дисциплины ОП</a>
+    <a href="/cdeps">Компетенции дисциплин ОП</a>
     <a href="/education-types">Типы обучения</a>
     <a href="/employees">Сотрудники</a>
     <a href="/employee-positions">Должности</a>
@@ -139,12 +140,7 @@
             if (form) {
                 let activeRecordId = form.getAttribute('activeRecordId')
                 fetch('/dep-data-set-active/' + activeRecordId)
-                    .then(function (response) {
-                        if (!response.ok) {
-                            throw new Error('Ошибка HTTP ' + response.status);
-                        }
-                        return response.json();
-                    })
+                fetch('/api/dep/set-active/' + activeRecordId)
                     .then(function (data) {
                         showModalWithMessage('Вы выбрали: ' + data.dataName)
                     })
@@ -172,19 +168,13 @@
         }
 
         function renderPage() {
-            document.querySelector('.button-edit').disabled = true;
             let createModal = document.getElementById('createModal');
             let cancelCreateModal = document.querySelector('.cancel-create-modal');
             let saveModalRecord = document.querySelector('.save-modal-record');
             saveModalRecord.addEventListener('click', () => saveNewRecord())
 
             fetch('/dep-data')
-                .then(function (response) {
-                    if (!response.ok) {
-                        throw new Error('Ошибка HTTP ' + response.status);
-                    }
-                    return response.json();
-                })
+            fetch('/deps-data')
                 .then(function (data) {
                     checkAdmin(data)
                     let filter1 = document.getElementById('filter1');
@@ -195,7 +185,7 @@
                     filter1.appendChild(option);
                     data.departments.forEach(function (department) {
                         let option = document.createElement('option');
-                        option.textContent = `${department.name}`;
+                        option.textContent = department.name;
                         option.value = department.id;
                         filter1.appendChild(option);
                     });
@@ -205,42 +195,6 @@
                     console.error('Ошибка загрузки данных:', error);
                     alert('Ошибка при загрузке данных');
                 });
-
-            let buttonEdit = document.querySelector('.button-edit');
-            buttonEdit.addEventListener('click', editActive)
-
-            function editActive() {
-                editMode = true;
-                let activeRecord = document.querySelector('.active-record');
-                let fields = activeRecord.querySelectorAll('.field');
-
-                fields.forEach(function (field) {
-                    field.disabled = false;
-                    field.readOnly = false;
-                });
-
-                activeFieldsChange()
-
-                function activeFieldsChange() {
-                    let form = document.querySelector('.active-form')
-                    let btnSuccess = document.createElement('button');
-                    btnSuccess.classList.add('btn-success', 'button', 'btn', 'button-success')
-                    btnSuccess.textContent = 'Подтвердить'
-                    btnSuccess.addEventListener('click', updateRecord)
-                    form.appendChild(btnSuccess);
-
-                    let btnCansel = document.createElement('button');
-                    btnCansel.classList.add('btn-cancel', 'button', 'btn', 'btn-danger')
-                    btnCansel.textContent = 'Отменить'
-                    btnCansel.addEventListener('click', cancelUpdate)
-                    form.appendChild(btnCansel);
-                }
-
-                function cancelUpdate() {
-                    let dataId = document.querySelector('.active-form').getAttribute('activeRecordId')
-                    changeActiveRowTable(dataId)
-                }
-            }
 
             let createBtn = document.querySelector('.btn-create')
             createBtn.addEventListener('click', showCreateModal)
@@ -293,12 +247,7 @@
 
             function showCreateModal() {
                 fetch('/dep-data')
-                    .then(function (response) {
-                        if (!response.ok) {
-                            throw new Error('Ошибка HTTP ' + response.status);
-                        }
-                        return response.json();
-                    })
+                fetch('/deps-data')
                     .then(data => {
                         const form = document.querySelector('.createForm')
 
@@ -311,6 +260,7 @@
                         let fieldSelect = document.createElement('select');
                         fieldSelect.classList.add('form-control', 'field');
                         data.entity1.forEach(function (optionData) {
+                        data.beps.forEach(function (optionData) {
                             let text = optionData.academicYear + ', ' +
                                 optionData.profile.name + ', ' +
                                 optionData.educationType.name;
@@ -330,6 +280,7 @@
                         fieldSelect = document.createElement('select');
                         fieldSelect.classList.add('form-control', 'field');
                         data.entity4.forEach(function (optionData) {
+                        data.disciplines.forEach(function (optionData) {
                             let text = optionData.name;
                             let id = optionData.id;
                             let option = createOptionForCreate(text, id)
@@ -445,7 +396,6 @@
                     return response.json();
                 })
                 .then(function (data) {
-                    document.querySelector('.button-edit').disabled = false;
                     let activeRecordWrapper = document.querySelector('.active-record');
                     activeRecordWrapper.innerHTML = '';
                     let form = document.createElement('div');
@@ -500,17 +450,7 @@
                     fieldDesc.classList.add('field__desc')
                     fieldDesc.textContent = `Дисциплина:`
                     fieldWrapper.append(fieldDesc)
-                    let fieldSelect = document.createElement('select');
-                    fieldSelect.classList.add('form-control', 'field');
-                    data.entity2.forEach(function (optionData) {
-                        let text = optionData.name;
-                        let id = optionData.id;
-                        let parentDataId = data.data.discipline.id
-                        let option = createOptionForActiveRecord(text, id, parentDataId)
-                        fieldSelect.append(option);
-                    });
-                    fieldSelect.disabled = !editMode;
-                    fieldWrapper.append(fieldSelect)
+                    fieldWrapper.append(createInactiveTextBox(data.data.discipline.name))
                     form.append(fieldWrapper)
 
                     // Конец добавления в активную запись
@@ -560,68 +500,6 @@
                 });
         }
 
-        function updateRecord() {
-            let activeRecord = document.querySelector('.active-record');
-            let fields = activeRecord.querySelectorAll('.field');
-            let emptyFields = false;
-            let dataId = document.querySelector('.active-form').getAttribute('activeRecordId')
-
-            let data = {}
-            fields.forEach(function (field, index) {
-                if (field.value) {
-                    data[index] = field.value
-                } else {
-                    showModalWithMessage('Поля должны быть заполнены.')
-                    emptyFields = true
-                }
-            })
-            data['dataId'] = dataId;
-
-            if (emptyFields) return
-            fetch('/api/dep/update', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'X-CSRF-TOKEN': csrfToken
-                },
-                body: JSON.stringify(data)
-            })
-                .then(function (response) {
-                    if (!response.ok) {
-                        throw new Error('Ошибка HTTP ' + response.status);
-                    }
-                    return response.json();
-                })
-                .then(function (newRecord) {
-                    if (newRecord.error) {
-                        showModalWithMessage(newRecord.error)
-                        emptyFields = true
-                    } else {
-                        let table = document.getElementById('dataTable');
-                        let rows = table.getElementsByTagName('tr');
-                        // Найти строку с нужным dataId и обновить ее содержимое
-                        for (let i = 0; i < rows.length; i++) {
-                            if (rows[i].getAttribute('dataid') == newRecord.updatedData.id) {
-                                rows[i].innerHTML =
-                                    '<td>' + newRecord.updatedData.id + '</td>' +
-                                    '<td>' + newRecord.updatedData.basicEducationalProgram.academicYear + '</td>' +
-                                    '<td>' + newRecord.updatedData.basicEducationalProgram.profile.name + '</td>' +
-                                    '<td>' + newRecord.updatedData.basicEducationalProgram.educationType.name + '</td>' +
-                                    '<td>' + newRecord.updatedData.discipline.name + '</td>';
-                                break;
-                            }
-                        }
-                        changeActiveRowTable(newRecord.updatedData.id)
-                        // Модальное окно
-                        showModalWithMessage('Запись обновлена.')
-                    }
-                })
-                .catch(function (error) {
-                    console.error('Ошибка обновления данных:', error);
-                    alert('Ошибка при обновлении данных');
-                });
-        }
-
         function closeModal(modal) {
             let form = document.querySelector('.createForm')
             removeAllChildElements(form)
@@ -644,17 +522,18 @@
                     return response.json();
                 })
                 .then(function (data) {
-                    let filterElement = document.getElementById('filter2');
-                    filterElement.innerHTML = '';
+                    let filter2 = document.getElementById('filter2');
+                    filter2.innerHTML = '';
                     let option = document.createElement('option');
                     option.textContent = "Выберите направление";
                     option.value = "0";
                     filterElement.appendChild(option);
+                    filter2.appendChild(option);
                     data.filterList.forEach(function (entity) {
                         let option = document.createElement('option');
                         option.textContent = entity.name;
                         option.value = entity.id;
-                        filterElement.appendChild(option);
+                        filter2.appendChild(option);
                     });
                     renderTable(data.entityList)
                     // Разблокировать, если данные успешно загружены
@@ -686,17 +565,18 @@
                     return response.json();
                 })
                 .then(function (data) {
-                    let filterElement = document.getElementById('filter3');
-                    filterElement.innerHTML = '';
+                    let filter3 = document.getElementById('filter3');
+                    filter3.innerHTML = '';
                     let option = document.createElement('option');
                     option.textContent = "Выберите профиль";
                     option.value = "0";
                     filterElement.appendChild(option);
+                    filter3.appendChild(option);
                     data.filterList.forEach(function (entity) {
                         let option = document.createElement('option');
                         option.textContent = entity.name;
                         option.value = entity.id;
-                        filterElement.appendChild(option);
+                        filter3.appendChild(option);
                     });
                     renderTable(data.entityList)
                     // Разблокировать, если данные успешно загружены

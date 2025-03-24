@@ -63,10 +63,12 @@
     <a href="/tech-support">Тех. обеспечение</a>
     <a href="/directions">Направления</a>
     <a href="/profiles">Профили</a>
-    <a href="/bep">ООП</a>
+    <a href="/beps">ООП</a>
     <a href="/rpd">РПД</a>
     <a href="/dep">Дисциплины ОП</a>
     <a href="/cdep">Компетенции дисциплин ОП</a>
+    <a href="/deps">Дисциплины ОП</a>
+    <a href="/cdeps">Компетенции дисциплин ОП</a>
     <a href="/education-types">Типы обучения</a>
     <a href="/employees">Сотрудники</a>
     <a href="/employee-positions">Должности</a>
@@ -297,7 +299,7 @@
                         row.classList.add(`${data.id}`)
                         row.innerHTML =
                             '<td>' + data.id + '</td>' +
-                            '<td>' + data.positionName + '</td>';
+                            '<td>' + data.name + '</td>';
                         row.addEventListener('click', function () {
                             changeActiveRowTable(data.id);
                         });
@@ -324,7 +326,7 @@
                 row.classList.add(`${data.id}`)
                 row.innerHTML =
                     '<td>' + data.id + '</td>' +
-                    '<td>' + data.positionName + '</td>';
+                    '<td>' + data.name + '</td>';
                 row.addEventListener('click', function () {
                     changeActiveRowTable(data.id);
                 });
@@ -369,7 +371,7 @@
                     fieldDesc.classList.add('field__desc')
                     fieldDesc.textContent = `Название:`
                     fieldWrapper.append(fieldDesc)
-                    fieldWrapper.append(createTextBoxForActiveRecord(data.data.positionName, 50))
+                    fieldWrapper.append(createTextBoxForActiveRecord(data.data.name, 50))
                     form.append(fieldWrapper)
 
                     // Конец добавления в активную запись
@@ -463,7 +465,7 @@
                             if (rows[i].getAttribute('dataid') == newRecord.updatedData.id) {
                                 rows[i].innerHTML =
                                     '<td>' + newRecord.updatedData.id + '</td>' +
-                                    '<td>' + newRecord.updatedData.positionName + '</td>';
+                                    '<td>' + newRecord.updatedData.name + '</td>';
                                 break;
                             }
                         }

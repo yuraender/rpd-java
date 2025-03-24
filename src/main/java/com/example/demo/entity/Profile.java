@@ -23,4 +23,8 @@ public class Profile {
 
     @Column(nullable = false)
     private boolean disabled;
+
+    public boolean isDisabled() {
+        return disabled || direction.isDisabled();
+    }
 }

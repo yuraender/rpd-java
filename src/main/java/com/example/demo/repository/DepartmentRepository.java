@@ -8,9 +8,9 @@ import java.util.Optional;
 
 public interface DepartmentRepository extends JpaRepository<Department, Integer> {
 
-    Optional<Department> findByIdAndDisabledFalse(Integer id);
-
     List<Department> findAllByDisabledFalse();
+
+    Optional<Department> findByIdAndDisabledFalse(Integer id);
 
     Optional<Department> findByCodeAndDisabledFalse(String code);
 }

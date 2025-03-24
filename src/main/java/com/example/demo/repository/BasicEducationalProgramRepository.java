@@ -8,7 +8,7 @@ import java.util.Optional;
 
 public interface BasicEducationalProgramRepository extends JpaRepository<BasicEducationalProgram, Integer> {
 
-    Optional<BasicEducationalProgram> findByIdAndDisabledFalse(Integer id);
-
     List<BasicEducationalProgram> findAllByDisabledFalse();
+
+    Optional<BasicEducationalProgram> findByIdAndDisabledFalse(Integer id);
 }

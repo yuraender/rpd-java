@@ -2,70 +2,46 @@ package com.example.demo.controller;
 
 import com.example.demo.entity.Employee;
 import com.example.demo.entity.EmployeePosition;
-import com.example.demo.service.*;
+import com.example.demo.service.EmployeePositionService;
+import com.example.demo.service.EmployeeService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 @Controller
+@RequiredArgsConstructor
 public class EmployeeController {
 
-    @Autowired
-    private TechSupportService techSupportService;
-    @Autowired
-    private ProfileService profileService;
-    @Autowired
-    private EmployeeService employeeService;
-
-    @Autowired
-    private DirectionService directionService;
-    @Autowired
-    private TeacherService teacherService;
-
-    @Autowired
-    private AudienceService audienceService;
-
-    @Autowired
-    private DepartmentService departmentService;
-    @Autowired
-    private DisciplineService disciplineService;
-    @Autowired
-    private BasicEducationalProgramService basicEducationalProgramService;
-
-    @Autowired
-    private EducationTypeService educationTypeService;
-
-    @Autowired
-    private EmployeePositionService employeePositionService;
-
-    @Autowired
-    private DisciplineEducationalProgramService disciplineEducationalProgramService;
+    private final EmployeeService employeeService;
+    private final EmployeePositionService employeePositionService;
 
     @GetMapping("/employees")
-    public String getTablePage(Model model) {
+    public String getTablePage() {
         return "employees";
     }
 
     @GetMapping("/employees-data")
-    @ResponseBody
     public ResponseEntity<Map<String, Object>> getEntityData(HttpServletRequest request) {
         Map<String, Object> response = new HashMap<>();
+
+        List<Employee> employees = employeeService.getAll();
+        response.put("data", employees);
+
+        List<EmployeePosition> employeePositions = employeePositionService.getAll();
+        response.put("employeePositions", employeePositions);
+
         HttpSession session = request.getSession();
-
-        List<Employee> entity = employeeService.getAllEmployees();
-        response.put("data", entity);
-
-        List<EmployeePosition> entity1 = employeePositionService.getAll();
-        response.put("entity1", entity1);
-
         String role = (String) session.getAttribute("role");
         response.put("role", role);
 
@@ -73,93 +49,97 @@ public class EmployeeController {
     }
 
     @GetMapping("/api/employee/get-active/{entityId}")
-    @ResponseBody
     public ResponseEntity<Map<String, Object>> getActiveEntity(@PathVariable Integer entityId) {
         Map<String, Object> response = new HashMap<>();
-        Employee entity = employeeService.getById(entityId);
-        response.put("data", entity);
+
+        Employee employee = employeeService.getById(entityId);
+        response.put("data", employee);
+
+        List<EmployeePosition> employeePositions = employeePositionService.getAll();
+        response.put("employeePositions", employeePositions);
+
         return ResponseEntity.ok(response);
     }
 
     @PostMapping("/api/employee/update")
     public ResponseEntity<Map<String, Object>> updateRecord(@RequestBody Map<String, String> payload) {
         Map<String, Object> response = new HashMap<>();
-        String param0 = payload.get("0");
-        String param1 = payload.get("1");
-        String param2 = payload.get("2");
+
+        String lastName = payload.get("0");
+        String firstName = payload.get("1");
+        String middleName = payload.get("2");
+        int param3;
+        try {
+            param3 = Integer.parseInt(payload.get("3"));
+        } catch (NumberFormatException ex) {
+            response.put("error", "Неверный формат данных.");
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
+        }
         Integer dataId = Integer.parseInt(payload.get("dataId"));
 
-        Employee entity = employeeService.getById(dataId);
-
-        if (entity == null) {
-            response.put("error", "Запись не найдена. Запись не обновлена.");
-            return ResponseEntity.ok(response);
+        Employee employee = employeeService.getById(dataId);
+        EmployeePosition employeePosition = employeePositionService.getById(param3);
+        if (employee == null || employeePosition == null) {
+            response.put("error", "Запись не найдена.");
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
         }
-        // Обновляем поле audience у Department
-        entity.setFirstName(param1);
-        entity.setLastName(param0);
-        entity.setMiddleName(param2);
-        entity.setDisabled(false);
-        // Сохраняем обновленную запись
-        employeeService.save(entity);
-        // Добавляем обновленную запись в ответ
-        response.put("updatedData", entity);
+        employee.setLastName(lastName);
+        employee.setFirstName(firstName);
+        employee.setMiddleName(middleName);
+        employee.setEmployeePosition(employeePosition);
+        employee.setDisabled(false);
+        employeeService.save(employee);
+
+        response.put("updatedData", employee);
         return ResponseEntity.ok(response);
     }
 
     @PostMapping("/api/employee/save-new-record")
     public ResponseEntity<Map<String, Object>> createRecord(@RequestBody Map<String, String> payload) {
         Map<String, Object> response = new HashMap<>();
-        String param0 = payload.get("0");
-        String param1 = payload.get("1");
-        String param2 = payload.get("2");
-        Integer param3 = Integer.parseInt(payload.get("3"));
 
-        Employee entity = new Employee();
-        entity.setLastName(param0);
-        entity.setFirstName(param1);
-        entity.setMiddleName(param2);
-
-        // Создаем поле nameTypeOne
-        String nameTypeOne = param0;
-        String nameTypeTwo = "";
-
-        if (param1 != null && !param1.isEmpty()) {
-            nameTypeOne += " " + param1.charAt(0) + ". ";
-            nameTypeTwo += param1.charAt(0) + ". ";
+        String lastName = payload.get("0");
+        String firstName = payload.get("1");
+        String middleName = payload.get("2");
+        int param3;
+        try {
+            param3 = Integer.parseInt(payload.get("3"));
+        } catch (NumberFormatException ex) {
+            response.put("error", "Неверный формат данных.");
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
         }
-        if (param2 != null && !param2.isEmpty()) {
-            nameTypeOne += param2.charAt(0) + ". ";
-            nameTypeTwo += param2.charAt(0) + ". ";
-        }
-        nameTypeTwo += param0;
 
         EmployeePosition employeePosition = employeePositionService.getById(param3);
-        entity.setEmployeePosition(employeePosition);
-        entity.setNameTypeOne(nameTypeOne);
-        entity.setNameTypeTwo(nameTypeTwo);
-        entity.setDisabled(false);
-        // Сохраняем обновленную запись
-        employeeService.save(entity);
-        // Добавляем обновленную запись в ответ
-        response.put("createdData", entity);
+        if (employeePosition == null) {
+            response.put("error", "Запись не найдена.");
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
+        }
+
+        Employee employee = new Employee();
+        employee.setLastName(lastName);
+        employee.setFirstName(firstName);
+        employee.setMiddleName(middleName);
+        employee.setEmployeePosition(employeePosition);
+        employee.setDisabled(false);
+        employeeService.save(employee);
+
+        response.put("createdData", employee);
         return ResponseEntity.ok(response);
     }
 
     @GetMapping("/api/employee/delete-record/{entityId}")
-    @ResponseBody
     public ResponseEntity<Map<String, Object>> deleteRecord(@PathVariable Integer entityId) {
         Map<String, Object> response = new HashMap<>();
 
-        // Получаем запись TechSupport по techSupportId
-        Employee entity = employeeService.getById(entityId);
-        if (entity == null) {
-            response.put("error", "Запись не найдена");
-            return ResponseEntity.ok(response);
+        Employee employee = employeeService.getById(entityId);
+        if (employee == null) {
+            response.put("error", "Запись не найдена.");
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
         }
-        entity.setDisabled(true);
-        employeeService.save(entity);
-        response.put("deletedData", entity.getId());
+        employee.setDisabled(true);
+        employeeService.save(employee);
+
+        response.put("deletedData", employee.getId());
         return ResponseEntity.ok(response);
     }
 }

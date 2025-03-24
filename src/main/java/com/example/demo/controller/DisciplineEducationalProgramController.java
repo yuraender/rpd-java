@@ -4,243 +4,197 @@ import com.example.demo.entity.*;
 import com.example.demo.service.*;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 @Controller
+@RequiredArgsConstructor
 public class DisciplineEducationalProgramController {
 
-    @Autowired
-    private TechSupportService techSupportService;
-    @Autowired
-    private ProfileService profileService;
-    @Autowired
-    private EmployeeService employeeService;
+    private final DisciplineEducationalProgramService disciplineEducationalProgramService;
+    private final DepartmentService departmentService;
+    private final BasicEducationalProgramService basicEducationalProgramService;
+    private final DisciplineService disciplineService;
+    private final DirectionService directionService;
+    private final ProfileService profileService;
 
-    @Autowired
-    private DirectionService directionService;
-
-    @Autowired
-    private AudienceService audienceService;
-
-    @Autowired
-    private DepartmentService departmentService;
-    @Autowired
-    private DisciplineService disciplineService;
-    @Autowired
-    private BasicEducationalProgramService basicEducationalProgramService;
-
-    @Autowired
-    private EducationTypeService educationTypeService;
-    @Autowired
-    private DisciplineEducationalProgramService disciplineEducationalProgramService;
-
-    @GetMapping("/dep")
-    public String getTablePage(Model model) {
+    @GetMapping("/deps")
+    public String getTablePage() {
         return "disciplines-educational-programs";
     }
 
-    @GetMapping("/dep-data")
-    @ResponseBody
+    @GetMapping("/deps-data")
     public ResponseEntity<Map<String, Object>> getEntityData(HttpServletRequest request) {
         Map<String, Object> response = new HashMap<>();
-        HttpSession session = request.getSession();
 
-        List<DisciplineEducationalProgram> entity = disciplineEducationalProgramService.getAll();
-        response.put("data", entity);
+        List<DisciplineEducationalProgram> deps = disciplineEducationalProgramService.getAll();
+        response.put("data", deps);
 
         List<Department> departments = departmentService.getAll();
         response.put("departments", departments);
 
-        List<BasicEducationalProgram> entity1 = basicEducationalProgramService.getAll();
-        response.put("entity1", entity1);
+        List<BasicEducationalProgram> beps = basicEducationalProgramService.getAll();
+        response.put("beps", beps);
 
-        List<EducationType> entity2 = educationTypeService.getAllEducationTypes();
-        response.put("entity2", entity2);
+        List<Discipline> disciplines = disciplineService.getAll();
+        response.put("disciplines", disciplines);
 
-        List<Profile> entity3 = profileService.getAllProfiles();
-        response.put("entity3", entity3);
-
-        List<Discipline> entity4 = disciplineService.getAll();
-        response.put("entity4", entity4);
-
+        HttpSession session = request.getSession();
         String role = (String) session.getAttribute("role");
         response.put("role", role);
 
         return ResponseEntity.ok(response);
     }
 
-    @GetMapping("/dep-data-set-active/{entityId}")
-    @ResponseBody
+    @GetMapping("/api/dep/set-active/{entityId}")
     public ResponseEntity<Map<String, Object>> setActive(@PathVariable Integer entityId, HttpServletRequest request) {
         Map<String, Object> response = new HashMap<>();
 
-        BasicEducationalProgram entity = basicEducationalProgramService.getById(entityId);
-        if (entity == null) {
-            response.put("error", "Запись не найдена");
-            return ResponseEntity.ok(response);
+        DisciplineEducationalProgram dep = disciplineEducationalProgramService.getById(entityId);
+        if (dep == null) {
+            response.put("error", "Запись не найдена.");
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
         }
-        response.put("dataName", entity.getId());
+        response.put("dataName", dep.getId());
 
         HttpSession session = request.getSession();
-        session.setAttribute("oopId", entityId);
+        session.setAttribute("disciplinesEducationalProgramId", entityId);
         return ResponseEntity.ok(response);
     }
 
     @GetMapping("/api/dep/get-active/{entityId}")
-    @ResponseBody
     public ResponseEntity<Map<String, Object>> getActiveEntity(@PathVariable Integer entityId) {
         Map<String, Object> response = new HashMap<>();
-        DisciplineEducationalProgram entity = disciplineEducationalProgramService.getById(entityId);
-        response.put("data", entity);
-        List<Discipline> entity2 = disciplineService.getAll();
-        response.put("entity2", entity2);
-        return ResponseEntity.ok(response);
-    }
 
-    @PostMapping("/api/dep/update")
-    public ResponseEntity<Map<String, Object>> updateRecord(@RequestBody Map<String, String> payload) {
-        Map<String, Object> response = new HashMap<>();
-        Integer param0 = Integer.parseInt(payload.get("0"));
-        Integer dataId = Integer.parseInt(payload.get("dataId"));
+        DisciplineEducationalProgram deps = disciplineEducationalProgramService.getById(entityId);
+        response.put("data", deps);
 
-        DisciplineEducationalProgram entity = disciplineEducationalProgramService.getById(dataId);
-        Discipline discipline = disciplineService.getById(param0);
-
-        if (entity == null || discipline == null) {
-            response.put("error", "Запись не найдена. Запись не обновлена.");
-            return ResponseEntity.ok(response);
-        }
-        // Обновляем поле audience у Department
-        entity.setDiscipline(discipline);
-        entity.setDisabled(false);
-        // Сохраняем обновленную запись
-        disciplineEducationalProgramService.save(entity);
-        // Добавляем обновленную запись в ответ
-        response.put("updatedData", entity);
         return ResponseEntity.ok(response);
     }
 
     @PostMapping("/api/dep/save-new-record")
     public ResponseEntity<Map<String, Object>> createRecord(@RequestBody Map<String, String> payload) {
         Map<String, Object> response = new HashMap<>();
-        Integer param0 = Integer.parseInt(payload.get("0"));
-        Integer param1 = Integer.parseInt(payload.get("1"));
 
-        BasicEducationalProgram basicEducationalProgram = basicEducationalProgramService.getById(param0);
-        Discipline discipline = disciplineService.getById(param1);
-
-        if (basicEducationalProgram == null || discipline == null) {
-            response.put("error", "Запись не найдена. Запись не обновлена.");
-            return ResponseEntity.ok(response);
+        int param0, param1;
+        try {
+            param0 = Integer.parseInt(payload.get("0"));
+            param1 = Integer.parseInt(payload.get("1"));
+        } catch (NumberFormatException ex) {
+            response.put("error", "Неверный формат данных.");
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
         }
 
-        DisciplineEducationalProgram entity = new DisciplineEducationalProgram();
-        entity.setBasicEducationalProgram(basicEducationalProgram);
-        entity.setDiscipline(discipline);
-        entity.setDisabled(false);
-        // Сохраняем обновленную запись
-        disciplineEducationalProgramService.save(entity);
-        // Добавляем обновленную запись в ответ
-        response.put("createdData", entity);
+        BasicEducationalProgram bep = basicEducationalProgramService.getById(param0);
+        Discipline discipline = disciplineService.getById(param1);
+        if (bep == null || discipline == null) {
+            response.put("error", "Запись не найдена.");
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
+        }
+
+        DisciplineEducationalProgram dep = new DisciplineEducationalProgram();
+        dep.setBasicEducationalProgram(bep);
+        dep.setDiscipline(discipline);
+        dep.setDisabled(false);
+        disciplineEducationalProgramService.save(dep);
+
+        response.put("createdData", dep);
         return ResponseEntity.ok(response);
     }
 
-
     @GetMapping("/api/dep/delete-record/{entityId}")
-    @ResponseBody
     public ResponseEntity<Map<String, Object>> deleteRecord(@PathVariable Integer entityId) {
         Map<String, Object> response = new HashMap<>();
 
-        // Получаем запись TechSupport по techSupportId
-        DisciplineEducationalProgram entity = disciplineEducationalProgramService.getById(entityId);
-        if (entity == null) {
-            response.put("error", "Запись не найдена");
-            return ResponseEntity.ok(response);
+        DisciplineEducationalProgram dep = disciplineEducationalProgramService.getById(entityId);
+        if (dep == null) {
+            response.put("error", "Запись не найдена.");
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
         }
-        entity.setDisabled(true);
-        disciplineEducationalProgramService.save(entity);
-        response.put("deletedData", entity.getId());
+        dep.setDisabled(true);
+        disciplineEducationalProgramService.save(dep);
+
+        response.put("deletedData", dep.getId());
         return ResponseEntity.ok(response);
     }
 
-    @GetMapping("/api/dep/department-filter/{entityId}")
-    @ResponseBody
-    public ResponseEntity<Map<String, Object>> filterByDepartment(@PathVariable Integer entityId) {
+    @GetMapping("/api/dep/department-filter/{filter1}")
+    public ResponseEntity<Map<String, Object>> filterByDepartment(@PathVariable Integer filter1) {
         Map<String, Object> response = new HashMap<>();
-        Department department = departmentService.getById(entityId);
-        // Получаем запись entityId
-        List<Direction> filterList = directionService.getByDepartment(department);
+
+        List<Direction> filterList = directionService.getAll().stream()
+                .filter(d -> d.getDepartment().getId() == filter1)
+                .toList();
         response.put("filterList", filterList);
 
-        List<DisciplineEducationalProgram> allEntityForTable = disciplineEducationalProgramService.getAll();
+        List<DisciplineEducationalProgram> deps = disciplineEducationalProgramService.getAll();
 
-        if (entityId == 0) {
-            response.put("entityList", allEntityForTable);
+        if (filter1 == 0) {
+            response.put("entityList", deps);
         } else {
-            List<DisciplineEducationalProgram> entityList = allEntityForTable.stream()
-                    .filter(el -> el.getDiscipline().getDepartment().getId() == entityId)
-                    .filter(el -> !el.isDisabled()).toList();
+            List<DisciplineEducationalProgram> entityList = deps.stream()
+                    .filter(dep -> dep.getDiscipline().getDeveloper().getDepartment().getId() == filter1)
+                    .toList();
             response.put("entityList", entityList);
         }
         return ResponseEntity.ok(response);
     }
 
     @GetMapping("/api/dep/direction-filter/{filter1}/{filter2}")
-    @ResponseBody
     public ResponseEntity<Map<String, Object>> filterByDirection(@PathVariable Integer filter1, @PathVariable Integer filter2) {
         Map<String, Object> response = new HashMap<>();
 
-        Direction direction = directionService.getById(filter2);
-        // Получаем запись entityId
-        List<Profile> allProfiles = profileService.getAllProfiles();
-        List<Profile> filterList = allProfiles.stream()
-                .filter(el -> el.getDirection().getId() == filter2)
-                .filter(el -> !el.isDisabled()).toList();
-
+        List<Profile> filterList = profileService.getAll().stream()
+                .filter(p -> p.getDirection().getDepartment().getId() == filter1)
+                .filter(p -> p.getDirection().getId() == filter2)
+                .toList();
         response.put("filterList", filterList);
 
-        List<DisciplineEducationalProgram> allTableEntity = disciplineEducationalProgramService.getAll();
+        List<DisciplineEducationalProgram> deps = disciplineEducationalProgramService.getAll();
 
         if (filter2 == 0) {
-            List<DisciplineEducationalProgram> entityList = allTableEntity.stream()
-                    .filter(el -> el.getDiscipline().getDepartment().getId() == filter1)
-                    .filter(el -> !el.isDisabled()).toList();
+            List<DisciplineEducationalProgram> entityList = deps.stream()
+                    .filter(dep -> dep.getDiscipline().getDeveloper().getDepartment().getId() == filter1)
+                    .toList();
             response.put("entityList", entityList);
         } else {
-            List<DisciplineEducationalProgram> entityList = allTableEntity.stream()
-                    .filter(el -> el.getDiscipline().getDepartment().getId() == filter1)
-                    .filter(el -> el.getBasicEducationalProgram().getProfile().getDirection().getId() == filter2)
-                    .filter(el -> !el.isDisabled()).toList();
+            List<DisciplineEducationalProgram> entityList = deps.stream()
+                    .filter(dep -> dep.getDiscipline().getDeveloper().getDepartment().getId() == filter1)
+                    .filter(dep -> dep.getBasicEducationalProgram().getProfile().getDirection().getId() == filter2)
+                    .toList();
             response.put("entityList", entityList);
         }
         return ResponseEntity.ok(response);
     }
 
     @GetMapping("/api/dep/profile-filter/{filter1}/{filter2}/{filter3}")
-    @ResponseBody
     public ResponseEntity<Map<String, Object>> filterByProfile(@PathVariable Integer filter1, @PathVariable Integer filter2, @PathVariable Integer filter3) {
         Map<String, Object> response = new HashMap<>();
-        List<DisciplineEducationalProgram> allTableEntity = disciplineEducationalProgramService.getAll();
+
+        List<DisciplineEducationalProgram> deps = disciplineEducationalProgramService.getAll();
 
         if (filter3 == 0) {
-            List<DisciplineEducationalProgram> entityList = allTableEntity.stream()
-                    .filter(el -> el.getDiscipline().getDepartment().getId() == filter1)
-                    .filter(el -> !el.isDisabled()).toList();
+            List<DisciplineEducationalProgram> entityList = deps.stream()
+                    .filter(dep -> dep.getDiscipline().getDeveloper().getDepartment().getId() == filter1)
+                    .filter(dep -> dep.getBasicEducationalProgram().getProfile().getDirection().getId() == filter2)
+                    .toList();
             response.put("entityList", entityList);
         } else {
-            List<DisciplineEducationalProgram> entityList = allTableEntity.stream()
-                    .filter(el -> el.getDiscipline().getDepartment().getId() == filter1)
-                    .filter(el -> el.getBasicEducationalProgram().getProfile().getDirection().getId() == filter2)
-                    .filter(el -> el.getBasicEducationalProgram().getProfile().getId() == filter3)
-                    .filter(el -> !el.isDisabled()).toList();
+            List<DisciplineEducationalProgram> entityList = deps.stream()
+                    .filter(dep -> dep.getDiscipline().getDeveloper().getDepartment().getId() == filter1)
+                    .filter(dep -> dep.getBasicEducationalProgram().getProfile().getDirection().getId() == filter2)
+                    .filter(dep -> dep.getBasicEducationalProgram().getProfile().getId() == filter3)
+                    .toList();
             response.put("entityList", entityList);
         }
         return ResponseEntity.ok(response);

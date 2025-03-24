@@ -1,46 +1,41 @@
 package com.example.demo.controller;
 
 import com.example.demo.entity.EmployeePosition;
-import com.example.demo.service.EducationTypeService;
 import com.example.demo.service.EmployeePositionService;
-import com.example.demo.service.EmployeeService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 @Controller
+@RequiredArgsConstructor
 public class EmployeePositionController {
 
-    @Autowired
-    private EmployeeService employeeService;
-
-    @Autowired
-    private EducationTypeService educationTypeService;
-    @Autowired
-    private EmployeePositionService employeePositionService;
+    private final EmployeePositionService employeePositionService;
 
     @GetMapping("/employee-positions")
-    public String getTablePage(Model model) {
+    public String getTablePage() {
         return "employee-positions";
     }
 
     @GetMapping("/employee-positions-data")
-    @ResponseBody
     public ResponseEntity<Map<String, Object>> getEntityData(HttpServletRequest request) {
         Map<String, Object> response = new HashMap<>();
+
+        List<EmployeePosition> employeePositions = employeePositionService.getAll();
+        response.put("data", employeePositions);
+
         HttpSession session = request.getSession();
-
-        List<EmployeePosition> entity = employeePositionService.getAll();
-        response.put("data", entity);
-
         String role = (String) session.getAttribute("role");
         response.put("role", role);
 
@@ -48,65 +43,63 @@ public class EmployeePositionController {
     }
 
     @GetMapping("/api/employee-position/get-active/{entityId}")
-    @ResponseBody
     public ResponseEntity<Map<String, Object>> getActiveEntity(@PathVariable Integer entityId) {
         Map<String, Object> response = new HashMap<>();
-        EmployeePosition entity = employeePositionService.getById(entityId);
-        response.put("data", entity);
+
+        EmployeePosition employeePosition = employeePositionService.getById(entityId);
+        response.put("data", employeePosition);
+
         return ResponseEntity.ok(response);
     }
 
     @PostMapping("/api/employee-position/update")
     public ResponseEntity<Map<String, Object>> updateRecord(@RequestBody Map<String, String> payload) {
         Map<String, Object> response = new HashMap<>();
-        String param0 = payload.get("0");
+
+        String name = payload.get("0");
         Integer dataId = Integer.parseInt(payload.get("dataId"));
 
-        EmployeePosition entity = employeePositionService.getById(dataId);
-
-        if (entity == null) {
-            response.put("error", "Запись не найдена. Запись не обновлена.");
-            return ResponseEntity.ok(response);
+        EmployeePosition employeePosition = employeePositionService.getById(dataId);
+        if (employeePosition == null) {
+            response.put("error", "Запись не найдена.");
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
         }
-        // Обновляем поле audience у Department
-        entity.setPositionName(param0);
-        entity.setDisabled(false);
-        // Сохраняем обновленную запись
-        employeePositionService.save(entity);
-        // Добавляем обновленную запись в ответ
-        response.put("updatedData", entity);
+        employeePosition.setName(name);
+        employeePosition.setDisabled(false);
+        employeePositionService.save(employeePosition);
+
+        response.put("updatedData", employeePosition);
         return ResponseEntity.ok(response);
     }
 
     @PostMapping("/api/employee-position/save-new-record")
     public ResponseEntity<Map<String, Object>> createRecord(@RequestBody Map<String, String> payload) {
         Map<String, Object> response = new HashMap<>();
-        String param0 = payload.get("0");
 
-        EmployeePosition entity = new EmployeePosition();
-        entity.setPositionName(param0);
-        entity.setDisabled(false);
-        // Сохраняем обновленную запись
-        employeePositionService.save(entity);
-        // Добавляем обновленную запись в ответ
-        response.put("createdData", entity);
+        String name = payload.get("0");
+
+        EmployeePosition employeePosition = new EmployeePosition();
+        employeePosition.setName(name);
+        employeePosition.setDisabled(false);
+        employeePositionService.save(employeePosition);
+
+        response.put("createdData", employeePosition);
         return ResponseEntity.ok(response);
     }
 
     @GetMapping("/api/employee-position/delete-record/{entityId}")
-    @ResponseBody
     public ResponseEntity<Map<String, Object>> deleteRecord(@PathVariable Integer entityId) {
         Map<String, Object> response = new HashMap<>();
 
-        // Получаем запись TechSupport по techSupportId
-        EmployeePosition entity = employeePositionService.getById(entityId);
-        if (entity == null) {
-            response.put("error", "Запись не найдена");
-            return ResponseEntity.ok(response);
+        EmployeePosition employeePosition = employeePositionService.getById(entityId);
+        if (employeePosition == null) {
+            response.put("error", "Запись не найдена.");
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
         }
-        entity.setDisabled(true);
-        employeePositionService.save(entity);
-        response.put("deletedData", entity.getId());
+        employeePosition.setDisabled(true);
+        employeePositionService.save(employeePosition);
+
+        response.put("deletedData", employeePosition.getId());
         return ResponseEntity.ok(response);
     }
 }

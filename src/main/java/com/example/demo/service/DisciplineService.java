@@ -2,32 +2,31 @@ package com.example.demo.service;
 
 import com.example.demo.entity.Discipline;
 import com.example.demo.repository.DisciplineRepository;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
 @Service
+@RequiredArgsConstructor
 public class DisciplineService {
 
     private final DisciplineRepository disciplineRepository;
 
-    public DisciplineService(DisciplineRepository disciplineRepository) {
-        this.disciplineRepository = disciplineRepository;
-    }
-
     public List<Discipline> getAll() {
-        return disciplineRepository.findAllByDisabledFalse();
+        return disciplineRepository.findAllByDisabledFalse()
+                .stream()
+                .filter(d -> !d.isDisabled())
+                .toList();
     }
 
     public Discipline getById(Integer id) {
-        return disciplineRepository.findById(id).orElse(null);
+        return disciplineRepository.findByIdAndDisabledFalse(id)
+                .filter(d -> !d.isDisabled())
+                .orElse(null);
     }
 
-    public List<Discipline> getByTeacherId(Integer teacherId) {
-        return disciplineRepository.findByDeveloperId(teacherId);
-    }
-
-    public Discipline save(Discipline employee) {
-        return disciplineRepository.save(employee);
+    public Discipline save(Discipline discipline) {
+        return disciplineRepository.save(discipline);
     }
 }

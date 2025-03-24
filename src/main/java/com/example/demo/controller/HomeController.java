@@ -2,16 +2,17 @@ package com.example.demo.controller;
 
 import com.example.demo.entity.DisciplineEducationalProgram;
 import com.example.demo.entity.Teacher;
-import com.example.demo.service.*;
+import com.example.demo.service.DisciplineEducationalProgramService;
+import com.example.demo.service.TeacherService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.ResponseBody;
 
 import java.util.HashMap;
 import java.util.List;
@@ -40,7 +41,6 @@ public class HomeController {
     }
 
     @GetMapping("/home-data")
-    @ResponseBody
     public ResponseEntity<Map<String, Object>> getEntityData(HttpServletRequest request) {
         Map<String, Object> response = new HashMap<>();
         HttpSession session = request.getSession();
@@ -54,7 +54,7 @@ public class HomeController {
                 response.put("oopId", oopId);
             } catch (NumberFormatException e) {
                 response.put("error", "Неверный формат OOP ID");
-                return ResponseEntity.badRequest().body(response);
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
             }
         }
 
@@ -81,10 +81,8 @@ public class HomeController {
     }
 
     @GetMapping("/api/home/teacher-filter/{entityId}")
-    @ResponseBody
     public ResponseEntity<Map<String, Object>> filterByTeacher(@PathVariable Integer entityId, HttpServletRequest request) {
         Map<String, Object> response = new HashMap<>();
-        // Получаем запись entityId
         HttpSession session = request.getSession();
 
         Object oopIdObj = session.getAttribute("oopId");
@@ -95,7 +93,7 @@ public class HomeController {
                 response.put("oopId", oopId);
             } catch (NumberFormatException e) {
                 response.put("error", "Неверный формат OOP ID");
-                return ResponseEntity.badRequest().body(response);
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
             }
         }
 

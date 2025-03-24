@@ -124,8 +124,8 @@ public class DocumentController {
                     competencyData.put("competencyCode", competencie.getCode());
                     competenciesData.add(competencyData);
                 }
-                Department department = disciplineEducationalProgram.getDiscipline().getDepartment();
-                String developerPosition = disciplineEducationalProgram.getDiscipline().getDeveloper().getEmployeePosition().getPositionName();
+                Department department = disciplineEducationalProgram.getDiscipline().getDeveloper().getDepartment();
+                String developerPosition = disciplineEducationalProgram.getDiscipline().getDeveloper().getEmployeePosition().getName();
                 String abbreviation = department.getAbbreviation();
                 String developerName = disciplineEducationalProgram.getDiscipline().getDeveloper().getEmployee().getNameTypeTwo();
                 String managerName = department.getManager().getNameTypeTwo();
@@ -139,7 +139,7 @@ public class DocumentController {
 
                 for (Audience audience : audiencesFiltered) {
                     Map<String, String> audiences = new HashMap<>();
-                    audiences.put("roomNumber", audience.getNumberAudience());
+                    audiences.put("roomNumber", audience.getAudienceNumber());
                     audiences.put("specialEquipment", audience.getTech());
                     audiences.put("softwareLicenses", audience.getSoftwareLicense());
                     audienciesData.add(audiences);

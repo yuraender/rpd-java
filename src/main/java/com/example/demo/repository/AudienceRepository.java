@@ -8,7 +8,7 @@ import java.util.Optional;
 
 public interface AudienceRepository extends JpaRepository<Audience, Integer> {
 
-    Optional<Audience> findByIdAndDisabledFalse(Integer id);
-
     List<Audience> findAllByDisabledFalse();
+
+    Optional<Audience> findByIdAndDisabledFalse(Integer id);
 }

@@ -5,7 +5,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 @Entity
-@Table(name = "departaments")
+@Table(name = "departments")
 @Getter
 @Setter
 public class Department {
@@ -29,4 +29,8 @@ public class Department {
 
     @Column(nullable = false)
     private boolean disabled;
+
+    public boolean isDisabled() {
+        return disabled || manager.isDisabled();
+    }
 }

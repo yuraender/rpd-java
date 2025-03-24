@@ -8,7 +8,7 @@ import java.util.Optional;
 
 public interface ProfileRepository extends JpaRepository<Profile, Integer> {
 
-    Optional<Profile> findByIdAndDisabledFalse(Integer id);
-
     List<Profile> findAllByDisabledFalse();
+
+    Optional<Profile> findByIdAndDisabledFalse(Integer id);
 }

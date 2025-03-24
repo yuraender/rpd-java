@@ -1,63 +1,41 @@
 package com.example.demo.controller;
 
 import com.example.demo.entity.EducationType;
-import com.example.demo.service.*;
+import com.example.demo.service.EducationTypeService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 @Controller
+@RequiredArgsConstructor
 public class EducationTypeController {
 
-    @Autowired
-    private TechSupportService techSupportService;
-    @Autowired
-    private ProfileService profileService;
-    @Autowired
-    private EmployeeService employeeService;
-
-    @Autowired
-    private DirectionService directionService;
-    @Autowired
-    private TeacherService teacherService;
-
-    @Autowired
-    private AudienceService audienceService;
-
-    @Autowired
-    private DepartmentService departmentService;
-    @Autowired
-    private DisciplineService disciplineService;
-    @Autowired
-    private BasicEducationalProgramService basicEducationalProgramService;
-
-    @Autowired
-    private EducationTypeService educationTypeService;
-    @Autowired
-    private DisciplineEducationalProgramService disciplineEducationalProgramService;
+    private final EducationTypeService educationTypeService;
 
     @GetMapping("/education-types")
-    public String getTablePage(Model model) {
+    public String getTablePage() {
         return "education-types";
     }
 
     @GetMapping("/education-types-data")
-    @ResponseBody
     public ResponseEntity<Map<String, Object>> getEntityData(HttpServletRequest request) {
         Map<String, Object> response = new HashMap<>();
+
+        List<EducationType> educationTypes = educationTypeService.getAll();
+        response.put("data", educationTypes);
+
         HttpSession session = request.getSession();
-
-        List<EducationType> entity = educationTypeService.getAllEducationTypes();
-        response.put("data", entity);
-
         String role = (String) session.getAttribute("role");
         response.put("role", role);
 
@@ -65,73 +43,83 @@ public class EducationTypeController {
     }
 
     @GetMapping("/api/education-type/get-active/{entityId}")
-    @ResponseBody
     public ResponseEntity<Map<String, Object>> getActiveEntity(@PathVariable Integer entityId) {
         Map<String, Object> response = new HashMap<>();
-        EducationType entity = educationTypeService.getById(entityId);
-        response.put("data", entity);
+
+        EducationType educationType = educationTypeService.getById(entityId);
+        response.put("data", educationType);
+
         return ResponseEntity.ok(response);
     }
 
     @PostMapping("/api/education-type/update")
     public ResponseEntity<Map<String, Object>> updateRecord(@RequestBody Map<String, String> payload) {
         Map<String, Object> response = new HashMap<>();
-        String param0 = payload.get("0");
-        String param1 = payload.get("1");
-        String param2 = payload.get("2");
+
+        String name = payload.get("0");
+        int learningPeriod;
+        try {
+            learningPeriod = Integer.parseInt(payload.get("1"));
+        } catch (NumberFormatException ex) {
+            response.put("error", "Неверный формат данных.");
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
+        }
+        String text = payload.get("2");
         Integer dataId = Integer.parseInt(payload.get("dataId"));
 
-        EducationType entity = educationTypeService.getById(dataId);
-
-        if (entity == null) {
-            response.put("error", "Запись не найдена. Запись не обновлена.");
-            return ResponseEntity.ok(response);
+        EducationType educationType = educationTypeService.getById(dataId);
+        if (educationType == null) {
+            response.put("error", "Запись не найдена.");
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
         }
-        // Обновляем поле audience у Department
-        entity.setName(param0);
-        entity.setLearningPeriod(Integer.parseInt(param1));
-        entity.setText(param2);
-        entity.setDisabled(false);
-        // Сохраняем обновленную запись
-        educationTypeService.save(entity);
-        // Добавляем обновленную запись в ответ
-        response.put("updatedData", entity);
+        educationType.setName(name);
+        educationType.setLearningPeriod(learningPeriod);
+        educationType.setText(text);
+        educationType.setDisabled(false);
+        educationTypeService.save(educationType);
+
+        response.put("updatedData", educationType);
         return ResponseEntity.ok(response);
     }
 
     @PostMapping("/api/education-type/save-new-record")
     public ResponseEntity<Map<String, Object>> createRecord(@RequestBody Map<String, String> payload) {
         Map<String, Object> response = new HashMap<>();
-        String param0 = payload.get("0");
-        String param1 = payload.get("1");
-        String param2 = payload.get("2");
 
-        EducationType entity = new EducationType();
-        entity.setName(param0);
-        entity.setLearningPeriod(Integer.parseInt(param1));
-        entity.setText(param2);
-        entity.setDisabled(false);
-        // Сохраняем обновленную запись
-        educationTypeService.save(entity);
-        // Добавляем обновленную запись в ответ
-        response.put("createdData", entity);
+        String name = payload.get("0");
+        int learningPeriod;
+        try {
+            learningPeriod = Integer.parseInt(payload.get("1"));
+        } catch (NumberFormatException ex) {
+            response.put("error", "Неверный формат данных.");
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
+        }
+        String text = payload.get("2");
+
+        EducationType educationType = new EducationType();
+        educationType.setName(name);
+        educationType.setLearningPeriod(learningPeriod);
+        educationType.setText(text);
+        educationType.setDisabled(false);
+        educationTypeService.save(educationType);
+
+        response.put("createdData", educationType);
         return ResponseEntity.ok(response);
     }
 
     @GetMapping("/api/education-type/delete-record/{entityId}")
-    @ResponseBody
     public ResponseEntity<Map<String, Object>> deleteRecord(@PathVariable Integer entityId) {
         Map<String, Object> response = new HashMap<>();
 
-        // Получаем запись TechSupport по techSupportId
-        EducationType entity = educationTypeService.getById(entityId);
-        if (entity == null) {
-            response.put("error", "Запись не найдена");
-            return ResponseEntity.ok(response);
+        EducationType educationType = educationTypeService.getById(entityId);
+        if (educationType == null) {
+            response.put("error", "Запись не найдена.");
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
         }
-        entity.setDisabled(true);
-        educationTypeService.save(entity);
-        response.put("deletedData", entity.getId());
+        educationType.setDisabled(true);
+        educationTypeService.save(educationType);
+
+        response.put("deletedData", educationType.getId());
         return ResponseEntity.ok(response);
     }
 }

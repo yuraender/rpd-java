@@ -21,9 +21,13 @@ public class Direction {
     private String name;
 
     @ManyToOne
-    @JoinColumn(name = "departament_id", referencedColumnName = "id", nullable = false)
+    @JoinColumn(name = "department_id", referencedColumnName = "id", nullable = false)
     private Department department;
 
     @Column(nullable = false)
     private boolean disabled;
+
+    public boolean isDisabled() {
+        return disabled || department.isDisabled();
+    }
 }

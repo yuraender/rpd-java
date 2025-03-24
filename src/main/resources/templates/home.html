@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Home</title>
+    <title>Система учебно-методических документов</title>
     <link rel="icon" type="image/png" href="/image/favicon-96x96.png" sizes="96x96"/>
     <link rel="icon" type="image/svg+xml" href="/image/favicon.svg"/>
     <link rel="shortcut icon" href="/image/favicon.ico"/>
@@ -70,10 +70,12 @@
     <a href="/tech-support">Тех. обеспечение</a>
     <a href="/directions">Направления</a>
     <a href="/profiles">Профили</a>
-    <a href="/bep">ООП</a>
+    <a href="/beps">ООП</a>
     <a href="/rpd">РПД</a>
     <a href="/dep">Дисциплины ОП</a>
     <a href="/cdep">Компетенции дисциплин ОП</a>
+    <a href="/deps">Дисциплины ОП</a>
+    <a href="/cdeps">Компетенции дисциплин ОП</a>
     <a href="/education-types">Типы обучения</a>
     <a href="/employees">Сотрудники</a>
     <a href="/employee-positions">Должности</a>
@@ -147,7 +149,7 @@
                         messageWrapper.appendChild(title);
 
                         const link = document.createElement('a')
-                        link.href = '/bep'
+                        link.href = '/beps'
                         link.textContent = 'Выбрать'
                         link.classList.add('link')
                         messageWrapper.append(link)
@@ -162,7 +164,7 @@
                         filter1.appendChild(option);
                         data.teachers.forEach(function (teacher) {
                             let option = document.createElement('option');
-                            option.textContent = `${teacher.employee.nameTypeOne}`;
+                            option.textContent = teacher.employee.nameTypeOne;
                             option.value = teacher.id;
                             filter1.appendChild(option);
                         });
@@ -308,7 +310,7 @@
 
         function generateRPD() {
             if (!dateProtocol || !numberProtocol || !disciplinesOPList.length) {
-                showModalWithMessage("Введите номер и дату протокола")
+                showModalWithMessage("Введите номер и дату протокола.")
                 return
             }
             fetch('/api/document/generate', {

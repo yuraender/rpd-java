@@ -11,7 +11,7 @@
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <style>
         .btn-download {
-            width: 45%;
+            width: 50%;
             height: 60px;
             overflow: hidden;
             text-overflow: ellipsis;
@@ -53,20 +53,23 @@
         </div>
         <div class="filter-container">
             <label for="filter2">Разработчик РП:</label>
-            <select class="form-control" id="filter2">
                 <option value="0">Выберите разработчика</option>
+            <select class="form-control selectpicker" id="filter2" data-live-search="true"
+                <option value="0" selected>Выберите разработчика</option>
             </select>
         </div>
         <div class="filter-container">
             <label for="filter3">Дисциплина:</label>
-            <select class="form-control" id="filter3">
                 <option value="0">Выберите дисциплину</option>
+            <label for="filter3">ООП:</label>
+                <option value="0">Выберите ООП</option>
             </select>
         </div>
         <div class="filter-container">
             <label for="filter4">ООП:</label>
-            <select class="form-control" id="filter4">
                 <option value="0">Выберите ООП</option>
+            <label for="filter4">Дисциплина:</label>
+                <option value="0">Выберите дисциплину</option>
             </select>
         </div>
     </div>
@@ -84,20 +87,22 @@
                            onkeyup="filterTable('dataTable', 3)"></th>
                 <th><input type="text" class="form-control" placeholder="Дисциплина"
                            onkeyup="filterTable('dataTable', 4)"></th>
-                <th><input type="text" class="form-control" placeholder="Раздел 1. Статус"
+                <th><input type="text" class="form-control" placeholder="Раздел 1"
                            onkeyup="filterTable('dataTable', 5)"></th>
-                <th><input type="text" class="form-control" placeholder="Раздел 2. Статус"
+                <th><input type="text" class="form-control" placeholder="Раздел 2"
                            onkeyup="filterTable('dataTable', 6)"></th>
-                <th><input type="text" class="form-control" placeholder="Раздел 3. Статус"
+                <th><input type="text" class="form-control" placeholder="Раздел 3"
                            onkeyup="filterTable('dataTable', 7)"></th>
-                <th><input type="text" class="form-control" placeholder="Раздел 4. Статус"
+                <th><input type="text" class="form-control" placeholder="Раздел 4"
                            onkeyup="filterTable('dataTable', 8)"></th>
-                <th><input type="text" class="form-control" placeholder="Раздел 5. Статус"
+                <th><input type="text" class="form-control" placeholder="Раздел 5"
                            onkeyup="filterTable('dataTable', 9)"></th>
-                <th><input type="text" class="form-control" placeholder="Раздел 6. Статус"
+                <th><input type="text" class="form-control" placeholder="Раздел 6"
                            onkeyup="filterTable('dataTable', 10)"></th>
-                <th><input type="text" class="form-control" placeholder="Раздел 7. Статус"
+                <th><input type="text" class="form-control" placeholder="Раздел 7"
                            onkeyup="filterTable('dataTable', 11)"></th>
+                <th><input type="text" class="form-control" placeholder="Раздел 8"
+                           onkeyup="filterTable('dataTable', 12)"></th>
             </tr>
             <tr class="sticky-header">
                 <th>ID</th>
@@ -105,13 +110,14 @@
                 <th>Профиль</th>
                 <th>Тип обучения</th>
                 <th>Дисциплина</th>
-                <th>Раздел 1. Статус</th>
-                <th>Раздел 2. Статус</th>
-                <th>Раздел 3. Статус</th>
-                <th>Раздел 4. Статус</th>
-                <th>Раздел 5. Статус</th>
-                <th>Раздел 6. Статус</th>
-                <th>Раздел 7. Статус</th>
+                <th>Раздел 1</th>
+                <th>Раздел 2</th>
+                <th>Раздел 3</th>
+                <th>Раздел 4</th>
+                <th>Раздел 5</th>
+                <th>Раздел 6</th>
+                <th>Раздел 7</th>
+                <th>Раздел 8</th>
             </tr>
             </thead>
             <tbody>
@@ -119,7 +125,6 @@
         </table>
     </div>
     <div class="edit-buttons-wrapper no-visible">
-        <button class="button-edit btn-edit button btn btn-primary d-none">Редактировать</button>
         <button class="btn-create button btn btn-primary">Добавить</button>
         <button class="btn-delete button btn btn-primary">Удалить</button>
         <button class="btn-choose button btn btn-primary">Выбрать запись</button>
@@ -133,10 +138,12 @@
     <a href="/tech-support">Тех. обеспечение</a>
     <a href="/directions">Направления</a>
     <a href="/profiles">Профили</a>
-    <a href="/bep">ООП</a>
+    <a href="/beps">ООП</a>
     <a href="/rpd">РПД</a>
     <a href="/dep">Дисциплины ОП</a>
     <a href="/cdep">Компетенции дисциплин ОП</a>
+    <a href="/deps">Дисциплины ОП</a>
+    <a href="/cdeps">Компетенции дисциплин ОП</a>
     <a href="/education-types">Типы обучения</a>
     <a href="/employees">Сотрудники</a>
     <a href="/employee-positions">Должности</a>
@@ -164,7 +171,7 @@
 <script src="/js/modalWindow.js"></script>
 <script>
     document.addEventListener('DOMContentLoaded', function () {
-        const filesNames = [
+        const fileNames = [
             "Титульный лист",
             "Цели освоения дисциплины",
             "Место дисциплины в составе ОП",
@@ -228,7 +235,6 @@
         }
 
         function renderPage() {
-            document.querySelector('.button-edit').disabled = true;
             let createModal = document.getElementById('createModal');
             let cancelCreateModal = document.querySelector('.cancel-create-modal');
             let saveModalRecord = document.querySelector('.save-modal-record');
@@ -251,7 +257,7 @@
                     filter1.appendChild(option);
                     data.departments.forEach(function (department) {
                         let option = document.createElement('option');
-                        option.textContent = `${department.name}`;
+                        option.textContent = department.name;
                         option.value = department.id;
                         filter1.appendChild(option);
                     });
@@ -261,42 +267,6 @@
                     console.error('Ошибка загрузки данных:', error);
                     alert('Ошибка при загрузке данных');
                 });
-
-            let buttonEdit = document.querySelector('.button-edit');
-            buttonEdit.addEventListener('click', editActive)
-
-            function editActive() {
-                editMode = true;
-                let activeRecord = document.querySelector('.active-record');
-                let fields = activeRecord.querySelectorAll('.field');
-
-                fields.forEach(function (field) {
-                    field.disabled = false;
-                    field.readOnly = false;
-                });
-
-                activeFieldsChange()
-
-                function activeFieldsChange() {
-                    let form = document.querySelector('.active-form')
-                    let btnSuccess = document.createElement('button');
-                    btnSuccess.classList.add('btn-success', 'button', 'btn', 'button-success')
-                    btnSuccess.textContent = 'Подтвердить'
-                    btnSuccess.addEventListener('click', updateRecord)
-                    form.appendChild(btnSuccess);
-
-                    let btnCansel = document.createElement('button');
-                    btnCansel.classList.add('btn-cancel', 'button', 'btn', 'btn-danger')
-                    btnCansel.textContent = 'Отменить'
-                    btnCansel.addEventListener('click', cancelUpdate)
-                    form.appendChild(btnCansel);
-                }
-
-                function cancelUpdate() {
-                    let dataId = document.querySelector('.active-form').getAttribute('activeRecordId')
-                    changeActiveRowTable(dataId)
-                }
-            }
 
             let createBtn = document.querySelector('.btn-create')
             createBtn.addEventListener('click', showCreateModal)
@@ -362,11 +332,21 @@
                         fieldWrapper.classList.add('standard__active-record-wrapper')
                         let fieldDesc = document.createElement('p')
                         fieldDesc.classList.add('field__desc')
+                        fieldDesc.textContent = `Учебный год:`
+                        fieldWrapper.append(fieldDesc)
+                        fieldWrapper.append(createTextBoxForCreate(4))
+                        form.append(fieldWrapper)
+
+                        fieldWrapper = document.createElement('div')
+                        fieldWrapper.classList.add('standard__active-record-wrapper')
+                        fieldDesc = document.createElement('p')
+                        fieldDesc.classList.add('field__desc')
                         fieldDesc.textContent = `Дисциплина ОП:`
                         fieldWrapper.append(fieldDesc)
                         let fieldSelect = document.createElement('select');
                         fieldSelect.classList.add('form-control', 'field');
                         data.entity4.forEach(function (optionData) {
+                        data.deps.forEach(function (optionData) {
                             let text = optionData.basicEducationalProgram.academicYear + ', ' +
                                 optionData.basicEducationalProgram.profile.name + ', ' +
                                 optionData.basicEducationalProgram.educationType.name + ', ' +
@@ -435,17 +415,18 @@
                         row.classList.add(`${data.id}`)
                         row.innerHTML =
                             '<td>' + data.id + '</td>' +
-                            '<td>' + data.disciplineEducationalProgram.basicEducationalProgram.academicYear + '</td>' +
+                            '<td>' + data.academicYear + '</td>' +
                             '<td>' + data.disciplineEducationalProgram.basicEducationalProgram.profile.name + '</td>' +
                             '<td>' + data.disciplineEducationalProgram.basicEducationalProgram.educationType.name + '</td>' +
                             '<td>' + data.disciplineEducationalProgram.discipline.name + '</td>' +
-                            '<td>' + data.section1IsLoad + '</td>' +
-                            '<td>' + data.section2IsLoad + '</td>' +
-                            '<td>' + data.section3IsLoad + '</td>' +
-                            '<td>' + data.section4IsLoad + '</td>' +
-                            '<td>' + data.section5IsLoad + '</td>' +
-                            '<td>' + data.section6IsLoad + '</td>' +
-                            '<td>' + data.section7IsLoad + '</td>';
+                            '<td>' + isLoadStatus(data.section1IsLoad) + '</td>' +
+                            '<td>' + isLoadStatus(data.section2IsLoad) + '</td>' +
+                            '<td>' + isLoadStatus(data.section3IsLoad) + '</td>' +
+                            '<td>' + isLoadStatus(data.section4IsLoad) + '</td>' +
+                            '<td>' + isLoadStatus(data.section5IsLoad) + '</td>' +
+                            '<td>' + isLoadStatus(data.section6IsLoad) + '</td>' +
+                            '<td>' + isLoadStatus(data.section7IsLoad) + '</td>' +
+                            '<td>' + isLoadStatus(data.section8IsLoad) + '</td>';
                         row.addEventListener('click', function () {
                             changeActiveRowTable(data.id);
                         });
@@ -472,7 +453,7 @@
                 row.classList.add(`${data.id}`)
                 row.innerHTML =
                     '<td>' + data.id + '</td>' +
-                    '<td>' + data.disciplineEducationalProgram.basicEducationalProgram.academicYear + '</td>' +
+                    '<td>' + data.academicYear + '</td>' +
                     '<td>' + data.disciplineEducationalProgram.basicEducationalProgram.profile.name + '</td>' +
                     '<td>' + data.disciplineEducationalProgram.basicEducationalProgram.educationType.name + '</td>' +
                     '<td>' + data.disciplineEducationalProgram.discipline.name + '</td>' +
@@ -482,7 +463,8 @@
                     '<td>' + isLoadStatus(data.section4IsLoad) + '</td>' +
                     '<td>' + isLoadStatus(data.section5IsLoad) + '</td>' +
                     '<td>' + isLoadStatus(data.section6IsLoad) + '</td>' +
-                    '<td>' + isLoadStatus(data.section7IsLoad) + '</td>';
+                    '<td>' + isLoadStatus(data.section7IsLoad) + '</td>' +
+                    '<td>' + isLoadStatus(data.section8IsLoad) + '</td>';
                 row.addEventListener('click', function () {
                     changeActiveRowTable(data.id);
                 });
@@ -499,7 +481,6 @@
                     return response.json();
                 })
                 .then(function (data) {
-                    document.querySelector('.button-edit').disabled = false;
                     let activeRecordWrapper = document.querySelector('.active-record');
                     activeRecordWrapper.innerHTML = '';
                     let form = document.createElement('div');
@@ -527,7 +508,7 @@
                     fieldDesc.classList.add('field__desc')
                     fieldDesc.textContent = `Учебный год:`
                     fieldWrapper.append(fieldDesc)
-                    fieldWrapper.append(createInactiveTextBox(data.data.disciplineEducationalProgram.basicEducationalProgram.academicYear))
+                    fieldWrapper.append(createInactiveTextBox(data.data.academicYear))
                     form.append(fieldWrapper)
 
                     fieldWrapper = document.createElement('div')
@@ -557,29 +538,30 @@
                     fieldWrapper.append(createInactiveTextBox(data.data.disciplineEducationalProgram.discipline.name))
                     form.append(fieldWrapper)
 
-                    function createChangersFiles(data, numberSection) {
+                    function createFileChanger(data, sectionNumber) {
                         let fieldWrapper = document.createElement('div')
                         fieldWrapper.classList.add('standard__active-record-wrapper')
-                        let isLoadedSection = !!data.data["section" + numberSection + "IsLoad"];
-                        fieldWrapper.append(createBtnDownloadForActiveRecord(numberSection, filesNames[numberSection], isLoadedSection, data.data.id))
+                        let isLoadedSection = !!data.data["section" + sectionNumber + "IsLoad"];
+                        fieldWrapper.append(createBtnDownloadForActiveRecord(data.data.id, sectionNumber, fileNames[sectionNumber], isLoadedSection))
                         const uploadSection = document.createElement('input');
                         uploadSection.setAttribute('type', 'file');
                         uploadSection.classList.add('form-control-file');
                         uploadSection.classList.add('btn-download', 'button', 'btn', 'btn-primary')
                         uploadSection.setAttribute('accept', '.docx');
-                        uploadSection.addEventListener('change', (e) => uploadFile(e, numberSection));
+                        uploadSection.addEventListener('change', (e) => uploadFile(e, sectionNumber));
                         fieldWrapper.append(uploadSection)
                         return fieldWrapper
                     }
 
                     // Добавляем кнопки загрузки и выгрузки файлов
-                    form.append(createChangersFiles(data, 1))
-                    form.append(createChangersFiles(data, 2))
-                    form.append(createChangersFiles(data, 3))
-                    form.append(createChangersFiles(data, 4))
-                    form.append(createChangersFiles(data, 5))
-                    form.append(createChangersFiles(data, 6))
-                    form.append(createChangersFiles(data, 7))
+                    form.append(createFileChanger(data, 1))
+                    form.append(createFileChanger(data, 2))
+                    form.append(createFileChanger(data, 3))
+                    form.append(createFileChanger(data, 4))
+                    form.append(createFileChanger(data, 5))
+                    form.append(createFileChanger(data, 6))
+                    form.append(createFileChanger(data, 7))
+                    form.append(createFileChanger(data, 8))
 
                     // Конец добавления в активную запись
                     // Добавляем форму в контейнер
@@ -597,14 +579,14 @@
                         });
                     }
 
-                    function createBtnDownloadForActiveRecord(numberSection, text, status, recordId) {
+                    function createBtnDownloadForActiveRecord(dataId, sectionNumber, text, status) {
                         let button = document.createElement('button');
                         button.textContent = 'Скачать: ' + text;
-                        button.disabled = !status;
-                        button.setAttribute('downloadid', numberSection)
+                        button.setAttribute('downloadid', sectionNumber)
                         button.classList.add('btn-download', 'button', 'btn', 'btn-primary')
+                        button.disabled = !status;
                         button.addEventListener('click', () => {
-                            fileDownload(numberSection, recordId)
+                            fileDownload(dataId, sectionNumber)
                         })
                         return button;
                     }
@@ -653,24 +635,26 @@
                     return response.json();
                 })
                 .then(function (data) {
-                    let filterElement = document.getElementById('filter2');
-                    filterElement.innerHTML = '';
+                    let filter2 = document.getElementById('filter2');
+                    filter2.innerHTML = '';
                     let option = document.createElement('option');
                     option.textContent = "Выберите разработчика";
                     option.value = "0";
                     filterElement.appendChild(option);
+                    filter2.appendChild(option);
                     data.filterList.forEach(function (entity) {
                         let option = document.createElement('option');
                         option.classList.add('big-option')
                         option.textContent = entity.employee.nameTypeOne;
                         option.value = entity.id;
-                        filterElement.appendChild(option);
+                        filter2.appendChild(option);
                     });
                     renderTable(data.entityList)
                     // Разблокировать, если данные успешно загружены
                     if (filter1Id == 0) {
                         filter2.disabled = true;
                         filter3.disabled = true;
+                        filter4.disabled = true;
                     } else {
                         filter2.disabled = false;
                     }
@@ -690,24 +674,20 @@
             filter4.disabled = true;
 
             fetch('/api/rpd/teacher-filter/' + filter1Global + '/' + filter2Id)
-                .then(function (response) {
-                    if (!response.ok) {
-                        throw new Error('Ошибка HTTP ' + response.status);
-                    }
-                    return response.json();
-                })
+            fetch('/api/rpd/developer-filter/' + filter1Global + '/' + filter2Id)
                 .then(function (data) {
-                    let filterElement = document.getElementById('filter3');
-                    filterElement.innerHTML = '';
+                    let filter3 = document.getElementById('filter3');
+                    filter3.innerHTML = '';
                     let option = document.createElement('option');
-                    option.textContent = "Выберите дисциплину";
+                    option.textContent = "Выберите ООП";
                     option.value = "0";
                     filterElement.appendChild(option);
+                    filter3.appendChild(option);
                     data.filterList.forEach(function (entity) {
                         let option = document.createElement('option');
-                        option.textContent = entity.name;
+                        option.textContent = `${entity.academicYear}, ${entity.profile.name}, ${entity.educationType.name}`;
                         option.value = entity.id;
-                        filterElement.appendChild(option);
+                        filter3.appendChild(option);
                     });
                     renderTable(data.entityList)
                     // Разблокировать, если данные успешно загружены
@@ -729,24 +709,23 @@
             filter3Global = filter3Id
 
             fetch('/api/rpd/discipline-filter/' + filter1Global + '/' + filter2Global + '/' + filter3Id)
-                .then(function (response) {
-                    if (!response.ok) {
-                        throw new Error('Ошибка HTTP ' + response.status);
-                    }
-                    return response.json();
-                })
+            // Заблокировать списки, пока не придет ответ
+            filter4.disabled = true;
+
+            fetch('/api/rpd/oop-filter/' + filter1Global + '/' + filter2Global + '/' + filter3Id)
                 .then(function (data) {
-                    let filterElement = document.getElementById('filter4');
-                    filterElement.innerHTML = '';
+                    let filter4 = document.getElementById('filter4');
+                    filter4.innerHTML = '';
                     let option = document.createElement('option');
-                    option.textContent = "Выберите ООП";
+                    option.textContent = "Выберите дисциплину";
                     option.value = "0";
                     filterElement.appendChild(option);
+                    filter4.appendChild(option);
                     data.filterList.forEach(function (entity) {
                         let option = document.createElement('option');
-                        option.textContent = `${entity.basicEducationalProgram.academicYear}, ${entity.basicEducationalProgram.profile.name}, ${entity.basicEducationalProgram.educationType.name}`;
+                        option.textContent = entity.name;
                         option.value = entity.id;
-                        filterElement.appendChild(option);
+                        filter4.appendChild(option);
                     });
                     renderTable(data.entityList)
                     // Разблокировать, если данные успешно загружены
@@ -766,12 +745,7 @@
             let filter4Id = this.value;
 
             fetch('/api/rpd/oop-filter/' + filter1Global + '/' + filter2Global + '/' + filter3Global + '/' + filter4Id)
-                .then(function (response) {
-                    if (!response.ok) {
-                        throw new Error('Ошибка HTTP ' + response.status);
-                    }
-                    return response.json();
-                })
+            fetch('/api/rpd/discipline-filter/' + filter1Global + '/' + filter2Global + '/' + filter3Global + '/' + filter4Id)
                 .then(function (data) {
                     renderTable(data.entityList)
                 })
@@ -787,17 +761,16 @@
             return section ? load : noLoad;
         }
 
-        function fileDownload(numberSection, recordId) {
-            fetch('/api/rpd/download', {
+        function fileDownload(dataId, sectionNumber) {
+            const formData = new FormData();
+            formData.append('rpdId', dataId);
+            formData.append('sectionNumber', sectionNumber);
+            fetch('/api/rpd/downloadFile', {
                 method: 'POST',
                 headers: {
-                    'Content-Type': 'application/json',
                     'X-CSRF-TOKEN': csrfToken
                 },
-                body: JSON.stringify({
-                    recordId,
-                    numberSection
-                })
+                body: formData
             })
                 .then(response => response.blob())
                 .then(blob => {
@@ -805,23 +778,25 @@
                     const a = document.createElement('a');
                     a.style.display = 'none';
                     a.href = url;
-                    a.download = filesNames[numberSection] + ".docx";
+                    a.download = fileNames[sectionNumber] + ".docx";
                     document.body.appendChild(a);
                     a.click();
                     window.URL.revokeObjectURL(url);
                 })
-                .catch(error => console.error('Error:', error));
+                .catch(error => {
+                    console.error('Ошибка скачивания файла:', error);
+                    alert("Ошибка при скачивании файла");
+                });
         }
 
         function uploadFile(event, sectionNumber) {
+            let dataId = document.querySelector('.active-form').getAttribute('activeRecordId');
             const file = event.target.files[0];
-            let rpdId = document.querySelector('.active-form').getAttribute('activeRecordId');
             if (file) {
                 const formData = new FormData();
-                formData.append('file', file);
+                formData.append('rpdId', dataId);
                 formData.append('sectionNumber', sectionNumber);
-                formData.append('rpdId', rpdId);
-
+                formData.append('file', file);
                 fetch('/api/rpd/uploadFile', {
                     method: 'POST',
                     headers: {
@@ -833,15 +808,15 @@
                     .then(data => {
                         let buttons = document.querySelectorAll('.btn-download')
                         buttons.forEach(el => {
-                            if (el.getAttribute('downloadid') == data) {
+                            if (el.getAttribute('downloadid') == data.data) {
                                 el.removeAttribute('disabled')
                             }
                         })
                         showModalWithMessage("Файл успешно загружен");
                     })
                     .catch(error => {
-                        console.error('Error uploading file:', error);
-                        showModalWithMessage("Не удалось загрузить файл");
+                        console.error('Ошибка загрузки файла:', error);
+                        alert("Ошибка при загрузке файла");
                     });
             }
         }

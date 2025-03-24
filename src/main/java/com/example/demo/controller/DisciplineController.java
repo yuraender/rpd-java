@@ -1,174 +1,141 @@
 package com.example.demo.controller;
 
-import com.example.demo.entity.Department;
 import com.example.demo.entity.Discipline;
 import com.example.demo.entity.Teacher;
-import com.example.demo.service.*;
+import com.example.demo.service.DisciplineService;
+import com.example.demo.service.TeacherService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 @Controller
+@RequiredArgsConstructor
 public class DisciplineController {
 
-    @Autowired
-    private TechSupportService techSupportService;
-    @Autowired
-    private ProfileService profileService;
-    @Autowired
-    private EmployeeService employeeService;
-
-    @Autowired
-    private DirectionService directionService;
-    @Autowired
-    private TeacherService teacherService;
-
-    @Autowired
-    private AudienceService audienceService;
-
-    @Autowired
-    private DepartmentService departmentService;
-    @Autowired
-    private DisciplineService disciplineService;
-    @Autowired
-    private BasicEducationalProgramService basicEducationalProgramService;
-
-    @Autowired
-    private EducationTypeService educationTypeService;
-
-    @Autowired
-    private DisciplineEducationalProgramService disciplineEducationalProgramService;
-    @Autowired
-    private EmployeePositionService employeePositionService;
+    private final DisciplineService disciplineService;
+    private final TeacherService teacherService;
 
     @GetMapping("/disciplines")
-    public String getTablePage(Model model) {
+    public String getTablePage() {
         return "disciplines";
     }
 
     @GetMapping("/disciplines-data")
-    @ResponseBody
     public ResponseEntity<Map<String, Object>> getEntityData(HttpServletRequest request) {
         Map<String, Object> response = new HashMap<>();
+
+        List<Discipline> disciplines = disciplineService.getAll();
+        response.put("data", disciplines);
+
+        List<Teacher> teachers = teacherService.getAll();
+        response.put("teachers", teachers);
+
         HttpSession session = request.getSession();
-
-        List<Discipline> entity = disciplineService.getAll();
-        response.put("data", entity);
-
-        List<Teacher> entity1 = teacherService.getAll();
-        response.put("entity1", entity1);
-
-        List<Department> entity2 = departmentService.getAll();
-        response.put("entity2", entity2);
-
         String role = (String) session.getAttribute("role");
         response.put("role", role);
+
         return ResponseEntity.ok(response);
     }
 
     @GetMapping("/api/discipline/get-active/{entityId}")
-    @ResponseBody
     public ResponseEntity<Map<String, Object>> getActiveEntity(@PathVariable Integer entityId) {
         Map<String, Object> response = new HashMap<>();
-        Discipline entity = disciplineService.getById(entityId);
-        response.put("data", entity);
 
-        List<Department> allDepartments = departmentService.getAll();
-        response.put("entity1", allDepartments);
+        Discipline discipline = disciplineService.getById(entityId);
+        response.put("data", discipline);
 
-        List<Teacher> teachers = teacherService.getAll();
-        response.put("entity2", teachers);
-        return ResponseEntity.ok(response);
-    }
-
-    @GetMapping("/api/discipline/get-department/{entityId}")
-    @ResponseBody
-    public ResponseEntity<Map<String, Object>> getDepartment(@PathVariable Integer entityId) {
-        Map<String, Object> response = new HashMap<>();
-
-        Department department = departmentService.getById(entityId);
-        response.put("department", department);
         List<Teacher> teachers = teacherService.getAll();
         response.put("teachers", teachers);
+
         return ResponseEntity.ok(response);
     }
 
     @PostMapping("/api/discipline/update")
     public ResponseEntity<Map<String, Object>> updateRecord(@RequestBody Map<String, String> payload) {
         Map<String, Object> response = new HashMap<>();
-        String param0 = payload.get("0");
-        String param1 = payload.get("1");
-        Integer param2 = Integer.parseInt(payload.get("2"));
-        Integer param3 = Integer.parseInt(payload.get("3"));
+
+        String index = payload.get("0");
+        String name = payload.get("1");
+        int param2;
+        try {
+            param2 = Integer.parseInt(payload.get("2"));
+        } catch (NumberFormatException ex) {
+            response.put("error", "Неверный формат данных.");
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
+        }
         Integer dataId = Integer.parseInt(payload.get("dataId"));
 
-        Department department = departmentService.getById(param2);
-        Teacher teacher = teacherService.getById(param3);
-
-        Discipline entity = disciplineService.getById(dataId);
-
-        if (entity == null) {
-            response.put("error", "Запись не найдена. Запись не обновлена.");
-            return ResponseEntity.ok(response);
+        Discipline discipline = disciplineService.getById(dataId);
+        Teacher developer = teacherService.getById(param2);
+        if (discipline == null || developer == null) {
+            response.put("error", "Запись не найдена.");
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
         }
-        // Обновляем поле audience у Department
-        entity.setIndex(param0);
-        entity.setName(param1);
-        entity.setDepartment(department);
-        entity.setDeveloper(teacher);
-        entity.setDisabled(false);
-        // Сохраняем обновленную запись
-        disciplineService.save(entity);
-        // Добавляем обновленную запись в ответ
-        response.put("updatedData", entity);
+        discipline.setIndex(index);
+        discipline.setName(name);
+        discipline.setDeveloper(developer);
+        discipline.setDisabled(false);
+        disciplineService.save(discipline);
+
+        response.put("updatedData", discipline);
         return ResponseEntity.ok(response);
     }
 
     @PostMapping("/api/discipline/save-new-record")
     public ResponseEntity<Map<String, Object>> createRecord(@RequestBody Map<String, String> payload) {
         Map<String, Object> response = new HashMap<>();
-        String param0 = payload.get("0");
-        String param1 = payload.get("1");
-        Integer param2 = Integer.parseInt(payload.get("2"));
-        Integer param3 = Integer.parseInt(payload.get("3"));
-        Department department = departmentService.getById(param2);
-        Teacher teacher = teacherService.getById(param3);
-        Discipline entity = new Discipline();
-        // Обновляем поле audience у Department
-        entity.setIndex(param0);
-        entity.setName(param1);
-        entity.setDepartment(department);
-        entity.setDeveloper(teacher);
-        entity.setDisabled(false);
-        // Сохраняем обновленную запись
-        disciplineService.save(entity);
-        // Добавляем обновленную запись в ответ
-        response.put("createdData", entity);
+
+        String index = payload.get("0");
+        String name = payload.get("1");
+        int param2;
+        try {
+            param2 = Integer.parseInt(payload.get("2"));
+        } catch (NumberFormatException ex) {
+            response.put("error", "Неверный формат данных.");
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
+        }
+
+        Teacher developer = teacherService.getById(param2);
+        if (developer == null) {
+            response.put("error", "Запись не найдена.");
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
+        }
+
+        Discipline discipline = new Discipline();
+        discipline.setIndex(index);
+        discipline.setName(name);
+        discipline.setDeveloper(developer);
+        discipline.setDisabled(false);
+        disciplineService.save(discipline);
+
+        response.put("createdData", discipline);
         return ResponseEntity.ok(response);
     }
 
     @GetMapping("/api/discipline/delete-record/{entityId}")
-    @ResponseBody
     public ResponseEntity<Map<String, Object>> deleteRecord(@PathVariable Integer entityId) {
         Map<String, Object> response = new HashMap<>();
 
-        // Получаем запись TechSupport по techSupportId
-        Discipline entity = disciplineService.getById(entityId);
-        if (entity == null) {
-            response.put("error", "Запись не найдена");
-            return ResponseEntity.ok(response);
+        Discipline discipline = disciplineService.getById(entityId);
+        if (discipline == null) {
+            response.put("error", "Запись не найдена.");
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
         }
-        entity.setDisabled(true);
-        disciplineService.save(entity);
-        response.put("deletedData", entity.getId());
+        discipline.setDisabled(true);
+        disciplineService.save(discipline);
+
+        response.put("deletedData", discipline.getId());
         return ResponseEntity.ok(response);
     }
 }

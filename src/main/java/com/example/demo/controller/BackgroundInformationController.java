@@ -84,7 +84,7 @@ public class BackgroundInformationController {
         }
 
         // Получаем все направления
-        List<Direction> directions = directionService.getAllDirections();
+        List<Direction> directions = directionService.getAll();
         model.addAttribute("directions", directions);
 
         // Устанавливаем активную кафедру, если она есть
@@ -94,7 +94,7 @@ public class BackgroundInformationController {
         }
 
         // Получаем все профили
-        List<Profile> profiles = profileService.getAllProfiles();
+        List<Profile> profiles = profileService.getAll();
         model.addAttribute("profiles", profiles);
 
         // Устанавливаем активную кафедру, если она есть
@@ -104,7 +104,7 @@ public class BackgroundInformationController {
         }
 
         // Получаем все типы обучения
-        List<EducationType> educationTypes = educationTypeService.getAllEducationTypes();
+        List<EducationType> educationTypes = educationTypeService.getAll();
         model.addAttribute("educationTypes", educationTypes);
 
         // Устанавливаем тип обучения
@@ -114,7 +114,7 @@ public class BackgroundInformationController {
         }
 
         // Получаем всех сотрудников
-        List<Employee> employees = employeeService.getAllEmployees();
+        List<Employee> employees = employeeService.getAll();
         model.addAttribute("employees", employees);
 
         // Устанавливаем тип обучения, если она есть

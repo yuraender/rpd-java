@@ -15,7 +15,7 @@ public class EmployeePosition {
     private int id;
 
     @Column(length = 50, nullable = false, unique = true)
-    private String positionName;
+    private String name;
 
     @Column(nullable = false)
     private boolean disabled;

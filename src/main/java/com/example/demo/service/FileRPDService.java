@@ -2,28 +2,31 @@ package com.example.demo.service;
 
 import com.example.demo.entity.FileRPD;
 import com.example.demo.repository.FileRPDRepository;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
 @Service
+@RequiredArgsConstructor
 public class FileRPDService {
 
     private final FileRPDRepository fileRPDRepository;
 
-    public FileRPDService(FileRPDRepository fileRPDRepository) {
-        this.fileRPDRepository = fileRPDRepository;
-    }
-
     public List<FileRPD> getAll() {
-        return fileRPDRepository.findAll();
+        return fileRPDRepository.findAllByDisabledFalse()
+                .stream()
+                .filter(f -> !f.isDisabled())
+                .toList();
     }
 
     public FileRPD getById(Integer id) {
-        return fileRPDRepository.findById(id).orElse(null);
+        return fileRPDRepository.findByIdAndDisabledFalse(id)
+                .filter(f -> !f.isDisabled())
+                .orElse(null);
     }
 
-    public FileRPD save(FileRPD entity) {
-        return fileRPDRepository.save(entity);
+    public FileRPD save(FileRPD fileRPD) {
+        return fileRPDRepository.save(fileRPD);
     }
 }

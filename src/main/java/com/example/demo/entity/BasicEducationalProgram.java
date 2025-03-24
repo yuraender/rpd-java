@@ -14,6 +14,7 @@ public class BasicEducationalProgram {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
+    @Column(nullable = false)
     private Integer academicYear;
 
     @ManyToOne
@@ -26,4 +27,8 @@ public class BasicEducationalProgram {
 
     @Column(nullable = false)
     private boolean disabled;
+
+    public boolean isDisabled() {
+        return disabled || profile.isDisabled() || educationType.isDisabled();
+    }
 }

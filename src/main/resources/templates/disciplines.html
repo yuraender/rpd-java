@@ -41,17 +41,17 @@
                            onkeyup="filterTable('dataTable', 1)"></th>
                 <th><input type="text" class="form-control" placeholder="Название"
                            onkeyup="filterTable('dataTable', 2)"></th>
-                <th><input type="text" class="form-control" placeholder="Преподаватель"
-                           onkeyup="filterTable('dataTable', 3)"></th>
                 <th><input type="text" class="form-control" placeholder="Кафедра"
+                           onkeyup="filterTable('dataTable', 3)"></th>
+                <th><input type="text" class="form-control" placeholder="Преподаватель"
                            onkeyup="filterTable('dataTable', 4)"></th>
             </tr>
             <tr class="sticky-header">
                 <th>ID</th>
                 <th>Индекс</th>
                 <th>Название</th>
-                <th>Преподаватель</th>
                 <th>Кафедра</th>
+                <th>Преподаватель</th>
             </tr>
             </thead>
             <tbody>
@@ -72,10 +72,12 @@
     <a href="/tech-support">Тех. обеспечение</a>
     <a href="/directions">Направления</a>
     <a href="/profiles">Профили</a>
-    <a href="/bep">ООП</a>
+    <a href="/beps">ООП</a>
     <a href="/rpd">РПД</a>
     <a href="/dep">Дисциплины ОП</a>
     <a href="/cdep">Компетенции дисциплин ОП</a>
+    <a href="/deps">Дисциплины ОП</a>
+    <a href="/cdeps">Компетенции дисциплин ОП</a>
     <a href="/education-types">Типы обучения</a>
     <a href="/employees">Сотрудники</a>
     <a href="/employee-positions">Должности</a>
@@ -262,7 +264,7 @@
                         fieldWrapper.classList.add('standard__active-record-wrapper')
                         fieldDesc = document.createElement('p')
                         fieldDesc.classList.add('field__desc')
-                        fieldDesc.textContent = `Кафедра:`
+                        fieldDesc.textContent = `Преподаватель:`
                         fieldWrapper.append(fieldDesc)
                         let fieldSelect = document.createElement('select');
                         fieldSelect.classList.add('form-control', 'field');
@@ -285,10 +287,10 @@
                         fieldSelect.classList.add('form-control', 'field');
                         fieldSelect.classList.add('depend')
                         data.entity1.forEach(function (optionData) {
+                        data.teachers.forEach(function (optionData) {
                             let text = optionData.employee.nameTypeOne;
                             let id = optionData.id;
                             let option = createOptionForCreate(text, id)
-                            option.classList.add('option-depend')
                             fieldSelect.append(option);
                         });
                         fieldWrapper.append(fieldSelect)
@@ -353,7 +355,7 @@
                             '<td>' + data.id + '</td>' +
                             '<td>' + data.index + '</td>' +
                             '<td>' + data.name + '</td>' +
-                            '<td>' + data.department.name + '</td>' +
+                            '<td>' + data.developer.department.name + '</td>' +
                             '<td>' + data.developer.employee.nameTypeOne + '</td>';
                         row.addEventListener('click', function () {
                             changeActiveRowTable(data.id);
@@ -383,39 +385,13 @@
                     '<td>' + data.id + '</td>' +
                     '<td>' + data.index + '</td>' +
                     '<td>' + data.name + '</td>' +
-                    '<td>' + data.department.name + '</td>' +
+                    '<td>' + data.developer.department.name + '</td>' +
                     '<td>' + data.developer.employee.nameTypeOne + '</td>';
                 row.addEventListener('click', function () {
                     changeActiveRowTable(data.id);
                 });
                 dataTable.appendChild(row);
             });
-        }
-
-        function changeTeacher(e) {
-            let departmentValue = e.target.value;
-            fetch('/api/discipline/get-department/' + departmentValue)
-                .then(function (response) {
-                    if (!response.ok) {
-                        throw new Error('Ошибка HTTP ' + response.status);
-                    }
-                    return response.json();
-                })
-                .then(function (data) {
-                    let select = document.querySelector('.depend')
-                    removeAllChildElements(select)
-                    data.teachers?.forEach(function (optionData) {
-                        if (optionData.department.id == data.department.id) {
-                            let text = optionData.employee.nameTypeOne + ' ' + optionData.employeePosition.positionName;
-                            let id = optionData.id;
-                            let option = document.createElement('option');
-                            option.textContent = text;
-                            option.value = id;
-                            option.classList.add('option-depend')
-                            select.appendChild(option);
-                        }
-                    });
-                })
         }
 
         function changeActiveRowTable(dataId) {
@@ -473,18 +449,7 @@
                     fieldDesc.classList.add('field__desc')
                     fieldDesc.textContent = `Кафедра:`
                     fieldWrapper.append(fieldDesc)
-                    let fieldSelect = document.createElement('select');
-                    fieldSelect.classList.add('form-control', 'field');
-                    fieldSelect.addEventListener('change', changeTeacher)
-                    data.entity1.forEach(function (optionData) {
-                        let text = optionData.name;
-                        let id = optionData.id;
-                        let parentDataId = data.data.department.id
-                        let option = createOptionForActiveRecord(text, id, parentDataId)
-                        fieldSelect.append(option);
-                    });
-                    fieldSelect.disabled = !editMode;
-                    fieldWrapper.append(fieldSelect)
+                    fieldWrapper.append(createInactiveTextBox(data.data.developer.department.name))
                     form.append(fieldWrapper)
 
                     fieldWrapper = document.createElement('div')
@@ -493,7 +458,7 @@
                     fieldDesc.classList.add('field__desc')
                     fieldDesc.textContent = `Преподаватель:`
                     fieldWrapper.append(fieldDesc)
-                    fieldSelect = document.createElement('select');
+                    let fieldSelect = document.createElement('select');
                     fieldSelect.classList.add('form-control', 'field');
                     fieldSelect.classList.add('depend')
                     data.entity2.forEach(function (optionData) {
@@ -505,6 +470,12 @@
                             option.classList.add('option-depend')
                             fieldSelect.append(option);
                         }
+                    data.teachers.forEach(function (optionData) {
+                        let text = optionData.employee.nameTypeOne;
+                        let id = optionData.id;
+                        let parentDataId = data.data.developer.id
+                        let option = createOptionForActiveRecord(text, id, parentDataId)
+                        fieldSelect.append(option);
                     });
                     fieldSelect.disabled = !editMode;
                     fieldWrapper.append(fieldSelect)
@@ -603,7 +574,7 @@
                                     '<td>' + newRecord.updatedData.id + '</td>' +
                                     '<td>' + newRecord.updatedData.index + '</td>' +
                                     '<td>' + newRecord.updatedData.name + '</td>' +
-                                    '<td>' + newRecord.updatedData.department.name + '</td>' +
+                                    '<td>' + newRecord.updatedData.developer.department.name + '</td>' +
                                     '<td>' + newRecord.updatedData.developer.employee.nameTypeOne + '</td>';
                                 break;
                             }

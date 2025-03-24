@@ -67,10 +67,12 @@
     <a href="/tech-support">Тех. обеспечение</a>
     <a href="/directions">Направления</a>
     <a href="/profiles">Профили</a>
-    <a href="/bep">ООП</a>
+    <a href="/beps">ООП</a>
     <a href="/rpd">РПД</a>
     <a href="/dep">Дисциплины ОП</a>
     <a href="/cdep">Компетенции дисциплин ОП</a>
+    <a href="/deps">Дисциплины ОП</a>
+    <a href="/cdeps">Компетенции дисциплин ОП</a>
     <a href="/education-types">Типы обучения</a>
     <a href="/employees">Сотрудники</a>
     <a href="/employee-positions">Должности</a>
@@ -106,12 +108,7 @@
             if (form) {
                 let activeRecordId = form.getAttribute('activeRecordId')
                 fetch('/profiles-data-set-active/' + activeRecordId)
-                    .then(function (response) {
-                        if (!response.ok) {
-                            throw new Error('Ошибка HTTP ' + response.status);
-                        }
-                        return response.json();
-                    })
+                fetch('/api/profile/set-active/' + activeRecordId)
                     .then(function (data) {
                         showModalWithMessage('Вы выбрали: ' + data.dataName)
                     })

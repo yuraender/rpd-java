@@ -2,30 +2,34 @@ package com.example.demo.service;
 
 import com.example.demo.entity.Department;
 import com.example.demo.repository.DepartmentRepository;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
 
 @Service
+@RequiredArgsConstructor
 public class DepartmentService {
 
     private final DepartmentRepository departmentRepository;
 
-    public DepartmentService(DepartmentRepository departmentRepository) {
-        this.departmentRepository = departmentRepository;
-    }
-
     public List<Department> getAll() {
-        return departmentRepository.findAllByDisabledFalse();
+        return departmentRepository.findAllByDisabledFalse()
+                .stream()
+                .filter(d -> !d.isDisabled())
+                .toList();
     }
 
     public Department getById(Integer id) {
-        return departmentRepository.findByIdAndDisabledFalse(id).orElse(null);
+        return departmentRepository.findByIdAndDisabledFalse(id)
+                .filter(d -> !d.isDisabled())
+                .orElse(null);
     }
 
-    public Optional<Department> findByCode(String code) {
-        return departmentRepository.findByCodeAndDisabledFalse(code);
+    public Department getByCode(String code) {
+        return departmentRepository.findByCodeAndDisabledFalse(code)
+                .filter(d -> !d.isDisabled())
+                .orElse(null);
     }
 
     public Department save(Department department) {

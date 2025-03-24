@@ -14,8 +14,8 @@ public class Audience {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
-    @Column(length = 50, nullable = false)
-    private String numberAudience;
+    @Column(name = "number", length = 50, nullable = false)
+    private String audienceNumber;
 
     @Column(columnDefinition = "TEXT")
     private String tech;

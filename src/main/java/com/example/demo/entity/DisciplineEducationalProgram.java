@@ -15,13 +15,17 @@ public class DisciplineEducationalProgram {
     private int id;
 
     @ManyToOne
-    @JoinColumn(name = "discipline_id", referencedColumnName = "id", nullable = false)
-    private Discipline discipline;
-
-    @ManyToOne
     @JoinColumn(name = "basic_educational_program_id", referencedColumnName = "id", nullable = false)
     private BasicEducationalProgram basicEducationalProgram;
 
+    @ManyToOne
+    @JoinColumn(name = "discipline_id", referencedColumnName = "id", nullable = false)
+    private Discipline discipline;
+
     @Column(nullable = false)
     private boolean disabled;
+
+    public boolean isDisabled() {
+        return disabled || basicEducationalProgram.isDisabled() || discipline.isDisabled();
+    }
 }

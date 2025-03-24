@@ -5,7 +5,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 @Entity
-@Table(name = "tech_supports")
+@Table(name = "tech_support")
 @Getter
 @Setter
 public class TechSupport {
@@ -14,14 +14,18 @@ public class TechSupport {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
-    @ManyToOne(fetch = FetchType.EAGER)
+    @ManyToOne
     @JoinColumn(name = "discipline_id", referencedColumnName = "id", nullable = false)
     private Discipline discipline;
 
-    @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "audiences_id", referencedColumnName = "id", nullable = false)
+    @ManyToOne
+    @JoinColumn(name = "audience_id", referencedColumnName = "id", nullable = false)
     private Audience audience;
 
     @Column(nullable = false)
     private boolean disabled;
+
+    public boolean isDisabled() {
+        return disabled || discipline.isDisabled() || audience.isDisabled();
+    }
 }

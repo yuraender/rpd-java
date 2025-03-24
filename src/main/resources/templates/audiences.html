@@ -70,10 +70,12 @@
     <a href="/tech-support">Тех. обеспечение</a>
     <a href="/directions">Направления</a>
     <a href="/profiles">Профили</a>
-    <a href="/bep">ООП</a>
+    <a href="/beps">ООП</a>
     <a href="/rpd">РПД</a>
     <a href="/dep">Дисциплины ОП</a>
     <a href="/cdep">Компетенции дисциплин ОП</a>
+    <a href="/deps">Дисциплины ОП</a>
+    <a href="/cdeps">Компетенции дисциплин ОП</a>
     <a href="/education-types">Типы обучения</a>
     <a href="/employees">Сотрудники</a>
     <a href="/employee-positions">Должности</a>
@@ -109,12 +111,7 @@
             if (form) {
                 let activeRecordId = form.getAttribute('activeRecordId')
                 fetch('/audiences-data-set-active/' + activeRecordId)
-                    .then(function (response) {
-                        if (!response.ok) {
-                            throw new Error('Ошибка HTTP ' + response.status);
-                        }
-                        return response.json();
-                    })
+                fetch('/api/audience/set-active/' + activeRecordId)
                     .then(function (data) {
                         showModalWithMessage('Вы выбрали: ' + data.dataName)
                     })
@@ -149,12 +146,6 @@
             saveModalRecord.addEventListener('click', () => saveNewRecord())
 
             fetch('/audiences-data')
-                .then(function (response) {
-                    if (!response.ok) {
-                        throw new Error('Ошибка HTTP ' + response.status);
-                    }
-                    return response.json();
-                })
                 .then(function (data) {
                     checkAdmin(data)
                     renderTable(data.data)
@@ -344,7 +335,7 @@
                         row.classList.add(`${data.id}`)
                         row.innerHTML =
                             '<td>' + data.id + '</td>' +
-                            '<td>' + data.numberAudience + '</td>' +
+                            '<td>' + data.audienceNumber + '</td>' +
                             '<td>' + data.tech + '</td>' +
                             '<td>' + data.softwareLicense + '</td>';
                         row.addEventListener('click', function () {
@@ -373,7 +364,7 @@
                 row.classList.add(`${data.id}`)
                 row.innerHTML =
                     '<td>' + data.id + '</td>' +
-                    '<td>' + data.numberAudience + '</td>' +
+                    '<td>' + data.audienceNumber + '</td>' +
                     '<td>' + data.tech + '</td>' +
                     '<td>' + data.softwareLicense + '</td>';
                 row.addEventListener('click', function () {
@@ -420,7 +411,7 @@
                     fieldDesc.classList.add('field__desc')
                     fieldDesc.textContent = `Аудитория:`
                     fieldWrapper.append(fieldDesc)
-                    fieldWrapper.append(createTextBoxForActiveRecord(data.data.numberAudience, 50))
+                    fieldWrapper.append(createTextBoxForActiveRecord(data.data.audienceNumber, 50))
                     form.append(fieldWrapper)
 
                     fieldWrapper = document.createElement('div')
@@ -532,7 +523,7 @@
                             if (rows[i].getAttribute('dataid') == newRecord.updatedData.id) {
                                 rows[i].innerHTML =
                                     '<td>' + newRecord.updatedData.id + '</td>' +
-                                    '<td>' + newRecord.updatedData.numberAudience + '</td>' +
+                                    '<td>' + newRecord.updatedData.audienceNumber + '</td>' +
                                     '<td>' + newRecord.updatedData.tech + '</td>' +
                                     '<td>' + newRecord.updatedData.softwareLicense + '</td>';
                                 break;

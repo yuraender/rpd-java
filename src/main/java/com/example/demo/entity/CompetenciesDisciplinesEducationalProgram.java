@@ -19,9 +19,13 @@ public class CompetenciesDisciplinesEducationalProgram {
     private DisciplineEducationalProgram disciplineEducationalProgram;
 
     @ManyToOne
-    @JoinColumn(name = "competence_id", referencedColumnName = "id", nullable = false)
+    @JoinColumn(name = "competencie_id", referencedColumnName = "id", nullable = false)
     private Competencie competencie;
 
     @Column(nullable = false)
     private boolean disabled;
+
+    public boolean isDisabled() {
+        return disabled || disciplineEducationalProgram.isDisabled() || competencie.isDisabled();
+    }
 }

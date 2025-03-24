@@ -5,11 +5,10 @@ import com.example.demo.service.*;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
 
 import java.util.HashMap;
 import java.util.List;
@@ -49,12 +48,11 @@ public class CreateRpdController {
     private EmployeePositionService employeePositionService;
 
     @GetMapping("/create-rpd")
-    public String getTablePage(Model model) {
+    public String getTablePage() {
         return "create-rpd";
     }
 
     @GetMapping("/page-rpd-data")
-    @ResponseBody
     public ResponseEntity<Map<String, Object>> getEntityData(HttpServletRequest request) {
         Map<String, Object> response = new HashMap<>();
         HttpSession session = request.getSession();
@@ -68,7 +66,7 @@ public class CreateRpdController {
                 response.put("oopId", oopId);
             } catch (NumberFormatException e) {
                 response.put("error", "Неверный формат OOP ID");
-                return ResponseEntity.badRequest().body(response);
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
             }
         }
 
@@ -128,8 +126,8 @@ public class CreateRpdController {
 //        Teacher entity = teacherService.getById(dataId);
 //
 //        if (entity == null) {
-//            response.put("error", "Запись не найдена. Запись не обновлена.");
-//            return ResponseEntity.ok(response);
+//            response.put("error", "Запись не найдена.");
+//            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
 //        }
 //        // Обновляем поле audience у Department
 //        entity.setDepartment(department);

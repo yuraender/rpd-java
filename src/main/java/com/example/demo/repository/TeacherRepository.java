@@ -8,9 +8,7 @@ import java.util.Optional;
 
 public interface TeacherRepository extends JpaRepository<Teacher, Integer> {
 
-    List<Teacher> findByDisabledFalse();
-
-    List<Teacher> findByDepartmentIdAndDisabledFalse(Integer departmentId);
+    List<Teacher> findAllByDisabledFalse();
 
     Optional<Teacher> findByIdAndDisabledFalse(Integer id);
 }

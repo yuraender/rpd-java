@@ -1,35 +1,29 @@
 package com.example.demo.service;
 
-import com.example.demo.entity.Department;
 import com.example.demo.entity.Direction;
 import com.example.demo.repository.DirectionRepository;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
 @Service
+@RequiredArgsConstructor
 public class DirectionService {
 
     private final DirectionRepository directionRepository;
 
-    public DirectionService(DirectionRepository directionRepository) {
-        this.directionRepository = directionRepository;
-    }
-
-    public List<Direction> getAllDirections() {
-        return directionRepository.findAll();
+    public List<Direction> getAll() {
+        return directionRepository.findAllByDisabledFalse()
+                .stream()
+                .filter(d -> !d.isDisabled())
+                .toList();
     }
 
     public Direction getById(Integer id) {
-        return directionRepository.findById(id).orElse(null);
-    }
-
-    public List<Direction> findAllByDisabledFalse() {
-        return directionRepository.findAllByDisabledFalse();
-    }
-
-    public List<Direction> getByDepartment(Department department) {
-        return directionRepository.findAllByDisabledFalseAndDepartment(department);
+        return directionRepository.findByIdAndDisabledFalse(id)
+                .filter(d -> !d.isDisabled())
+                .orElse(null);
     }
 
     public Direction save(Direction direction) {

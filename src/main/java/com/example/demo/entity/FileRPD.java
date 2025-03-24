@@ -14,6 +14,9 @@ public class FileRPD {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
+    @Column(nullable = false)
+    private Integer academicYear;
+
     @Lob
     @Column(name = "section_0", columnDefinition = "LONGBLOB")
     private byte[] section0;
@@ -90,4 +93,8 @@ public class FileRPD {
 
     @Column(nullable = false)
     private boolean disabled;
+
+    public boolean isDisabled() {
+        return disabled || disciplineEducationalProgram.isDisabled();
+    }
 }

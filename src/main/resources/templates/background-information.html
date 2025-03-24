@@ -231,7 +231,7 @@
                 </thead>
                 <tbody>
                 <tr th:each="employeePosition : ${employeePositions}">
-                    <td th:text="${employeePosition.positionName}"></td>
+                    <td th:text="${employeePosition.name}"></td>
                 </tr>
                 </tbody>
             </table>
@@ -239,7 +239,7 @@
         <div class="active-record" th:if="${activeEmployeePosition}">
             <h3>Активная должность</h3>
             <p><strong>ID:</strong> <span th:text="${activeEmployeePosition.id}"></span></p>
-            <p><strong>Название:</strong> <span th:text="${activeEducationType.positionName}"></span></p>
+            <p><strong>Название:</strong> <span th:text="${activeEducationType.name}"></span></p>
         </div>
     </section>
 
@@ -266,7 +266,7 @@
                 <tbody>
                 <tr th:each="teacher : ${teachers}">
                     <td th:text="${teacher.department.name}"></td>
-                    <td th:text="${teacher.employeePosition.positionName}"></td>
+                    <td th:text="${teacher.employeePosition.name}"></td>
                     <td th:text="${teacher.employee.nameTypeOne}"></td>
                 </tr>
                 </tbody>
@@ -276,7 +276,7 @@
             <h3>Активная должность</h3>
             <p><strong>ID:</strong> <span th:text="${activeTeachers.id}"></span></p>
             <p><strong>Название:</strong> <span th:text="${activeTeachers.department.name}"></span></p>
-            <p><strong>Название:</strong> <span th:text="${activeTeachers.employeePosition.positionName}"></span></p>
+            <p><strong>Название:</strong> <span th:text="${activeTeachers.employeePosition.name}"></span></p>
             <p><strong>Название:</strong> <span th:text="${activeTeachers.employee.nameTypeOne}"></span></p>
         </div>
     </section>
@@ -309,7 +309,7 @@
                     <td th:text="${discipline.index}"></td>
                     <td th:text="${discipline.name}"></td>
                     <td th:text="${discipline.developer.employee.nameTypeOne}"></td>
-                    <td th:text="${discipline.department.name}"></td>
+                    <td th:text="${discipline.developer.department.name}"></td>
                 </tr>
                 </tbody>
             </table>
@@ -318,7 +318,7 @@
             <h3>Активная дисциплина</h3>
             <p><strong>ID:</strong> <span th:text="${activeDiscipline.id}"></span></p>
             <p><strong>Индекс:</strong> <span th:text="${activeDiscipline.department.name}"></span></p>
-            <p><strong>Дисциплина:</strong> <span th:text="${activeDiscipline.employeePosition.positionName}"></span>
+            <p><strong>Дисциплина:</strong> <span th:text="${activeDiscipline.employeePosition.name}"></span>
             </p>
             <p><strong>ФамилияИО:</strong> <span th:text="${activeDiscipline.employee.nameTypeOne}"></span></p>
             <p><strong>Кафедра:</strong> <span th:text="${activeDiscipline.employee.nameTypeOne}"></span></p>
@@ -383,7 +383,7 @@
                 </thead>
                 <tbody>
                 <tr th:each="audience : ${audiences}">
-                    <td th:text="${audience.numberAudience}"></td>
+                    <td th:text="${audience.audienceNumber}"></td>
                     <td th:text="${audience.tech}"></td>
                     <td th:text="${audience.softwareLicense}"></td>
                 </tr>
@@ -393,7 +393,7 @@
         <div class="active-record" th:if="${activeCompetencie}">
             <h3>Активная аудитория</h3>
             <p><strong>ID:</strong> <span th:text="${activeCompetencie.id}"></span></p>
-            <p><strong>Аудитория №:</strong> <span th:text="${audience.numberAudience}"></span></p>
+            <p><strong>Аудитория №:</strong> <span th:text="${audience.audienceNumber}"></span></p>
             <p><strong>Техника:</strong> <span th:text="${audience.tech}"></span></p>
             <p><strong>Лицензия ПО в аудитории:</strong> <span th:text="${audience.softwareLicense}"></span></p>
         </div>
@@ -645,10 +645,12 @@
     <a href="/tech-support">Тех. обеспечение</a>
     <a href="/directions">Направления</a>
     <a href="/profiles">Профили</a>
-    <a href="/bep">ООП</a>
+    <a href="/beps">ООП</a>
     <a href="/rpd">РПД</a>
     <a href="/dep">Дисциплины ОП</a>
     <a href="/cdep">Компетенции дисциплин ОП</a>
+    <a href="/deps">Дисциплины ОП</a>
+    <a href="/cdeps">Компетенции дисциплин ОП</a>
     <a href="/education-types">Типы обучения</a>
     <a href="/employees">Сотрудники</a>
     <a href="/employee-positions">Должности</a>

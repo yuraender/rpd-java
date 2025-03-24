@@ -21,13 +21,13 @@ public class Discipline {
     private String name;
 
     @ManyToOne
-    @JoinColumn(name = "developer_rp_id", referencedColumnName = "id", nullable = false)
+    @JoinColumn(name = "developer_id", referencedColumnName = "id", nullable = false)
     private Teacher developer;
-
-    @ManyToOne
-    @JoinColumn(name = "departament_id", referencedColumnName = "id", nullable = false)
-    private Department department;
 
     @Column(nullable = false)
     private boolean disabled;
+
+    public boolean isDisabled() {
+        return disabled || developer.isDisabled();
+    }
 }

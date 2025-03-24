@@ -14,18 +14,22 @@ public class Teacher {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
-    @ManyToOne(fetch = FetchType.EAGER)
+    @ManyToOne
     @JoinColumn(name = "employee_id", referencedColumnName = "id", nullable = false)
     private Employee employee;
 
-    @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "departament_id", referencedColumnName = "id", nullable = false)
+    @ManyToOne
+    @JoinColumn(name = "department_id", referencedColumnName = "id", nullable = false)
     private Department department;
 
-    @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "employee_positions_id", referencedColumnName = "id", nullable = false)
+    @ManyToOne
+    @JoinColumn(name = "employee_position_id", referencedColumnName = "id", nullable = false)
     private EmployeePosition employeePosition;
 
     @Column(nullable = false)
     private boolean disabled;
+
+    public boolean isDisabled() {
+        return disabled || employee.isDisabled() || department.isDisabled() || employeePosition.isDisabled();
+    }
 }
