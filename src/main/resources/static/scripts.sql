@@ -60,24 +60,6 @@ DELETE FROM `competencies`;
 /*!40000 ALTER TABLE `competencies` DISABLE KEYS */;
 /*!40000 ALTER TABLE `competencies` ENABLE KEYS */;
 
--- Dumping structure for table rpd_db.competencies_disciplines_educational_programs
-CREATE TABLE IF NOT EXISTS `competencies_disciplines_educational_programs` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `disabled` bit(1) NOT NULL,
-  `competence_id` int(11) NOT NULL,
-  `discipline_educational_program_id` int(11) NOT NULL,
-  PRIMARY KEY (`id`),
-  KEY `FKtk5wyy78d93b4so8vo0pudvbe` (`competence_id`),
-  KEY `FKb7okmd8efnpshqgb7xyuy54g4` (`discipline_educational_program_id`),
-  CONSTRAINT `FKb7okmd8efnpshqgb7xyuy54g4` FOREIGN KEY (`discipline_educational_program_id`) REFERENCES `disciplines_educational_programs` (`id`),
-  CONSTRAINT `FKtk5wyy78d93b4so8vo0pudvbe` FOREIGN KEY (`competence_id`) REFERENCES `competencies` (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
--- Dumping data for table rpd_db.competencies_disciplines_educational_programs: ~0 rows (approximately)
-DELETE FROM `competencies_disciplines_educational_programs`;
-/*!40000 ALTER TABLE `competencies_disciplines_educational_programs` DISABLE KEYS */;
-/*!40000 ALTER TABLE `competencies_disciplines_educational_programs` ENABLE KEYS */;
-
 -- Dumping structure for table rpd_db.departaments
 CREATE TABLE IF NOT EXISTS `departaments` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
