@@ -29,9 +29,6 @@ import java.util.zip.ZipOutputStream;
 public class DocumentController {
 
     @Autowired
-    private TechSupportService techSupportService;
-
-    @Autowired
     private FileRPDRepository fileRPDRepository;
 
     @Autowired

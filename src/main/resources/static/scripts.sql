@@ -290,24 +290,6 @@ DELETE FROM `teachers`;
 /*!40000 ALTER TABLE `teachers` DISABLE KEYS */;
 /*!40000 ALTER TABLE `teachers` ENABLE KEYS */;
 
--- Dumping structure for table rpd_db.tech_supports
-CREATE TABLE IF NOT EXISTS `tech_supports` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `disabled` bit(1) NOT NULL,
-  `audiences_id` int(11) NOT NULL,
-  `discipline_id` int(11) NOT NULL,
-  PRIMARY KEY (`id`),
-  KEY `FKbdeb08h4nf98a151vhcud15ks` (`audiences_id`),
-  KEY `FKsi5qebgft20ygbgssyoo1evgf` (`discipline_id`),
-  CONSTRAINT `FKbdeb08h4nf98a151vhcud15ks` FOREIGN KEY (`audiences_id`) REFERENCES `audiences` (`id`),
-  CONSTRAINT `FKsi5qebgft20ygbgssyoo1evgf` FOREIGN KEY (`discipline_id`) REFERENCES `disciplines` (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
--- Dumping data for table rpd_db.tech_supports: ~0 rows (approximately)
-DELETE FROM `tech_supports`;
-/*!40000 ALTER TABLE `tech_supports` DISABLE KEYS */;
-/*!40000 ALTER TABLE `tech_supports` ENABLE KEYS */;
-
 -- Dumping structure for table rpd_db.users
 CREATE TABLE IF NOT EXISTS `users` (
   `id` int(11) NOT NULL AUTO_INCREMENT,

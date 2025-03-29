@@ -42,8 +42,6 @@ public class BackgroundInformationController {
     private AudienceService audienceService;
 
     @Autowired
-    private TechSupportService techSupportService;
-    @Autowired
     private BasicEducationalProgramService basicEducationalProgramService;
 
     @Autowired
@@ -65,7 +63,6 @@ public class BackgroundInformationController {
             @SessionAttribute(name = "disciplineId", required = false) Integer disciplineId,
             @SessionAttribute(name = "competencieId", required = false) Integer competencieId,
             @SessionAttribute(name = "audienceId", required = false) Integer audienceId,
-            @SessionAttribute(name = "techSupportId", required = false) Integer techSupportId,
             @SessionAttribute(name = "basicEducationalProgramId", required = false) Integer basicEducationalProgramId,
             @SessionAttribute(name = "disciplinesEducationalProgramId", required = false) Integer disciplinesEducationalProgramId,
             @SessionAttribute(name = "competenciesDisciplinesEducationalProgramId", required = false) Integer competenciesDisciplinesEducationalProgramId,
@@ -171,16 +168,6 @@ public class BackgroundInformationController {
         if (audienceId != null) {
             Audience activeAudience = audienceService.getById(audienceId);
             model.addAttribute("activeAudience", activeAudience);
-        }
-
-        // Получаем все тех.обеспечения
-        List<TechSupport> techSupports = techSupportService.getAll();
-        model.addAttribute("techSupports", techSupports);
-
-        // Устанавливаем тех.обеспечение
-        if (techSupportId != null) {
-            TechSupport activeTechSupport = techSupportService.getById(techSupportId);
-            model.addAttribute("activeTechSupport", activeTechSupport);
         }
 
         // Получаем все ООП
