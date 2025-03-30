@@ -17,8 +17,16 @@ public class EmployeePositionService {
         return employeePositionRepository.findAllByDisabledFalse();
     }
 
+    public List<EmployeePosition> getAllByType(EmployeePosition.Type type) {
+        return employeePositionRepository.findAllByTypeAndDisabledFalse(type);
+    }
+
     public EmployeePosition getById(Integer id) {
         return employeePositionRepository.findByIdAndDisabledFalse(id).orElse(null);
+    }
+
+    public EmployeePosition getByIdAndType(Integer id, EmployeePosition.Type type) {
+        return employeePositionRepository.findByIdAndTypeAndDisabledFalse(id, type).orElse(null);
     }
 
     public EmployeePosition save(EmployeePosition employeePosition) {

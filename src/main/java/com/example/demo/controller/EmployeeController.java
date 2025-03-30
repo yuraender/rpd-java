@@ -38,7 +38,8 @@ public class EmployeeController {
         List<Employee> employees = employeeService.getAll();
         response.put("data", employees);
 
-        List<EmployeePosition> employeePositions = employeePositionService.getAll();
+        List<EmployeePosition> employeePositions
+                = employeePositionService.getAllByType(EmployeePosition.Type.ADMINISTRATIVE);
         response.put("employeePositions", employeePositions);
 
         HttpSession session = request.getSession();
@@ -55,7 +56,8 @@ public class EmployeeController {
         Employee employee = employeeService.getById(entityId);
         response.put("data", employee);
 
-        List<EmployeePosition> employeePositions = employeePositionService.getAll();
+        List<EmployeePosition> employeePositions
+                = employeePositionService.getAllByType(EmployeePosition.Type.ADMINISTRATIVE);
         response.put("employeePositions", employeePositions);
 
         return ResponseEntity.ok(response);
@@ -78,7 +80,8 @@ public class EmployeeController {
         Integer dataId = Integer.parseInt(payload.get("dataId"));
 
         Employee employee = employeeService.getById(dataId);
-        EmployeePosition employeePosition = employeePositionService.getById(param3);
+        EmployeePosition employeePosition = employeePositionService
+                .getByIdAndType(param3, EmployeePosition.Type.ADMINISTRATIVE);
         if (employee == null || employeePosition == null) {
             response.put("error", "Запись не найдена.");
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
@@ -109,7 +112,8 @@ public class EmployeeController {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
         }
 
-        EmployeePosition employeePosition = employeePositionService.getById(param3);
+        EmployeePosition employeePosition = employeePositionService
+                .getByIdAndType(param3, EmployeePosition.Type.ADMINISTRATIVE);
         if (employeePosition == null) {
             response.put("error", "Запись не найдена.");
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);

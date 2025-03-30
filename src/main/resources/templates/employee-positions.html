@@ -41,10 +41,13 @@
                            onkeyup="filterTable('dataTable', 0)"></th>
                 <th><input type="text" class="form-control" placeholder="Название"
                            onkeyup="filterTable('dataTable', 1)"></th>
+                <th><input type="text" class="form-control" placeholder="Тип"
+                           onkeyup="filterTable('dataTable', 2)"></th>
             </tr>
             <tr class="sticky-header">
                 <th>ID</th>
                 <th>Название</th>
+                <th>Тип</th>
             </tr>
             </thead>
             <tbody>
@@ -70,6 +73,8 @@
     <a href="/education-types">Типы обучения</a>
     <a href="/employees">Сотрудники</a>
     <a href="/employee-positions">Должности</a>
+    <a href="/academic-degrees">Ученые степени</a>
+    <a href="/academic-ranks">Ученые звания</a>
     <a href="/teachers">Преподаватели</a>
     <a href="/disciplines">Дисциплины</a>
     <a href="/competencies">Компетенции</a>
@@ -230,6 +235,25 @@
                         fieldWrapper.append(createTextBoxForCreate(50))
                         form.append(fieldWrapper)
 
+                        fieldWrapper = document.createElement('div')
+                        fieldWrapper.classList.add('standard__active-record-wrapper')
+                        fieldDesc = document.createElement('p')
+                        fieldDesc.classList.add('field__desc')
+                        fieldDesc.textContent = `Тип:`
+                        fieldWrapper.append(fieldDesc)
+                        let fieldSelect = document.createElement('select');
+                        fieldSelect.classList.add('form-control', 'field');
+                        fieldSelect.setAttribute('data-live-search', 'true');
+                        fieldSelect.setAttribute('data-selected-text-format', 'count');
+                        data.types.forEach(function (optionData) {
+                            let text = optionData.name;
+                            let id = optionData.id;
+                            let option = createOptionForCreate(text, id)
+                            fieldSelect.append(option);
+                        });
+                        fieldWrapper.append(fieldSelect)
+                        form.append(fieldWrapper)
+
                         let closeBtn = document.querySelector('.close-btn');
                         cancelCreateModal.addEventListener('click', () => closeModal(createModal))
                         closeBtn.addEventListener('click', () => closeModal(createModal))
@@ -291,7 +315,8 @@
                         row.classList.add(`${data.id}`)
                         row.innerHTML =
                             '<td>' + data.id + '</td>' +
-                            '<td>' + data.name + '</td>';
+                            '<td>' + data.name + '</td>' +
+                            '<td>' + data.type.name + '</td>';
                         row.addEventListener('click', function () {
                             changeActiveRowTable(data.id);
                         });
@@ -318,7 +343,8 @@
                 row.classList.add(`${data.id}`)
                 row.innerHTML =
                     '<td>' + data.id + '</td>' +
-                    '<td>' + data.name + '</td>';
+                    '<td>' + data.name + '</td>' +
+                    '<td>' + data.type.name + '</td>';
                 row.addEventListener('click', function () {
                     changeActiveRowTable(data.id);
                 });
@@ -359,6 +385,15 @@
                     fieldDesc.textContent = `Название:`
                     fieldWrapper.append(fieldDesc)
                     fieldWrapper.append(createTextBoxForActiveRecord(data.data.name, 50))
+                    form.append(fieldWrapper)
+
+                    fieldWrapper = document.createElement('div')
+                    fieldWrapper.classList.add('standard__active-record-wrapper')
+                    fieldDesc = document.createElement('p')
+                    fieldDesc.classList.add('field__desc')
+                    fieldDesc.textContent = `Тип:`
+                    fieldWrapper.append(fieldDesc)
+                    fieldWrapper.append(createInactiveTextBox(data.data.type.name))
                     form.append(fieldWrapper)
 
                     // Конец добавления в активную запись
@@ -467,7 +502,8 @@
                             if (rows[i].getAttribute('dataid') == newRecord.updatedData.id) {
                                 rows[i].innerHTML =
                                     '<td>' + newRecord.updatedData.id + '</td>' +
-                                    '<td>' + newRecord.updatedData.name + '</td>';
+                                    '<td>' + newRecord.updatedData.name + '</td>' +
+                                    '<td>' + newRecord.updatedData.type.name + '</td>';
                                 break;
                             }
                         }

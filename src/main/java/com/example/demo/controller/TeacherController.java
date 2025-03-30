@@ -1,17 +1,10 @@
 package com.example.demo.controller;
 
-import com.example.demo.entity.Department;
-import com.example.demo.entity.Employee;
-import com.example.demo.entity.EmployeePosition;
-import com.example.demo.entity.Teacher;
-import com.example.demo.service.DepartmentService;
-import com.example.demo.service.EmployeePositionService;
-import com.example.demo.service.EmployeeService;
-import com.example.demo.service.TeacherService;
+import com.example.demo.entity.*;
+import com.example.demo.service.*;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -28,14 +21,12 @@ import java.util.Map;
 @RequiredArgsConstructor
 public class TeacherController {
 
-    @Autowired
-    private TeacherService teacherService;
-    @Autowired
-    private EmployeeService employeeService;
-    @Autowired
-    private DepartmentService departmentService;
-    @Autowired
-    private EmployeePositionService employeePositionService;
+    private final TeacherService teacherService;
+    private final EmployeeService employeeService;
+    private final DepartmentService departmentService;
+    private final EmployeePositionService employeePositionService;
+    private final AcademicDegreeService academicDegreeService;
+    private final AcademicRankService academicRankService;
 
     @GetMapping("/teachers")
     public String getTablePage() {
@@ -55,8 +46,15 @@ public class TeacherController {
         List<Department> departments = departmentService.getAll();
         response.put("departments", departments);
 
-        List<EmployeePosition> employeePositions = employeePositionService.getAll();
+        List<EmployeePosition> employeePositions
+                = employeePositionService.getAllByType(EmployeePosition.Type.TEACHING);
         response.put("employeePositions", employeePositions);
+
+        List<AcademicDegree> academicDegrees = academicDegreeService.getAll();
+        response.put("academicDegrees", academicDegrees);
+
+        List<AcademicRank> academicRanks = academicRankService.getAll();
+        response.put("academicRanks", academicRanks);
 
         HttpSession session = request.getSession();
         String role = (String) session.getAttribute("role");
@@ -75,8 +73,15 @@ public class TeacherController {
         List<Department> departments = departmentService.getAll();
         response.put("departments", departments);
 
-        List<EmployeePosition> employeePositions = employeePositionService.getAll();
+        List<EmployeePosition> employeePositions
+                = employeePositionService.getAllByType(EmployeePosition.Type.TEACHING);
         response.put("employeePositions", employeePositions);
+
+        List<AcademicDegree> academicDegrees = academicDegreeService.getAll();
+        response.put("academicDegrees", academicDegrees);
+
+        List<AcademicRank> academicRanks = academicRankService.getAll();
+        response.put("academicRanks", academicRanks);
 
         return ResponseEntity.ok(response);
     }
@@ -85,10 +90,12 @@ public class TeacherController {
     public ResponseEntity<Map<String, Object>> updateRecord(@RequestBody Map<String, String> payload) {
         Map<String, Object> response = new HashMap<>();
 
-        int param0, param1;
+        int param0, param1, param2, param3;
         try {
             param0 = Integer.parseInt(payload.get("0"));
             param1 = Integer.parseInt(payload.get("1"));
+            param2 = Integer.parseInt(payload.get("2"));
+            param3 = Integer.parseInt(payload.get("3"));
         } catch (NumberFormatException ex) {
             response.put("error", "Неверный формат данных.");
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
@@ -97,13 +104,18 @@ public class TeacherController {
 
         Teacher teacher = teacherService.getById(dataId);
         Department department = departmentService.getById(param0);
-        EmployeePosition employeePosition = employeePositionService.getById(param1);
+        EmployeePosition employeePosition = employeePositionService
+                .getByIdAndType(param1, EmployeePosition.Type.TEACHING);
+        AcademicDegree academicDegree = academicDegreeService.getById(param2);
+        AcademicRank academicRank = academicRankService.getById(param3);
         if (teacher == null || department == null || employeePosition == null) {
             response.put("error", "Запись не найдена.");
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
         }
         teacher.setDepartment(department);
         teacher.setEmployeePosition(employeePosition);
+        teacher.setAcademicDegree(academicDegree);
+        teacher.setAcademicRank(academicRank);
         teacher.setDisabled(false);
         teacherService.save(teacher);
 
@@ -115,11 +127,13 @@ public class TeacherController {
     public ResponseEntity<Map<String, Object>> createRecord(@RequestBody Map<String, String> payload) {
         Map<String, Object> response = new HashMap<>();
 
-        int param0, param1, param2;
+        int param0, param1, param2, param3, param4;
         try {
             param0 = Integer.parseInt(payload.get("0"));
             param1 = Integer.parseInt(payload.get("1"));
             param2 = Integer.parseInt(payload.get("2"));
+            param3 = Integer.parseInt(payload.get("3"));
+            param4 = Integer.parseInt(payload.get("4"));
         } catch (NumberFormatException ex) {
             response.put("error", "Неверный формат данных.");
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
@@ -127,7 +141,10 @@ public class TeacherController {
 
         Employee employee = employeeService.getById(param0);
         Department department = departmentService.getById(param1);
-        EmployeePosition employeePosition = employeePositionService.getById(param2);
+        EmployeePosition employeePosition = employeePositionService
+                .getByIdAndType(param2, EmployeePosition.Type.TEACHING);
+        AcademicDegree academicDegree = academicDegreeService.getById(param3);
+        AcademicRank academicRank = academicRankService.getById(param4);
         if (employee == null || department == null || employeePosition == null) {
             response.put("error", "Запись не найдена.");
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
@@ -137,6 +154,8 @@ public class TeacherController {
         teacher.setEmployee(employee);
         teacher.setDepartment(department);
         teacher.setEmployeePosition(employeePosition);
+        teacher.setAcademicDegree(academicDegree);
+        teacher.setAcademicRank(academicRank);
         teacher.setDisabled(false);
         teacherService.save(teacher);
 

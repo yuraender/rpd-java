@@ -45,12 +45,18 @@
                            onkeyup="filterTable('dataTable', 2)"></th>
                 <th><input type="text" class="form-control" placeholder="Должность"
                            onkeyup="filterTable('dataTable', 3)"></th>
+                <th><input type="text" class="form-control" placeholder="Ученая степень"
+                           onkeyup="filterTable('dataTable', 4)"></th>
+                <th><input type="text" class="form-control" placeholder="Ученое звание"
+                           onkeyup="filterTable('dataTable', 5)"></th>
             </tr>
             <tr class="sticky-header">
                 <th>ID</th>
                 <th>Сотрудник</th>
                 <th>Кафедра</th>
                 <th>Должность</th>
+                <th>Ученая степень</th>
+                <th>Ученое звание</th>
             </tr>
             </thead>
             <tbody>
@@ -76,6 +82,8 @@
     <a href="/education-types">Типы обучения</a>
     <a href="/employees">Сотрудники</a>
     <a href="/employee-positions">Должности</a>
+    <a href="/academic-degrees">Ученые степени</a>
+    <a href="/academic-ranks">Ученые звания</a>
     <a href="/teachers">Преподаватели</a>
     <a href="/disciplines">Дисциплины</a>
     <a href="/competencies">Компетенции</a>
@@ -284,6 +292,46 @@
                         fieldWrapper.append(fieldSelect)
                         form.append(fieldWrapper)
 
+                        fieldWrapper = document.createElement('div')
+                        fieldWrapper.classList.add('standard__active-record-wrapper')
+                        fieldDesc = document.createElement('p')
+                        fieldDesc.classList.add('field__desc')
+                        fieldDesc.textContent = `Ученая степень:`
+                        fieldWrapper.append(fieldDesc)
+                        fieldSelect = document.createElement('select');
+                        fieldSelect.classList.add('form-control', 'field');
+                        fieldSelect.setAttribute('data-live-search', 'true');
+                        fieldSelect.setAttribute('data-selected-text-format', 'count');
+                        fieldSelect.append(createOptionForCreate("(не выбрано)", 0));
+                        data.academicDegrees.forEach(function (optionData) {
+                            let text = optionData.name;
+                            let id = optionData.id;
+                            let option = createOptionForCreate(text, id)
+                            fieldSelect.append(option);
+                        });
+                        fieldWrapper.append(fieldSelect)
+                        form.append(fieldWrapper)
+
+                        fieldWrapper = document.createElement('div')
+                        fieldWrapper.classList.add('standard__active-record-wrapper')
+                        fieldDesc = document.createElement('p')
+                        fieldDesc.classList.add('field__desc')
+                        fieldDesc.textContent = `Ученое звание:`
+                        fieldWrapper.append(fieldDesc)
+                        fieldSelect = document.createElement('select');
+                        fieldSelect.classList.add('form-control', 'field');
+                        fieldSelect.setAttribute('data-live-search', 'true');
+                        fieldSelect.setAttribute('data-selected-text-format', 'count');
+                        fieldSelect.append(createOptionForCreate("(не выбрано)", 0));
+                        data.academicRanks.forEach(function (optionData) {
+                            let text = optionData.name;
+                            let id = optionData.id;
+                            let option = createOptionForCreate(text, id)
+                            fieldSelect.append(option);
+                        });
+                        fieldWrapper.append(fieldSelect)
+                        form.append(fieldWrapper)
+
                         let closeBtn = document.querySelector('.close-btn');
                         cancelCreateModal.addEventListener('click', () => closeModal(createModal))
                         closeBtn.addEventListener('click', () => closeModal(createModal))
@@ -347,7 +395,9 @@
                             '<td>' + data.id + '</td>' +
                             '<td>' + data.employee.nameTypeOne + '</td>' +
                             '<td>' + data.department.name + '</td>' +
-                            '<td>' + data.employeePosition.name + '</td>';
+                            '<td>' + data.employeePosition.name + '</td>' +
+                            '<td>' + (data.academicDegree?.name ?? 'Не присвоена') + '</td>' +
+                            '<td>' + (data.academicRank?.name ?? 'Не присвоено') + '</td>';
                         row.addEventListener('click', function () {
                             changeActiveRowTable(data.id);
                         });
@@ -376,7 +426,9 @@
                     '<td>' + data.id + '</td>' +
                     '<td>' + data.employee.nameTypeOne + '</td>' +
                     '<td>' + data.department.name + '</td>' +
-                    '<td>' + data.employeePosition.name + '</td>';
+                    '<td>' + data.employeePosition.name + '</td>' +
+                    '<td>' + (data.academicDegree?.name ?? 'Не присвоена') + '</td>' +
+                    '<td>' + (data.academicRank?.name ?? 'Не присвоено') + '</td>';
                 row.addEventListener('click', function () {
                     changeActiveRowTable(data.id);
                 });
@@ -454,6 +506,50 @@
                         let text = optionData.name;
                         let id = optionData.id;
                         let parentDataId = data.data.employeePosition.id
+                        let option = createOptionForActiveRecord(text, id, parentDataId)
+                        fieldSelect.append(option);
+                    });
+                    fieldSelect.disabled = !editMode;
+                    fieldWrapper.append(fieldSelect)
+                    form.append(fieldWrapper)
+
+                    fieldWrapper = document.createElement('div')
+                    fieldWrapper.classList.add('standard__active-record-wrapper')
+                    fieldDesc = document.createElement('p')
+                    fieldDesc.classList.add('field__desc')
+                    fieldDesc.textContent = `Ученая степень:`
+                    fieldWrapper.append(fieldDesc)
+                    fieldSelect = document.createElement('select');
+                    fieldSelect.classList.add('form-control', 'field');
+                    fieldSelect.setAttribute('data-live-search', 'true');
+                    fieldSelect.setAttribute('data-selected-text-format', 'count');
+                    fieldSelect.append(createOptionForActiveRecord("(не выбрано)", 0, -1));
+                    data.academicDegrees.forEach(function (optionData) {
+                        let text = optionData.name;
+                        let id = optionData.id;
+                        let parentDataId = data.data.academicDegree?.id ?? -1
+                        let option = createOptionForActiveRecord(text, id, parentDataId)
+                        fieldSelect.append(option);
+                    });
+                    fieldSelect.disabled = !editMode;
+                    fieldWrapper.append(fieldSelect)
+                    form.append(fieldWrapper)
+
+                    fieldWrapper = document.createElement('div')
+                    fieldWrapper.classList.add('standard__active-record-wrapper')
+                    fieldDesc = document.createElement('p')
+                    fieldDesc.classList.add('field__desc')
+                    fieldDesc.textContent = `Ученое звание:`
+                    fieldWrapper.append(fieldDesc)
+                    fieldSelect = document.createElement('select');
+                    fieldSelect.classList.add('form-control', 'field');
+                    fieldSelect.setAttribute('data-live-search', 'true');
+                    fieldSelect.setAttribute('data-selected-text-format', 'count');
+                    fieldSelect.append(createOptionForActiveRecord("(не выбрано)", 0, -1));
+                    data.academicRanks.forEach(function (optionData) {
+                        let text = optionData.name;
+                        let id = optionData.id;
+                        let parentDataId = data.data.academicRank?.id ?? -1
                         let option = createOptionForActiveRecord(text, id, parentDataId)
                         fieldSelect.append(option);
                     });
@@ -569,7 +665,9 @@
                                     '<td>' + newRecord.updatedData.id + '</td>' +
                                     '<td>' + newRecord.updatedData.employee.nameTypeOne + '</td>' +
                                     '<td>' + newRecord.updatedData.department.name + '</td>' +
-                                    '<td>' + newRecord.updatedData.employeePosition.name + '</td>';
+                                    '<td>' + newRecord.updatedData.employeePosition.name + '</td>' +
+                                    '<td>' + (newRecord.updatedData.academicDegree?.name ?? 'Не присвоена') + '</td>' +
+                                    '<td>' + (newRecord.updatedData.academicRank?.name ?? 'Не присвоено') + '</td>';
                                 break;
                             }
                         }

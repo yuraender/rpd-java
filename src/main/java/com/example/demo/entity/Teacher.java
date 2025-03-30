@@ -26,10 +26,21 @@ public class Teacher {
     @JoinColumn(name = "employee_position_id", referencedColumnName = "id", nullable = false)
     private EmployeePosition employeePosition;
 
+    @ManyToOne
+    @JoinColumn(name = "academic_degree_id", referencedColumnName = "id")
+    private AcademicDegree academicDegree;
+
+    @ManyToOne
+    @JoinColumn(name = "academic_rank_id", referencedColumnName = "id")
+    private AcademicRank academicRank;
+
     @Column(nullable = false)
     private boolean disabled;
 
     public boolean isDisabled() {
-        return disabled || employee.isDisabled() || department.isDisabled() || employeePosition.isDisabled();
+        return disabled
+                || employee.isDisabled() || department.isDisabled() || employeePosition.isDisabled()
+                || (academicDegree != null && academicDegree.isDisabled())
+                || (academicRank != null && academicRank.isDisabled());
     }
 }

@@ -26,7 +26,7 @@ public class TeacherService {
                 .orElse(null);
     }
 
-    public Teacher save(Teacher entity) {
-        return teacherRepository.save(entity);
+    public Teacher save(Teacher teacher) {
+        return teacherRepository.save(teacher);
     }
 }

@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -34,6 +35,9 @@ public class EmployeePositionController {
 
         List<EmployeePosition> employeePositions = employeePositionService.getAll();
         response.put("data", employeePositions);
+
+        List<EmployeePosition.Type> types = Arrays.stream(EmployeePosition.Type.values()).toList();
+        response.put("types", types);
 
         HttpSession session = request.getSession();
         String role = (String) session.getAttribute("role");
@@ -77,9 +81,22 @@ public class EmployeePositionController {
         Map<String, Object> response = new HashMap<>();
 
         String name = payload.get("0");
+        int param1;
+        try {
+            param1 = Integer.parseInt(payload.get("1"));
+        } catch (IllegalArgumentException ex) {
+            response.put("error", "Неверный формат данных.");
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
+        }
+
+        if (param1 < 0 || param1 >= EmployeePosition.Type.values().length) {
+            response.put("error", "Запись не найдена.");
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
+        }
 
         EmployeePosition employeePosition = new EmployeePosition();
         employeePosition.setName(name);
+        employeePosition.setType(EmployeePosition.Type.values()[param1]);
         employeePosition.setDisabled(false);
         employeePositionService.save(employeePosition);
 

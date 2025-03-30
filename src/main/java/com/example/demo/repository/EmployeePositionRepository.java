@@ -10,5 +10,9 @@ public interface EmployeePositionRepository extends JpaRepository<EmployeePositi
 
     List<EmployeePosition> findAllByDisabledFalse();
 
+    List<EmployeePosition> findAllByTypeAndDisabledFalse(EmployeePosition.Type type);
+
     Optional<EmployeePosition> findByIdAndDisabledFalse(Integer id);
+
+    Optional<EmployeePosition> findByIdAndTypeAndDisabledFalse(int id, EmployeePosition.Type type);
 }
