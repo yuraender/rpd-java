@@ -265,6 +265,12 @@
                 return textBox;
             }
 
+            function createOptionalTextBoxForCreate(maxLength) {
+                let textBox = createTextBoxForCreate(maxLength);
+                textBox.classList.add('optional');
+                return textBox;
+            }
+
             function createOptionForCreate(text, id) {
                 let option = document.createElement('option');
                 option.textContent = text;
@@ -355,6 +361,10 @@
                 } else if (field.value) {
                     data[index] = field.value
                 } else {
+                    if (field.classList.contains('optional')) {
+                        data[index] = ''
+                        return
+                    }
                     showModalWithMessage('Поля должны быть заполнены.')
                     emptyFields = true
                 }
@@ -531,6 +541,12 @@
                         return textBox;
                     }
 
+                    function createOptionalTextBoxForActiveRecord(text, maxLength) {
+                        let textBox = createTextBoxForActiveRecord(text, maxLength);
+                        textBox.classList.add('optional');
+                        return textBox;
+                    }
+
                     function createInactiveTextBox(text) {
                         let textBox = document.createElement('p');
                         textBox.textContent = text;
@@ -580,6 +596,10 @@
                 } else if (field.value) {
                     data[index] = field.value
                 } else {
+                    if (field.classList.contains('optional')) {
+                        data[index] = ''
+                        return
+                    }
                     showModalWithMessage('Поля должны быть заполнены.')
                     emptyFields = true
                 }
