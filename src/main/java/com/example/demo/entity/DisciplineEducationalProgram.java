@@ -14,6 +14,9 @@ public class DisciplineEducationalProgram {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
+    @Column(name = "discipline_index", length = 10, nullable = false)
+    private String index;
+
     @ManyToOne
     @JoinColumn(name = "basic_educational_program_id", referencedColumnName = "id", nullable = false)
     private BasicEducationalProgram basicEducationalProgram;

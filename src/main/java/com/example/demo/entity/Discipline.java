@@ -14,20 +14,9 @@ public class Discipline {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
-    @Column(name = "discipline_index", length = 10, nullable = false)
-    private String index;
-
     @Column(length = 100, nullable = false)
     private String name;
 
-    @ManyToOne
-    @JoinColumn(name = "developer_id", referencedColumnName = "id", nullable = false)
-    private Teacher developer;
-
     @Column(nullable = false)
     private boolean disabled;
-
-    public boolean isDisabled() {
-        return disabled || developer.isDisabled();
-    }
 }

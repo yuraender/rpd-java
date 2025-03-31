@@ -14,16 +14,11 @@ public class DisciplineService {
     private final DisciplineRepository disciplineRepository;
 
     public List<Discipline> getAll() {
-        return disciplineRepository.findAllByDisabledFalse()
-                .stream()
-                .filter(d -> !d.isDisabled())
-                .toList();
+        return disciplineRepository.findAllByDisabledFalse();
     }
 
     public Discipline getById(Integer id) {
-        return disciplineRepository.findByIdAndDisabledFalse(id)
-                .filter(d -> !d.isDisabled())
-                .orElse(null);
+        return disciplineRepository.findByIdAndDisabledFalse(id).orElse(null);
     }
 
     public Discipline save(Discipline discipline) {

@@ -48,20 +48,14 @@
             </select>
         </div>
         <div class="filter-container">
-            <label for="filter2">Разработчик РП:</label>
+            <label for="filter2">ООП:</label>
             <select class="form-control" id="filter2" data-live-search="true" data-selected-text-format="count">
-                <option value="0" selected>Выберите разработчика</option>
-            </select>
-        </div>
-        <div class="filter-container">
-            <label for="filter3">ООП:</label>
-            <select class="form-control" id="filter3" data-live-search="true" data-selected-text-format="count">
                 <option value="0" selected>Выберите ООП</option>
             </select>
         </div>
         <div class="filter-container">
-            <label for="filter4">Дисциплина:</label>
-            <select class="form-control" id="filter4" data-live-search="true" data-selected-text-format="count">
+            <label for="filter3">Дисциплина:</label>
+            <select class="form-control" id="filter3" data-live-search="true" data-selected-text-format="count">
                 <option value="0" selected>Выберите дисциплину</option>
             </select>
         </div>
@@ -118,6 +112,7 @@
         </table>
     </div>
     <div class="edit-buttons-wrapper no-visible">
+        <button class="button-edit btn-edit button btn btn-primary">Редактировать</button>
         <button class="btn-create button btn btn-primary">Добавить</button>
         <button class="btn-delete button btn btn-primary">Удалить</button>
         <button class="btn-choose button btn btn-primary">Выбрать запись</button>
@@ -179,13 +174,10 @@
         let filter1 = document.getElementById('filter1');
         let filter2 = document.getElementById('filter2');
         let filter3 = document.getElementById('filter3');
-        let filter4 = document.getElementById('filter4');
         let filter1Global = 0;
         let filter2Global = 0;
-        let filter3Global = 0;
         filter2.disabled = true;
         filter3.disabled = true;
-        filter4.disabled = true;
 
         let btnChoose = document.querySelector('.btn-choose')
         btnChoose.addEventListener('click', chooseRecord)
@@ -223,6 +215,7 @@
         }
 
         function renderPage() {
+            document.querySelector('.button-edit').disabled = true;
             let createModal = document.getElementById('createModal');
             let cancelCreateModal = document.querySelector('.cancel-create-modal');
             let saveModalRecord = document.querySelector('.save-modal-record');
@@ -252,6 +245,44 @@
                     console.error('Ошибка загрузки данных:', error);
                     alert('Ошибка при загрузке данных');
                 });
+
+            let buttonEdit = document.querySelector('.button-edit');
+            buttonEdit.addEventListener('click', editActive)
+
+            function editActive() {
+                editMode = true;
+                let activeRecord = document.querySelector('.active-record');
+                let fields = activeRecord.querySelectorAll('.field');
+
+                fields.forEach(function (field) {
+                    field.disabled = false;
+                    field.readOnly = false;
+                    $(field).selectpicker('refresh');
+                });
+                $('.bootstrap-select', activeRecord).removeClass(['form-control', 'field']);
+
+                activeFieldsChange()
+
+                function activeFieldsChange() {
+                    let form = document.querySelector('.active-form')
+                    let btnSuccess = document.createElement('button');
+                    btnSuccess.classList.add('btn-success', 'button', 'btn', 'button-success')
+                    btnSuccess.textContent = 'Подтвердить'
+                    btnSuccess.addEventListener('click', updateRecord)
+                    form.appendChild(btnSuccess);
+
+                    let btnCansel = document.createElement('button');
+                    btnCansel.classList.add('btn-cancel', 'button', 'btn', 'btn-danger')
+                    btnCansel.textContent = 'Отменить'
+                    btnCansel.addEventListener('click', cancelUpdate)
+                    form.appendChild(btnCansel);
+                }
+
+                function cancelUpdate() {
+                    let dataId = document.querySelector('.active-form').getAttribute('activeRecordId')
+                    changeActiveRowTable(dataId)
+                }
+            }
 
             let createBtn = document.querySelector('.btn-create')
             createBtn.addEventListener('click', showCreateModal)
@@ -333,6 +364,26 @@
                                 optionData.basicEducationalProgram.profile.name + ', ' +
                                 optionData.basicEducationalProgram.educationType.name + ', ' +
                                 optionData.discipline.name;
+                            let id = optionData.id;
+                            let option = createOptionForCreate(text, id)
+                            fieldSelect.append(option);
+                        });
+                        fieldWrapper.append(fieldSelect)
+                        form.append(fieldWrapper)
+
+                        fieldWrapper = document.createElement('div')
+                        fieldWrapper.classList.add('standard__active-record-wrapper')
+                        fieldDesc = document.createElement('p')
+                        fieldDesc.classList.add('field__desc')
+                        fieldDesc.textContent = `Разработчики:`
+                        fieldWrapper.append(fieldDesc)
+                        fieldSelect = document.createElement('select');
+                        fieldSelect.classList.add('form-control', 'field');
+                        fieldSelect.setAttribute('data-live-search', 'true');
+                        fieldSelect.setAttribute('data-selected-text-format', 'count');
+                        fieldSelect.multiple = true;
+                        data.teachers.forEach(function (optionData) {
+                            let text = optionData.employee.nameTypeOne;
                             let id = optionData.id;
                             let option = createOptionForCreate(text, id)
                             fieldSelect.append(option);
@@ -466,6 +517,7 @@
             fetch('/api/rpd/get-active/' + dataId)
                 .then(response => response.json())
                 .then(function (data) {
+                    document.querySelector('.button-edit').disabled = false;
                     let activeRecordWrapper = document.querySelector('.active-record');
                     activeRecordWrapper.innerHTML = '';
                     let form = document.createElement('div');
@@ -521,6 +573,28 @@
                     fieldDesc.textContent = `Дисциплина:`
                     fieldWrapper.append(fieldDesc)
                     fieldWrapper.append(createInactiveTextBox(data.data.disciplineEducationalProgram.discipline.name))
+                    form.append(fieldWrapper)
+
+                    fieldWrapper = document.createElement('div')
+                    fieldWrapper.classList.add('standard__active-record-wrapper')
+                    fieldDesc = document.createElement('p')
+                    fieldDesc.classList.add('field__desc')
+                    fieldDesc.textContent = `Разработчики:`
+                    fieldWrapper.append(fieldDesc)
+                    let fieldSelect = document.createElement('select');
+                    fieldSelect.classList.add('form-control', 'field');
+                    fieldSelect.setAttribute('data-live-search', 'true');
+                    fieldSelect.setAttribute('data-selected-text-format', 'count');
+                    fieldSelect.multiple = true;
+                    data.teachers.forEach(function (optionData) {
+                        let text = optionData.employee.nameTypeOne;
+                        let id = optionData.id;
+                        let selected = data.data.developers.some(t => t.id === id)
+                        let option = createOptionMultipleForActiveRecord(text, id, selected)
+                        fieldSelect.append(option);
+                    });
+                    fieldSelect.disabled = !editMode;
+                    fieldWrapper.append(fieldSelect)
                     form.append(fieldWrapper)
 
                     function createFileChanger(data, sectionNumber) {
@@ -627,6 +701,81 @@
                 });
         }
 
+        function updateRecord() {
+            let activeRecord = document.querySelector('.active-record');
+            let fields = activeRecord.querySelectorAll('.field');
+            let emptyFields = false;
+            let dataId = document.querySelector('.active-form').getAttribute('activeRecordId')
+
+            let data = {}
+            fields.forEach(function (field, index) {
+                if (field.multiple) {
+                    const values = [];
+                    for (let selectedOption of field.selectedOptions) {
+                        values.push(selectedOption.value);
+                    }
+                    data[index] = values;
+                } else if (field.value) {
+                    data[index] = field.value
+                } else {
+                    if (field.classList.contains('optional')) {
+                        data[index] = ''
+                        return
+                    }
+                    showModalWithMessage('Поля должны быть заполнены.')
+                    emptyFields = true
+                }
+            })
+            data['dataId'] = dataId;
+
+            if (emptyFields) return
+            fetch('/api/rpd/update', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': csrfToken
+                },
+                body: JSON.stringify(data)
+            })
+                .then(response => response.json())
+                .then(function (newRecord) {
+                    if (newRecord.error) {
+                        showModalWithMessage(newRecord.error)
+                        emptyFields = true
+                    } else {
+                        let table = document.getElementById('dataTable');
+                        let rows = table.getElementsByTagName('tr');
+                        // Найти строку с нужным dataId и обновить ее содержимое
+                        for (let i = 0; i < rows.length; i++) {
+                            if (rows[i].getAttribute('dataid') == newRecord.updatedData.id) {
+                                rows[i].innerHTML =
+                                    '<td>' + newRecord.updatedData.id + '</td>' +
+                                    '<td>' + newRecord.updatedData.academicYear + '</td>' +
+                                    '<td>' + newRecord.updatedData.disciplineEducationalProgram.basicEducationalProgram.profile.name + '</td>' +
+                                    '<td>' + newRecord.updatedData.disciplineEducationalProgram.basicEducationalProgram.educationType.name + '</td>' +
+                                    '<td>' + newRecord.updatedData.disciplineEducationalProgram.discipline.name + '</td>' +
+                                    '<td>' + isLoadStatus(newRecord.updatedData.section1IsLoad) + '</td>' +
+                                    '<td>' + isLoadStatus(newRecord.updatedData.section2IsLoad) + '</td>' +
+                                    '<td>' + isLoadStatus(newRecord.updatedData.section3IsLoad) + '</td>' +
+                                    '<td>' + isLoadStatus(newRecord.updatedData.section4IsLoad) + '</td>' +
+                                    '<td>' + isLoadStatus(newRecord.updatedData.section5IsLoad) + '</td>' +
+                                    '<td>' + isLoadStatus(newRecord.updatedData.section6IsLoad) + '</td>' +
+                                    '<td>' + isLoadStatus(newRecord.updatedData.section7IsLoad) + '</td>' +
+                                    '<td>' + isLoadStatus(newRecord.updatedData.section8IsLoad) + '</td>';
+                                break;
+                            }
+                        }
+                        changeActiveRowTable(newRecord.updatedData.id)
+                        // Модальное окно
+                        showModalWithMessage('Запись обновлена.')
+                    }
+                })
+                .catch(function (error) {
+                    console.error('Ошибка обновления данных:', error);
+                    alert('Ошибка при обновлении данных');
+                });
+        }
+
         function closeModal(modal) {
             let form = document.querySelector('.createForm')
             removeAllChildElements(form)
@@ -640,7 +789,6 @@
             // Заблокировать списки, пока не придет ответ
             filter2.disabled = true;
             filter3.disabled = true;
-            filter4.disabled = true;
             $('select', '.filters').selectpicker('refresh');
 
             fetch('/api/rpd/department-filter/' + filter1Id)
@@ -649,13 +797,13 @@
                     let filter2 = document.getElementById('filter2');
                     filter2.innerHTML = '';
                     let option = document.createElement('option');
-                    option.textContent = "Выберите разработчика";
+                    option.textContent = "Выберите ООП";
                     option.value = "0";
                     option.selected = true;
                     filter2.appendChild(option);
                     data.filterList.forEach(function (entity) {
                         let option = document.createElement('option');
-                        option.textContent = entity.employee.nameTypeOne;
+                        option.textContent = `${entity.academicYear}, ${entity.profile.name}, ${entity.educationType.name}`;
                         option.value = entity.id;
                         filter2.appendChild(option);
                     });
@@ -664,7 +812,6 @@
                     if (filter1Id == 0) {
                         filter2.disabled = true;
                         filter3.disabled = true;
-                        filter4.disabled = true;
                     } else {
                         filter2.disabled = false;
                     }
@@ -678,26 +825,25 @@
 
         filter2.addEventListener('change', function () {
             let filter2Id = this.value;
-            filter2Global = filter2Id;
+            filter2Global = filter2Id
 
             // Заблокировать списки, пока не придет ответ
             filter3.disabled = true;
-            filter4.disabled = true;
             $('select', '.filters').selectpicker('refresh');
 
-            fetch('/api/rpd/developer-filter/' + filter1Global + '/' + filter2Id)
+            fetch('/api/rpd/oop-filter/' + filter1Global + '/' + filter2Id)
                 .then(response => response.json())
                 .then(function (data) {
                     let filter3 = document.getElementById('filter3');
                     filter3.innerHTML = '';
                     let option = document.createElement('option');
-                    option.textContent = "Выберите ООП";
+                    option.textContent = "Выберите дисциплину";
                     option.value = "0";
                     option.selected = true;
                     filter3.appendChild(option);
                     data.filterList.forEach(function (entity) {
                         let option = document.createElement('option');
-                        option.textContent = `${entity.academicYear}, ${entity.profile.name}, ${entity.educationType.name}`;
+                        option.textContent = entity.name;
                         option.value = entity.id;
                         filter3.appendChild(option);
                     });
@@ -705,7 +851,6 @@
                     // Разблокировать, если данные успешно загружены
                     if (filter2Id == 0) {
                         filter3.disabled = true;
-                        filter4.disabled = true;
                     } else {
                         filter3.disabled = false;
                     }
@@ -719,47 +864,8 @@
 
         filter3.addEventListener('change', function () {
             let filter3Id = this.value;
-            filter3Global = filter3Id
 
-            // Заблокировать списки, пока не придет ответ
-            filter4.disabled = true;
-            $('select', '.filters').selectpicker('refresh');
-
-            fetch('/api/rpd/oop-filter/' + filter1Global + '/' + filter2Global + '/' + filter3Id)
-                .then(response => response.json())
-                .then(function (data) {
-                    let filter4 = document.getElementById('filter4');
-                    filter4.innerHTML = '';
-                    let option = document.createElement('option');
-                    option.textContent = "Выберите дисциплину";
-                    option.value = "0";
-                    option.selected = true;
-                    filter4.appendChild(option);
-                    data.filterList.forEach(function (entity) {
-                        let option = document.createElement('option');
-                        option.textContent = entity.name;
-                        option.value = entity.id;
-                        filter4.appendChild(option);
-                    });
-                    renderTable(data.entityList)
-                    // Разблокировать, если данные успешно загружены
-                    if (filter3Id == 0) {
-                        filter4.disabled = true;
-                    } else {
-                        filter4.disabled = false;
-                    }
-                    $('select', '.filters').selectpicker('refresh');
-                })
-                .catch(function (error) {
-                    console.error('Ошибка загрузки данных:', error);
-                    alert('Ошибка при загрузке данных');
-                });
-        });
-
-        filter4.addEventListener('change', function () {
-            let filter4Id = this.value;
-
-            fetch('/api/rpd/discipline-filter/' + filter1Global + '/' + filter2Global + '/' + filter3Global + '/' + filter4Id)
+            fetch('/api/rpd/discipline-filter/' + filter1Global + '/' + filter2Global + '/' + filter3Id)
                 .then(response => response.json())
                 .then(function (data) {
                     renderTable(data.entityList)
@@ -800,7 +906,7 @@
                 })
                 .catch(error => {
                     console.error('Ошибка скачивания файла:', error);
-                    alert("Ошибка при скачивании файла");
+                    alert('Ошибка при скачивании файла');
                 });
         }
 
@@ -831,7 +937,7 @@
                     })
                     .catch(error => {
                         console.error('Ошибка загрузки файла:', error);
-                        alert("Ошибка при загрузке файла");
+                        alert('Ошибка при загрузке файла');
                     });
             }
         }

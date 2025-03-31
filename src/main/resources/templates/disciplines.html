@@ -39,21 +39,12 @@
             <tr class="sticky-header">
                 <th><input type="text" class="form-control" placeholder="ID"
                            onkeyup="filterTable('dataTable', 0)"></th>
-                <th><input type="text" class="form-control" placeholder="Индекс"
-                           onkeyup="filterTable('dataTable', 1)"></th>
                 <th><input type="text" class="form-control" placeholder="Название"
-                           onkeyup="filterTable('dataTable', 2)"></th>
-                <th><input type="text" class="form-control" placeholder="Кафедра"
-                           onkeyup="filterTable('dataTable', 3)"></th>
-                <th><input type="text" class="form-control" placeholder="Преподаватель"
-                           onkeyup="filterTable('dataTable', 4)"></th>
+                           onkeyup="filterTable('dataTable', 1)"></th>
             </tr>
             <tr class="sticky-header">
                 <th>ID</th>
-                <th>Индекс</th>
                 <th>Название</th>
-                <th>Кафедра</th>
-                <th>Преподаватель</th>
             </tr>
             </thead>
             <tbody>
@@ -242,37 +233,9 @@
                         fieldWrapper.classList.add('standard__active-record-wrapper')
                         let fieldDesc = document.createElement('p')
                         fieldDesc.classList.add('field__desc')
-                        fieldDesc.textContent = `Индекс:`
-                        fieldWrapper.append(fieldDesc)
-                        fieldWrapper.append(createTextBoxForCreate(10))
-                        form.append(fieldWrapper)
-
-                        fieldWrapper = document.createElement('div')
-                        fieldWrapper.classList.add('standard__active-record-wrapper')
-                        fieldDesc = document.createElement('p')
-                        fieldDesc.classList.add('field__desc')
                         fieldDesc.textContent = `Название:`
                         fieldWrapper.append(fieldDesc)
                         fieldWrapper.append(createTextBoxForCreate(100))
-                        form.append(fieldWrapper)
-
-                        fieldWrapper = document.createElement('div')
-                        fieldWrapper.classList.add('standard__active-record-wrapper')
-                        fieldDesc = document.createElement('p')
-                        fieldDesc.classList.add('field__desc')
-                        fieldDesc.textContent = `Преподаватель:`
-                        fieldWrapper.append(fieldDesc)
-                        let fieldSelect = document.createElement('select');
-                        fieldSelect.classList.add('form-control', 'field');
-                        fieldSelect.setAttribute('data-live-search', 'true');
-                        fieldSelect.setAttribute('data-selected-text-format', 'count');
-                        data.teachers.forEach(function (optionData) {
-                            let text = optionData.employee.nameTypeOne;
-                            let id = optionData.id;
-                            let option = createOptionForCreate(text, id)
-                            fieldSelect.append(option);
-                        });
-                        fieldWrapper.append(fieldSelect)
                         form.append(fieldWrapper)
 
                         let closeBtn = document.querySelector('.close-btn');
@@ -340,10 +303,7 @@
                         row.classList.add(`${data.id}`)
                         row.innerHTML =
                             '<td>' + data.id + '</td>' +
-                            '<td>' + data.index + '</td>' +
-                            '<td>' + data.name + '</td>' +
-                            '<td>' + data.developer.department.name + '</td>' +
-                            '<td>' + data.developer.employee.nameTypeOne + '</td>';
+                            '<td>' + data.name + '</td>';
                         row.addEventListener('click', function () {
                             changeActiveRowTable(data.id);
                         });
@@ -370,10 +330,7 @@
                 row.classList.add(`${data.id}`)
                 row.innerHTML =
                     '<td>' + data.id + '</td>' +
-                    '<td>' + data.index + '</td>' +
-                    '<td>' + data.name + '</td>' +
-                    '<td>' + data.developer.department.name + '</td>' +
-                    '<td>' + data.developer.employee.nameTypeOne + '</td>';
+                    '<td>' + data.name + '</td>';
                 row.addEventListener('click', function () {
                     changeActiveRowTable(data.id);
                 });
@@ -411,48 +368,9 @@
                     fieldWrapper.classList.add('standard__active-record-wrapper')
                     let fieldDesc = document.createElement('p')
                     fieldDesc.classList.add('field__desc')
-                    fieldDesc.textContent = `Индекс:`
-                    fieldWrapper.append(fieldDesc)
-                    fieldWrapper.append(createTextBoxForActiveRecord(data.data.index, 10))
-                    form.append(fieldWrapper)
-
-                    fieldWrapper = document.createElement('div')
-                    fieldWrapper.classList.add('standard__active-record-wrapper')
-                    fieldDesc = document.createElement('p')
-                    fieldDesc.classList.add('field__desc')
                     fieldDesc.textContent = `Название:`
                     fieldWrapper.append(fieldDesc)
                     fieldWrapper.append(createTextBoxForActiveRecord(data.data.name, 100))
-                    form.append(fieldWrapper)
-
-                    fieldWrapper = document.createElement('div')
-                    fieldWrapper.classList.add('standard__active-record-wrapper')
-                    fieldDesc = document.createElement('p')
-                    fieldDesc.classList.add('field__desc')
-                    fieldDesc.textContent = `Кафедра:`
-                    fieldWrapper.append(fieldDesc)
-                    fieldWrapper.append(createInactiveTextBox(data.data.developer.department.name))
-                    form.append(fieldWrapper)
-
-                    fieldWrapper = document.createElement('div')
-                    fieldWrapper.classList.add('standard__active-record-wrapper')
-                    fieldDesc = document.createElement('p')
-                    fieldDesc.classList.add('field__desc')
-                    fieldDesc.textContent = `Преподаватель:`
-                    fieldWrapper.append(fieldDesc)
-                    let fieldSelect = document.createElement('select');
-                    fieldSelect.classList.add('form-control', 'field');
-                    fieldSelect.setAttribute('data-live-search', 'true');
-                    fieldSelect.setAttribute('data-selected-text-format', 'count');
-                    data.teachers.forEach(function (optionData) {
-                        let text = optionData.employee.nameTypeOne;
-                        let id = optionData.id;
-                        let parentDataId = data.data.developer.id
-                        let option = createOptionForActiveRecord(text, id, parentDataId)
-                        fieldSelect.append(option);
-                    });
-                    fieldSelect.disabled = !editMode;
-                    fieldWrapper.append(fieldSelect)
                     form.append(fieldWrapper)
 
                     // Конец добавления в активную запись
@@ -571,10 +489,7 @@
                             if (rows[i].getAttribute('dataid') == newRecord.updatedData.id) {
                                 rows[i].innerHTML =
                                     '<td>' + newRecord.updatedData.id + '</td>' +
-                                    '<td>' + newRecord.updatedData.index + '</td>' +
-                                    '<td>' + newRecord.updatedData.name + '</td>' +
-                                    '<td>' + newRecord.updatedData.developer.department.name + '</td>' +
-                                    '<td>' + newRecord.updatedData.developer.employee.nameTypeOne + '</td>';
+                                    '<td>' + newRecord.updatedData.name + '</td>';
                                 break;
                             }
                         }

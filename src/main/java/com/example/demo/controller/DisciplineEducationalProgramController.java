@@ -76,9 +76,29 @@ public class DisciplineEducationalProgramController {
     public ResponseEntity<Map<String, Object>> getActiveEntity(@PathVariable Integer entityId) {
         Map<String, Object> response = new HashMap<>();
 
-        DisciplineEducationalProgram deps = disciplineEducationalProgramService.getById(entityId);
-        response.put("data", deps);
+        DisciplineEducationalProgram dep = disciplineEducationalProgramService.getById(entityId);
+        response.put("data", dep);
 
+        return ResponseEntity.ok(response);
+    }
+
+    @PostMapping("/api/dep/update")
+    public ResponseEntity<Map<String, Object>> updateRecord(@RequestBody Map<String, String> payload) {
+        Map<String, Object> response = new HashMap<>();
+
+        String index = payload.get("0");
+        Integer dataId = Integer.parseInt(payload.get("dataId"));
+
+        DisciplineEducationalProgram dep = disciplineEducationalProgramService.getById(dataId);
+        if (dep == null) {
+            response.put("error", "Запись не найдена.");
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
+        }
+        dep.setIndex(index);
+        dep.setDisabled(false);
+        disciplineEducationalProgramService.save(dep);
+
+        response.put("updatedData", dep);
         return ResponseEntity.ok(response);
     }
 
@@ -86,23 +106,25 @@ public class DisciplineEducationalProgramController {
     public ResponseEntity<Map<String, Object>> createRecord(@RequestBody Map<String, String> payload) {
         Map<String, Object> response = new HashMap<>();
 
-        int param0, param1;
+        int param0, param2;
+        String index = payload.get("1");
         try {
             param0 = Integer.parseInt(payload.get("0"));
-            param1 = Integer.parseInt(payload.get("1"));
+            param2 = Integer.parseInt(payload.get("2"));
         } catch (NumberFormatException ex) {
             response.put("error", "Неверный формат данных.");
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
         }
 
         BasicEducationalProgram bep = basicEducationalProgramService.getById(param0);
-        Discipline discipline = disciplineService.getById(param1);
+        Discipline discipline = disciplineService.getById(param2);
         if (bep == null || discipline == null) {
             response.put("error", "Запись не найдена.");
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
         }
 
         DisciplineEducationalProgram dep = new DisciplineEducationalProgram();
+        dep.setIndex(index);
         dep.setBasicEducationalProgram(bep);
         dep.setDiscipline(discipline);
         dep.setDisabled(false);
@@ -143,7 +165,7 @@ public class DisciplineEducationalProgramController {
             response.put("entityList", deps);
         } else {
             List<DisciplineEducationalProgram> entityList = deps.stream()
-                    .filter(dep -> dep.getDiscipline().getDeveloper().getDepartment().getId() == filter1)
+                    .filter(dep -> dep.getBasicEducationalProgram().getProfile().getDirection().getDepartment().getId() == filter1)
                     .toList();
             response.put("entityList", entityList);
         }
@@ -164,12 +186,12 @@ public class DisciplineEducationalProgramController {
 
         if (filter2 == 0) {
             List<DisciplineEducationalProgram> entityList = deps.stream()
-                    .filter(dep -> dep.getDiscipline().getDeveloper().getDepartment().getId() == filter1)
+                    .filter(dep -> dep.getBasicEducationalProgram().getProfile().getDirection().getDepartment().getId() == filter1)
                     .toList();
             response.put("entityList", entityList);
         } else {
             List<DisciplineEducationalProgram> entityList = deps.stream()
-                    .filter(dep -> dep.getDiscipline().getDeveloper().getDepartment().getId() == filter1)
+                    .filter(dep -> dep.getBasicEducationalProgram().getProfile().getDirection().getDepartment().getId() == filter1)
                     .filter(dep -> dep.getBasicEducationalProgram().getProfile().getDirection().getId() == filter2)
                     .toList();
             response.put("entityList", entityList);
@@ -185,13 +207,13 @@ public class DisciplineEducationalProgramController {
 
         if (filter3 == 0) {
             List<DisciplineEducationalProgram> entityList = deps.stream()
-                    .filter(dep -> dep.getDiscipline().getDeveloper().getDepartment().getId() == filter1)
+                    .filter(dep -> dep.getBasicEducationalProgram().getProfile().getDirection().getDepartment().getId() == filter1)
                     .filter(dep -> dep.getBasicEducationalProgram().getProfile().getDirection().getId() == filter2)
                     .toList();
             response.put("entityList", entityList);
         } else {
             List<DisciplineEducationalProgram> entityList = deps.stream()
-                    .filter(dep -> dep.getDiscipline().getDeveloper().getDepartment().getId() == filter1)
+                    .filter(dep -> dep.getBasicEducationalProgram().getProfile().getDirection().getDepartment().getId() == filter1)
                     .filter(dep -> dep.getBasicEducationalProgram().getProfile().getDirection().getId() == filter2)
                     .filter(dep -> dep.getBasicEducationalProgram().getProfile().getId() == filter3)
                     .toList();

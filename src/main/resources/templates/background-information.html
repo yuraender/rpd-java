@@ -290,28 +290,16 @@
             <table class="table table-bordered" id="disciplinesTable">
                 <thead>
                 <tr class="sticky-header">
-                    <th><input type="text" class="form-control" placeholder="Индекс"
+                    <th><input type="text" class="form-control" placeholder="Название"
                                onkeyup="filterTable('disciplinesTable', 0)"></th>
-                    <th><input type="text" class="form-control" placeholder="Дисциплина"
-                               onkeyup="filterTable('disciplinesTable', 1)"></th>
-                    <th><input type="text" class="form-control" placeholder="ФамилияИО"
-                               onkeyup="filterTable('disciplinesTable', 2)"></th>
-                    <th><input type="text" class="form-control" placeholder="Кафедра"
-                               onkeyup="filterTable('disciplinesTable', 3)"></th>
                 </tr>
                 <tr class="sticky-header">
-                    <th>Индекс</th>
-                    <th>Дисциплина</th>
-                    <th>ФамилияИО</th>
-                    <th>Кафедра</th>
+                    <th>Название</th>
                 </tr>
                 </thead>
                 <tbody>
                 <tr th:each="discipline : ${disciplines}">
-                    <td th:text="${discipline.index}"></td>
                     <td th:text="${discipline.name}"></td>
-                    <td th:text="${discipline.developer.employee.nameTypeOne}"></td>
-                    <td th:text="${discipline.developer.department.name}"></td>
                 </tr>
                 </tbody>
             </table>
@@ -319,11 +307,7 @@
         <div class="active-record" th:if="${activeDiscipline}">
             <h3>Активная дисциплина</h3>
             <p><strong>ID:</strong> <span th:text="${activeDiscipline.id}"></span></p>
-            <p><strong>Индекс:</strong> <span th:text="${activeDiscipline.department.name}"></span></p>
-            <p><strong>Дисциплина:</strong> <span th:text="${activeDiscipline.employeePosition.name}"></span>
-            </p>
-            <p><strong>ФамилияИО:</strong> <span th:text="${activeDiscipline.employee.nameTypeOne}"></span></p>
-            <p><strong>Кафедра:</strong> <span th:text="${activeDiscipline.employee.nameTypeOne}"></span></p>
+            <p><strong>Дисциплина:</strong> <span th:text="${activeDiscipline.name}"></span></p>
         </div>
     </section>
 
