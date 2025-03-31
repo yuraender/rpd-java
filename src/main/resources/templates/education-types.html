@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Типы обучения</title>
+    <title>Формы обучения</title>
     <link rel="icon" type="image/png" href="/image/favicon-96x96.png" sizes="96x96"/>
     <link rel="icon" type="image/svg+xml" href="/image/favicon.svg"/>
     <link rel="shortcut icon" href="/image/favicon.ico"/>
@@ -32,7 +32,7 @@
     </div>
 </nav>
 <section class="container">
-    <h2>Типы обучения</h2>
+    <h2>Формы обучения</h2>
     <div class="scrollable-table">
         <table class="table table-bordered" id="dataTable">
             <thead>
@@ -43,11 +43,14 @@
                            onkeyup="filterTable('dataTable', 1)"></th>
                 <th><input type="text" class="form-control" placeholder="Срок освоения"
                            onkeyup="filterTable('dataTable', 2)"></th>
+                <th><input type="text" class="form-control" placeholder="Текст"
+                           onkeyup="filterTable('dataTable', 3)"></th>
             </tr>
             <tr class="sticky-header">
                 <th>ID</th>
                 <th>Название</th>
                 <th>Срок освоения</th>
+                <th>Текст</th>
             </tr>
             </thead>
             <tbody>
@@ -70,7 +73,7 @@
     <a href="/beps">ООП</a>
     <a href="/rpd">РПД</a>
     <a href="/deps">Дисциплины ОП</a>
-    <a href="/education-types">Типы обучения</a>
+    <a href="/education-types">Формы обучения</a>
     <a href="/employees">Сотрудники</a>
     <a href="/employee-positions">Должности</a>
     <a href="/academic-degrees">Ученые степени</a>
@@ -325,7 +328,8 @@
                         row.innerHTML =
                             '<td>' + data.id + '</td>' +
                             '<td>' + data.name + '</td>' +
-                            '<td>' + data.learningPeriod + '</td>';
+                            '<td>' + data.learningPeriod + '</td>' +
+                            '<td>' + data.text + '</td>';
                         row.addEventListener('click', function () {
                             changeActiveRowTable(data.id);
                         });
@@ -353,7 +357,8 @@
                 row.innerHTML =
                     '<td>' + data.id + '</td>' +
                     '<td>' + data.name + '</td>' +
-                    '<td>' + data.learningPeriod + '</td>';
+                    '<td>' + data.learningPeriod + '</td>' +
+                    '<td>' + data.text + '</td>';
                 row.addEventListener('click', function () {
                     changeActiveRowTable(data.id);
                 });
@@ -531,7 +536,8 @@
                                 rows[i].innerHTML =
                                     '<td>' + newRecord.updatedData.id + '</td>' +
                                     '<td>' + newRecord.updatedData.name + '</td>' +
-                                    '<td>' + newRecord.updatedData.learningPeriod + '</td>';
+                                    '<td>' + newRecord.updatedData.learningPeriod + '</td>' +
+                                    '<td>' + newRecord.updatedData.text + '</td>';
                                 break;
                             }
                         }

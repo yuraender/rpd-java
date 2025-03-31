@@ -62,7 +62,7 @@
                            onkeyup="filterTable('dataTable', 1)"></th>
                 <th><input type="text" class="form-control" placeholder="Профиль"
                            onkeyup="filterTable('dataTable', 2)"></th>
-                <th><input type="text" class="form-control" placeholder="Тип обучения"
+                <th><input type="text" class="form-control" placeholder="Форма обучения"
                            onkeyup="filterTable('dataTable', 3)"></th>
                 <th><input type="text" class="form-control" placeholder="Дисциплина"
                            onkeyup="filterTable('dataTable', 4)"></th>
@@ -71,7 +71,7 @@
                 <th>ID</th>
                 <th>Учебный год</th>
                 <th>Профиль</th>
-                <th>Тип обучения</th>
+                <th>Форма обучения</th>
                 <th>Дисциплина</th>
             </tr>
             </thead>
@@ -95,7 +95,7 @@
     <a href="/beps">ООП</a>
     <a href="/rpd">РПД</a>
     <a href="/deps">Дисциплины ОП</a>
-    <a href="/education-types">Типы обучения</a>
+    <a href="/education-types">Формы обучения</a>
     <a href="/employees">Сотрудники</a>
     <a href="/employee-positions">Должности</a>
     <a href="/academic-degrees">Ученые степени</a>
@@ -449,7 +449,7 @@
                     fieldWrapper.classList.add('standard__active-record-wrapper')
                     fieldDesc = document.createElement('p')
                     fieldDesc.classList.add('field__desc')
-                    fieldDesc.textContent = `Тип обучения:`
+                    fieldDesc.textContent = `Форма обучения:`
                     fieldWrapper.append(fieldDesc)
                     fieldWrapper.append(createInactiveTextBox(data.data.basicEducationalProgram.educationType.name))
                     form.append(fieldWrapper)

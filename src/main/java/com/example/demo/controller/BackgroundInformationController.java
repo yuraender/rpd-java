@@ -47,8 +47,6 @@ public class BackgroundInformationController {
     @Autowired
     private DisciplineEducationalProgramService disciplineEducationalProgramService;
     @Autowired
-    private CompetenciesDisciplinesEducationalProgramService competenciesDisciplinesEducationalProgramService;
-    @Autowired
     private FileRPDService fileRPDService;
 
     @GetMapping("/background-information")
@@ -65,7 +63,6 @@ public class BackgroundInformationController {
             @SessionAttribute(name = "audienceId", required = false) Integer audienceId,
             @SessionAttribute(name = "basicEducationalProgramId", required = false) Integer basicEducationalProgramId,
             @SessionAttribute(name = "disciplinesEducationalProgramId", required = false) Integer disciplinesEducationalProgramId,
-            @SessionAttribute(name = "competenciesDisciplinesEducationalProgramId", required = false) Integer competenciesDisciplinesEducationalProgramId,
             @SessionAttribute(name = "fileRPDId", required = false) Integer fileRPDId,
             @SessionAttribute(name = "role", required = false) String role,
             Model model
@@ -100,7 +97,7 @@ public class BackgroundInformationController {
             model.addAttribute("activeProfile", activeProfile);
         }
 
-        // Получаем все типы обучения
+        // Получаем все формы обучения
         List<EducationType> educationTypes = educationTypeService.getAll();
         model.addAttribute("educationTypes", educationTypes);
 
@@ -188,16 +185,6 @@ public class BackgroundInformationController {
         if (disciplinesEducationalProgramId != null) {
             DisciplineEducationalProgram activeDisciplineEducationalProgram = disciplineEducationalProgramService.getById(disciplinesEducationalProgramId);
             model.addAttribute("activeDisciplinesEducationalProgram", activeDisciplineEducationalProgram);
-        }
-
-        // Получаем все компетенции дисциплин ОП
-        List<CompetenciesDisciplinesEducationalProgram> competenciesDisciplinesEducationalPrograms = competenciesDisciplinesEducationalProgramService.getAll();
-        model.addAttribute("competenciesDisciplinesEducationalPrograms", competenciesDisciplinesEducationalPrograms);
-
-        // Устанавливаем компетенцию дисциплин ОП
-        if (competenciesDisciplinesEducationalProgramId != null) {
-            CompetenciesDisciplinesEducationalProgram activeCompetenciesDisciplinesEducationalProgram = competenciesDisciplinesEducationalProgramService.getById(competenciesDisciplinesEducationalProgramId);
-            model.addAttribute("activeCompetenciesDisciplinesEducationalProgram", activeCompetenciesDisciplinesEducationalProgram);
         }
 
         // Получаем все РПД
