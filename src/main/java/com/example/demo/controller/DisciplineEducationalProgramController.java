@@ -25,6 +25,8 @@ public class DisciplineEducationalProgramController {
     private final DisciplineService disciplineService;
     private final CompetencieService competencieService;
     private final IndicatorService indicatorService;
+    private final AudienceService audienceService;
+    private final ProtocolService protocolService;
     private final DirectionService directionService;
     private final ProfileService profileService;
 
@@ -57,6 +59,12 @@ public class DisciplineEducationalProgramController {
 
         List<Indicator.Type> indicatorTypes = Arrays.stream(Indicator.Type.values()).toList();
         response.put("indicatorTypes", indicatorTypes);
+
+        List<Audience> audiences = audienceService.getAll();
+        response.put("audiences", audiences);
+
+        List<Protocol> protocols = protocolService.getAllByType(Protocol.Type.ACTUALIZE);
+        response.put("protocols", protocols);
 
         HttpSession session = request.getSession();
         String role = (String) session.getAttribute("role");
@@ -97,6 +105,12 @@ public class DisciplineEducationalProgramController {
         List<Indicator.Type> indicatorTypes = Arrays.stream(Indicator.Type.values()).toList();
         response.put("indicatorTypes", indicatorTypes);
 
+        List<Audience> audiences = audienceService.getAll();
+        response.put("audiences", audiences);
+
+        List<Protocol> protocols = protocolService.getAllByType(Protocol.Type.ACTUALIZE);
+        response.put("protocols", protocols);
+
         return ResponseEntity.ok(response);
     }
 
@@ -105,12 +119,18 @@ public class DisciplineEducationalProgramController {
         Map<String, Object> response = new HashMap<>();
 
         String index = (String) payload.get("0");
-        int[] param1, param2;
+        int[] param1, param2, param3, param4;
         try {
             param1 = ((List<String>) payload.get("1")).stream()
                     .mapToInt(Integer::parseInt)
                     .toArray();
             param2 = ((List<String>) payload.get("2")).stream()
+                    .mapToInt(Integer::parseInt)
+                    .toArray();
+            param3 = ((List<String>) payload.get("3")).stream()
+                    .mapToInt(Integer::parseInt)
+                    .toArray();
+            param4 = ((List<String>) payload.get("4")).stream()
                     .mapToInt(Integer::parseInt)
                     .toArray();
         } catch (NumberFormatException ex) {
@@ -129,14 +149,31 @@ public class DisciplineEducationalProgramController {
                 .filter(i -> i == null || competencies.contains(i.getCompetencie()))
                 .distinct()
                 .toList();
+        List<Audience> audiences = Arrays.stream(param3)
+                .mapToObj(audienceService::getById)
+                .distinct()
+                .toList();
+        List<Protocol> protocols = Arrays.stream(param4)
+                .mapToObj(i -> protocolService.getByIdAndType(i, Protocol.Type.ACTUALIZE))
+                .distinct()
+                .toList();
         if (dep == null
                 || competencies.stream().anyMatch(Objects::isNull)
-                || indicators.stream().anyMatch(Objects::isNull)) {
+                || indicators.stream().anyMatch(Objects::isNull)
+                || audiences.stream().anyMatch(Objects::isNull)
+                || protocols.stream().anyMatch(Objects::isNull)) {
             response.put("error", "Запись не найдена.");
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
         }
+        if (protocols.stream().anyMatch(p -> p.getDate().toLocalDate().getYear()
+                <= dep.getBasicEducationalProgram().getProtocol().getDate().toLocalDate().getYear())) {
+            response.put("error", "Дата актуализации должна быть позднее даты утверждения.");
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
+        }
         dep.setIndex(index);
         dep.setIndicators(new ArrayList<>(indicators));
+        dep.setAudiences(new ArrayList<>(audiences));
+        dep.setProtocols(new ArrayList<>(protocols));
         dep.setDisabled(false);
         disciplineEducationalProgramService.save(dep);
 
@@ -150,7 +187,7 @@ public class DisciplineEducationalProgramController {
 
         int param0, param2;
         String index = (String) payload.get("1");
-        int[] param3, param4;
+        int[] param3, param4, param5, param6;
         try {
             param0 = Integer.parseInt((String) payload.get("0"));
             param2 = Integer.parseInt((String) payload.get("2"));
@@ -158,6 +195,12 @@ public class DisciplineEducationalProgramController {
                     .mapToInt(Integer::parseInt)
                     .toArray();
             param4 = ((List<String>) payload.get("4")).stream()
+                    .mapToInt(Integer::parseInt)
+                    .toArray();
+            param5 = ((List<String>) payload.get("5")).stream()
+                    .mapToInt(Integer::parseInt)
+                    .toArray();
+            param6 = ((List<String>) payload.get("6")).stream()
                     .mapToInt(Integer::parseInt)
                     .toArray();
         } catch (NumberFormatException ex) {
@@ -176,11 +219,26 @@ public class DisciplineEducationalProgramController {
                 .filter(i -> i == null || competencies.contains(i.getCompetencie()))
                 .distinct()
                 .toList();
+        List<Audience> audiences = Arrays.stream(param5)
+                .mapToObj(audienceService::getById)
+                .distinct()
+                .toList();
+        List<Protocol> protocols = Arrays.stream(param6)
+                .mapToObj(i -> protocolService.getByIdAndType(i, Protocol.Type.ACTUALIZE))
+                .distinct()
+                .toList();
         if (bep == null || discipline == null
                 || competencies.stream().anyMatch(Objects::isNull)
-                || indicators.stream().anyMatch(Objects::isNull)) {
+                || indicators.stream().anyMatch(Objects::isNull)
+                || audiences.stream().anyMatch(Objects::isNull)
+                || protocols.stream().anyMatch(Objects::isNull)) {
             response.put("error", "Запись не найдена.");
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
+        }
+        if (protocols.stream().anyMatch(p ->
+                p.getDate().toLocalDate().getYear() <= bep.getProtocol().getDate().toLocalDate().getYear())) {
+            response.put("error", "Дата актуализации должна быть позднее даты утверждения.");
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
         }
 
         DisciplineEducationalProgram dep = new DisciplineEducationalProgram();
@@ -188,6 +246,8 @@ public class DisciplineEducationalProgramController {
         dep.setBasicEducationalProgram(bep);
         dep.setDiscipline(discipline);
         dep.setIndicators(new ArrayList<>(indicators));
+        dep.setAudiences(new ArrayList<>(audiences));
+        dep.setProtocols(new ArrayList<>(protocols));
         dep.setDisabled(false);
         disciplineEducationalProgramService.save(dep);
 

@@ -39,12 +39,6 @@
             <select class="form-control" id="filter1" data-live-search="true" data-selected-text-format="count">
             </select>
         </div>
-        <div class="filter-container">
-            <label for="filter2">Направление:</label>
-            <select class="form-control" id="filter2" data-live-search="true" data-selected-text-format="count">
-                <option value="0" selected>Выберите направление</option>
-            </select>
-        </div>
     </div>
     <div class="scrollable-table">
         <table class="table table-bordered" id="dataTable">
@@ -54,14 +48,17 @@
                            onkeyup="filterTable('dataTable', 0)"></th>
                 <th><input type="text" class="form-control" placeholder="Учебный год"
                            onkeyup="filterTable('dataTable', 1)"></th>
-                <th><input type="text" class="form-control" placeholder="Профиль"
+                <th><input type="text" class="form-control" placeholder="Направление"
                            onkeyup="filterTable('dataTable', 2)"></th>
-                <th><input type="text" class="form-control" placeholder="Форма обучения"
+                <th><input type="text" class="form-control" placeholder="Профиль"
                            onkeyup="filterTable('dataTable', 3)"></th>
+                <th><input type="text" class="form-control" placeholder="Форма обучения"
+                           onkeyup="filterTable('dataTable', 4)"></th>
             </tr>
             <tr class="sticky-header">
                 <th>ID</th>
                 <th>Учебный год</th>
+                <th>Направление</th>
                 <th>Профиль</th>
                 <th>Форма обучения</th>
             </tr>
@@ -96,6 +93,7 @@
     <a href="/disciplines">Дисциплины</a>
     <a href="/competencies">Компетенции</a>
     <a href="/indicators">Индикаторы</a>
+    <a href="/protocols">Протоколы</a>
 </div>
 <div id="createModal" class="modal" style="display: none;">
     <div class="modal-content">
@@ -120,9 +118,6 @@
 <script>
     document.addEventListener('DOMContentLoaded', function () {
         let filter1 = document.getElementById('filter1');
-        let filter2 = document.getElementById('filter2');
-        let filter1Global = 0;
-        filter2.disabled = true;
 
         let btnChoose = document.querySelector('.btn-choose')
         btnChoose.addEventListener('click', chooseRecord)
@@ -285,6 +280,9 @@
                     .then(data => {
                         const form = document.querySelector('.createForm')
 
+                        let fieldSelectDirection;
+                        let fieldSelectProfile;
+
                         let fieldWrapper = document.createElement('div')
                         fieldWrapper.classList.add('standard__active-record-wrapper')
                         let fieldDesc = document.createElement('p')
@@ -298,9 +296,45 @@
                         fieldWrapper.classList.add('standard__active-record-wrapper')
                         fieldDesc = document.createElement('p')
                         fieldDesc.classList.add('field__desc')
+                        fieldDesc.textContent = `Направление:`
+                        fieldWrapper.append(fieldDesc)
+                        let fieldSelect = fieldSelectDirection = document.createElement('select');
+                        fieldSelect.classList.add('form-control', 'field');
+                        fieldSelect.setAttribute('data-live-search', 'true');
+                        fieldSelect.setAttribute('data-selected-text-format', 'count');
+                        data.directions.forEach(function (optionData) {
+                            let text = optionData.name;
+                            let id = optionData.id;
+                            let option = createOptionForCreate(text, id)
+                            fieldSelect.append(option);
+                        });
+                        fieldSelect.addEventListener('change', function () {
+                            let value = this.value;
+                            if (!value) {
+                                return;
+                            }
+                            fieldSelectProfile.innerHTML = '';
+                            data.profiles.forEach(function (optionData) {
+                                if (optionData.direction.id == value) {
+                                    let text = optionData.name;
+                                    let id = optionData.id;
+                                    let option = createOptionForCreate(text, id)
+                                    fieldSelectProfile.append(option);
+                                }
+                            });
+                            $('select', form).selectpicker('refresh');
+                            $('.bootstrap-select', form).removeClass(['form-control', 'field']);
+                        });
+                        fieldWrapper.append(fieldSelect)
+                        form.append(fieldWrapper)
+
+                        fieldWrapper = document.createElement('div')
+                        fieldWrapper.classList.add('standard__active-record-wrapper')
+                        fieldDesc = document.createElement('p')
+                        fieldDesc.classList.add('field__desc')
                         fieldDesc.textContent = `Профиль:`
                         fieldWrapper.append(fieldDesc)
-                        let fieldSelect = document.createElement('select');
+                        fieldSelect = fieldSelectProfile = document.createElement('select');
                         fieldSelect.classList.add('form-control', 'field');
                         fieldSelect.setAttribute('data-live-search', 'true');
                         fieldSelect.setAttribute('data-selected-text-format', 'count');
@@ -332,6 +366,25 @@
                         fieldWrapper.append(fieldSelect)
                         form.append(fieldWrapper)
 
+                        fieldWrapper = document.createElement('div')
+                        fieldWrapper.classList.add('standard__active-record-wrapper')
+                        fieldDesc = document.createElement('p')
+                        fieldDesc.classList.add('field__desc')
+                        fieldDesc.textContent = `Протокол утверждения:`
+                        fieldWrapper.append(fieldDesc)
+                        fieldSelect = document.createElement('select');
+                        fieldSelect.classList.add('form-control', 'field');
+                        fieldSelect.setAttribute('data-live-search', 'true');
+                        fieldSelect.setAttribute('data-selected-text-format', 'count');
+                        data.protocols.forEach(function (optionData) {
+                            let text = `№${optionData.numberProtocol} от ${formatDate(optionData.date)}`;
+                            let id = optionData.id;
+                            let option = createOptionForCreate(text, id)
+                            fieldSelect.append(option);
+                        });
+                        fieldWrapper.append(fieldSelect)
+                        form.append(fieldWrapper)
+
                         let closeBtn = document.querySelector('.close-btn');
                         cancelCreateModal.addEventListener('click', () => closeModal(createModal))
                         closeBtn.addEventListener('click', () => closeModal(createModal))
@@ -339,6 +392,7 @@
 
                         $('select', form).selectpicker();
                         $('.bootstrap-select', form).removeClass(['form-control', 'field']);
+                        fieldSelectDirection.dispatchEvent(new Event('change'));
                     })
                     .catch(error => {
                         console.error('Ошибка загрузки данных:', error);
@@ -398,6 +452,7 @@
                         row.innerHTML =
                             '<td>' + data.id + '</td>' +
                             '<td>' + data.academicYear + '</td>' +
+                            '<td>' + data.profile.direction.name + '</td>' +
                             '<td>' + data.profile.name + '</td>' +
                             '<td>' + data.educationType.name + '</td>';
                         row.addEventListener('click', function () {
@@ -427,6 +482,7 @@
                 row.innerHTML =
                     '<td>' + data.id + '</td>' +
                     '<td>' + data.academicYear + '</td>' +
+                    '<td>' + data.profile.direction.name + '</td>' +
                     '<td>' + data.profile.name + '</td>' +
                     '<td>' + data.educationType.name + '</td>';
                 row.addEventListener('click', function () {
@@ -462,6 +518,9 @@
                     form.setAttribute('activeRecordId', data.data.id)
                     form.append(createIdFieldForActiveRecord(data.data));
 
+                    let fieldSelectDirection;
+                    let fieldSelectProfile;
+
                     let fieldWrapper = document.createElement('div')
                     fieldWrapper.classList.add('standard__active-record-wrapper')
                     let fieldDesc = document.createElement('p')
@@ -475,9 +534,47 @@
                     fieldWrapper.classList.add('standard__active-record-wrapper')
                     fieldDesc = document.createElement('p')
                     fieldDesc.classList.add('field__desc')
+                    fieldDesc.textContent = `Направление:`
+                    fieldWrapper.append(fieldDesc)
+                    let fieldSelect = fieldSelectDirection = document.createElement('select');
+                    fieldSelect.classList.add('form-control', 'field');
+                    fieldSelect.setAttribute('data-live-search', 'true');
+                    fieldSelect.setAttribute('data-selected-text-format', 'count');
+                    data.directions.forEach(function (optionData) {
+                        let text = optionData.name;
+                        let id = optionData.id;
+                        let parentDataId = data.data.profile.direction.id
+                        let option = createOptionForActiveRecord(text, id, parentDataId)
+                        fieldSelect.append(option);
+                    });
+                    fieldSelect.addEventListener('change', function () {
+                        let value = this.value;
+                        if (!value) {
+                            return;
+                        }
+                        fieldSelectProfile.innerHTML = '';
+                        data.profiles.forEach(function (optionData) {
+                            if (optionData.direction.id == value) {
+                                let text = optionData.name;
+                                let id = optionData.id;
+                                let option = createOptionForActiveRecord(text, id, 0)
+                                fieldSelectProfile.append(option);
+                            }
+                        });
+                        $('select', form).selectpicker('refresh');
+                        $('.bootstrap-select', form).removeClass(['form-control', 'field']);
+                    });
+                    fieldSelect.disabled = !editMode;
+                    fieldWrapper.append(fieldSelect)
+                    form.append(fieldWrapper)
+
+                    fieldWrapper = document.createElement('div')
+                    fieldWrapper.classList.add('standard__active-record-wrapper')
+                    fieldDesc = document.createElement('p')
+                    fieldDesc.classList.add('field__desc')
                     fieldDesc.textContent = `Профиль:`
                     fieldWrapper.append(fieldDesc)
-                    let fieldSelect = document.createElement('select');
+                    fieldSelect = fieldSelectProfile = document.createElement('select');
                     fieldSelect.classList.add('form-control', 'field');
                     fieldSelect.setAttribute('data-live-search', 'true');
                     fieldSelect.setAttribute('data-selected-text-format', 'count');
@@ -512,6 +609,29 @@
                     fieldSelect.disabled = !editMode;
                     fieldWrapper.append(fieldSelect)
                     form.append(fieldWrapper)
+
+                    fieldWrapper = document.createElement('div')
+                    fieldWrapper.classList.add('standard__active-record-wrapper')
+                    fieldDesc = document.createElement('p')
+                    fieldDesc.classList.add('field__desc')
+                    fieldDesc.textContent = `Протокол утверждения:`
+                    fieldWrapper.append(fieldDesc)
+                    fieldSelect = document.createElement('select');
+                    fieldSelect.classList.add('form-control', 'field');
+                    fieldSelect.setAttribute('data-live-search', 'true');
+                    fieldSelect.setAttribute('data-selected-text-format', 'count');
+                    data.protocols.forEach(function (optionData) {
+                        let text = `№${optionData.numberProtocol} от ${formatDate(optionData.date)}`;
+                        let id = optionData.id;
+                        let parentDataId = data.data.protocol.id
+                        let option = createOptionForActiveRecord(text, id, parentDataId)
+                        fieldSelect.append(option);
+                    });
+                    fieldSelect.disabled = !editMode;
+                    fieldWrapper.append(fieldSelect)
+                    form.append(fieldWrapper)
+
+                    fieldSelectDirection.dispatchEvent(new Event('change'));
 
                     // Конец добавления в активную запись
                     // Добавляем форму в контейнер
@@ -630,6 +750,7 @@
                                 rows[i].innerHTML =
                                     '<td>' + newRecord.updatedData.id + '</td>' +
                                     '<td>' + newRecord.updatedData.academicYear + '</td>' +
+                                    '<td>' + newRecord.updatedData.profile.direction.name + '</td>' +
                                     '<td>' + newRecord.updatedData.profile.name + '</td>' +
                                     '<td>' + newRecord.updatedData.educationType.name + '</td>';
                                 break;
@@ -654,49 +775,10 @@
 
         filter1.addEventListener('change', function () {
             let filter1Id = this.value;
-            filter1Global = filter1Id;
-
-            // Заблокировать списки, пока не придет ответ
-            filter2.disabled = true;
-            $('select', '.filters').selectpicker('refresh');
 
             fetch('/api/bep/department-filter/' + filter1Id)
                 .then(response => response.json())
                 .then(function (data) {
-                    let filter2 = document.getElementById('filter2');
-                    filter2.innerHTML = '';
-                    let option = document.createElement('option');
-                    option.textContent = "Выберите направление";
-                    option.value = "0";
-                    option.selected = true;
-                    filter2.appendChild(option);
-                    data.filterList.forEach(function (entity) {
-                        let option = document.createElement('option');
-                        option.textContent = entity.name;
-                        option.value = entity.id;
-                        filter2.appendChild(option);
-                    });
-                    renderTable(data.entityList)
-                    // Разблокировать, если данные успешно загружены
-                    if (filter1Id == 0) {
-                        filter2.disabled = true;
-                    } else {
-                        filter2.disabled = false;
-                    }
-                    $('select', '.filters').selectpicker('refresh');
-                })
-                .catch(function (error) {
-                    console.error('Ошибка загрузки данных:', error);
-                    alert('Ошибка при загрузке данных');
-                });
-        });
-
-        filter2.addEventListener('change', function () {
-            let directionId = this.value;
-
-            fetch('/api/bep/direction-filter/' + filter1Global + '/' + directionId)
-                .then(response => response.json())
-                .then(function (data) {
                     renderTable(data.entityList)
                 })
                 .catch(function (error) {
@@ -704,6 +786,16 @@
                     alert('Ошибка при загрузке данных');
                 });
         });
+
+        function formatDate(date) {
+            let options = {
+                year: 'numeric',
+                month: 'numeric',
+                day: 'numeric',
+                timezone: 'MSK'
+            };
+            return new Date(date).toLocaleString("ru", options);
+        }
     });
 </script>
 <script src="/js/filterTable.js"></script>

@@ -108,6 +108,7 @@
     <a href="/disciplines">Дисциплины</a>
     <a href="/competencies">Компетенции</a>
     <a href="/indicators">Индикаторы</a>
+    <a href="/protocols">Протоколы</a>
 </div>
 <div id="createModal" class="modal" style="display: none;">
     <div class="modal-content">
@@ -411,6 +412,46 @@
                         fieldWrapper.append(fieldSelect)
                         form.append(fieldWrapper)
 
+                        fieldWrapper = document.createElement('div')
+                        fieldWrapper.classList.add('standard__active-record-wrapper')
+                        fieldDesc = document.createElement('p')
+                        fieldDesc.classList.add('field__desc')
+                        fieldDesc.textContent = `Аудитории:`
+                        fieldWrapper.append(fieldDesc)
+                        fieldSelect = document.createElement('select');
+                        fieldSelect.classList.add('form-control', 'field');
+                        fieldSelect.setAttribute('data-live-search', 'true');
+                        fieldSelect.setAttribute('data-selected-text-format', 'count');
+                        fieldSelect.multiple = true;
+                        data.audiences.forEach(function (optionData) {
+                            let text = optionData.audienceNumber;
+                            let id = optionData.id;
+                            let option = createOptionForCreate(text, id)
+                            fieldSelect.append(option);
+                        });
+                        fieldWrapper.append(fieldSelect)
+                        form.append(fieldWrapper)
+
+                        fieldWrapper = document.createElement('div')
+                        fieldWrapper.classList.add('standard__active-record-wrapper')
+                        fieldDesc = document.createElement('p')
+                        fieldDesc.classList.add('field__desc')
+                        fieldDesc.textContent = `Протоколы актуализации:`
+                        fieldWrapper.append(fieldDesc)
+                        fieldSelect = document.createElement('select');
+                        fieldSelect.classList.add('form-control', 'field');
+                        fieldSelect.setAttribute('data-live-search', 'true');
+                        fieldSelect.setAttribute('data-selected-text-format', 'count');
+                        fieldSelect.multiple = true;
+                        data.protocols.forEach(function (optionData) {
+                            let text = `№${optionData.numberProtocol} от ${formatDate(optionData.date)}`;
+                            let id = optionData.id;
+                            let option = createOptionForCreate(text, id)
+                            fieldSelect.append(option);
+                        });
+                        fieldWrapper.append(fieldSelect)
+                        form.append(fieldWrapper)
+
                         let closeBtn = document.querySelector('.close-btn');
                         cancelCreateModal.addEventListener('click', () => closeModal(createModal))
                         closeBtn.addEventListener('click', () => closeModal(createModal))
@@ -665,6 +706,50 @@
                     fieldWrapper.append(fieldSelect)
                     form.append(fieldWrapper)
 
+                    fieldWrapper = document.createElement('div')
+                    fieldWrapper.classList.add('standard__active-record-wrapper')
+                    fieldDesc = document.createElement('p')
+                    fieldDesc.classList.add('field__desc')
+                    fieldDesc.textContent = `Аудитории:`
+                    fieldWrapper.append(fieldDesc)
+                    fieldSelect = document.createElement('select');
+                    fieldSelect.classList.add('form-control', 'field');
+                    fieldSelect.setAttribute('data-live-search', 'true');
+                    fieldSelect.setAttribute('data-selected-text-format', 'count');
+                    fieldSelect.multiple = true;
+                    data.audiences.forEach(function (optionData) {
+                        let text = optionData.audienceNumber;
+                        let id = optionData.id;
+                        let selected = data.data.audiences.some(a => a.id === id)
+                        let option = createOptionMultipleForActiveRecord(text, id, selected)
+                        fieldSelect.append(option);
+                    });
+                    fieldSelect.disabled = !editMode;
+                    fieldWrapper.append(fieldSelect)
+                    form.append(fieldWrapper)
+
+                    fieldWrapper = document.createElement('div')
+                    fieldWrapper.classList.add('standard__active-record-wrapper')
+                    fieldDesc = document.createElement('p')
+                    fieldDesc.classList.add('field__desc')
+                    fieldDesc.textContent = `Протоколы актуализации:`
+                    fieldWrapper.append(fieldDesc)
+                    fieldSelect = document.createElement('select');
+                    fieldSelect.classList.add('form-control', 'field');
+                    fieldSelect.setAttribute('data-live-search', 'true');
+                    fieldSelect.setAttribute('data-selected-text-format', 'count');
+                    fieldSelect.multiple = true
+                    data.protocols.forEach(function (optionData) {
+                        let text = `№${optionData.numberProtocol} от ${formatDate(optionData.date)}`;
+                        let id = optionData.id;
+                        let selected = data.data.protocols.some(p => p.id === id)
+                        let option = createOptionMultipleForActiveRecord(text, id, selected)
+                        fieldSelect.append(option);
+                    });
+                    fieldSelect.disabled = !editMode;
+                    fieldWrapper.append(fieldSelect)
+                    form.append(fieldWrapper)
+
                     fieldSelectCompetencies.dispatchEvent(new Event('change'));
 
                     // Конец добавления в активную запись
@@ -902,6 +987,16 @@
                     alert('Ошибка при загрузке данных');
                 });
         });
+
+        function formatDate(date) {
+            let options = {
+                year: 'numeric',
+                month: 'numeric',
+                day: 'numeric',
+                timezone: 'MSK'
+            };
+            return new Date(date).toLocaleString("ru", options);
+        }
     });
 </script>
 <script src="/js/filterTable.js"></script>

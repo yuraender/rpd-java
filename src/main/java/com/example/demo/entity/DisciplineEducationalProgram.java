@@ -33,6 +33,18 @@ public class DisciplineEducationalProgram {
             inverseJoinColumns = @JoinColumn(name = "indicator_id", referencedColumnName = "id"))
     private List<Indicator> indicators;
 
+    @ManyToMany
+    @JoinTable(name = "basic_educational_program_discipline_audiences",
+            joinColumns = @JoinColumn(name = "basic_educational_program_discipline_id", referencedColumnName = "id"),
+            inverseJoinColumns = @JoinColumn(name = "audience_id", referencedColumnName = "id"))
+    private List<Audience> audiences;
+
+    @ManyToMany
+    @JoinTable(name = "basic_educational_program_discipline_protocols",
+            joinColumns = @JoinColumn(name = "basic_educational_program_discipline_id", referencedColumnName = "id"),
+            inverseJoinColumns = @JoinColumn(name = "protocol_id", referencedColumnName = "id"))
+    private List<Protocol> protocols;
+
     @Column(nullable = false)
     private boolean disabled;
 
@@ -40,9 +52,19 @@ public class DisciplineEducationalProgram {
         return indicators.stream().filter(i -> !i.isDisabled()).toList();
     }
 
+    public List<Audience> getAudiences() {
+        return audiences.stream().filter(a -> !a.isDisabled()).toList();
+    }
+
+    public List<Protocol> getProtocols() {
+        return protocols.stream().filter(p -> !p.isDisabled()).toList();
+    }
+
     public boolean isDisabled() {
         return disabled
                 || basicEducationalProgram.isDisabled() || discipline.isDisabled()
-                || indicators.stream().anyMatch(Indicator::isDisabled);
+                || indicators.stream().anyMatch(Indicator::isDisabled)
+                || audiences.stream().anyMatch(Audience::isDisabled)
+                || protocols.stream().anyMatch(Protocol::isDisabled);
     }
 }

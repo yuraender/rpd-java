@@ -25,10 +25,14 @@ public class BasicEducationalProgram {
     @JoinColumn(name = "education_type_id", referencedColumnName = "id", nullable = false)
     private EducationType educationType;
 
+    @ManyToOne
+    @JoinColumn(name = "protocol_id", referencedColumnName = "id", nullable = false)
+    private Protocol protocol;
+
     @Column(nullable = false)
     private boolean disabled;
 
     public boolean isDisabled() {
-        return disabled || profile.isDisabled() || educationType.isDisabled();
+        return disabled || profile.isDisabled() || educationType.isDisabled() || protocol.isDisabled();
     }
 }

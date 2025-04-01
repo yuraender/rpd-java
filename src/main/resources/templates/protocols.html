@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Формы обучения</title>
+    <title>Протоколы</title>
     <link rel="icon" type="image/png" href="/image/favicon-96x96.png" sizes="96x96"/>
     <link rel="icon" type="image/svg+xml" href="/image/favicon.svg"/>
     <link rel="shortcut icon" href="/image/favicon.ico"/>
@@ -32,25 +32,25 @@
     </div>
 </nav>
 <section class="container">
-    <h2>Формы обучения</h2>
+    <h2>Протоколы</h2>
     <div class="scrollable-table">
         <table class="table table-bordered" id="dataTable">
             <thead>
             <tr class="sticky-header">
                 <th><input type="text" class="form-control" placeholder="ID"
                            onkeyup="filterTable('dataTable', 0)"></th>
-                <th><input type="text" class="form-control" placeholder="Название"
+                <th><input type="text" class="form-control" placeholder="Номер"
                            onkeyup="filterTable('dataTable', 1)"></th>
-                <th><input type="text" class="form-control" placeholder="Срок освоения"
+                <th><input type="text" class="form-control" placeholder="Дата подписания"
                            onkeyup="filterTable('dataTable', 2)"></th>
-                <th><input type="text" class="form-control" placeholder="Текст"
+                <th><input type="text" class="form-control" placeholder="Тип"
                            onkeyup="filterTable('dataTable', 3)"></th>
             </tr>
             <tr class="sticky-header">
                 <th>ID</th>
-                <th>Название</th>
-                <th>Срок освоения</th>
-                <th>Текст</th>
+                <th>Номер</th>
+                <th>Дата подписания</th>
+                <th>Тип</th>
             </tr>
             </thead>
             <tbody>
@@ -62,7 +62,7 @@
         <button class="btn-create button btn btn-primary">Добавить</button>
         <button class="btn-delete button btn btn-primary">Удалить</button>
     </div>
-    <div class="active-record">
+    <div class="active-record" style="display: none;">
     </div>
 </section>
 <div class="rightbar">
@@ -131,7 +131,7 @@
             let saveModalRecord = document.querySelector('.save-modal-record');
             saveModalRecord.addEventListener('click', () => saveNewRecord())
 
-            fetch('/education-types-data')
+            fetch('/protocols-data')
                 .then(response => response.json())
                 .then(function (data) {
                     checkAdmin(data)
@@ -193,11 +193,12 @@
                 } else {
                     let dataId = recordElement.getAttribute('activeRecordId')
                     if (!dataId) return null;
-                    fetch('/api/education-type/delete-record/' + dataId)
+                    fetch('/api/protocol/delete-record/' + dataId)
                         .then(response => response.json())
                         .then(deletedRecord => {
                             showModalWithMessage('Запись удалена.')
-                            document.querySelector('.active-form').remove()
+                            recordElement.parentElement.style.display = 'none';
+                            recordElement.remove()
                             let table = document.getElementById('dataTable');
                             let rows = table.querySelectorAll('tbody tr');
 
@@ -224,6 +225,19 @@
                 return textBox;
             }
 
+            function createDatePickerForCreate() {
+                const date = new Date();
+                let day = String(date.getDate()).padStart(2, '0');
+                let month = String(date.getMonth() + 1).padStart(2, '0');
+
+                let datePicker = document.createElement('input');
+                datePicker.type = 'date';
+                datePicker.min = '2000-01-01';
+                datePicker.max = `${date.getFullYear()}-${month}-${day}`;
+                datePicker.classList.add('form-control', 'field');
+                return datePicker;
+            }
+
             function createOptionForCreate(text, id) {
                 let option = document.createElement('option');
                 option.textContent = text;
@@ -232,7 +246,7 @@
             }
 
             function showCreateModal() {
-                fetch('/education-types-data')
+                fetch('/protocols-data')
                     .then(response => response.json())
                     .then(data => {
                         const form = document.querySelector('.createForm')
@@ -241,27 +255,37 @@
                         fieldWrapper.classList.add('standard__active-record-wrapper')
                         let fieldDesc = document.createElement('p')
                         fieldDesc.classList.add('field__desc')
-                        fieldDesc.textContent = `Название:`
+                        fieldDesc.textContent = `Номер:`
                         fieldWrapper.append(fieldDesc)
-                        fieldWrapper.append(createTextBoxForCreate(50))
+                        fieldWrapper.append(createTextBoxForCreate(100))
                         form.append(fieldWrapper)
 
                         fieldWrapper = document.createElement('div')
                         fieldWrapper.classList.add('standard__active-record-wrapper')
                         fieldDesc = document.createElement('p')
                         fieldDesc.classList.add('field__desc')
-                        fieldDesc.textContent = `Срок освоения:`
+                        fieldDesc.textContent = `Дата подписания:`
                         fieldWrapper.append(fieldDesc)
-                        fieldWrapper.append(createTextBoxForCreate(1))
+                        fieldWrapper.append(createDatePickerForCreate())
                         form.append(fieldWrapper)
 
                         fieldWrapper = document.createElement('div')
                         fieldWrapper.classList.add('standard__active-record-wrapper')
                         fieldDesc = document.createElement('p')
                         fieldDesc.classList.add('field__desc')
-                        fieldDesc.textContent = `Текст:`
+                        fieldDesc.textContent = `Тип:`
                         fieldWrapper.append(fieldDesc)
-                        fieldWrapper.append(createOptionalTextBoxForCreate(1000))
+                        let fieldSelect = document.createElement('select');
+                        fieldSelect.classList.add('form-control', 'field');
+                        fieldSelect.setAttribute('data-live-search', 'true');
+                        fieldSelect.setAttribute('data-selected-text-format', 'count');
+                        data.types.forEach(function (optionData) {
+                            let text = optionData.name;
+                            let id = optionData.id;
+                            let option = createOptionForCreate(text, id)
+                            fieldSelect.append(option);
+                        });
+                        fieldWrapper.append(fieldSelect)
                         form.append(fieldWrapper)
 
                         let closeBtn = document.querySelector('.close-btn');
@@ -308,7 +332,7 @@
         }
 
         function createNewRecord(data) {
-            fetch('/api/education-type/save-new-record', {
+            fetch('/api/protocol/save-new-record', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -329,9 +353,9 @@
                         row.classList.add(`${data.id}`)
                         row.innerHTML =
                             '<td>' + data.id + '</td>' +
-                            '<td>' + data.name + '</td>' +
-                            '<td>' + data.learningPeriod + '</td>' +
-                            '<td>' + data.text + '</td>';
+                            '<td>' + data.numberProtocol + '</td>' +
+                            '<td>' + formatDate(data.date) + '</td>' +
+                            '<td>' + data.type.name + '</td>';
                         row.addEventListener('click', function () {
                             changeActiveRowTable(data.id);
                         });
@@ -358,9 +382,9 @@
                 row.classList.add(`${data.id}`)
                 row.innerHTML =
                     '<td>' + data.id + '</td>' +
-                    '<td>' + data.name + '</td>' +
-                    '<td>' + data.learningPeriod + '</td>' +
-                    '<td>' + data.text + '</td>';
+                    '<td>' + data.numberProtocol + '</td>' +
+                    '<td>' + formatDate(data.date) + '</td>' +
+                    '<td>' + data.type.name + '</td>';
                 row.addEventListener('click', function () {
                     changeActiveRowTable(data.id);
                 });
@@ -369,7 +393,7 @@
         }
 
         function changeActiveRowTable(dataId) {
-            fetch('/api/education-type/get-active/' + dataId)
+            fetch('/api/protocol/get-active/' + dataId)
                 .then(response => response.json())
                 .then(function (data) {
                     document.querySelector('.button-edit').disabled = false;
@@ -398,27 +422,27 @@
                     fieldWrapper.classList.add('standard__active-record-wrapper')
                     let fieldDesc = document.createElement('p')
                     fieldDesc.classList.add('field__desc')
-                    fieldDesc.textContent = `Название:`
+                    fieldDesc.textContent = `Номер:`
                     fieldWrapper.append(fieldDesc)
-                    fieldWrapper.append(createTextBoxForActiveRecord(data.data.name, 50))
+                    fieldWrapper.append(createTextBoxForActiveRecord(data.data.numberProtocol, 11))
                     form.append(fieldWrapper)
 
                     fieldWrapper = document.createElement('div')
                     fieldWrapper.classList.add('standard__active-record-wrapper')
                     fieldDesc = document.createElement('p')
                     fieldDesc.classList.add('field__desc')
-                    fieldDesc.textContent = `Срок освоения:`
+                    fieldDesc.textContent = `Дата подписания:`
                     fieldWrapper.append(fieldDesc)
-                    fieldWrapper.append(createTextBoxForActiveRecord(data.data.learningPeriod, 1))
+                    fieldWrapper.append(createDatePickerForActiveRecord(data.data.date))
                     form.append(fieldWrapper)
 
                     fieldWrapper = document.createElement('div')
                     fieldWrapper.classList.add('standard__active-record-wrapper')
                     fieldDesc = document.createElement('p')
                     fieldDesc.classList.add('field__desc')
-                    fieldDesc.textContent = `Текст:`
+                    fieldDesc.textContent = `Тип:`
                     fieldWrapper.append(fieldDesc)
-                    fieldWrapper.append(createOptionalTextBoxForActiveRecord(data.data.text, 1000))
+                    fieldWrapper.append(createInactiveTextBox(data.data.type.name))
                     form.append(fieldWrapper)
 
                     // Конец добавления в активную запись
@@ -454,6 +478,21 @@
                         let textBox = createTextBoxForActiveRecord(text, maxLength);
                         textBox.classList.add('optional');
                         return textBox;
+                    }
+
+                    function createDatePickerForActiveRecord(value) {
+                        const date = new Date();
+                        let day = String(date.getDate()).padStart(2, '0');
+                        let month = String(date.getMonth() + 1).padStart(2, '0');
+
+                        let datePicker = document.createElement('input');
+                        datePicker.type = 'date';
+                        datePicker.value = value;
+                        datePicker.min = '2000-01-01';
+                        datePicker.max = `${date.getFullYear()}-${month}-${day}`;
+                        datePicker.readOnly = !editMode;
+                        datePicker.classList.add('form-control', 'field');
+                        return datePicker;
                     }
 
                     function createInactiveTextBox(text) {
@@ -516,7 +555,7 @@
             data['dataId'] = dataId;
 
             if (emptyFields) return
-            fetch('/api/education-type/update', {
+            fetch('/api/protocol/update', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -537,9 +576,9 @@
                             if (rows[i].getAttribute('dataid') == newRecord.updatedData.id) {
                                 rows[i].innerHTML =
                                     '<td>' + newRecord.updatedData.id + '</td>' +
-                                    '<td>' + newRecord.updatedData.name + '</td>' +
-                                    '<td>' + newRecord.updatedData.learningPeriod + '</td>' +
-                                    '<td>' + newRecord.updatedData.text + '</td>';
+                                    '<td>' + newRecord.updatedData.numberProtocol + '</td>' +
+                                    '<td>' + formatDate(newRecord.updatedData.date) + '</td>' +
+                                    '<td>' + newRecord.updatedData.type.name + '</td>';
                                 break;
                             }
                         }
@@ -558,6 +597,16 @@
             let form = document.querySelector('.createForm')
             removeAllChildElements(form)
             modal.style.display = 'none';
+        }
+
+        function formatDate(date) {
+            let options = {
+                year: 'numeric',
+                month: 'numeric',
+                day: 'numeric',
+                timezone: 'MSK'
+            };
+            return new Date(date).toLocaleString("ru", options);
         }
     });
 </script>
