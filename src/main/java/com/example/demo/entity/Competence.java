@@ -5,16 +5,16 @@ import lombok.Getter;
 import lombok.Setter;
 
 @Entity
-@Table(name = "competencies")
+@Table(name = "competences")
 @Getter
 @Setter
-public class Competencie {
+public class Competence {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
-    @Column(name = "competencie_index", length = 100, nullable = false)
+    @Column(name = "competence_index", length = 100, nullable = false)
     private String index;
 
     @Column(columnDefinition = "TEXT", nullable = false)

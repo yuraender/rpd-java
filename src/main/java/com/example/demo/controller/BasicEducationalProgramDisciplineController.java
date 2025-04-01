@@ -17,30 +17,30 @@ import java.util.*;
 
 @Controller
 @RequiredArgsConstructor
-public class DisciplineEducationalProgramController {
+public class BasicEducationalProgramDisciplineController {
 
-    private final DisciplineEducationalProgramService disciplineEducationalProgramService;
+    private final BasicEducationalProgramDisciplineService basicEducationalProgramDisciplineService;
     private final DepartmentService departmentService;
     private final BasicEducationalProgramService basicEducationalProgramService;
     private final DisciplineService disciplineService;
-    private final CompetencieService competencieService;
+    private final CompetenceService competenceService;
     private final IndicatorService indicatorService;
-    private final AudienceService audienceService;
+    private final AuditoriumService auditoriumService;
     private final ProtocolService protocolService;
     private final DirectionService directionService;
     private final ProfileService profileService;
 
-    @GetMapping("/deps")
+    @GetMapping("/bep-disciplines")
     public String getTablePage() {
-        return "disciplines-educational-programs";
+        return "basic-educational-program-disciplines";
     }
 
-    @GetMapping("/deps-data")
+    @GetMapping("/bep-disciplines-data")
     public ResponseEntity<Map<String, Object>> getEntityData(HttpServletRequest request) {
         Map<String, Object> response = new HashMap<>();
 
-        List<DisciplineEducationalProgram> deps = disciplineEducationalProgramService.getAll();
-        response.put("data", deps);
+        List<BasicEducationalProgramDiscipline> bepDisciplines = basicEducationalProgramDisciplineService.getAll();
+        response.put("data", bepDisciplines);
 
         List<Department> departments = departmentService.getAll();
         response.put("departments", departments);
@@ -51,8 +51,8 @@ public class DisciplineEducationalProgramController {
         List<Discipline> disciplines = disciplineService.getAll();
         response.put("disciplines", disciplines);
 
-        List<Competencie> competencies = competencieService.getAll();
-        response.put("competencies", competencies);
+        List<Competence> competences = competenceService.getAll();
+        response.put("competences", competences);
 
         List<Indicator> indicators = indicatorService.getAll();
         response.put("indicators", indicators);
@@ -60,8 +60,8 @@ public class DisciplineEducationalProgramController {
         List<Indicator.Type> indicatorTypes = Arrays.stream(Indicator.Type.values()).toList();
         response.put("indicatorTypes", indicatorTypes);
 
-        List<Audience> audiences = audienceService.getAll();
-        response.put("audiences", audiences);
+        List<Auditorium> auditoriums = auditoriumService.getAll();
+        response.put("auditoriums", auditoriums);
 
         List<Protocol> protocols = protocolService.getAllByType(Protocol.Type.ACTUALIZE);
         response.put("protocols", protocols);
@@ -73,31 +73,31 @@ public class DisciplineEducationalProgramController {
         return ResponseEntity.ok(response);
     }
 
-    @GetMapping("/api/dep/set-active/{entityId}")
+    @GetMapping("/api/bep-discipline/set-active/{entityId}")
     public ResponseEntity<Map<String, Object>> setActive(@PathVariable Integer entityId, HttpServletRequest request) {
         Map<String, Object> response = new HashMap<>();
 
-        DisciplineEducationalProgram dep = disciplineEducationalProgramService.getById(entityId);
-        if (dep == null) {
+        BasicEducationalProgramDiscipline bepDiscipline = basicEducationalProgramDisciplineService.getById(entityId);
+        if (bepDiscipline == null) {
             response.put("error", "Запись не найдена.");
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
         }
-        response.put("dataName", dep.getId());
+        response.put("dataName", bepDiscipline.getId());
 
         HttpSession session = request.getSession();
-        session.setAttribute("disciplinesEducationalProgramId", entityId);
+        session.setAttribute("bepDisciplineId", entityId);
         return ResponseEntity.ok(response);
     }
 
-    @GetMapping("/api/dep/get-active/{entityId}")
+    @GetMapping("/api/bep-discipline/get-active/{entityId}")
     public ResponseEntity<Map<String, Object>> getActiveEntity(@PathVariable Integer entityId) {
         Map<String, Object> response = new HashMap<>();
 
-        DisciplineEducationalProgram dep = disciplineEducationalProgramService.getById(entityId);
-        response.put("data", dep);
+        BasicEducationalProgramDiscipline bepDiscipline = basicEducationalProgramDisciplineService.getById(entityId);
+        response.put("data", bepDiscipline);
 
-        List<Competencie> competencies = competencieService.getAll();
-        response.put("competencies", competencies);
+        List<Competence> competences = competenceService.getAll();
+        response.put("competences", competences);
 
         List<Indicator> indicators = indicatorService.getAll();
         response.put("indicators", indicators);
@@ -105,8 +105,8 @@ public class DisciplineEducationalProgramController {
         List<Indicator.Type> indicatorTypes = Arrays.stream(Indicator.Type.values()).toList();
         response.put("indicatorTypes", indicatorTypes);
 
-        List<Audience> audiences = audienceService.getAll();
-        response.put("audiences", audiences);
+        List<Auditorium> auditoriums = auditoriumService.getAll();
+        response.put("auditoriums", auditoriums);
 
         List<Protocol> protocols = protocolService.getAllByType(Protocol.Type.ACTUALIZE);
         response.put("protocols", protocols);
@@ -114,7 +114,7 @@ public class DisciplineEducationalProgramController {
         return ResponseEntity.ok(response);
     }
 
-    @PostMapping("/api/dep/update")
+    @PostMapping("/api/bep-discipline/update")
     public ResponseEntity<Map<String, Object>> updateRecord(@RequestBody Map<String, Object> payload) {
         Map<String, Object> response = new HashMap<>();
 
@@ -139,49 +139,49 @@ public class DisciplineEducationalProgramController {
         }
         Integer dataId = Integer.parseInt((String) payload.get("dataId"));
 
-        DisciplineEducationalProgram dep = disciplineEducationalProgramService.getById(dataId);
-        List<Competencie> competencies = Arrays.stream(param1)
-                .mapToObj(competencieService::getById)
+        BasicEducationalProgramDiscipline bepDiscipline = basicEducationalProgramDisciplineService.getById(dataId);
+        List<Competence> competences = Arrays.stream(param1)
+                .mapToObj(competenceService::getById)
                 .distinct()
                 .toList();
         List<Indicator> indicators = Arrays.stream(param2)
                 .mapToObj(indicatorService::getById)
-                .filter(i -> i == null || competencies.contains(i.getCompetencie()))
+                .filter(i -> i == null || competences.contains(i.getCompetence()))
                 .distinct()
                 .toList();
-        List<Audience> audiences = Arrays.stream(param3)
-                .mapToObj(audienceService::getById)
+        List<Auditorium> auditoriums = Arrays.stream(param3)
+                .mapToObj(auditoriumService::getById)
                 .distinct()
                 .toList();
         List<Protocol> protocols = Arrays.stream(param4)
                 .mapToObj(i -> protocolService.getByIdAndType(i, Protocol.Type.ACTUALIZE))
                 .distinct()
                 .toList();
-        if (dep == null
-                || competencies.stream().anyMatch(Objects::isNull)
+        if (bepDiscipline == null
+                || competences.stream().anyMatch(Objects::isNull)
                 || indicators.stream().anyMatch(Objects::isNull)
-                || audiences.stream().anyMatch(Objects::isNull)
+                || auditoriums.stream().anyMatch(Objects::isNull)
                 || protocols.stream().anyMatch(Objects::isNull)) {
             response.put("error", "Запись не найдена.");
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
         }
         if (protocols.stream().anyMatch(p -> p.getDate().toLocalDate().getYear()
-                <= dep.getBasicEducationalProgram().getProtocol().getDate().toLocalDate().getYear())) {
+                <= bepDiscipline.getBasicEducationalProgram().getProtocol().getDate().toLocalDate().getYear())) {
             response.put("error", "Дата актуализации должна быть позднее даты утверждения.");
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
         }
-        dep.setIndex(index);
-        dep.setIndicators(new ArrayList<>(indicators));
-        dep.setAudiences(new ArrayList<>(audiences));
-        dep.setProtocols(new ArrayList<>(protocols));
-        dep.setDisabled(false);
-        disciplineEducationalProgramService.save(dep);
+        bepDiscipline.setIndex(index);
+        bepDiscipline.setIndicators(new ArrayList<>(indicators));
+        bepDiscipline.setAuditoriums(new ArrayList<>(auditoriums));
+        bepDiscipline.setProtocols(new ArrayList<>(protocols));
+        bepDiscipline.setDisabled(false);
+        basicEducationalProgramDisciplineService.save(bepDiscipline);
 
-        response.put("updatedData", dep);
+        response.put("updatedData", bepDiscipline);
         return ResponseEntity.ok(response);
     }
 
-    @PostMapping("/api/dep/save-new-record")
+    @PostMapping("/api/bep-discipline/save-new-record")
     public ResponseEntity<Map<String, Object>> createRecord(@RequestBody Map<String, Object> payload) {
         Map<String, Object> response = new HashMap<>();
 
@@ -210,17 +210,17 @@ public class DisciplineEducationalProgramController {
 
         BasicEducationalProgram bep = basicEducationalProgramService.getById(param0);
         Discipline discipline = disciplineService.getById(param2);
-        List<Competencie> competencies = Arrays.stream(param3)
-                .mapToObj(competencieService::getById)
+        List<Competence> competences = Arrays.stream(param3)
+                .mapToObj(competenceService::getById)
                 .distinct()
                 .toList();
         List<Indicator> indicators = Arrays.stream(param4)
                 .mapToObj(indicatorService::getById)
-                .filter(i -> i == null || competencies.contains(i.getCompetencie()))
+                .filter(i -> i == null || competences.contains(i.getCompetence()))
                 .distinct()
                 .toList();
-        List<Audience> audiences = Arrays.stream(param5)
-                .mapToObj(audienceService::getById)
+        List<Auditorium> auditoriums = Arrays.stream(param5)
+                .mapToObj(auditoriumService::getById)
                 .distinct()
                 .toList();
         List<Protocol> protocols = Arrays.stream(param6)
@@ -228,9 +228,9 @@ public class DisciplineEducationalProgramController {
                 .distinct()
                 .toList();
         if (bep == null || discipline == null
-                || competencies.stream().anyMatch(Objects::isNull)
+                || competences.stream().anyMatch(Objects::isNull)
                 || indicators.stream().anyMatch(Objects::isNull)
-                || audiences.stream().anyMatch(Objects::isNull)
+                || auditoriums.stream().anyMatch(Objects::isNull)
                 || protocols.stream().anyMatch(Objects::isNull)) {
             response.put("error", "Запись не найдена.");
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
@@ -241,37 +241,37 @@ public class DisciplineEducationalProgramController {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
         }
 
-        DisciplineEducationalProgram dep = new DisciplineEducationalProgram();
-        dep.setIndex(index);
-        dep.setBasicEducationalProgram(bep);
-        dep.setDiscipline(discipline);
-        dep.setIndicators(new ArrayList<>(indicators));
-        dep.setAudiences(new ArrayList<>(audiences));
-        dep.setProtocols(new ArrayList<>(protocols));
-        dep.setDisabled(false);
-        disciplineEducationalProgramService.save(dep);
+        BasicEducationalProgramDiscipline bepDiscipline = new BasicEducationalProgramDiscipline();
+        bepDiscipline.setIndex(index);
+        bepDiscipline.setBasicEducationalProgram(bep);
+        bepDiscipline.setDiscipline(discipline);
+        bepDiscipline.setIndicators(new ArrayList<>(indicators));
+        bepDiscipline.setAuditoriums(new ArrayList<>(auditoriums));
+        bepDiscipline.setProtocols(new ArrayList<>(protocols));
+        bepDiscipline.setDisabled(false);
+        basicEducationalProgramDisciplineService.save(bepDiscipline);
 
-        response.put("createdData", dep);
+        response.put("createdData", bepDiscipline);
         return ResponseEntity.ok(response);
     }
 
-    @GetMapping("/api/dep/delete-record/{entityId}")
+    @GetMapping("/api/bep-discipline/delete-record/{entityId}")
     public ResponseEntity<Map<String, Object>> deleteRecord(@PathVariable Integer entityId) {
         Map<String, Object> response = new HashMap<>();
 
-        DisciplineEducationalProgram dep = disciplineEducationalProgramService.getById(entityId);
-        if (dep == null) {
+        BasicEducationalProgramDiscipline bepDiscipline = basicEducationalProgramDisciplineService.getById(entityId);
+        if (bepDiscipline == null) {
             response.put("error", "Запись не найдена.");
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
         }
-        dep.setDisabled(true);
-        disciplineEducationalProgramService.save(dep);
+        bepDiscipline.setDisabled(true);
+        basicEducationalProgramDisciplineService.save(bepDiscipline);
 
-        response.put("deletedData", dep.getId());
+        response.put("deletedData", bepDiscipline.getId());
         return ResponseEntity.ok(response);
     }
 
-    @GetMapping("/api/dep/department-filter/{filter1}")
+    @GetMapping("/api/bep-discipline/department-filter/{filter1}")
     public ResponseEntity<Map<String, Object>> filterByDepartment(@PathVariable Integer filter1) {
         Map<String, Object> response = new HashMap<>();
 
@@ -280,20 +280,20 @@ public class DisciplineEducationalProgramController {
                 .toList();
         response.put("filterList", filterList);
 
-        List<DisciplineEducationalProgram> deps = disciplineEducationalProgramService.getAll();
+        List<BasicEducationalProgramDiscipline> bepDisciplines = basicEducationalProgramDisciplineService.getAll();
 
         if (filter1 == 0) {
-            response.put("entityList", deps);
+            response.put("entityList", bepDisciplines);
         } else {
-            List<DisciplineEducationalProgram> entityList = deps.stream()
-                    .filter(dep -> dep.getBasicEducationalProgram().getProfile().getDirection().getDepartment().getId() == filter1)
+            List<BasicEducationalProgramDiscipline> entityList = bepDisciplines.stream()
+                    .filter(bepd -> bepd.getBasicEducationalProgram().getProfile().getDirection().getDepartment().getId() == filter1)
                     .toList();
             response.put("entityList", entityList);
         }
         return ResponseEntity.ok(response);
     }
 
-    @GetMapping("/api/dep/direction-filter/{filter1}/{filter2}")
+    @GetMapping("/api/bep-discipline/direction-filter/{filter1}/{filter2}")
     public ResponseEntity<Map<String, Object>> filterByDirection(@PathVariable Integer filter1, @PathVariable Integer filter2) {
         Map<String, Object> response = new HashMap<>();
 
@@ -303,40 +303,40 @@ public class DisciplineEducationalProgramController {
                 .toList();
         response.put("filterList", filterList);
 
-        List<DisciplineEducationalProgram> deps = disciplineEducationalProgramService.getAll();
+        List<BasicEducationalProgramDiscipline> bepDisciplines = basicEducationalProgramDisciplineService.getAll();
 
         if (filter2 == 0) {
-            List<DisciplineEducationalProgram> entityList = deps.stream()
-                    .filter(dep -> dep.getBasicEducationalProgram().getProfile().getDirection().getDepartment().getId() == filter1)
+            List<BasicEducationalProgramDiscipline> entityList = bepDisciplines.stream()
+                    .filter(bepd -> bepd.getBasicEducationalProgram().getProfile().getDirection().getDepartment().getId() == filter1)
                     .toList();
             response.put("entityList", entityList);
         } else {
-            List<DisciplineEducationalProgram> entityList = deps.stream()
-                    .filter(dep -> dep.getBasicEducationalProgram().getProfile().getDirection().getDepartment().getId() == filter1)
-                    .filter(dep -> dep.getBasicEducationalProgram().getProfile().getDirection().getId() == filter2)
+            List<BasicEducationalProgramDiscipline> entityList = bepDisciplines.stream()
+                    .filter(bepd -> bepd.getBasicEducationalProgram().getProfile().getDirection().getDepartment().getId() == filter1)
+                    .filter(bepd -> bepd.getBasicEducationalProgram().getProfile().getDirection().getId() == filter2)
                     .toList();
             response.put("entityList", entityList);
         }
         return ResponseEntity.ok(response);
     }
 
-    @GetMapping("/api/dep/profile-filter/{filter1}/{filter2}/{filter3}")
+    @GetMapping("/api/bep-discipline/profile-filter/{filter1}/{filter2}/{filter3}")
     public ResponseEntity<Map<String, Object>> filterByProfile(@PathVariable Integer filter1, @PathVariable Integer filter2, @PathVariable Integer filter3) {
         Map<String, Object> response = new HashMap<>();
 
-        List<DisciplineEducationalProgram> deps = disciplineEducationalProgramService.getAll();
+        List<BasicEducationalProgramDiscipline> bepDisciplines = basicEducationalProgramDisciplineService.getAll();
 
         if (filter3 == 0) {
-            List<DisciplineEducationalProgram> entityList = deps.stream()
-                    .filter(dep -> dep.getBasicEducationalProgram().getProfile().getDirection().getDepartment().getId() == filter1)
-                    .filter(dep -> dep.getBasicEducationalProgram().getProfile().getDirection().getId() == filter2)
+            List<BasicEducationalProgramDiscipline> entityList = bepDisciplines.stream()
+                    .filter(bepd -> bepd.getBasicEducationalProgram().getProfile().getDirection().getDepartment().getId() == filter1)
+                    .filter(bepd -> bepd.getBasicEducationalProgram().getProfile().getDirection().getId() == filter2)
                     .toList();
             response.put("entityList", entityList);
         } else {
-            List<DisciplineEducationalProgram> entityList = deps.stream()
-                    .filter(dep -> dep.getBasicEducationalProgram().getProfile().getDirection().getDepartment().getId() == filter1)
-                    .filter(dep -> dep.getBasicEducationalProgram().getProfile().getDirection().getId() == filter2)
-                    .filter(dep -> dep.getBasicEducationalProgram().getProfile().getId() == filter3)
+            List<BasicEducationalProgramDiscipline> entityList = bepDisciplines.stream()
+                    .filter(bepd -> bepd.getBasicEducationalProgram().getProfile().getDirection().getDepartment().getId() == filter1)
+                    .filter(bepd -> bepd.getBasicEducationalProgram().getProfile().getDirection().getId() == filter2)
+                    .filter(bepd -> bepd.getBasicEducationalProgram().getProfile().getId() == filter3)
                     .toList();
             response.put("entityList", entityList);
         }

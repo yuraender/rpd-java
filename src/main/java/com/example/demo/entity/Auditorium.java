@@ -5,17 +5,17 @@ import lombok.Getter;
 import lombok.Setter;
 
 @Entity
-@Table(name = "audiences")
+@Table(name = "auditoriums")
 @Getter
 @Setter
-public class Audience {
+public class Auditorium {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
-    @Column(name = "number", length = 50, nullable = false)
-    private String audienceNumber;
+    @Column(name = "number", length = 10, nullable = false)
+    private String auditoriumNumber;
 
     @Column(columnDefinition = "TEXT")
     private String equipment;

@@ -1,6 +1,6 @@
 package com.example.demo.service;
 
-import com.example.demo.entity.DisciplineEducationalProgram;
+import com.example.demo.entity.BasicEducationalProgramDiscipline;
 import com.example.demo.entity.FileRPD;
 import com.example.demo.repository.FileRPDRepository;
 import org.apache.poi.xwpf.usermodel.*;
@@ -32,7 +32,7 @@ public class DocumentService {
     @Autowired
     private DisciplineService disciplineService;
     @Autowired
-    private DisciplineEducationalProgramService disciplineEducationalProgramService;
+    private BasicEducationalProgramDisciplineService basicEducationalProgramDisciplineService;
     @Autowired
     private FileRPDRepository fileRPDRepository;
 
@@ -116,8 +116,8 @@ public class DocumentService {
 
     public FileRPD generateAndSaveDocuments(
             Map<String, Object> data,
-            DisciplineEducationalProgram disciplineEducationalProgram,
-            List<Map<String, String>> competenciesData,
+            BasicEducationalProgramDiscipline bepDiscipline,
+            List<Map<String, String>> competencesData,
             List<Map<String, String>> audienciesData
     ) throws IOException {
         Map<String, String> placeholders = new HashMap<>();
@@ -153,7 +153,7 @@ public class DocumentService {
         String footer = "src/main/resources/templates/tempDocs/footer.docx";
 
         FileRPD fileRPD = new FileRPD();
-        fileRPD.setDisciplineEducationalProgram(disciplineEducationalProgram);
+        fileRPD.setBasicEducationalProgramDiscipline(bepDiscipline);
         fileRPD.setDisabled(false);
 
         // Раздел0. Титульник
@@ -172,7 +172,7 @@ public class DocumentService {
         fileRPD.setSection2IsLoad(true);
 
         // Раздел3. Компетенции
-        byte[] section3 = generateCompetenciesDocument(competenciesData);
+        byte[] section3 = generateCompetencesDocument(competencesData);
         fileRPD.setSection3(section3);
         fileRPD.setSection3IsLoad(true);
 
@@ -210,7 +210,7 @@ public class DocumentService {
         return fileRPD;
     }
 
-    public byte[] generateCompetenciesDocument(List<Map<String, String>> competenciesData) throws IOException {
+    public byte[] generateCompetencesDocument(List<Map<String, String>> competencesData) throws IOException {
         XWPFDocument document = new XWPFDocument();
 
         // Заголовок "3. КОМПЕТЕНЦИИ ОБУЧАЮЩЕГОСЯ, ФОРМИРУЕМЫЕ В РЕЗУЛЬТАТЕ ОСВОЕНИЯ ДИСЦИПЛИНЫ"
@@ -227,18 +227,18 @@ public class DocumentService {
 
         // Цикл по всем компетенциям
         int index = 1;
-        for (Map<String, String> competency : competenciesData) {
+        for (Map<String, String> competence : competencesData) {
             // Название компетенции
-            String competencyName = competency.get("competencyName") + ' ' + competency.get("competencyCode");
+            String competenceName = competence.get("competencyName") + ' ' + competence.get("competencyCode");
 
             // Создание параграфа для названия компетенции
-            XWPFParagraph competencyParagraph = document.createParagraph();
-            competencyParagraph.setIndentationFirstLine(32 * 20);
-            XWPFRun competencyRun = competencyParagraph.createRun();
-            competencyRun.setFontSize(14);
-            competencyRun.setFontFamily("Times New Roman");
-            competencyRun.setBold(true);
-            competencyRun.setText(competencyName);
+            XWPFParagraph competenceParagraph = document.createParagraph();
+            competenceParagraph.setIndentationFirstLine(32 * 20);
+            XWPFRun competenceRun = competenceParagraph.createRun();
+            competenceRun.setFontSize(14);
+            competenceRun.setFontFamily("Times New Roman");
+            competenceRun.setBold(true);
+            competenceRun.setText(competenceName);
 
             // Добавляем пустой абзац после названия компетенции
             document.createParagraph();
@@ -294,7 +294,7 @@ public class DocumentService {
         return baos.toByteArray();
     }
 
-    public byte[] generateTechSupportDocument(String templatePath, List<Map<String, String>> audienciesData) throws IOException {
+    public byte[] generateTechSupportDocument(String templatePath, List<Map<String, String>> auditoriumsData) throws IOException {
         // Загрузка шаблона документа
         try (FileInputStream fis = new FileInputStream(templatePath);
              XWPFDocument document = new XWPFDocument(fis)) {
@@ -313,7 +313,7 @@ public class DocumentService {
             CTTcPr templateTcPr = templateCell.getCTTc().getTcPr();
 
             // Добавление данных в таблицу
-            for (Map<String, String> audience : audienciesData) {
+            for (Map<String, String> auditorium : auditoriumsData) {
                 XWPFTableRow row = table.createRow();
 
                 // Установка значений в ячейки строки
@@ -321,9 +321,9 @@ public class DocumentService {
                 XWPFTableCell cell1 = row.getCell(1);
                 XWPFTableCell cell2 = row.getCell(2);
 
-                cell0.setText(audience.get("roomNumber") + " Учебная аудитория");
-                cell1.setText(audience.get("specialEquipment"));
-                cell2.setText(audience.get("softwareLicenses"));
+                cell0.setText(auditorium.get("roomNumber") + " Учебная аудитория");
+                cell1.setText(auditorium.get("specialEquipment"));
+                cell2.setText(auditorium.get("softwareLicenses"));
 
                 // Установка стилей границ для ячеек
                 setBordersFromTemplate(cell0, templateTcPr);

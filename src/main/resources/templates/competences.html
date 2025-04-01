@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Аудитории</title>
+    <title>Компетенции</title>
     <link rel="icon" type="image/png" href="/image/favicon-96x96.png" sizes="96x96"/>
     <link rel="icon" type="image/svg+xml" href="/image/favicon.svg"/>
     <link rel="shortcut icon" href="/image/favicon.ico"/>
@@ -32,25 +32,22 @@
     </div>
 </nav>
 <section class="container">
-    <h2>Аудитории</h2>
+    <h2>Компетенции</h2>
     <div class="scrollable-table">
         <table class="table table-bordered" id="dataTable">
             <thead>
             <tr class="sticky-header">
                 <th><input type="text" class="form-control" placeholder="ID"
                            onkeyup="filterTable('dataTable', 0)"></th>
-                <th><input type="text" class="form-control" placeholder="Аудитория"
+                <th><input type="text" class="form-control" placeholder="Индекс"
                            onkeyup="filterTable('dataTable', 1)"></th>
-                <th><input type="text" class="form-control" placeholder="Оснащенность"
+                <th><input type="text" class="form-control" placeholder="Текст"
                            onkeyup="filterTable('dataTable', 2)"></th>
-                <th><input type="text" class="form-control" placeholder="Перечень ПО"
-                           onkeyup="filterTable('dataTable', 3)"></th>
             </tr>
             <tr class="sticky-header">
                 <th>ID</th>
-                <th>Аудитория</th>
-                <th>Оснащенность</th>
-                <th>Перечень ПО</th>
+                <th>Индекс</th>
+                <th>Текст</th>
             </tr>
             </thead>
             <tbody>
@@ -61,19 +58,18 @@
         <button class="button-edit btn-edit button btn btn-primary">Редактировать</button>
         <button class="btn-create button btn btn-primary">Добавить</button>
         <button class="btn-delete button btn btn-primary">Удалить</button>
-        <button class="btn-choose button btn btn-primary">Выбрать запись</button>
     </div>
     <div class="active-record">
     </div>
 </section>
 <div class="rightbar">
     <a href="/departments">Кафедры</a>
-    <a href="/audiences">Аудитории</a>
+    <a href="/auditoriums">Аудитории</a>
     <a href="/directions">Направления</a>
     <a href="/profiles">Профили</a>
     <a href="/beps">ООП</a>
     <a href="/rpd">РПД</a>
-    <a href="/deps">Дисциплины ОП</a>
+    <a href="/bep-disciplines">Дисциплины ОП</a>
     <a href="/education-types">Формы обучения</a>
     <a href="/employees">Сотрудники</a>
     <a href="/employee-positions">Должности</a>
@@ -81,7 +77,7 @@
     <a href="/academic-ranks">Ученые звания</a>
     <a href="/teachers">Преподаватели</a>
     <a href="/disciplines">Дисциплины</a>
-    <a href="/competencies">Компетенции</a>
+    <a href="/competences">Компетенции</a>
     <a href="/indicators">Индикаторы</a>
     <a href="/protocols">Протоколы</a>
 </div>
@@ -107,23 +103,6 @@
 <script src="/js/modalWindow.js"></script>
 <script>
     document.addEventListener('DOMContentLoaded', function () {
-        let btnChoose = document.querySelector('.btn-choose')
-        btnChoose.addEventListener('click', chooseRecord)
-
-        function chooseRecord() {
-            let form = document.querySelector('.active-form')
-            if (form) {
-                let activeRecordId = form.getAttribute('activeRecordId')
-                fetch('/api/audience/set-active/' + activeRecordId)
-                    .then(response => response.json())
-                    .then(function (data) {
-                        showModalWithMessage('Вы выбрали: ' + data.dataName)
-                    })
-            } else {
-                showModalWithMessage('Выберите запись, кликнув по записи из таблицы. Затем нажмите "Выбрать запись".')
-            }
-        }
-
         const csrfToken = document.querySelector('input[name="_csrf"]').value;
         let editMode = false;
         let isAdmin = false;
@@ -149,7 +128,7 @@
             let saveModalRecord = document.querySelector('.save-modal-record');
             saveModalRecord.addEventListener('click', () => saveNewRecord())
 
-            fetch('/audiences-data')
+            fetch('/competences-data')
                 .then(response => response.json())
                 .then(function (data) {
                     checkAdmin(data)
@@ -211,7 +190,7 @@
                 } else {
                     let dataId = recordElement.getAttribute('activeRecordId')
                     if (!dataId) return null;
-                    fetch('/api/audience/delete-record/' + dataId)
+                    fetch('/api/competence/delete-record/' + dataId)
                         .then(response => response.json())
                         .then(deletedRecord => {
                             showModalWithMessage('Запись удалена.')
@@ -250,7 +229,7 @@
             }
 
             function showCreateModal() {
-                fetch('/audiences-data')
+                fetch('/competences-data')
                     .then(response => response.json())
                     .then(data => {
                         const form = document.querySelector('.createForm')
@@ -259,27 +238,18 @@
                         fieldWrapper.classList.add('standard__active-record-wrapper')
                         let fieldDesc = document.createElement('p')
                         fieldDesc.classList.add('field__desc')
-                        fieldDesc.textContent = `Аудитория:`
+                        fieldDesc.textContent = `Индекс:`
                         fieldWrapper.append(fieldDesc)
-                        fieldWrapper.append(createTextBoxForCreate(50))
+                        fieldWrapper.append(createTextBoxForCreate(100))
                         form.append(fieldWrapper)
 
                         fieldWrapper = document.createElement('div')
                         fieldWrapper.classList.add('standard__active-record-wrapper')
                         fieldDesc = document.createElement('p')
                         fieldDesc.classList.add('field__desc')
-                        fieldDesc.textContent = `Оснащенность:`
+                        fieldDesc.textContent = `Текст:`
                         fieldWrapper.append(fieldDesc)
-                        fieldWrapper.append(createOptionalTextBoxForCreate(1000))
-                        form.append(fieldWrapper)
-
-                        fieldWrapper = document.createElement('div')
-                        fieldWrapper.classList.add('standard__active-record-wrapper')
-                        fieldDesc = document.createElement('p')
-                        fieldDesc.classList.add('field__desc')
-                        fieldDesc.textContent = `Перечень ПО:`
-                        fieldWrapper.append(fieldDesc)
-                        fieldWrapper.append(createOptionalTextBoxForCreate(1000))
+                        fieldWrapper.append(createTextBoxForCreate(1000))
                         form.append(fieldWrapper)
 
                         let closeBtn = document.querySelector('.close-btn');
@@ -326,7 +296,7 @@
         }
 
         function createNewRecord(data) {
-            fetch('/api/audience/save-new-record', {
+            fetch('/api/competence/save-new-record', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -347,9 +317,8 @@
                         row.classList.add(`${data.id}`)
                         row.innerHTML =
                             '<td>' + data.id + '</td>' +
-                            '<td>' + data.audienceNumber + '</td>' +
-                            '<td>' + data.equipment + '</td>' +
-                            '<td>' + data.software + '</td>';
+                            '<td>' + data.index + '</td>' +
+                            '<td>' + data.essence + '</td>';
                         row.addEventListener('click', function () {
                             changeActiveRowTable(data.id);
                         });
@@ -376,9 +345,8 @@
                 row.classList.add(`${data.id}`)
                 row.innerHTML =
                     '<td>' + data.id + '</td>' +
-                    '<td>' + data.audienceNumber + '</td>' +
-                    '<td>' + data.equipment + '</td>' +
-                    '<td>' + data.software + '</td>';
+                    '<td>' + data.index + '</td>' +
+                    '<td>' + data.essence + '</td>';
                 row.addEventListener('click', function () {
                     changeActiveRowTable(data.id);
                 });
@@ -387,7 +355,7 @@
         }
 
         function changeActiveRowTable(dataId) {
-            fetch('/api/audience/get-active/' + dataId)
+            fetch('/api/competence/get-active/' + dataId)
                 .then(response => response.json())
                 .then(function (data) {
                     document.querySelector('.button-edit').disabled = false;
@@ -416,27 +384,18 @@
                     fieldWrapper.classList.add('standard__active-record-wrapper')
                     let fieldDesc = document.createElement('p')
                     fieldDesc.classList.add('field__desc')
-                    fieldDesc.textContent = `Аудитория:`
+                    fieldDesc.textContent = `Индекс:`
                     fieldWrapper.append(fieldDesc)
-                    fieldWrapper.append(createTextBoxForActiveRecord(data.data.audienceNumber, 50))
+                    fieldWrapper.append(createTextBoxForActiveRecord(data.data.index, 100))
                     form.append(fieldWrapper)
 
                     fieldWrapper = document.createElement('div')
                     fieldWrapper.classList.add('standard__active-record-wrapper')
                     fieldDesc = document.createElement('p')
                     fieldDesc.classList.add('field__desc')
-                    fieldDesc.textContent = `Оснащенность:`
+                    fieldDesc.textContent = `Текст:`
                     fieldWrapper.append(fieldDesc)
-                    fieldWrapper.append(createOptionalTextBoxForActiveRecord(data.data.equipment, 1000))
-                    form.append(fieldWrapper)
-
-                    fieldWrapper = document.createElement('div')
-                    fieldWrapper.classList.add('standard__active-record-wrapper')
-                    fieldDesc = document.createElement('p')
-                    fieldDesc.classList.add('field__desc')
-                    fieldDesc.textContent = `Перечень ПО:`
-                    fieldWrapper.append(fieldDesc)
-                    fieldWrapper.append(createOptionalTextBoxForActiveRecord(data.data.software, 1000))
+                    fieldWrapper.append(createTextBoxForActiveRecord(data.data.essence, 1000))
                     form.append(fieldWrapper)
 
                     // Конец добавления в активную запись
@@ -534,7 +493,7 @@
             data['dataId'] = dataId;
 
             if (emptyFields) return
-            fetch('/api/audience/update', {
+            fetch('/api/competence/update', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -555,9 +514,8 @@
                             if (rows[i].getAttribute('dataid') == newRecord.updatedData.id) {
                                 rows[i].innerHTML =
                                     '<td>' + newRecord.updatedData.id + '</td>' +
-                                    '<td>' + newRecord.updatedData.audienceNumber + '</td>' +
-                                    '<td>' + newRecord.updatedData.equipment + '</td>' +
-                                    '<td>' + newRecord.updatedData.software + '</td>';
+                                    '<td>' + newRecord.updatedData.index + '</td>' +
+                                    '<td>' + newRecord.updatedData.essence + '</td>';
                                 break;
                             }
                         }

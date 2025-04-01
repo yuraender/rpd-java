@@ -37,15 +37,15 @@ public class BackgroundInformationController {
     @Autowired
     private DisciplineService disciplineService;
     @Autowired
-    private CompetencieService competencieService;
+    private CompetenceService competenceService;
     @Autowired
-    private AudienceService audienceService;
+    private AuditoriumService auditoriumService;
 
     @Autowired
     private BasicEducationalProgramService basicEducationalProgramService;
 
     @Autowired
-    private DisciplineEducationalProgramService disciplineEducationalProgramService;
+    private BasicEducationalProgramDisciplineService basicEducationalProgramDisciplineService;
     @Autowired
     private FileRPDService fileRPDService;
 
@@ -59,10 +59,10 @@ public class BackgroundInformationController {
             @SessionAttribute(name = "employeePositionId", required = false) Integer employeePositionId,
             @SessionAttribute(name = "teacherId", required = false) Integer teacherId,
             @SessionAttribute(name = "disciplineId", required = false) Integer disciplineId,
-            @SessionAttribute(name = "competencieId", required = false) Integer competencieId,
-            @SessionAttribute(name = "audienceId", required = false) Integer audienceId,
+            @SessionAttribute(name = "competenceId", required = false) Integer competenceId,
+            @SessionAttribute(name = "auditoriumId", required = false) Integer auditoriumId,
             @SessionAttribute(name = "basicEducationalProgramId", required = false) Integer basicEducationalProgramId,
-            @SessionAttribute(name = "disciplinesEducationalProgramId", required = false) Integer disciplinesEducationalProgramId,
+            @SessionAttribute(name = "bepDisciplineId", required = false) Integer bepDisciplineId,
             @SessionAttribute(name = "fileRPDId", required = false) Integer fileRPDId,
             @SessionAttribute(name = "role", required = false) String role,
             Model model
@@ -148,23 +148,23 @@ public class BackgroundInformationController {
         }
 
         // Получаем все компетенции
-        List<Competencie> competencies = competencieService.getAll();
-        model.addAttribute("competencies", competencies);
+        List<Competence> competences = competenceService.getAll();
+        model.addAttribute("competences", competences);
 
         // Устанавливаем компетенцию
-        if (competencieId != null) {
-            Competencie activeCompetencie = competencieService.getById(competencieId);
-            model.addAttribute("activeCompetencie", activeCompetencie);
+        if (competenceId != null) {
+            Competence activeCompetence = competenceService.getById(competenceId);
+            model.addAttribute("activeCompetence", activeCompetence);
         }
 
         // Получаем все аудитории
-        List<Audience> audiences = audienceService.getAll();
-        model.addAttribute("audiences", audiences);
+        List<Auditorium> auditoriums = auditoriumService.getAll();
+        model.addAttribute("auditoriums", auditoriums);
 
         // Устанавливаем аудиторию
-        if (audienceId != null) {
-            Audience activeAudience = audienceService.getById(audienceId);
-            model.addAttribute("activeAudience", activeAudience);
+        if (auditoriumId != null) {
+            Auditorium activeAuditorium = auditoriumService.getById(auditoriumId);
+            model.addAttribute("activeAuditorium", activeAuditorium);
         }
 
         // Получаем все ООП
@@ -177,14 +177,14 @@ public class BackgroundInformationController {
             model.addAttribute("activeBasicEducationalProgram", activeBasicEducationalProgram);
         }
 
-        // Получаем все дисциплиныОП
-        List<DisciplineEducationalProgram> disciplineEducationalPrograms = disciplineEducationalProgramService.getAll();
-        model.addAttribute("disciplineEducationalPrograms", disciplineEducationalPrograms);
+        // Получаем все дисциплины ОП
+        List<BasicEducationalProgramDiscipline> bepDisciplines = basicEducationalProgramDisciplineService.getAll();
+        model.addAttribute("bepDisciplines", bepDisciplines);
 
-        // Устанавливаем дисциплиныОП
-        if (disciplinesEducationalProgramId != null) {
-            DisciplineEducationalProgram activeDisciplineEducationalProgram = disciplineEducationalProgramService.getById(disciplinesEducationalProgramId);
-            model.addAttribute("activeDisciplinesEducationalProgram", activeDisciplineEducationalProgram);
+        // Устанавливаем дисциплины ОП
+        if (bepDisciplineId != null) {
+            BasicEducationalProgramDiscipline activeBepDiscipline = basicEducationalProgramDisciplineService.getById(bepDisciplineId);
+            model.addAttribute("activeBepDiscipline", activeBepDiscipline);
         }
 
         // Получаем все РПД

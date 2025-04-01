@@ -93,12 +93,12 @@
 </section>
 <div class="rightbar">
     <a href="/departments">Кафедры</a>
-    <a href="/audiences">Аудитории</a>
+    <a href="/auditoriums">Аудитории</a>
     <a href="/directions">Направления</a>
     <a href="/profiles">Профили</a>
     <a href="/beps">ООП</a>
     <a href="/rpd">РПД</a>
-    <a href="/deps">Дисциплины ОП</a>
+    <a href="/bep-disciplines">Дисциплины ОП</a>
     <a href="/education-types">Формы обучения</a>
     <a href="/employees">Сотрудники</a>
     <a href="/employee-positions">Должности</a>
@@ -106,7 +106,7 @@
     <a href="/academic-ranks">Ученые звания</a>
     <a href="/teachers">Преподаватели</a>
     <a href="/disciplines">Дисциплины</a>
-    <a href="/competencies">Компетенции</a>
+    <a href="/competences">Компетенции</a>
     <a href="/indicators">Индикаторы</a>
     <a href="/protocols">Протоколы</a>
 </div>
@@ -147,7 +147,7 @@
             let form = document.querySelector('.active-form')
             if (form) {
                 let activeRecordId = form.getAttribute('activeRecordId')
-                fetch('/api/dep/set-active/' + activeRecordId)
+                fetch('/api/bep-discipline/set-active/' + activeRecordId)
                     .then(response => response.json())
                     .then(function (data) {
                         showModalWithMessage('Вы выбрали: ' + data.dataName)
@@ -182,7 +182,7 @@
             let saveModalRecord = document.querySelector('.save-modal-record');
             saveModalRecord.addEventListener('click', () => saveNewRecord())
 
-            fetch('/deps-data')
+            fetch('/bep-disciplines-data')
                 .then(response => response.json())
                 .then(function (data) {
                     checkAdmin(data)
@@ -257,7 +257,7 @@
                 } else {
                     let dataId = recordElement.getAttribute('activeRecordId')
                     if (!dataId) return null;
-                    fetch('/api/dep/delete-record/' + dataId)
+                    fetch('/api/bep-discipline/delete-record/' + dataId)
                         .then(response => response.json())
                         .then(deletedRecord => {
                             showModalWithMessage('Запись удалена.')
@@ -296,12 +296,12 @@
             }
 
             function showCreateModal() {
-                fetch('/deps-data')
+                fetch('/bep-disciplines-data')
                     .then(response => response.json())
                     .then(data => {
                         const form = document.querySelector('.createForm')
 
-                        let fieldSelectCompetencies;
+                        let fieldSelectCompetences;
                         let fieldSelectIndicators;
 
                         let fieldWrapper = document.createElement('div')
@@ -359,12 +359,12 @@
                         fieldDesc.classList.add('field__desc')
                         fieldDesc.textContent = `Компетенции:`
                         fieldWrapper.append(fieldDesc)
-                        fieldSelect = fieldSelectCompetencies = document.createElement('select');
+                        fieldSelect = fieldSelectCompetences = document.createElement('select');
                         fieldSelect.classList.add('form-control', 'field');
                         fieldSelect.setAttribute('data-live-search', 'true');
                         fieldSelect.setAttribute('data-selected-text-format', 'count');
                         fieldSelect.multiple = true;
-                        data.competencies.forEach(function (optionData) {
+                        data.competences.forEach(function (optionData) {
                             let text = optionData.index + ' ' + optionData.essence;
                             let id = optionData.id;
                             let option = createOptionForCreate(text, id)
@@ -383,7 +383,7 @@
                                 let optionGroup = document.createElement('optgroup');
                                 optionGroup.label = type.name;
                                 data.indicators.forEach(function (optionData) {
-                                    if (values.includes(optionData.competencie.id) && optionData.type.id === type.id) {
+                                    if (values.includes(optionData.competence.id) && optionData.type.id === type.id) {
                                         let text = optionData.text;
                                         let id = optionData.id;
                                         let option = createOptionForCreate(text, id)
@@ -423,8 +423,8 @@
                         fieldSelect.setAttribute('data-live-search', 'true');
                         fieldSelect.setAttribute('data-selected-text-format', 'count');
                         fieldSelect.multiple = true;
-                        data.audiences.forEach(function (optionData) {
-                            let text = optionData.audienceNumber;
+                        data.auditoriums.forEach(function (optionData) {
+                            let text = optionData.auditoriumNumber;
                             let id = optionData.id;
                             let option = createOptionForCreate(text, id)
                             fieldSelect.append(option);
@@ -459,7 +459,7 @@
 
                         $('select', form).selectpicker();
                         $('.bootstrap-select', form).removeClass(['form-control', 'field']);
-                        fieldSelectCompetencies.dispatchEvent(new Event('change'));
+                        fieldSelectCompetences.dispatchEvent(new Event('change'));
                     })
                     .catch(error => {
                         console.error('Ошибка загрузки данных:', error);
@@ -497,7 +497,7 @@
         }
 
         function createNewRecord(data) {
-            fetch('/api/dep/save-new-record', {
+            fetch('/api/bep-discipline/save-new-record', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -562,7 +562,7 @@
         }
 
         function changeActiveRowTable(dataId) {
-            fetch('/api/dep/get-active/' + dataId)
+            fetch('/api/bep-discipline/get-active/' + dataId)
                 .then(response => response.json())
                 .then(function (data) {
                     document.querySelector('.button-edit').disabled = false;
@@ -587,7 +587,7 @@
                     form.setAttribute('activeRecordId', data.data.id)
                     form.append(createIdFieldForActiveRecord(data.data));
 
-                    let fieldSelectCompetencies;
+                    let fieldSelectCompetences;
                     let fieldSelectIndicators;
 
                     let fieldWrapper = document.createElement('div')
@@ -641,15 +641,15 @@
                     fieldDesc.classList.add('field__desc')
                     fieldDesc.textContent = `Компетенции:`
                     fieldWrapper.append(fieldDesc)
-                    let fieldSelect = fieldSelectCompetencies = document.createElement('select');
+                    let fieldSelect = fieldSelectCompetences = document.createElement('select');
                     fieldSelect.classList.add('form-control', 'field');
                     fieldSelect.setAttribute('data-live-search', 'true');
                     fieldSelect.setAttribute('data-selected-text-format', 'count');
                     fieldSelect.multiple = true;
-                    data.competencies.forEach(function (optionData) {
+                    data.competences.forEach(function (optionData) {
                         let text = optionData.index + ' ' + optionData.essence;
                         let id = optionData.id;
-                        let selected = data.data.indicators.some(i => i.competencie.id === id)
+                        let selected = data.data.indicators.some(i => i.competence.id === id)
                         let option = createOptionMultipleForActiveRecord(text, id, selected)
                         fieldSelect.append(option);
                     });
@@ -667,7 +667,7 @@
                             optionGroup.label = type.name;
                             data.indicators
                                 .forEach(function (optionData) {
-                                    if (values.includes(optionData.competencie.id) && optionData.type.id === type.id) {
+                                    if (values.includes(optionData.competence.id) && optionData.type.id === type.id) {
                                         let text = optionData.text;
                                         let id = optionData.id;
                                         let selected = data.data.indicators.some(i => i.id === id)
@@ -717,10 +717,10 @@
                     fieldSelect.setAttribute('data-live-search', 'true');
                     fieldSelect.setAttribute('data-selected-text-format', 'count');
                     fieldSelect.multiple = true;
-                    data.audiences.forEach(function (optionData) {
-                        let text = optionData.audienceNumber;
+                    data.auditoriums.forEach(function (optionData) {
+                        let text = optionData.auditoriumNumber;
                         let id = optionData.id;
-                        let selected = data.data.audiences.some(a => a.id === id)
+                        let selected = data.data.auditoriums.some(a => a.id === id)
                         let option = createOptionMultipleForActiveRecord(text, id, selected)
                         fieldSelect.append(option);
                     });
@@ -750,7 +750,7 @@
                     fieldWrapper.append(fieldSelect)
                     form.append(fieldWrapper)
 
-                    fieldSelectCompetencies.dispatchEvent(new Event('change'));
+                    fieldSelectCompetences.dispatchEvent(new Event('change'));
 
                     // Конец добавления в активную запись
                     // Добавляем форму в контейнер
@@ -847,7 +847,7 @@
             data['dataId'] = dataId;
 
             if (emptyFields) return
-            fetch('/api/dep/update', {
+            fetch('/api/bep-discipline/update', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -902,7 +902,7 @@
             filter3.disabled = true;
             $('select', '.filters').selectpicker('refresh');
 
-            fetch('/api/dep/department-filter/' + filter1Id)
+            fetch('/api/bep-discipline/department-filter/' + filter1Id)
                 .then(response => response.json())
                 .then(function (data) {
                     let filter2 = document.getElementById('filter2');
@@ -942,7 +942,7 @@
             filter3.disabled = true;
             $('select', '.filters').selectpicker('refresh');
 
-            fetch('/api/dep/direction-filter/' + filter1Global + '/' + filter2Id)
+            fetch('/api/bep-discipline/direction-filter/' + filter1Global + '/' + filter2Id)
                 .then(response => response.json())
                 .then(function (data) {
                     let filter3 = document.getElementById('filter3');
@@ -976,7 +976,7 @@
         filter3.addEventListener('change', function () {
             let filter3Id = this.value;
 
-            fetch('/api/dep/profile-filter/' + filter1Global + '/' + filter2Global + '/' + filter3Id)
+            fetch('/api/bep-discipline/profile-filter/' + filter1Global + '/' + filter2Global + '/' + filter3Id)
                 .then(response => response.json())
                 .then(function (data) {
                     filter3.disabled = false;

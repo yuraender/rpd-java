@@ -67,12 +67,12 @@
 </section>
 <div class="rightbar">
     <a href="/departments">Кафедры</a>
-    <a href="/audiences">Аудитории</a>
+    <a href="/auditoriums">Аудитории</a>
     <a href="/directions">Направления</a>
     <a href="/profiles">Профили</a>
     <a href="/beps">ООП</a>
     <a href="/rpd">РПД</a>
-    <a href="/deps">Дисциплины ОП</a>
+    <a href="/bep-disciplines">Дисциплины ОП</a>
     <a href="/education-types">Формы обучения</a>
     <a href="/employees">Сотрудники</a>
     <a href="/employee-positions">Должности</a>
@@ -80,7 +80,7 @@
     <a href="/academic-ranks">Ученые звания</a>
     <a href="/teachers">Преподаватели</a>
     <a href="/disciplines">Дисциплины</a>
-    <a href="/competencies">Компетенции</a>
+    <a href="/competences">Компетенции</a>
     <a href="/indicators">Индикаторы</a>
     <a href="/protocols">Протоколы</a>
 </div>
@@ -276,7 +276,7 @@
                         fieldSelect.classList.add('form-control', 'field');
                         fieldSelect.setAttribute('data-live-search', 'true');
                         fieldSelect.setAttribute('data-selected-text-format', 'count');
-                        data.competencies.forEach(function (optionData) {
+                        data.competences.forEach(function (optionData) {
                             let text = optionData.index + ' ' + optionData.essence;
                             let id = optionData.id;
                             let option = createOptionForCreate(text, id)
@@ -352,7 +352,7 @@
                             '<td>' + data.id + '</td>' +
                             '<td>' + data.text + '</td>' +
                             '<td>' + data.type.name + '</td>' +
-                            '<td>' + data.competencie.index + ' ' + data.competencie.essence + '</td>';
+                            '<td>' + data.competence.index + ' ' + data.competence.essence + '</td>';
                         row.addEventListener('click', function () {
                             changeActiveRowTable(data.id);
                         });
@@ -381,7 +381,7 @@
                     '<td>' + data.id + '</td>' +
                     '<td>' + data.text + '</td>' +
                     '<td>' + data.type.name + '</td>' +
-                    '<td>' + data.competencie.index + ' ' + data.competencie.essence + '</td>';
+                    '<td>' + data.competence.index + ' ' + data.competence.essence + '</td>';
                 row.addEventListener('click', function () {
                     changeActiveRowTable(data.id);
                 });
@@ -439,7 +439,7 @@
                     fieldDesc.classList.add('field__desc')
                     fieldDesc.textContent = `Компетенция:`
                     fieldWrapper.append(fieldDesc)
-                    fieldWrapper.append(createInactiveTextBox(data.data.competencie.index + ' ' + data.data.competencie.essence))
+                    fieldWrapper.append(createInactiveTextBox(data.data.competence.index + ' ' + data.data.competence.essence))
                     form.append(fieldWrapper)
 
                     // Конец добавления в активную запись
@@ -560,7 +560,7 @@
                                     '<td>' + newRecord.updatedData.id + '</td>' +
                                     '<td>' + newRecord.updatedData.text + '</td>' +
                                     '<td>' + newRecord.updatedData.type.name + '</td>' +
-                                    '<td>' + newRecord.updatedData.competencie.index + ' ' + newRecord.updatedData.competencie.essence + '</td>';
+                                    '<td>' + newRecord.updatedData.competence.index + ' ' + newRecord.updatedData.competence.essence + '</td>';
                                 break;
                             }
                         }

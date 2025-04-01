@@ -1,9 +1,9 @@
 package com.example.demo.controller;
 
-import com.example.demo.entity.Competencie;
+import com.example.demo.entity.Competence;
 import com.example.demo.entity.Indicator;
 import com.example.demo.entity.Protocol;
-import com.example.demo.service.CompetencieService;
+import com.example.demo.service.CompetenceService;
 import com.example.demo.service.IndicatorService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
@@ -26,7 +26,7 @@ import java.util.Map;
 public class IndicatorController {
 
     private final IndicatorService indicatorService;
-    private final CompetencieService competencieService;
+    private final CompetenceService competenceService;
 
     @GetMapping("/indicators")
     public String getTablePage() {
@@ -43,8 +43,8 @@ public class IndicatorController {
         List<Indicator.Type> types = Arrays.stream(Indicator.Type.values()).toList();
         response.put("types", types);
 
-        List<Competencie> competencies = competencieService.getAll();
-        response.put("competencies", competencies);
+        List<Competence> competences = competenceService.getAll();
+        response.put("competences", competences);
 
         HttpSession session = request.getSession();
         String role = (String) session.getAttribute("role");
@@ -97,8 +97,8 @@ public class IndicatorController {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
         }
 
-        Competencie competencie = competencieService.getById(param2);
-        if (param1 < 0 || param1 >= Protocol.Type.values().length || competencie == null) {
+        Competence competence = competenceService.getById(param2);
+        if (param1 < 0 || param1 >= Protocol.Type.values().length || competence == null) {
             response.put("error", "Запись не найдена.");
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
         }
@@ -106,7 +106,7 @@ public class IndicatorController {
         Indicator indicator = new Indicator();
         indicator.setText(text);
         indicator.setType(Indicator.Type.values()[param1]);
-        indicator.setCompetencie(competencie);
+        indicator.setCompetence(competence);
         indicator.setDisabled(false);
         indicatorService.save(indicator);
 

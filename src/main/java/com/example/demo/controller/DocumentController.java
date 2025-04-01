@@ -42,7 +42,7 @@ public class DocumentController {
     private TeacherService teacherService;
 
     @Autowired
-    private AudienceService audienceService;
+    private AuditoriumService auditoriumService;
 
     @Autowired
     private DepartmentService departmentService;
@@ -56,11 +56,9 @@ public class DocumentController {
     @Autowired
     private EducationTypeService educationTypeService;
     @Autowired
-    private DisciplineEducationalProgramService disciplineEducationalProgramService;
+    private BasicEducationalProgramDisciplineService basicEducationalProgramDisciplineService;
     @Autowired
     private EmployeePositionService employeePositionService;
-    @Autowired
-    private CompetenciesDisciplinesEducationalProgramService competenciesDisciplinesEducationalProgramService;
 
     @PostMapping("/generate")
     public ResponseEntity<byte[]> generateAndSaveDocuments(@RequestBody Map<String, Object> payload, HttpServletRequest request) throws IOException {
@@ -75,16 +73,16 @@ public class DocumentController {
         byte[] zipContent = null;
         HttpHeaders headers = new HttpHeaders();
 
-        List<DisciplineEducationalProgram> allDisciplineEducationalPrograms = disciplineEducationalProgramService.getAll();
+        List<BasicEducationalProgramDiscipline> allBepDisciplines = basicEducationalProgramDisciplineService.getAll();
 
-        List<DisciplineEducationalProgram> disciplinesEducationalPrograms = allDisciplineEducationalPrograms.stream()
+        List<BasicEducationalProgramDiscipline> bepDisciplines = allBepDisciplines.stream()
                 .filter(el -> el.getBasicEducationalProgram().getId() == oopId)
                 .filter(el -> !el.isDisabled())
                 .filter(el -> disciplinesOpList.contains(el.getId()))
                 .collect(Collectors.toList());
 
-        if (!disciplinesEducationalPrograms.isEmpty()) {
-            for (DisciplineEducationalProgram disciplineEducationalProgram : disciplinesEducationalPrograms) {
+        if (!bepDisciplines.isEmpty()) {
+            for (BasicEducationalProgramDiscipline bepDiscipline : bepDisciplines) {
 //                Institute institute = instituteService.findById(instituteId);
 //                String instituteName = institute.getName();
 //                String instituteCity = institute.getCity();
@@ -93,16 +91,16 @@ public class DocumentController {
 //                Employee employee = institute.getDirector();
 //                String directorName = employee.getNameTypeTwo();
 //                String employeePosition = employee.getEmployeePosition().getPositionName();
-                Direction direction = disciplineEducationalProgram.getBasicEducationalProgram().getProfile().getDirection();
-                String directionCode = direction.getEncryption();
+                Direction direction = bepDiscipline.getBasicEducationalProgram().getProfile().getDirection();
+                String directionCode = direction.getCode();
                 String directionName = direction.getName();
-                EducationType educationType = disciplineEducationalProgram.getBasicEducationalProgram().getEducationType();
+                EducationType educationType = bepDiscipline.getBasicEducationalProgram().getEducationType();
                 String educationTypeText = educationType.getText();
                 String educationTypeName = educationType.getText();
                 String educationTypeLearningPeriod = String.valueOf(educationType.getLearningPeriod());
-                Profile profile = disciplineEducationalProgram.getBasicEducationalProgram().getProfile();
+                Profile profile = bepDiscipline.getBasicEducationalProgram().getProfile();
                 String profileName = profile.getName();
-                Discipline discipline = disciplineEducationalProgram.getDiscipline();
+                Discipline discipline = bepDiscipline.getDiscipline();
                 String disciplineName = discipline.getName();
                 List<CompetenciesDisciplinesEducationalProgram> allCompetenciesOP = competenciesDisciplinesEducationalProgramService.getAll();
                 Integer disciplineOPActual = disciplineEducationalProgram.getId();
@@ -128,18 +126,18 @@ public class DocumentController {
                 String managerName = department.getManager().getNameTypeTwo();
 
                 // Получение данных для тех обеспечения
-                List<Audience> allAudiencesList = audienceService.getAll();
-                List<Audience> audiencesFiltered = allAudiencesList.stream()
+                List<Auditorium> allAuditoriumsList = auditoriumService.getAll();
+                List<Auditorium> auditoriumsFiltered = allAuditoriumsList.stream()
                         .filter(el -> el.getId() == discipline.getId())
                         .filter(el -> !el.isDisabled()).toList();
                 List<Map<String, String>> audienciesData = new ArrayList<>();
 
-                for (Audience audience : audiencesFiltered) {
-                    Map<String, String> audiences = new HashMap<>();
-                    audiences.put("roomNumber", audience.getAudienceNumber());
-                    audiences.put("specialEquipment", audience.getTech());
-                    audiences.put("softwareLicenses", audience.getSoftwareLicense());
-                    audienciesData.add(audiences);
+                for (Auditorium auditorium : auditoriumsFiltered) {
+                    Map<String, String> auditoriums = new HashMap<>();
+                    auditoriums.put("roomNumber", auditorium.getAuditoriumNumber());
+                    auditoriums.put("specialEquipment", auditorium.getEquipment());
+                    auditoriums.put("softwareLicenses", auditorium.getSoftware());
+                    audienciesData.add(auditoriums);
                 }
 
                 Map<String, Object> dataMap = new HashMap<>();
@@ -163,7 +161,7 @@ public class DocumentController {
                 dataMap.put("protocolNumber", protocolNumber);
 //                dataMap.put("instituteFooterText", instituteFooterText);
 
-                FileRPD fileRPD = documentService.generateAndSaveDocuments(dataMap, disciplineEducationalProgram, competenciesData, audienciesData);
+                FileRPD fileRPD = documentService.generateAndSaveDocuments(dataMap, bepDiscipline, competencesData, audienciesData);
 
                 String sanitizedPath = disciplineName.replaceAll("[\\\\/:*?\"<>|\\-]", "_");
 

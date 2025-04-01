@@ -91,7 +91,7 @@ public class FileRPD {
 
     @ManyToOne
     @JoinColumn(name = "discipline_educational_program_id", referencedColumnName = "id", nullable = false)
-    private DisciplineEducationalProgram disciplineEducationalProgram;
+    private BasicEducationalProgramDiscipline basicEducationalProgramDiscipline;
 
     @ManyToMany
     @JoinTable(name = "file_rpd_developers",
@@ -108,7 +108,7 @@ public class FileRPD {
 
     public boolean isDisabled() {
         return disabled
-                || disciplineEducationalProgram.isDisabled()
+                || basicEducationalProgramDiscipline.isDisabled()
                 || developers.stream().anyMatch(Teacher::isDisabled);
     }
 }

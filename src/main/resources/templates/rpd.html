@@ -122,12 +122,12 @@
 </section>
 <div class="rightbar">
     <a href="/departments">Кафедры</a>
-    <a href="/audiences">Аудитории</a>
+    <a href="/auditoriums">Аудитории</a>
     <a href="/directions">Направления</a>
     <a href="/profiles">Профили</a>
     <a href="/beps">ООП</a>
     <a href="/rpd">РПД</a>
-    <a href="/deps">Дисциплины ОП</a>
+    <a href="/bep-disciplines">Дисциплины ОП</a>
     <a href="/education-types">Формы обучения</a>
     <a href="/employees">Сотрудники</a>
     <a href="/employee-positions">Должности</a>
@@ -135,7 +135,7 @@
     <a href="/academic-ranks">Ученые звания</a>
     <a href="/teachers">Преподаватели</a>
     <a href="/disciplines">Дисциплины</a>
-    <a href="/competencies">Компетенции</a>
+    <a href="/competences">Компетенции</a>
     <a href="/indicators">Индикаторы</a>
     <a href="/protocols">Протоколы</a>
 </div>
@@ -361,7 +361,7 @@
                         fieldSelect.classList.add('form-control', 'field');
                         fieldSelect.setAttribute('data-live-search', 'true');
                         fieldSelect.setAttribute('data-selected-text-format', 'count');
-                        data.deps.forEach(function (optionData) {
+                        data.bepDisciplines.forEach(function (optionData) {
                             let text = optionData.basicEducationalProgram.academicYear + ', ' +
                                 optionData.basicEducationalProgram.profile.name + ', ' +
                                 optionData.basicEducationalProgram.educationType.name + ', ' +
@@ -459,9 +459,9 @@
                         row.innerHTML =
                             '<td>' + data.id + '</td>' +
                             '<td>' + data.academicYear + '</td>' +
-                            '<td>' + data.disciplineEducationalProgram.basicEducationalProgram.profile.name + '</td>' +
-                            '<td>' + data.disciplineEducationalProgram.basicEducationalProgram.educationType.name + '</td>' +
-                            '<td>' + data.disciplineEducationalProgram.discipline.name + '</td>' +
+                            '<td>' + data.basicEducationalProgramDiscipline.basicEducationalProgram.profile.name + '</td>' +
+                            '<td>' + data.basicEducationalProgramDiscipline.basicEducationalProgram.educationType.name + '</td>' +
+                            '<td>' + data.basicEducationalProgramDiscipline.discipline.name + '</td>' +
                             '<td>' + isLoadStatus(data.section1IsLoad) + '</td>' +
                             '<td>' + isLoadStatus(data.section2IsLoad) + '</td>' +
                             '<td>' + isLoadStatus(data.section3IsLoad) + '</td>' +
@@ -497,9 +497,9 @@
                 row.innerHTML =
                     '<td>' + data.id + '</td>' +
                     '<td>' + data.academicYear + '</td>' +
-                    '<td>' + data.disciplineEducationalProgram.basicEducationalProgram.profile.name + '</td>' +
-                    '<td>' + data.disciplineEducationalProgram.basicEducationalProgram.educationType.name + '</td>' +
-                    '<td>' + data.disciplineEducationalProgram.discipline.name + '</td>' +
+                    '<td>' + data.basicEducationalProgramDiscipline.basicEducationalProgram.profile.name + '</td>' +
+                    '<td>' + data.basicEducationalProgramDiscipline.basicEducationalProgram.educationType.name + '</td>' +
+                    '<td>' + data.basicEducationalProgramDiscipline.discipline.name + '</td>' +
                     '<td>' + isLoadStatus(data.section1IsLoad) + '</td>' +
                     '<td>' + isLoadStatus(data.section2IsLoad) + '</td>' +
                     '<td>' + isLoadStatus(data.section3IsLoad) + '</td>' +
@@ -556,7 +556,7 @@
                     fieldDesc.classList.add('field__desc')
                     fieldDesc.textContent = `Профиль:`
                     fieldWrapper.append(fieldDesc)
-                    fieldWrapper.append(createInactiveTextBox(data.data.disciplineEducationalProgram.basicEducationalProgram.profile.name))
+                    fieldWrapper.append(createInactiveTextBox(data.data.basicEducationalProgramDiscipline.basicEducationalProgram.profile.name))
                     form.append(fieldWrapper)
 
                     fieldWrapper = document.createElement('div')
@@ -565,7 +565,7 @@
                     fieldDesc.classList.add('field__desc')
                     fieldDesc.textContent = `Форма обучения:`
                     fieldWrapper.append(fieldDesc)
-                    fieldWrapper.append(createInactiveTextBox(data.data.disciplineEducationalProgram.basicEducationalProgram.educationType.name))
+                    fieldWrapper.append(createInactiveTextBox(data.data.basicEducationalProgramDiscipline.basicEducationalProgram.educationType.name))
                     form.append(fieldWrapper)
 
                     fieldWrapper = document.createElement('div')
@@ -574,7 +574,7 @@
                     fieldDesc.classList.add('field__desc')
                     fieldDesc.textContent = `Дисциплина:`
                     fieldWrapper.append(fieldDesc)
-                    fieldWrapper.append(createInactiveTextBox(data.data.disciplineEducationalProgram.discipline.name))
+                    fieldWrapper.append(createInactiveTextBox(data.data.basicEducationalProgramDiscipline.discipline.name))
                     form.append(fieldWrapper)
 
                     fieldWrapper = document.createElement('div')
@@ -753,9 +753,9 @@
                                 rows[i].innerHTML =
                                     '<td>' + newRecord.updatedData.id + '</td>' +
                                     '<td>' + newRecord.updatedData.academicYear + '</td>' +
-                                    '<td>' + newRecord.updatedData.disciplineEducationalProgram.basicEducationalProgram.profile.name + '</td>' +
-                                    '<td>' + newRecord.updatedData.disciplineEducationalProgram.basicEducationalProgram.educationType.name + '</td>' +
-                                    '<td>' + newRecord.updatedData.disciplineEducationalProgram.discipline.name + '</td>' +
+                                    '<td>' + newRecord.updatedData.basicEducationalProgramDiscipline.basicEducationalProgram.profile.name + '</td>' +
+                                    '<td>' + newRecord.updatedData.basicEducationalProgramDiscipline.basicEducationalProgram.educationType.name + '</td>' +
+                                    '<td>' + newRecord.updatedData.basicEducationalProgramDiscipline.discipline.name + '</td>' +
                                     '<td>' + isLoadStatus(newRecord.updatedData.section1IsLoad) + '</td>' +
                                     '<td>' + isLoadStatus(newRecord.updatedData.section2IsLoad) + '</td>' +
                                     '<td>' + isLoadStatus(newRecord.updatedData.section3IsLoad) + '</td>' +

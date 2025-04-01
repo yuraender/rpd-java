@@ -1,8 +1,8 @@
 package com.example.demo.controller;
 
 import com.example.demo.entity.*;
+import com.example.demo.service.BasicEducationalProgramDisciplineService;
 import com.example.demo.service.DepartmentService;
-import com.example.demo.service.DisciplineEducationalProgramService;
 import com.example.demo.service.FileRPDService;
 import com.example.demo.service.TeacherService;
 import jakarta.servlet.http.HttpServletRequest;
@@ -23,7 +23,7 @@ public class FileRPDController {
 
     private final FileRPDService fileRPDService;
     private final DepartmentService departmentService;
-    private final DisciplineEducationalProgramService disciplineEducationalProgramService;
+    private final BasicEducationalProgramDisciplineService basicEducationalProgramDisciplineService;
     private final TeacherService teacherService;
 
     @GetMapping("/rpd")
@@ -41,8 +41,8 @@ public class FileRPDController {
         List<Department> departments = departmentService.getAll();
         response.put("departments", departments);
 
-        List<DisciplineEducationalProgram> deps = disciplineEducationalProgramService.getAll();
-        response.put("deps", deps);
+        List<BasicEducationalProgramDiscipline> bepDisciplines = basicEducationalProgramDisciplineService.getAll();
+        response.put("bepDisciplines", bepDisciplines);
 
         List<Teacher> teachers = teacherService.getAll();
         response.put("teachers", teachers);
@@ -184,19 +184,19 @@ public class FileRPDController {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
         }
 
-        DisciplineEducationalProgram dep = disciplineEducationalProgramService.getById(param1);
+        BasicEducationalProgramDiscipline bepDiscipline = basicEducationalProgramDisciplineService.getById(param1);
         List<Teacher> developers = Arrays.stream(param2)
                 .mapToObj(teacherService::getById)
                 .distinct()
                 .toList();
-        if (dep == null || developers.stream().anyMatch(Objects::isNull)) {
+        if (bepDiscipline == null || developers.stream().anyMatch(Objects::isNull)) {
             response.put("error", "Запись не найдена.");
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
         }
 
         FileRPD fileRPD = new FileRPD();
         fileRPD.setAcademicYear(academicYear);
-        fileRPD.setDisciplineEducationalProgram(dep);
+        fileRPD.setBasicEducationalProgramDiscipline(bepDiscipline);
         fileRPD.setDevelopers(new ArrayList<>(developers));
         fileRPD.setDisabled(false);
         fileRPDService.save(fileRPD);
@@ -225,9 +225,9 @@ public class FileRPDController {
     public ResponseEntity<Map<String, Object>> filterByDepartment(@PathVariable Integer filter1) {
         Map<String, Object> response = new HashMap<>();
 
-        List<BasicEducationalProgram> filterList = disciplineEducationalProgramService.getAll().stream()
-                .filter(dep -> dep.getBasicEducationalProgram().getProfile().getDirection().getDepartment().getId() == filter1)
-                .map(DisciplineEducationalProgram::getBasicEducationalProgram)
+        List<BasicEducationalProgram> filterList = basicEducationalProgramDisciplineService.getAll().stream()
+                .filter(bepd -> bepd.getBasicEducationalProgram().getProfile().getDirection().getDepartment().getId() == filter1)
+                .map(BasicEducationalProgramDiscipline::getBasicEducationalProgram)
                 .distinct()
                 .toList();
         response.put("filterList", filterList);
@@ -238,7 +238,8 @@ public class FileRPDController {
             response.put("entityList", filesRPD);
         } else {
             List<FileRPD> entityList = filesRPD.stream()
-                    .filter(f -> f.getDisciplineEducationalProgram().getBasicEducationalProgram().getProfile().getDirection().getDepartment().getId() == filter1)
+                    .filter(f -> f.getBasicEducationalProgramDiscipline().getBasicEducationalProgram()
+                            .getProfile().getDirection().getDepartment().getId() == filter1)
                     .toList();
             response.put("entityList", entityList);
         }
@@ -249,10 +250,10 @@ public class FileRPDController {
     public ResponseEntity<Map<String, Object>> filterByOOP(@PathVariable Integer filter1, @PathVariable Integer filter2) {
         Map<String, Object> response = new HashMap<>();
 
-        List<Discipline> filterList = disciplineEducationalProgramService.getAll().stream()
+        List<Discipline> filterList = basicEducationalProgramDisciplineService.getAll().stream()
                 .filter(d -> d.getBasicEducationalProgram().getProfile().getDirection().getDepartment().getId() == filter1)
                 .filter(d -> d.getBasicEducationalProgram().getId() == filter2)
-                .map(DisciplineEducationalProgram::getDiscipline)
+                .map(BasicEducationalProgramDiscipline::getDiscipline)
                 .distinct()
                 .toList();
         response.put("filterList", filterList);
@@ -261,13 +262,15 @@ public class FileRPDController {
 
         if (filter2 == 0) {
             List<FileRPD> entityList = filesRPD.stream()
-                    .filter(f -> f.getDisciplineEducationalProgram().getBasicEducationalProgram().getProfile().getDirection().getDepartment().getId() == filter1)
+                    .filter(f -> f.getBasicEducationalProgramDiscipline().getBasicEducationalProgram()
+                            .getProfile().getDirection().getDepartment().getId() == filter1)
                     .toList();
             response.put("entityList", entityList);
         } else {
             List<FileRPD> entityList = filesRPD.stream()
-                    .filter(f -> f.getDisciplineEducationalProgram().getBasicEducationalProgram().getProfile().getDirection().getDepartment().getId() == filter1)
-                    .filter(f -> f.getDisciplineEducationalProgram().getBasicEducationalProgram().getId() == filter2)
+                    .filter(f -> f.getBasicEducationalProgramDiscipline().getBasicEducationalProgram()
+                            .getProfile().getDirection().getDepartment().getId() == filter1)
+                    .filter(f -> f.getBasicEducationalProgramDiscipline().getBasicEducationalProgram().getId() == filter2)
                     .toList();
             response.put("entityList", entityList);
         }
@@ -282,15 +285,17 @@ public class FileRPDController {
 
         if (filter3 == 0) {
             List<FileRPD> entityList = filesRPD.stream()
-                    .filter(f -> f.getDisciplineEducationalProgram().getBasicEducationalProgram().getProfile().getDirection().getDepartment().getId() == filter1)
-                    .filter(f -> f.getDisciplineEducationalProgram().getBasicEducationalProgram().getId() == filter2)
+                    .filter(f -> f.getBasicEducationalProgramDiscipline().getBasicEducationalProgram()
+                            .getProfile().getDirection().getDepartment().getId() == filter1)
+                    .filter(f -> f.getBasicEducationalProgramDiscipline().getBasicEducationalProgram().getId() == filter2)
                     .toList();
             response.put("entityList", entityList);
         } else {
             List<FileRPD> entityList = filesRPD.stream()
-                    .filter(f -> f.getDisciplineEducationalProgram().getBasicEducationalProgram().getProfile().getDirection().getDepartment().getId() == filter1)
-                    .filter(f -> f.getDisciplineEducationalProgram().getBasicEducationalProgram().getId() == filter2)
-                    .filter(f -> f.getDisciplineEducationalProgram().getDiscipline().getId() == filter3)
+                    .filter(f -> f.getBasicEducationalProgramDiscipline().getBasicEducationalProgram()
+                            .getProfile().getDirection().getDepartment().getId() == filter1)
+                    .filter(f -> f.getBasicEducationalProgramDiscipline().getBasicEducationalProgram().getId() == filter2)
+                    .filter(f -> f.getBasicEducationalProgramDiscipline().getDiscipline().getId() == filter3)
                     .toList();
             response.put("entityList", entityList);
         }

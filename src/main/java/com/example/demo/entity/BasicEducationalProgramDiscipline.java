@@ -7,10 +7,10 @@ import lombok.Setter;
 import java.util.List;
 
 @Entity
-@Table(name = "disciplines_educational_programs")
+@Table(name = "basic_educational_program_disciplines")
 @Getter
 @Setter
-public class DisciplineEducationalProgram {
+public class BasicEducationalProgramDiscipline {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -34,10 +34,10 @@ public class DisciplineEducationalProgram {
     private List<Indicator> indicators;
 
     @ManyToMany
-    @JoinTable(name = "basic_educational_program_discipline_audiences",
+    @JoinTable(name = "basic_educational_program_discipline_auditoriums",
             joinColumns = @JoinColumn(name = "basic_educational_program_discipline_id", referencedColumnName = "id"),
-            inverseJoinColumns = @JoinColumn(name = "audience_id", referencedColumnName = "id"))
-    private List<Audience> audiences;
+            inverseJoinColumns = @JoinColumn(name = "auditorium_id", referencedColumnName = "id"))
+    private List<Auditorium> auditoriums;
 
     @ManyToMany
     @JoinTable(name = "basic_educational_program_discipline_protocols",
@@ -52,8 +52,8 @@ public class DisciplineEducationalProgram {
         return indicators.stream().filter(i -> !i.isDisabled()).toList();
     }
 
-    public List<Audience> getAudiences() {
-        return audiences.stream().filter(a -> !a.isDisabled()).toList();
+    public List<Auditorium> getAuditoriums() {
+        return auditoriums.stream().filter(a -> !a.isDisabled()).toList();
     }
 
     public List<Protocol> getProtocols() {
@@ -64,7 +64,7 @@ public class DisciplineEducationalProgram {
         return disabled
                 || basicEducationalProgram.isDisabled() || discipline.isDisabled()
                 || indicators.stream().anyMatch(Indicator::isDisabled)
-                || audiences.stream().anyMatch(Audience::isDisabled)
+                || auditoriums.stream().anyMatch(Auditorium::isDisabled)
                 || protocols.stream().anyMatch(Protocol::isDisabled);
     }
 }

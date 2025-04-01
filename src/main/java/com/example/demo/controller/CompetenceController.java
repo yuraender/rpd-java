@@ -1,7 +1,7 @@
 package com.example.demo.controller;
 
-import com.example.demo.entity.Competencie;
-import com.example.demo.service.CompetencieService;
+import com.example.demo.entity.Competence;
+import com.example.demo.service.CompetenceService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
@@ -19,21 +19,21 @@ import java.util.Map;
 
 @Controller
 @RequiredArgsConstructor
-public class CompetencieController {
+public class CompetenceController {
 
-    private final CompetencieService competencieService;
+    private final CompetenceService competenceService;
 
-    @GetMapping("/competencies")
+    @GetMapping("/competences")
     public String getTablePage() {
-        return "competencies";
+        return "competences";
     }
 
-    @GetMapping("/competencies-data")
+    @GetMapping("/competences-data")
     public ResponseEntity<Map<String, Object>> getEntityData(HttpServletRequest request) {
         Map<String, Object> response = new HashMap<>();
 
-        List<Competencie> competencies = competencieService.getAll();
-        response.put("data", competencies);
+        List<Competence> competences = competenceService.getAll();
+        response.put("data", competences);
 
         HttpSession session = request.getSession();
         String role = (String) session.getAttribute("role");
@@ -42,17 +42,17 @@ public class CompetencieController {
         return ResponseEntity.ok(response);
     }
 
-    @GetMapping("/api/competencie/get-active/{entityId}")
+    @GetMapping("/api/competence/get-active/{entityId}")
     public ResponseEntity<Map<String, Object>> getActiveEntity(@PathVariable Integer entityId) {
         Map<String, Object> response = new HashMap<>();
 
-        Competencie competencie = competencieService.getById(entityId);
-        response.put("data", competencie);
+        Competence competence = competenceService.getById(entityId);
+        response.put("data", competence);
 
         return ResponseEntity.ok(response);
     }
 
-    @PostMapping("/api/competencie/update")
+    @PostMapping("/api/competence/update")
     public ResponseEntity<Map<String, Object>> updateRecord(@RequestBody Map<String, String> payload) {
         Map<String, Object> response = new HashMap<>();
 
@@ -60,50 +60,50 @@ public class CompetencieController {
         String essence = payload.get("1");
         Integer dataId = Integer.parseInt(payload.get("dataId"));
 
-        Competencie competencie = competencieService.getById(dataId);
-        if (competencie == null) {
+        Competence competence = competenceService.getById(dataId);
+        if (competence == null) {
             response.put("error", "Запись не найдена.");
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
         }
-        competencie.setIndex(index);
-        competencie.setEssence(essence);
-        competencie.setDisabled(false);
-        competencieService.save(competencie);
+        competence.setIndex(index);
+        competence.setEssence(essence);
+        competence.setDisabled(false);
+        competenceService.save(competence);
 
-        response.put("updatedData", competencie);
+        response.put("updatedData", competence);
         return ResponseEntity.ok(response);
     }
 
-    @PostMapping("/api/competencie/save-new-record")
+    @PostMapping("/api/competence/save-new-record")
     public ResponseEntity<Map<String, Object>> createRecord(@RequestBody Map<String, String> payload) {
         Map<String, Object> response = new HashMap<>();
 
         String index = payload.get("0");
         String essence = payload.get("1");
 
-        Competencie competencie = new Competencie();
-        competencie.setIndex(index);
-        competencie.setEssence(essence);
-        competencie.setDisabled(false);
-        competencieService.save(competencie);
+        Competence competence = new Competence();
+        competence.setIndex(index);
+        competence.setEssence(essence);
+        competence.setDisabled(false);
+        competenceService.save(competence);
 
-        response.put("createdData", competencie);
+        response.put("createdData", competence);
         return ResponseEntity.ok(response);
     }
 
-    @GetMapping("/api/competencie/delete-record/{entityId}")
+    @GetMapping("/api/competence/delete-record/{entityId}")
     public ResponseEntity<Map<String, Object>> deleteRecord(@PathVariable Integer entityId) {
         Map<String, Object> response = new HashMap<>();
 
-        Competencie competencie = competencieService.getById(entityId);
-        if (competencie == null) {
+        Competence competence = competenceService.getById(entityId);
+        if (competence == null) {
             response.put("error", "Запись не найдена");
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
         }
-        competencie.setDisabled(true);
-        competencieService.save(competencie);
+        competence.setDisabled(true);
+        competenceService.save(competence);
 
-        response.put("deletedData", competencie.getId());
+        response.put("deletedData", competence.getId());
         return ResponseEntity.ok(response);
     }
 }

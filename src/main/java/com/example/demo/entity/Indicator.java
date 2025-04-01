@@ -24,14 +24,14 @@ public class Indicator {
     private Type type;
 
     @ManyToOne
-    @JoinColumn(name = "competencie_id", referencedColumnName = "id", nullable = false)
-    private Competencie competencie;
+    @JoinColumn(name = "competence_id", referencedColumnName = "id", nullable = false)
+    private Competence competence;
 
     @Column(nullable = false)
     private boolean disabled;
 
     public boolean isDisabled() {
-        return disabled || competencie.isDisabled();
+        return disabled || competence.isDisabled();
     }
 
     @JsonFormat(shape = JsonFormat.Shape.OBJECT)

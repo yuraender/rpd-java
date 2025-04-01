@@ -1,7 +1,7 @@
 package com.example.demo.controller;
 
-import com.example.demo.entity.Audience;
-import com.example.demo.service.AudienceService;
+import com.example.demo.entity.Auditorium;
+import com.example.demo.service.AuditoriumService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
@@ -19,37 +19,37 @@ import java.util.Map;
 
 @Controller
 @RequiredArgsConstructor
-public class AudienceController {
+public class AuditoriumController {
 
-    private final AudienceService audienceService;
+    private final AuditoriumService auditoriumService;
 
-    @GetMapping("/audiences")
+    @GetMapping("/auditoriums")
     public String getTablePage() {
-        return "audiences";
+        return "auditoriums";
     }
 
-    @GetMapping("/api/audience/set-active/{entityId}")
+    @GetMapping("/api/auditorium/set-active/{entityId}")
     public ResponseEntity<Map<String, Object>> setActive(@PathVariable Integer entityId, HttpServletRequest request) {
         Map<String, Object> response = new HashMap<>();
 
-        Audience audience = audienceService.getById(entityId);
-        if (audience == null) {
+        Auditorium auditorium = auditoriumService.getById(entityId);
+        if (auditorium == null) {
             response.put("error", "Запись не найдена.");
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
         }
-        response.put("dataName", audience.getAudienceNumber());
+        response.put("dataName", auditorium.getAuditoriumNumber());
 
         HttpSession session = request.getSession();
-        session.setAttribute("audienceId", entityId);
+        session.setAttribute("auditoriumId", entityId);
         return ResponseEntity.ok(response);
     }
 
-    @GetMapping("/audiences-data")
+    @GetMapping("/auditoriums-data")
     public ResponseEntity<Map<String, Object>> getEntityData(HttpServletRequest request) {
         Map<String, Object> response = new HashMap<>();
 
-        List<Audience> audiences = audienceService.getAll();
-        response.put("data", audiences);
+        List<Auditorium> auditoriums = auditoriumService.getAll();
+        response.put("data", auditoriums);
 
         HttpSession session = request.getSession();
         String role = (String) session.getAttribute("role");
@@ -58,72 +58,72 @@ public class AudienceController {
         return ResponseEntity.ok(response);
     }
 
-    @GetMapping("/api/audience/get-active/{entityId}")
+    @GetMapping("/api/auditorium/get-active/{entityId}")
     public ResponseEntity<Map<String, Object>> getActiveEntity(@PathVariable Integer entityId) {
         Map<String, Object> response = new HashMap<>();
 
-        Audience audience = audienceService.getById(entityId);
-        response.put("data", audience);
+        Auditorium auditorium = auditoriumService.getById(entityId);
+        response.put("data", auditorium);
 
         return ResponseEntity.ok(response);
     }
 
-    @PostMapping("/api/audience/update")
+    @PostMapping("/api/auditorium/update")
     public ResponseEntity<Map<String, Object>> updateRecord(@RequestBody Map<String, String> payload) {
         Map<String, Object> response = new HashMap<>();
 
-        String audienceNumber = payload.get("0");
+        String auditoriumNumber = payload.get("0");
         String equipment = payload.get("1");
         String software = payload.get("2");
         Integer dataId = Integer.parseInt(payload.get("dataId"));
 
-        Audience audience = audienceService.getById(dataId);
-        if (audience == null) {
+        Auditorium auditorium = auditoriumService.getById(dataId);
+        if (auditorium == null) {
             response.put("error", "Запись не найдена.");
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
         }
-        audience.setAudienceNumber(audienceNumber);
-        audience.setEquipment(equipment);
-        audience.setSoftware(software);
-        audience.setDisabled(false);
-        audienceService.save(audience);
+        auditorium.setAuditoriumNumber(auditoriumNumber);
+        auditorium.setEquipment(equipment);
+        auditorium.setSoftware(software);
+        auditorium.setDisabled(false);
+        auditoriumService.save(auditorium);
 
-        response.put("updatedData", audience);
+        response.put("updatedData", auditorium);
         return ResponseEntity.ok(response);
     }
 
-    @PostMapping("/api/audience/save-new-record")
+    @PostMapping("/api/auditorium/save-new-record")
     public ResponseEntity<Map<String, Object>> createRecord(@RequestBody Map<String, String> payload) {
         Map<String, Object> response = new HashMap<>();
 
-        String audienceNumber = payload.get("0");
+        String auditoriumNumber = payload.get("0");
         String equipment = payload.get("1");
         String software = payload.get("2");
 
-        Audience audience = new Audience();
-        audience.setAudienceNumber(audienceNumber);
-        audience.setEquipment(equipment);
-        audience.setSoftware(software);
-        audience.setDisabled(false);
-        audienceService.save(audience);
+        Auditorium auditorium = new Auditorium();
+        auditorium.setAuditoriumNumber(auditoriumNumber);
+        auditorium.setEquipment(equipment);
+        auditorium.setSoftware(software);
+        auditorium.setDisabled(false);
+        auditoriumService.save(auditorium);
 
-        response.put("createdData", audience);
+        response.put("createdData", auditorium);
         return ResponseEntity.ok(response);
     }
 
-    @GetMapping("/api/audience/delete-record/{entityId}")
+    @GetMapping("/api/auditorium/delete-record/{entityId}")
     public ResponseEntity<Map<String, Object>> deleteRecord(@PathVariable Integer entityId) {
         Map<String, Object> response = new HashMap<>();
 
-        Audience audience = audienceService.getById(entityId);
-        if (audience == null) {
+        Auditorium auditorium = auditoriumService.getById(entityId);
+        if (auditorium == null) {
             response.put("error", "Запись не найдена.");
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
         }
-        audience.setDisabled(true);
-        audienceService.save(audience);
+        auditorium.setDisabled(true);
+        auditoriumService.save(auditorium);
 
-        response.put("deletedData", audience.getId());
+        response.put("deletedData", auditorium.getId());
         return ResponseEntity.ok(response);
     }
 }
