@@ -14,8 +14,8 @@ public class Competencie {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
-    @Column(length = 100, nullable = false)
-    private String code;
+    @Column(name = "competencie_index", length = 100, nullable = false)
+    private String index;
 
     @Column(columnDefinition = "TEXT", nullable = false)
     private String essence;

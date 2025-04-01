@@ -94,15 +94,15 @@ public class DepartmentController {
         Integer dataId = Integer.parseInt(payload.get("dataId"));
 
         Department department = departmentService.getById(dataId);
-        Employee manager = employeeService.getById(param3);
-        if (department == null || manager == null) {
+        Employee head = employeeService.getById(param3);
+        if (department == null || head == null) {
             response.put("error", "Запись не найдена.");
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
         }
         department.setCode(code);
         department.setName(name);
         department.setAbbreviation(abbreviation);
-        department.setManager(manager);
+        department.setHead(head);
         department.setDisabled(false);
         departmentService.save(department);
 
@@ -130,8 +130,8 @@ public class DepartmentController {
             response.put("error", "Запись уже существует.");
             return ResponseEntity.status(HttpStatus.CONFLICT).body(response);
         }
-        Employee manager = employeeService.getById(param3);
-        if (manager == null) {
+        Employee head = employeeService.getById(param3);
+        if (head == null) {
             response.put("error", "Запись не найдена.");
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
         }
@@ -140,7 +140,7 @@ public class DepartmentController {
         department.setCode(code);
         department.setName(name);
         department.setAbbreviation(abbreviation);
-        department.setManager(manager);
+        department.setHead(head);
         department.setDisabled(false);
         departmentService.save(department);
 

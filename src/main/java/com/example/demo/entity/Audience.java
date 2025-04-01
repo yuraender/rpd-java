@@ -18,10 +18,10 @@ public class Audience {
     private String audienceNumber;
 
     @Column(columnDefinition = "TEXT")
-    private String tech;
+    private String equipment;
 
     @Column(columnDefinition = "TEXT")
-    private String softwareLicense;
+    private String software;
 
     @Column(nullable = false)
     private boolean disabled;

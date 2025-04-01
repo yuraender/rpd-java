@@ -372,7 +372,7 @@
                             '<td>' + data.code + '</td>' +
                             '<td>' + data.name + '</td>' +
                             '<td>' + data.abbreviation + '</td>' +
-                            '<td>' + data.manager.nameTypeOne + '</td>';
+                            '<td>' + data.head.nameTypeOne + '</td>';
                         row.addEventListener('click', function () {
                             changeActiveRowTable(data.id);
                         });
@@ -402,7 +402,7 @@
                     '<td>' + data.code + '</td>' +
                     '<td>' + data.name + '</td>' +
                     '<td>' + data.abbreviation + '</td>' +
-                    '<td>' + data.manager.nameTypeOne + '</td>';
+                    '<td>' + data.head.nameTypeOne + '</td>';
                 row.addEventListener('click', function () {
                     changeActiveRowTable(data.id);
                 });
@@ -476,7 +476,7 @@
                     data.employees.forEach(function (optionData) {
                         let text = optionData.nameTypeOne;
                         let id = optionData.id;
-                        let parentDataId = data.data.manager.id
+                        let parentDataId = data.data.head.id
                         let option = createOptionForActiveRecord(text, id, parentDataId)
                         fieldSelect.append(option);
                     });
@@ -603,7 +603,7 @@
                                     '<td>' + newRecord.updatedData.code + '</td>' +
                                     '<td>' + newRecord.updatedData.name + '</td>' +
                                     '<td>' + newRecord.updatedData.abbreviation + '</td>' +
-                                    '<td>' + newRecord.updatedData.manager.nameTypeOne + '</td>';
+                                    '<td>' + newRecord.updatedData.head.nameTypeOne + '</td>';
                                 break;
                             }
                         }

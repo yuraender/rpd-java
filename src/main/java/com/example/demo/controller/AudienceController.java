@@ -73,8 +73,8 @@ public class AudienceController {
         Map<String, Object> response = new HashMap<>();
 
         String audienceNumber = payload.get("0");
-        String tech = payload.get("1");
-        String softwareLicense = payload.get("2");
+        String equipment = payload.get("1");
+        String software = payload.get("2");
         Integer dataId = Integer.parseInt(payload.get("dataId"));
 
         Audience audience = audienceService.getById(dataId);
@@ -83,8 +83,8 @@ public class AudienceController {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
         }
         audience.setAudienceNumber(audienceNumber);
-        audience.setTech(tech);
-        audience.setSoftwareLicense(softwareLicense);
+        audience.setEquipment(equipment);
+        audience.setSoftware(software);
         audience.setDisabled(false);
         audienceService.save(audience);
 
@@ -97,13 +97,13 @@ public class AudienceController {
         Map<String, Object> response = new HashMap<>();
 
         String audienceNumber = payload.get("0");
-        String tech = payload.get("1");
-        String softwareLicense = payload.get("2");
+        String equipment = payload.get("1");
+        String software = payload.get("2");
 
         Audience audience = new Audience();
         audience.setAudienceNumber(audienceNumber);
-        audience.setTech(tech);
-        audience.setSoftwareLicense(softwareLicense);
+        audience.setEquipment(equipment);
+        audience.setSoftware(software);
         audience.setDisabled(false);
         audienceService.save(audience);
 

@@ -81,7 +81,7 @@ public class DirectionController {
     public ResponseEntity<Map<String, Object>> updateRecord(@RequestBody Map<String, String> payload) {
         Map<String, Object> response = new HashMap<>();
 
-        String encryption = payload.get("0");
+        String code = payload.get("0");
         String name = payload.get("1");
         int param2;
         try {
@@ -98,7 +98,7 @@ public class DirectionController {
             response.put("error", "Запись не найдена.");
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
         }
-        direction.setEncryption(encryption);
+        direction.setCode(code);
         direction.setName(name);
         direction.setDepartment(department);
         direction.setDisabled(false);
@@ -112,7 +112,7 @@ public class DirectionController {
     public ResponseEntity<Map<String, Object>> createRecord(@RequestBody Map<String, String> payload) {
         Map<String, Object> response = new HashMap<>();
 
-        String encryption = payload.get("0");
+        String code = payload.get("0");
         String name = payload.get("1");
         int param2;
         try {
@@ -129,7 +129,7 @@ public class DirectionController {
         }
 
         Direction direction = new Direction();
-        direction.setEncryption(encryption);
+        direction.setCode(code);
         direction.setName(name);
         direction.setDepartment(department);
         direction.setDisabled(false);

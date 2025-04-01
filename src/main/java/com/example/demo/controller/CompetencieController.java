@@ -56,7 +56,7 @@ public class CompetencieController {
     public ResponseEntity<Map<String, Object>> updateRecord(@RequestBody Map<String, String> payload) {
         Map<String, Object> response = new HashMap<>();
 
-        String code = payload.get("0");
+        String index = payload.get("0");
         String essence = payload.get("1");
         Integer dataId = Integer.parseInt(payload.get("dataId"));
 
@@ -65,7 +65,7 @@ public class CompetencieController {
             response.put("error", "Запись не найдена.");
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
         }
-        competencie.setCode(code);
+        competencie.setIndex(index);
         competencie.setEssence(essence);
         competencie.setDisabled(false);
         competencieService.save(competencie);
@@ -78,11 +78,11 @@ public class CompetencieController {
     public ResponseEntity<Map<String, Object>> createRecord(@RequestBody Map<String, String> payload) {
         Map<String, Object> response = new HashMap<>();
 
-        String code = payload.get("0");
+        String index = payload.get("0");
         String essence = payload.get("1");
 
         Competencie competencie = new Competencie();
-        competencie.setCode(code);
+        competencie.setIndex(index);
         competencie.setEssence(essence);
         competencie.setDisabled(false);
         competencieService.save(competencie);

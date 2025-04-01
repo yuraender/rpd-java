@@ -15,7 +15,7 @@ public class Direction {
     private int id;
 
     @Column(length = 20, nullable = false)
-    private String encryption;
+    private String code;
 
     @Column(length = 100, nullable = false)
     private String name;

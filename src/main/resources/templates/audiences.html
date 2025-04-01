@@ -41,16 +41,16 @@
                            onkeyup="filterTable('dataTable', 0)"></th>
                 <th><input type="text" class="form-control" placeholder="Аудитория"
                            onkeyup="filterTable('dataTable', 1)"></th>
-                <th><input type="text" class="form-control" placeholder="Техника"
+                <th><input type="text" class="form-control" placeholder="Оснащенность"
                            onkeyup="filterTable('dataTable', 2)"></th>
-                <th><input type="text" class="form-control" placeholder="Лицензия"
+                <th><input type="text" class="form-control" placeholder="Перечень ПО"
                            onkeyup="filterTable('dataTable', 3)"></th>
             </tr>
             <tr class="sticky-header">
                 <th>ID</th>
                 <th>Аудитория</th>
-                <th>Техника</th>
-                <th>Лицензия</th>
+                <th>Оснащенность</th>
+                <th>Перечень ПО</th>
             </tr>
             </thead>
             <tbody>
@@ -268,7 +268,7 @@
                         fieldWrapper.classList.add('standard__active-record-wrapper')
                         fieldDesc = document.createElement('p')
                         fieldDesc.classList.add('field__desc')
-                        fieldDesc.textContent = `Техника:`
+                        fieldDesc.textContent = `Оснащенность:`
                         fieldWrapper.append(fieldDesc)
                         fieldWrapper.append(createOptionalTextBoxForCreate(1000))
                         form.append(fieldWrapper)
@@ -277,7 +277,7 @@
                         fieldWrapper.classList.add('standard__active-record-wrapper')
                         fieldDesc = document.createElement('p')
                         fieldDesc.classList.add('field__desc')
-                        fieldDesc.textContent = `Лицензия:`
+                        fieldDesc.textContent = `Перечень ПО:`
                         fieldWrapper.append(fieldDesc)
                         fieldWrapper.append(createOptionalTextBoxForCreate(1000))
                         form.append(fieldWrapper)
@@ -348,8 +348,8 @@
                         row.innerHTML =
                             '<td>' + data.id + '</td>' +
                             '<td>' + data.audienceNumber + '</td>' +
-                            '<td>' + data.tech + '</td>' +
-                            '<td>' + data.softwareLicense + '</td>';
+                            '<td>' + data.equipment + '</td>' +
+                            '<td>' + data.software + '</td>';
                         row.addEventListener('click', function () {
                             changeActiveRowTable(data.id);
                         });
@@ -377,8 +377,8 @@
                 row.innerHTML =
                     '<td>' + data.id + '</td>' +
                     '<td>' + data.audienceNumber + '</td>' +
-                    '<td>' + data.tech + '</td>' +
-                    '<td>' + data.softwareLicense + '</td>';
+                    '<td>' + data.equipment + '</td>' +
+                    '<td>' + data.software + '</td>';
                 row.addEventListener('click', function () {
                     changeActiveRowTable(data.id);
                 });
@@ -425,18 +425,18 @@
                     fieldWrapper.classList.add('standard__active-record-wrapper')
                     fieldDesc = document.createElement('p')
                     fieldDesc.classList.add('field__desc')
-                    fieldDesc.textContent = `Техника:`
+                    fieldDesc.textContent = `Оснащенность:`
                     fieldWrapper.append(fieldDesc)
-                    fieldWrapper.append(createOptionalTextBoxForActiveRecord(data.data.tech, 1000))
+                    fieldWrapper.append(createOptionalTextBoxForActiveRecord(data.data.equipment, 1000))
                     form.append(fieldWrapper)
 
                     fieldWrapper = document.createElement('div')
                     fieldWrapper.classList.add('standard__active-record-wrapper')
                     fieldDesc = document.createElement('p')
                     fieldDesc.classList.add('field__desc')
-                    fieldDesc.textContent = `Лицензия:`
+                    fieldDesc.textContent = `Перечень ПО:`
                     fieldWrapper.append(fieldDesc)
-                    fieldWrapper.append(createOptionalTextBoxForActiveRecord(data.data.softwareLicense, 1000))
+                    fieldWrapper.append(createOptionalTextBoxForActiveRecord(data.data.software, 1000))
                     form.append(fieldWrapper)
 
                     // Конец добавления в активную запись
@@ -556,8 +556,8 @@
                                 rows[i].innerHTML =
                                     '<td>' + newRecord.updatedData.id + '</td>' +
                                     '<td>' + newRecord.updatedData.audienceNumber + '</td>' +
-                                    '<td>' + newRecord.updatedData.tech + '</td>' +
-                                    '<td>' + newRecord.updatedData.softwareLicense + '</td>';
+                                    '<td>' + newRecord.updatedData.equipment + '</td>' +
+                                    '<td>' + newRecord.updatedData.software + '</td>';
                                 break;
                             }
                         }

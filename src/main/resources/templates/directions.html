@@ -357,7 +357,7 @@
                         row.classList.add(`${data.id}`)
                         row.innerHTML =
                             '<td>' + data.id + '</td>' +
-                            '<td>' + data.encryption + '</td>' +
+                            '<td>' + data.code + '</td>' +
                             '<td>' + data.name + '</td>' +
                             '<td>' + data.department.name + '</td>';
                         row.addEventListener('click', function () {
@@ -386,7 +386,7 @@
                 row.classList.add(`${data.id}`)
                 row.innerHTML =
                     '<td>' + data.id + '</td>' +
-                    '<td>' + data.encryption + '</td>' +
+                    '<td>' + data.code + '</td>' +
                     '<td>' + data.name + '</td>' +
                     '<td>' + data.department.name + '</td>';
                 row.addEventListener('click', function () {
@@ -428,7 +428,7 @@
                     fieldDesc.classList.add('field__desc')
                     fieldDesc.textContent = `Шифр:`
                     fieldWrapper.append(fieldDesc)
-                    fieldWrapper.append(createTextBoxForActiveRecord(data.data.encryption, 20))
+                    fieldWrapper.append(createTextBoxForActiveRecord(data.data.code, 20))
                     form.append(fieldWrapper)
 
                     fieldWrapper = document.createElement('div')
@@ -577,7 +577,7 @@
                             if (rows[i].getAttribute('dataid') == newRecord.updatedData.id) {
                                 rows[i].innerHTML =
                                     '<td>' + newRecord.updatedData.id + '</td>' +
-                                    '<td>' + newRecord.updatedData.encryption + '</td>' +
+                                    '<td>' + newRecord.updatedData.code + '</td>' +
                                     '<td>' + newRecord.updatedData.name + '</td>' +
                                     '<td>' + newRecord.updatedData.department.name + '</td>';
                                 break;

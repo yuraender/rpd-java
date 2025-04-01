@@ -24,13 +24,13 @@ public class Department {
     private String abbreviation;
 
     @ManyToOne
-    @JoinColumn(name = "manager_id", referencedColumnName = "id", nullable = false)
-    private Employee manager;
+    @JoinColumn(name = "head_id", referencedColumnName = "id", nullable = false)
+    private Employee head;
 
     @Column(nullable = false)
     private boolean disabled;
 
     public boolean isDisabled() {
-        return disabled || manager.isDisabled();
+        return disabled || head.isDisabled();
     }
 }
