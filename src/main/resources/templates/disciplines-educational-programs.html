@@ -107,6 +107,7 @@
     <a href="/teachers">Преподаватели</a>
     <a href="/disciplines">Дисциплины</a>
     <a href="/competencies">Компетенции</a>
+    <a href="/indicators">Индикаторы</a>
 </div>
 <div id="createModal" class="modal" style="display: none;">
     <div class="modal-content">
@@ -299,6 +300,9 @@
                     .then(data => {
                         const form = document.querySelector('.createForm')
 
+                        let fieldSelectCompetencies;
+                        let fieldSelectIndicators;
+
                         let fieldWrapper = document.createElement('div')
                         fieldWrapper.classList.add('standard__active-record-wrapper')
                         let fieldDesc = document.createElement('p')
@@ -348,6 +352,65 @@
                         fieldWrapper.append(fieldSelect)
                         form.append(fieldWrapper)
 
+                        fieldWrapper = document.createElement('div')
+                        fieldWrapper.classList.add('standard__active-record-wrapper')
+                        fieldDesc = document.createElement('p')
+                        fieldDesc.classList.add('field__desc')
+                        fieldDesc.textContent = `Компетенции:`
+                        fieldWrapper.append(fieldDesc)
+                        fieldSelect = fieldSelectCompetencies = document.createElement('select');
+                        fieldSelect.classList.add('form-control', 'field');
+                        fieldSelect.setAttribute('data-live-search', 'true');
+                        fieldSelect.setAttribute('data-selected-text-format', 'count');
+                        fieldSelect.multiple = true;
+                        data.competencies.forEach(function (optionData) {
+                            let text = optionData.index + ' ' + optionData.essence;
+                            let id = optionData.id;
+                            let option = createOptionForCreate(text, id)
+                            fieldSelect.append(option);
+                        });
+                        fieldSelect.addEventListener('change', function () {
+                            const values = [];
+                            for (let selectedOption of this.selectedOptions) {
+                                values.push(parseInt(selectedOption.value));
+                            }
+                            if (values.length === 0) {
+                                return;
+                            }
+                            fieldSelectIndicators.innerHTML = '';
+                            data.indicatorTypes.forEach(function (type) {
+                                let optionGroup = document.createElement('optgroup');
+                                optionGroup.label = type.name;
+                                data.indicators.forEach(function (optionData) {
+                                    if (values.includes(optionData.competencie.id) && optionData.type.id === type.id) {
+                                        let text = optionData.text;
+                                        let id = optionData.id;
+                                        let option = createOptionForCreate(text, id)
+                                        optionGroup.append(option);
+                                    }
+                                });
+                                fieldSelectIndicators.append(optionGroup)
+                            });
+                            $('select', form).selectpicker('refresh');
+                            $('.bootstrap-select', form).removeClass(['form-control', 'field']);
+                        });
+                        fieldWrapper.append(fieldSelect)
+                        form.append(fieldWrapper)
+
+                        fieldWrapper = document.createElement('div')
+                        fieldWrapper.classList.add('standard__active-record-wrapper')
+                        fieldDesc = document.createElement('p')
+                        fieldDesc.classList.add('field__desc')
+                        fieldDesc.textContent = `Индикаторы:`
+                        fieldWrapper.append(fieldDesc)
+                        fieldSelect = fieldSelectIndicators = document.createElement('select');
+                        fieldSelect.classList.add('form-control', 'field');
+                        fieldSelect.setAttribute('data-live-search', 'true');
+                        fieldSelect.setAttribute('data-selected-text-format', 'count');
+                        fieldSelect.multiple = true;
+                        fieldWrapper.append(fieldSelect)
+                        form.append(fieldWrapper)
+
                         let closeBtn = document.querySelector('.close-btn');
                         cancelCreateModal.addEventListener('click', () => closeModal(createModal))
                         closeBtn.addEventListener('click', () => closeModal(createModal))
@@ -355,6 +418,7 @@
 
                         $('select', form).selectpicker();
                         $('.bootstrap-select', form).removeClass(['form-control', 'field']);
+                        fieldSelectCompetencies.dispatchEvent(new Event('change'));
                     })
                     .catch(error => {
                         console.error('Ошибка загрузки данных:', error);
@@ -482,6 +546,9 @@
                     form.setAttribute('activeRecordId', data.data.id)
                     form.append(createIdFieldForActiveRecord(data.data));
 
+                    let fieldSelectCompetencies;
+                    let fieldSelectIndicators;
+
                     let fieldWrapper = document.createElement('div')
                     fieldWrapper.classList.add('standard__active-record-wrapper')
                     let fieldDesc = document.createElement('p')
@@ -526,6 +593,79 @@
                     fieldWrapper.append(fieldDesc)
                     fieldWrapper.append(createInactiveTextBox(data.data.discipline.name))
                     form.append(fieldWrapper)
+
+                    fieldWrapper = document.createElement('div')
+                    fieldWrapper.classList.add('standard__active-record-wrapper')
+                    fieldDesc = document.createElement('p')
+                    fieldDesc.classList.add('field__desc')
+                    fieldDesc.textContent = `Компетенции:`
+                    fieldWrapper.append(fieldDesc)
+                    let fieldSelect = fieldSelectCompetencies = document.createElement('select');
+                    fieldSelect.classList.add('form-control', 'field');
+                    fieldSelect.setAttribute('data-live-search', 'true');
+                    fieldSelect.setAttribute('data-selected-text-format', 'count');
+                    fieldSelect.multiple = true;
+                    data.competencies.forEach(function (optionData) {
+                        let text = optionData.index + ' ' + optionData.essence;
+                        let id = optionData.id;
+                        let selected = data.data.indicators.some(i => i.competencie.id === id)
+                        let option = createOptionMultipleForActiveRecord(text, id, selected)
+                        fieldSelect.append(option);
+                    });
+                    fieldSelect.addEventListener('change', function () {
+                        const values = [];
+                        for (let selectedOption of this.selectedOptions) {
+                            values.push(parseInt(selectedOption.value));
+                        }
+                        if (values.length === 0) {
+                            return;
+                        }
+                        fieldSelectIndicators.innerHTML = '';
+                        data.indicatorTypes.forEach(function (type) {
+                            let optionGroup = document.createElement('optgroup');
+                            optionGroup.label = type.name;
+                            data.indicators
+                                .forEach(function (optionData) {
+                                    if (values.includes(optionData.competencie.id) && optionData.type.id === type.id) {
+                                        let text = optionData.text;
+                                        let id = optionData.id;
+                                        let selected = data.data.indicators.some(i => i.id === id)
+                                        let option = createOptionMultipleForActiveRecord(text, id, selected)
+                                        optionGroup.append(option);
+                                    }
+                                });
+                            fieldSelectIndicators.append(optionGroup)
+                        });
+                        $('select', form).selectpicker('refresh');
+                        $('.bootstrap-select', form).removeClass(['form-control', 'field']);
+                    });
+                    fieldSelect.disabled = !editMode;
+                    fieldWrapper.append(fieldSelect)
+                    form.append(fieldWrapper)
+
+                    fieldWrapper = document.createElement('div')
+                    fieldWrapper.classList.add('standard__active-record-wrapper')
+                    fieldDesc = document.createElement('p')
+                    fieldDesc.classList.add('field__desc')
+                    fieldDesc.textContent = `Индикаторы:`
+                    fieldWrapper.append(fieldDesc)
+                    fieldSelect = fieldSelectIndicators = document.createElement('select');
+                    fieldSelect.classList.add('form-control', 'field');
+                    fieldSelect.setAttribute('data-live-search', 'true');
+                    fieldSelect.setAttribute('data-selected-text-format', 'count');
+                    fieldSelect.multiple = true;
+                    data.indicators.forEach(function (optionData) {
+                        let text = optionData.text;
+                        let id = optionData.id;
+                        let selected = data.data.indicators.some(i => i.id === id)
+                        let option = createOptionMultipleForActiveRecord(text, id, selected)
+                        fieldSelect.append(option);
+                    });
+                    fieldSelect.disabled = !editMode;
+                    fieldWrapper.append(fieldSelect)
+                    form.append(fieldWrapper)
+
+                    fieldSelectCompetencies.dispatchEvent(new Event('change'));
 
                     // Конец добавления в активную запись
                     // Добавляем форму в контейнер

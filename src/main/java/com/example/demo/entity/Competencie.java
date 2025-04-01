@@ -20,15 +20,6 @@ public class Competencie {
     @Column(columnDefinition = "TEXT", nullable = false)
     private String essence;
 
-    @Column(columnDefinition = "TEXT")
-    private String know;
-
-    @Column(columnDefinition = "TEXT")
-    private String beAble;
-
-    @Column(columnDefinition = "TEXT")
-    private String own;
-
     @Column(nullable = false)
     private boolean disabled;
 }

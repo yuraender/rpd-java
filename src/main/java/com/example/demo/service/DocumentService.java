@@ -267,13 +267,13 @@ public class DocumentService {
 
                 // Значения для каждой компетенции
                 String detail = "";
-                if (point.equals("знать")) {
-                    detail = competency.get("competencyKnow");
-                } else if (point.equals("уметь")) {
-                    detail = competency.get("competencyBeAble");
-                } else {
-                    detail = competency.get("competencyOwn");
-                }
+//                if (point.equals("знать")) {
+//                    detail = competency.get("competencyKnow");
+//                } else if (point.equals("уметь")) {
+//                    detail = competency.get("competencyBeAble");
+//                } else {
+//                    detail = competency.get("competencyOwn");
+//                }
                 XWPFParagraph detailParagraph = document.createParagraph();
                 detailParagraph.setIndentationFirstLine(32 * 20); // Отступ первой строки в 32 pt
                 XWPFRun detailRun = detailParagraph.createRun();

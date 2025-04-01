@@ -4,6 +4,8 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.util.List;
+
 @Entity
 @Table(name = "disciplines_educational_programs")
 @Getter
@@ -25,10 +27,22 @@ public class DisciplineEducationalProgram {
     @JoinColumn(name = "discipline_id", referencedColumnName = "id", nullable = false)
     private Discipline discipline;
 
+    @ManyToMany
+    @JoinTable(name = "basic_educational_program_discipline_indicators",
+            joinColumns = @JoinColumn(name = "basic_educational_program_discipline_id", referencedColumnName = "id"),
+            inverseJoinColumns = @JoinColumn(name = "indicator_id", referencedColumnName = "id"))
+    private List<Indicator> indicators;
+
     @Column(nullable = false)
     private boolean disabled;
 
+    public List<Indicator> getIndicators() {
+        return indicators.stream().filter(i -> !i.isDisabled()).toList();
+    }
+
     public boolean isDisabled() {
-        return disabled || basicEducationalProgram.isDisabled() || discipline.isDisabled();
+        return disabled
+                || basicEducationalProgram.isDisabled() || discipline.isDisabled()
+                || indicators.stream().anyMatch(Indicator::isDisabled);
     }
 }

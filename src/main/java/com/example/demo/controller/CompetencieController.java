@@ -58,9 +58,6 @@ public class CompetencieController {
 
         String code = payload.get("0");
         String essence = payload.get("1");
-        String know = payload.get("2");
-        String beAble = payload.get("3");
-        String own = payload.get("4");
         Integer dataId = Integer.parseInt(payload.get("dataId"));
 
         Competencie competencie = competencieService.getById(dataId);
@@ -70,9 +67,6 @@ public class CompetencieController {
         }
         competencie.setCode(code);
         competencie.setEssence(essence);
-        competencie.setKnow(know);
-        competencie.setBeAble(beAble);
-        competencie.setOwn(own);
         competencie.setDisabled(false);
         competencieService.save(competencie);
 
@@ -86,16 +80,10 @@ public class CompetencieController {
 
         String code = payload.get("0");
         String essence = payload.get("1");
-        String know = payload.get("2");
-        String beAble = payload.get("3");
-        String own = payload.get("4");
 
         Competencie competencie = new Competencie();
         competencie.setCode(code);
         competencie.setEssence(essence);
-        competencie.setKnow(know);
-        competencie.setBeAble(beAble);
-        competencie.setOwn(own);
         competencie.setDisabled(false);
         competencieService.save(competencie);
 

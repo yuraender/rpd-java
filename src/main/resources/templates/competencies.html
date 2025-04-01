@@ -78,6 +78,7 @@
     <a href="/teachers">Преподаватели</a>
     <a href="/disciplines">Дисциплины</a>
     <a href="/competencies">Компетенции</a>
+    <a href="/indicators">Индикаторы</a>
 </div>
 <div id="createModal" class="modal" style="display: none;">
     <div class="modal-content">
@@ -250,33 +251,6 @@
                         fieldWrapper.append(createTextBoxForCreate(1000))
                         form.append(fieldWrapper)
 
-                        fieldWrapper = document.createElement('div')
-                        fieldWrapper.classList.add('standard__active-record-wrapper')
-                        fieldDesc = document.createElement('p')
-                        fieldDesc.classList.add('field__desc')
-                        fieldDesc.textContent = `Знать:`
-                        fieldWrapper.append(fieldDesc)
-                        fieldWrapper.append(createTextBoxForCreate(1000))
-                        form.append(fieldWrapper)
-
-                        fieldWrapper = document.createElement('div')
-                        fieldWrapper.classList.add('standard__active-record-wrapper')
-                        fieldDesc = document.createElement('p')
-                        fieldDesc.classList.add('field__desc')
-                        fieldDesc.textContent = `Уметь:`
-                        fieldWrapper.append(fieldDesc)
-                        fieldWrapper.append(createTextBoxForCreate(1000))
-                        form.append(fieldWrapper)
-
-                        fieldWrapper = document.createElement('div')
-                        fieldWrapper.classList.add('standard__active-record-wrapper')
-                        fieldDesc = document.createElement('p')
-                        fieldDesc.classList.add('field__desc')
-                        fieldDesc.textContent = `Владеть:`
-                        fieldWrapper.append(fieldDesc)
-                        fieldWrapper.append(createTextBoxForCreate(1000))
-                        form.append(fieldWrapper)
-
                         let closeBtn = document.querySelector('.close-btn');
                         cancelCreateModal.addEventListener('click', () => closeModal(createModal))
                         closeBtn.addEventListener('click', () => closeModal(createModal))
@@ -421,33 +395,6 @@
                     fieldDesc.textContent = `Текст:`
                     fieldWrapper.append(fieldDesc)
                     fieldWrapper.append(createTextBoxForActiveRecord(data.data.essence, 1000))
-                    form.append(fieldWrapper)
-
-                    fieldWrapper = document.createElement('div')
-                    fieldWrapper.classList.add('standard__active-record-wrapper')
-                    fieldDesc = document.createElement('p')
-                    fieldDesc.classList.add('field__desc')
-                    fieldDesc.textContent = `Знать:`
-                    fieldWrapper.append(fieldDesc)
-                    fieldWrapper.append(createTextBoxForActiveRecord(data.data.know, 1000))
-                    form.append(fieldWrapper)
-
-                    fieldWrapper = document.createElement('div')
-                    fieldWrapper.classList.add('standard__active-record-wrapper')
-                    fieldDesc = document.createElement('p')
-                    fieldDesc.classList.add('field__desc')
-                    fieldDesc.textContent = `Уметь:`
-                    fieldWrapper.append(fieldDesc)
-                    fieldWrapper.append(createTextBoxForActiveRecord(data.data.beAble, 1000))
-                    form.append(fieldWrapper)
-
-                    fieldWrapper = document.createElement('div')
-                    fieldWrapper.classList.add('standard__active-record-wrapper')
-                    fieldDesc = document.createElement('p')
-                    fieldDesc.classList.add('field__desc')
-                    fieldDesc.textContent = `Владеть:`
-                    fieldWrapper.append(fieldDesc)
-                    fieldWrapper.append(createTextBoxForActiveRecord(data.data.own, 1000))
                     form.append(fieldWrapper)
 
                     // Конец добавления в активную запись

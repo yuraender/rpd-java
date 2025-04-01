@@ -13,9 +13,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Controller
 @RequiredArgsConstructor
@@ -25,6 +23,8 @@ public class DisciplineEducationalProgramController {
     private final DepartmentService departmentService;
     private final BasicEducationalProgramService basicEducationalProgramService;
     private final DisciplineService disciplineService;
+    private final CompetencieService competencieService;
+    private final IndicatorService indicatorService;
     private final DirectionService directionService;
     private final ProfileService profileService;
 
@@ -48,6 +48,15 @@ public class DisciplineEducationalProgramController {
 
         List<Discipline> disciplines = disciplineService.getAll();
         response.put("disciplines", disciplines);
+
+        List<Competencie> competencies = competencieService.getAll();
+        response.put("competencies", competencies);
+
+        List<Indicator> indicators = indicatorService.getAll();
+        response.put("indicators", indicators);
+
+        List<Indicator.Type> indicatorTypes = Arrays.stream(Indicator.Type.values()).toList();
+        response.put("indicatorTypes", indicatorTypes);
 
         HttpSession session = request.getSession();
         String role = (String) session.getAttribute("role");
@@ -79,22 +88,55 @@ public class DisciplineEducationalProgramController {
         DisciplineEducationalProgram dep = disciplineEducationalProgramService.getById(entityId);
         response.put("data", dep);
 
+        List<Competencie> competencies = competencieService.getAll();
+        response.put("competencies", competencies);
+
+        List<Indicator> indicators = indicatorService.getAll();
+        response.put("indicators", indicators);
+
+        List<Indicator.Type> indicatorTypes = Arrays.stream(Indicator.Type.values()).toList();
+        response.put("indicatorTypes", indicatorTypes);
+
         return ResponseEntity.ok(response);
     }
 
     @PostMapping("/api/dep/update")
-    public ResponseEntity<Map<String, Object>> updateRecord(@RequestBody Map<String, String> payload) {
+    public ResponseEntity<Map<String, Object>> updateRecord(@RequestBody Map<String, Object> payload) {
         Map<String, Object> response = new HashMap<>();
 
-        String index = payload.get("0");
-        Integer dataId = Integer.parseInt(payload.get("dataId"));
+        String index = (String) payload.get("0");
+        int[] param1, param2;
+        try {
+            param1 = ((List<String>) payload.get("1")).stream()
+                    .mapToInt(Integer::parseInt)
+                    .toArray();
+            param2 = ((List<String>) payload.get("2")).stream()
+                    .mapToInt(Integer::parseInt)
+                    .toArray();
+        } catch (NumberFormatException ex) {
+            response.put("error", "Неверный формат данных.");
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
+        }
+        Integer dataId = Integer.parseInt((String) payload.get("dataId"));
 
         DisciplineEducationalProgram dep = disciplineEducationalProgramService.getById(dataId);
-        if (dep == null) {
+        List<Competencie> competencies = Arrays.stream(param1)
+                .mapToObj(competencieService::getById)
+                .distinct()
+                .toList();
+        List<Indicator> indicators = Arrays.stream(param2)
+                .mapToObj(indicatorService::getById)
+                .filter(i -> i == null || competencies.contains(i.getCompetencie()))
+                .distinct()
+                .toList();
+        if (dep == null
+                || competencies.stream().anyMatch(Objects::isNull)
+                || indicators.stream().anyMatch(Objects::isNull)) {
             response.put("error", "Запись не найдена.");
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
         }
         dep.setIndex(index);
+        dep.setIndicators(new ArrayList<>(indicators));
         dep.setDisabled(false);
         disciplineEducationalProgramService.save(dep);
 
@@ -103,14 +145,21 @@ public class DisciplineEducationalProgramController {
     }
 
     @PostMapping("/api/dep/save-new-record")
-    public ResponseEntity<Map<String, Object>> createRecord(@RequestBody Map<String, String> payload) {
+    public ResponseEntity<Map<String, Object>> createRecord(@RequestBody Map<String, Object> payload) {
         Map<String, Object> response = new HashMap<>();
 
         int param0, param2;
-        String index = payload.get("1");
+        String index = (String) payload.get("1");
+        int[] param3, param4;
         try {
-            param0 = Integer.parseInt(payload.get("0"));
-            param2 = Integer.parseInt(payload.get("2"));
+            param0 = Integer.parseInt((String) payload.get("0"));
+            param2 = Integer.parseInt((String) payload.get("2"));
+            param3 = ((List<String>) payload.get("3")).stream()
+                    .mapToInt(Integer::parseInt)
+                    .toArray();
+            param4 = ((List<String>) payload.get("4")).stream()
+                    .mapToInt(Integer::parseInt)
+                    .toArray();
         } catch (NumberFormatException ex) {
             response.put("error", "Неверный формат данных.");
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
@@ -118,7 +167,18 @@ public class DisciplineEducationalProgramController {
 
         BasicEducationalProgram bep = basicEducationalProgramService.getById(param0);
         Discipline discipline = disciplineService.getById(param2);
-        if (bep == null || discipline == null) {
+        List<Competencie> competencies = Arrays.stream(param3)
+                .mapToObj(competencieService::getById)
+                .distinct()
+                .toList();
+        List<Indicator> indicators = Arrays.stream(param4)
+                .mapToObj(indicatorService::getById)
+                .filter(i -> i == null || competencies.contains(i.getCompetencie()))
+                .distinct()
+                .toList();
+        if (bep == null || discipline == null
+                || competencies.stream().anyMatch(Objects::isNull)
+                || indicators.stream().anyMatch(Objects::isNull)) {
             response.put("error", "Запись не найдена.");
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
         }
@@ -127,6 +187,7 @@ public class DisciplineEducationalProgramController {
         dep.setIndex(index);
         dep.setBasicEducationalProgram(bep);
         dep.setDiscipline(discipline);
+        dep.setIndicators(new ArrayList<>(indicators));
         dep.setDisabled(false);
         disciplineEducationalProgramService.save(dep);
 
