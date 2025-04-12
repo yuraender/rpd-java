@@ -290,7 +290,7 @@
 
             function createOptionForCreate(text, id) {
                 let option = document.createElement('option');
-                option.textContent = text;
+                option.textContent = text.length > 100 ? `${text.slice(0, 100)}...` : text;
                 option.value = id;
                 return option;
             }
@@ -795,7 +795,7 @@
 
                     function createOptionForActiveRecord(text, id, parentDataId) {
                         let option = document.createElement('option');
-                        option.textContent = text;
+                        option.textContent = text.length > 100 ? `${text.slice(0, 100)}...` : text;
                         option.value = id;
                         if (id == parentDataId) {
                             option.selected = true;
@@ -805,7 +805,7 @@
 
                     function createOptionMultipleForActiveRecord(text, id, selected) {
                         let option = document.createElement('option');
-                        option.textContent = text;
+                        option.textContent = text.length > 100 ? `${text.slice(0, 100)}...` : text;
                         option.value = id;
                         if (selected) {
                             option.selected = true;
