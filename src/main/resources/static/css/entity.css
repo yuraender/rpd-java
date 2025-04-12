@@ -52,11 +52,11 @@ p {
 }
 
 .sticky-header {
-    position: -webkit-sticky;
     position: sticky;
     top: 0;
     background-color: #fff;
     z-index: 10;
+    user-select: none;
 }
 
 .active-record {
@@ -79,6 +79,18 @@ table:hover {
 
 #dataTable th:first-of-type {
     width: 100px;
+}
+
+#dataTable th.sorted-asc::after {
+    display: inline-block;
+    content: " ↑";
+    margin-left: 5px;
+}
+
+#dataTable th.sorted-desc::after {
+    display: inline-block;
+    content: " ↓";
+    margin-left: 5px;
 }
 
 .modal {
