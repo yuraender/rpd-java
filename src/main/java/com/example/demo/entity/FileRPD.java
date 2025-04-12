@@ -107,8 +107,6 @@ public class FileRPD {
     }
 
     public boolean isDisabled() {
-        return disabled
-                || basicEducationalProgramDiscipline.isDisabled()
-                || developers.stream().anyMatch(Teacher::isDisabled);
+        return disabled || basicEducationalProgramDiscipline.isDisabled();
     }
 }

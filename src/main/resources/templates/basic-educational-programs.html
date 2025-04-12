@@ -338,12 +338,6 @@
                         fieldSelect.classList.add('form-control', 'field');
                         fieldSelect.setAttribute('data-live-search', 'true');
                         fieldSelect.setAttribute('data-selected-text-format', 'count');
-                        data.profiles.forEach(function (optionData) {
-                            let text = optionData.name;
-                            let id = optionData.id;
-                            let option = createOptionForCreate(text, id)
-                            fieldSelect.append(option);
-                        });
                         fieldWrapper.append(fieldSelect)
                         form.append(fieldWrapper)
 
@@ -578,13 +572,6 @@
                     fieldSelect.classList.add('form-control', 'field');
                     fieldSelect.setAttribute('data-live-search', 'true');
                     fieldSelect.setAttribute('data-selected-text-format', 'count');
-                    data.profiles.forEach(function (optionData) {
-                        let text = optionData.name;
-                        let id = optionData.id;
-                        let parentDataId = data.data.profile.id
-                        let option = createOptionForActiveRecord(text, id, parentDataId)
-                        fieldSelect.append(option);
-                    });
                     fieldSelect.disabled = !editMode;
                     fieldWrapper.append(fieldSelect)
                     form.append(fieldWrapper)

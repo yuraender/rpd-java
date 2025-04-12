@@ -26,6 +26,7 @@ dependencies {
     implementation("org.springframework.boot:spring-boot-starter-validation")
 	developmentOnly("org.springframework.boot:spring-boot-devtools")
     runtimeOnly("mysql:mysql-connector-java:5.1.49")
+    implementation("com.fasterxml.jackson.datatype:jackson-datatype-hibernate6")
 	implementation("javax.servlet:javax.servlet-api:4.0.1")
 	implementation("org.apache.poi:poi-ooxml:5.2.3")
 	implementation("commons-io:commons-io:2.11.0")

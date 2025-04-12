@@ -382,12 +382,6 @@
                         fieldSelect.setAttribute('data-live-search', 'true');
                         fieldSelect.setAttribute('data-selected-text-format', 'count');
                         fieldSelect.multiple = true;
-                        data.competences.forEach(function (optionData) {
-                            let text = optionData.index + ' ' + optionData.essence;
-                            let id = optionData.id;
-                            let option = createOptionForCreate(text, id)
-                            fieldSelect.append(option);
-                        });
                         fieldSelect.addEventListener('change', function () {
                             const values = [];
                             for (let selectedOption of this.selectedOptions) {
@@ -713,13 +707,6 @@
                     fieldSelect.setAttribute('data-live-search', 'true');
                     fieldSelect.setAttribute('data-selected-text-format', 'count');
                     fieldSelect.multiple = true;
-                    data.indicators.forEach(function (optionData) {
-                        let text = optionData.text;
-                        let id = optionData.id;
-                        let selected = data.data.indicators.some(i => i.id === id)
-                        let option = createOptionMultipleForActiveRecord(text, id, selected)
-                        fieldSelect.append(option);
-                    });
                     fieldSelect.disabled = !editMode;
                     fieldWrapper.append(fieldSelect)
                     form.append(fieldWrapper)

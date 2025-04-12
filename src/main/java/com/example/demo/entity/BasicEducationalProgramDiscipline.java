@@ -61,10 +61,6 @@ public class BasicEducationalProgramDiscipline {
     }
 
     public boolean isDisabled() {
-        return disabled
-                || basicEducationalProgram.isDisabled() || discipline.isDisabled()
-                || indicators.stream().anyMatch(Indicator::isDisabled)
-                || auditoriums.stream().anyMatch(Auditorium::isDisabled)
-                || protocols.stream().anyMatch(Protocol::isDisabled);
+        return disabled || basicEducationalProgram.isDisabled() || discipline.isDisabled();
     }
 }
