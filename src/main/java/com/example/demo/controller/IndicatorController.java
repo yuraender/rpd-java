@@ -1,8 +1,10 @@
 package com.example.demo.controller;
 
+import com.example.demo.entity.BasicEducationalProgram;
 import com.example.demo.entity.Competence;
 import com.example.demo.entity.Indicator;
 import com.example.demo.entity.Protocol;
+import com.example.demo.service.BasicEducationalProgramService;
 import com.example.demo.service.CompetenceService;
 import com.example.demo.service.IndicatorService;
 import jakarta.servlet.http.HttpServletRequest;
@@ -26,6 +28,7 @@ import java.util.Map;
 public class IndicatorController {
 
     private final IndicatorService indicatorService;
+    private final BasicEducationalProgramService basicEducationalProgramService;
     private final CompetenceService competenceService;
 
     @GetMapping("/indicators")
@@ -43,6 +46,9 @@ public class IndicatorController {
         List<Indicator.Type> types = Arrays.stream(Indicator.Type.values()).toList();
         response.put("types", types);
 
+        List<BasicEducationalProgram> beps = basicEducationalProgramService.getAll();
+        response.put("beps", beps);
+
         List<Competence> competences = competenceService.getAll();
         response.put("competences", competences);
 
@@ -59,6 +65,9 @@ public class IndicatorController {
 
         Indicator indicator = indicatorService.getById(entityId);
         response.put("data", indicator);
+
+        List<Indicator.Type> types = Arrays.stream(Indicator.Type.values()).toList();
+        response.put("types", types);
 
         return ResponseEntity.ok(response);
     }
@@ -88,16 +97,16 @@ public class IndicatorController {
         Map<String, Object> response = new HashMap<>();
 
         String text = payload.get("0");
-        int param1, param2;
+        int param1, param3;
         try {
             param1 = Integer.parseInt(payload.get("1"));
-            param2 = Integer.parseInt(payload.get("2"));
+            param3 = Integer.parseInt(payload.get("3"));
         } catch (IllegalArgumentException ex) {
             response.put("error", "Неверный формат данных.");
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
         }
 
-        Competence competence = competenceService.getById(param2);
+        Competence competence = competenceService.getById(param3);
         if (param1 < 0 || param1 >= Protocol.Type.values().length || competence == null) {
             response.put("error", "Запись не найдена.");
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);

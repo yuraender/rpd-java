@@ -1,6 +1,8 @@
 package com.example.demo.controller;
 
+import com.example.demo.entity.BasicEducationalProgram;
 import com.example.demo.entity.Competence;
+import com.example.demo.service.BasicEducationalProgramService;
 import com.example.demo.service.CompetenceService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
@@ -13,6 +15,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -22,6 +25,7 @@ import java.util.Map;
 public class CompetenceController {
 
     private final CompetenceService competenceService;
+    private final BasicEducationalProgramService basicEducationalProgramService;
 
     @GetMapping("/competences")
     public String getTablePage() {
@@ -34,6 +38,12 @@ public class CompetenceController {
 
         List<Competence> competences = competenceService.getAll();
         response.put("data", competences);
+
+        List<Competence.Type> types = Arrays.stream(Competence.Type.values()).toList();
+        response.put("types", types);
+
+        List<BasicEducationalProgram> beps = basicEducationalProgramService.getAll();
+        response.put("beps", beps);
 
         HttpSession session = request.getSession();
         String role = (String) session.getAttribute("role");
@@ -80,10 +90,31 @@ public class CompetenceController {
 
         String index = payload.get("0");
         String essence = payload.get("1");
+        int param2, param3;
+        try {
+            param2 = Integer.parseInt(payload.get("2"));
+            param3 = Integer.parseInt(payload.get("3"));
+        } catch (NumberFormatException ex) {
+            response.put("error", "Неверный формат данных.");
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
+        }
+
+        BasicEducationalProgram bep = basicEducationalProgramService.getById(param3);
+        if (param2 < 0 || param2 >= Competence.Type.values().length) {
+            response.put("error", "Запись не найдена.");
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
+        }
+        Competence.Type type = Competence.Type.values()[param2];
+        if (type != Competence.Type.U && bep == null) {
+            response.put("error", "Данная компетенция должна относиться к ООП.");
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
+        }
 
         Competence competence = new Competence();
         competence.setIndex(index);
         competence.setEssence(essence);
+        competence.setType(type);
+        competence.setBasicEducationalProgram(bep);
         competence.setDisabled(false);
         competenceService.save(competence);
 

@@ -301,6 +301,7 @@
                     .then(data => {
                         const form = document.querySelector('.createForm')
 
+                        let fieldSelectBep;
                         let fieldSelectCompetences;
                         let fieldSelectIndicators;
 
@@ -310,7 +311,7 @@
                         fieldDesc.classList.add('field__desc')
                         fieldDesc.textContent = `ООП:`
                         fieldWrapper.append(fieldDesc)
-                        let fieldSelect = document.createElement('select');
+                        let fieldSelect = fieldSelectBep = document.createElement('select');
                         fieldSelect.classList.add('form-control', 'field');
                         fieldSelect.setAttribute('data-live-search', 'true');
                         fieldSelect.setAttribute('data-selected-text-format', 'count');
@@ -321,6 +322,23 @@
                             let id = optionData.id;
                             let option = createOptionForCreate(text, id)
                             fieldSelect.append(option);
+                        });
+                        fieldSelect.addEventListener('change', function () {
+                            const value = this.value;
+                            if (!value) {
+                                return;
+                            }
+                            fieldSelectCompetences.innerHTML = '';
+                            data.competences.forEach(function (optionData) {
+                                if (!optionData.basicEducationalProgram || optionData.basicEducationalProgram.id == value) {
+                                    let text = optionData.index + ' ' + optionData.essence;
+                                    let id = optionData.id;
+                                    let option = createOptionForCreate(text, id)
+                                    fieldSelectCompetences.append(option);
+                                }
+                            });
+                            $('select', form).selectpicker('refresh');
+                            $('.bootstrap-select', form).removeClass(['form-control', 'field']);
                         });
                         fieldWrapper.append(fieldSelect)
                         form.append(fieldWrapper)
@@ -375,23 +393,22 @@
                             for (let selectedOption of this.selectedOptions) {
                                 values.push(parseInt(selectedOption.value));
                             }
-                            if (values.length === 0) {
-                                return;
-                            }
                             fieldSelectIndicators.innerHTML = '';
-                            data.indicatorTypes.forEach(function (type) {
-                                let optionGroup = document.createElement('optgroup');
-                                optionGroup.label = type.name;
-                                data.indicators.forEach(function (optionData) {
-                                    if (values.includes(optionData.competence.id) && optionData.type.id === type.id) {
-                                        let text = optionData.text;
-                                        let id = optionData.id;
-                                        let option = createOptionForCreate(text, id)
-                                        optionGroup.append(option);
-                                    }
+                            if (values.length !== 0) {
+                                data.indicatorTypes.forEach(function (type) {
+                                    let optionGroup = document.createElement('optgroup');
+                                    optionGroup.label = type.name;
+                                    data.indicators.forEach(function (optionData) {
+                                        if (values.includes(optionData.competence.id) && optionData.type.id === type.id) {
+                                            let text = optionData.text;
+                                            let id = optionData.id;
+                                            let option = createOptionForCreate(text, id)
+                                            optionGroup.append(option);
+                                        }
+                                    });
+                                    fieldSelectIndicators.append(optionGroup)
                                 });
-                                fieldSelectIndicators.append(optionGroup)
-                            });
+                            }
                             $('select', form).selectpicker('refresh');
                             $('.bootstrap-select', form).removeClass(['form-control', 'field']);
                         });
@@ -459,7 +476,7 @@
 
                         $('select', form).selectpicker();
                         $('.bootstrap-select', form).removeClass(['form-control', 'field']);
-                        fieldSelectCompetences.dispatchEvent(new Event('change'));
+                        fieldSelectBep.dispatchEvent(new Event('change'));
                     })
                     .catch(error => {
                         console.error('Ошибка загрузки данных:', error);
@@ -647,36 +664,37 @@
                     fieldSelect.setAttribute('data-selected-text-format', 'count');
                     fieldSelect.multiple = true;
                     data.competences.forEach(function (optionData) {
-                        let text = optionData.index + ' ' + optionData.essence;
-                        let id = optionData.id;
-                        let selected = data.data.indicators.some(i => i.competence.id === id)
-                        let option = createOptionMultipleForActiveRecord(text, id, selected)
-                        fieldSelect.append(option);
+                        if (!optionData.basicEducationalProgram || optionData.basicEducationalProgram.id === data.data.basicEducationalProgram.id) {
+                            let text = optionData.index + ' ' + optionData.essence;
+                            let id = optionData.id;
+                            let selected = data.data.indicators.some(i => i.competence.id === id)
+                            let option = createOptionMultipleForActiveRecord(text, id, selected)
+                            fieldSelect.append(option);
+                        }
                     });
                     fieldSelect.addEventListener('change', function () {
                         const values = [];
                         for (let selectedOption of this.selectedOptions) {
                             values.push(parseInt(selectedOption.value));
                         }
-                        if (values.length === 0) {
-                            return;
-                        }
                         fieldSelectIndicators.innerHTML = '';
-                        data.indicatorTypes.forEach(function (type) {
-                            let optionGroup = document.createElement('optgroup');
-                            optionGroup.label = type.name;
-                            data.indicators
-                                .forEach(function (optionData) {
-                                    if (values.includes(optionData.competence.id) && optionData.type.id === type.id) {
-                                        let text = optionData.text;
-                                        let id = optionData.id;
-                                        let selected = data.data.indicators.some(i => i.id === id)
-                                        let option = createOptionMultipleForActiveRecord(text, id, selected)
-                                        optionGroup.append(option);
-                                    }
-                                });
-                            fieldSelectIndicators.append(optionGroup)
-                        });
+                        if (values.length !== 0) {
+                            data.indicatorTypes.forEach(function (type) {
+                                let optionGroup = document.createElement('optgroup');
+                                optionGroup.label = type.name;
+                                data.indicators
+                                    .forEach(function (optionData) {
+                                        if (values.includes(optionData.competence.id) && optionData.type.id === type.id) {
+                                            let text = optionData.text;
+                                            let id = optionData.id;
+                                            let selected = data.data.indicators.some(i => i.id === id)
+                                            let option = createOptionMultipleForActiveRecord(text, id, selected)
+                                            optionGroup.append(option);
+                                        }
+                                    });
+                                fieldSelectIndicators.append(optionGroup)
+                            });
+                        }
                         $('select', form).selectpicker('refresh');
                         $('.bootstrap-select', form).removeClass(['form-control', 'field']);
                     });

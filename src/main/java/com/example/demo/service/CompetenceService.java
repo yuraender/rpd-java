@@ -14,11 +14,16 @@ public class CompetenceService {
     private final CompetenceRepository competenceRepository;
 
     public List<Competence> getAll() {
-        return competenceRepository.findAllByDisabledFalse();
+        return competenceRepository.findAllByDisabledFalse()
+                .stream()
+                .filter(c -> !c.isDisabled())
+                .toList();
     }
 
     public Competence getById(Integer id) {
-        return competenceRepository.findByIdAndDisabledFalse(id).orElse(null);
+        return competenceRepository.findByIdAndDisabledFalse(id)
+                .filter(c -> !c.isDisabled())
+                .orElse(null);
     }
 
     public Competence save(Competence competence) {

@@ -43,13 +43,16 @@
                            onkeyup="filterTable('dataTable', 1)"></th>
                 <th><input type="text" class="form-control" placeholder="Тип"
                            onkeyup="filterTable('dataTable', 2)"></th>
-                <th><input type="text" class="form-control" placeholder="Компетенция"
+                <th><input type="text" class="form-control" placeholder="ООП"
                            onkeyup="filterTable('dataTable', 3)"></th>
+                <th><input type="text" class="form-control" placeholder="Компетенция"
+                           onkeyup="filterTable('dataTable', 4)"></th>
             </tr>
             <tr class="sticky-header">
                 <th>ID</th>
                 <th>Текст</th>
                 <th>Тип</th>
+                <th>ООП</th>
                 <th>Компетенция</th>
             </tr>
             </thead>
@@ -238,6 +241,9 @@
                     .then(data => {
                         const form = document.querySelector('.createForm')
 
+                        let fieldSelectBep;
+                        let fieldSelectCompetences;
+
                         let fieldWrapper = document.createElement('div')
                         fieldWrapper.classList.add('standard__active-record-wrapper')
                         let fieldDesc = document.createElement('p')
@@ -270,20 +276,55 @@
                         fieldWrapper.classList.add('standard__active-record-wrapper')
                         fieldDesc = document.createElement('p')
                         fieldDesc.classList.add('field__desc')
-                        fieldDesc.textContent = `Компетенция:`
+                        fieldDesc.textContent = `ООП:`
                         fieldWrapper.append(fieldDesc)
-                        fieldSelect = document.createElement('select');
+                        fieldSelect = fieldSelectBep = document.createElement('select');
                         fieldSelect.classList.add('form-control', 'field');
                         fieldSelect.setAttribute('data-live-search', 'true');
                         fieldSelect.setAttribute('data-selected-text-format', 'count');
-                        data.competences.forEach(function (optionData) {
-                            let text = optionData.index + ' ' + optionData.essence;
+                        fieldSelect.append(createOptionForCreate("(не выбрано)", 0));
+                        data.beps.forEach(function (optionData) {
+                            let text = optionData.academicYear + ', ' +
+                                optionData.profile.name + ', ' +
+                                optionData.educationType.name;
                             let id = optionData.id;
                             let option = createOptionForCreate(text, id)
                             fieldSelect.append(option);
                         });
+                        fieldSelect.addEventListener('change', function () {
+                            const value = this.value;
+                            if (!value) {
+                                return;
+                            }
+                            fieldSelectCompetences.innerHTML = '';
+                            data.competences.forEach(function (optionData) {
+                                if (!optionData.basicEducationalProgram || optionData.basicEducationalProgram.id == value) {
+                                    let text = optionData.index + ' ' + optionData.essence;
+                                    let id = optionData.id;
+                                    let option = createOptionForCreate(text, id)
+                                    fieldSelectCompetences.append(option);
+                                }
+                            });
+                            $('select', form).selectpicker('refresh');
+                            $('.bootstrap-select', form).removeClass(['form-control', 'field']);
+                        });
                         fieldWrapper.append(fieldSelect)
                         form.append(fieldWrapper)
+
+                        fieldWrapper = document.createElement('div')
+                        fieldWrapper.classList.add('standard__active-record-wrapper')
+                        fieldDesc = document.createElement('p')
+                        fieldDesc.classList.add('field__desc')
+                        fieldDesc.textContent = `Компетенция:`
+                        fieldWrapper.append(fieldDesc)
+                        fieldSelect = fieldSelectCompetences = document.createElement('select');
+                        fieldSelect.classList.add('form-control', 'field');
+                        fieldSelect.setAttribute('data-live-search', 'true');
+                        fieldSelect.setAttribute('data-selected-text-format', 'count');
+                        fieldWrapper.append(fieldSelect)
+                        form.append(fieldWrapper)
+
+                        fieldSelectBep.dispatchEvent(new Event('change'));
 
                         let closeBtn = document.querySelector('.close-btn');
                         cancelCreateModal.addEventListener('click', () => closeModal(createModal))
@@ -343,6 +384,7 @@
                         showModalWithMessage(data.error);
                     } else {
                         data = data.createdData
+                        let bep = data.competence.basicEducationalProgram;
                         let dataTable = document.getElementById('dataTable').getElementsByTagName('tbody')[0];
 
                         let row = document.createElement('tr');
@@ -352,7 +394,10 @@
                             '<td>' + data.id + '</td>' +
                             '<td>' + data.text + '</td>' +
                             '<td>' + data.type.name + '</td>' +
-                            '<td>' + data.competence.index + ' ' + data.competence.essence + '</td>';
+                            (bep
+                                ? `<td>${bep.academicYear}, ${bep.profile.name}, ${bep.educationType.name}</td>`
+                                : '<td>-</td>') +
+                            '<td>' + data.competence.index + '</td>';
                         row.addEventListener('click', function () {
                             changeActiveRowTable(data.id);
                         });
@@ -374,6 +419,7 @@
             let dataTable = document.getElementById('dataTable').getElementsByTagName('tbody')[0];
             dataTable.innerHTML = '';
             dataList.forEach(function (data) {
+                let bep = data.competence.basicEducationalProgram;
                 let row = document.createElement('tr');
                 row.setAttribute('dataid', data.id);
                 row.classList.add(`${data.id}`)
@@ -381,7 +427,10 @@
                     '<td>' + data.id + '</td>' +
                     '<td>' + data.text + '</td>' +
                     '<td>' + data.type.name + '</td>' +
-                    '<td>' + data.competence.index + ' ' + data.competence.essence + '</td>';
+                    (bep
+                        ? `<td>${bep.academicYear}, ${bep.profile.name}, ${bep.educationType.name}</td>`
+                        : '<td>-</td>') +
+                    '<td>' + data.competence.index + '</td>';
                 row.addEventListener('click', function () {
                     changeActiveRowTable(data.id);
                 });
@@ -430,7 +479,31 @@
                     fieldDesc.classList.add('field__desc')
                     fieldDesc.textContent = `Тип:`
                     fieldWrapper.append(fieldDesc)
-                    fieldWrapper.append(createInactiveTextBox(data.data.type.name))
+                    let fieldSelect = document.createElement('select');
+                    fieldSelect.classList.add('form-control', 'field');
+                    fieldSelect.setAttribute('data-live-search', 'true');
+                    fieldSelect.setAttribute('data-selected-text-format', 'count');
+                    data.types.forEach(function (optionData) {
+                        let text = optionData.name;
+                        let id = optionData.id;
+                        let parentDataId = data.data.type.id
+                        let option = createOptionForActiveRecord(text, id, parentDataId)
+                        fieldSelect.append(option);
+                    });
+                    fieldSelect.disabled = !editMode;
+                    fieldWrapper.append(fieldSelect)
+                    form.append(fieldWrapper)
+
+                    let bep = data.data.competence.basicEducationalProgram;
+                    fieldWrapper = document.createElement('div')
+                    fieldWrapper.classList.add('standard__active-record-wrapper')
+                    fieldDesc = document.createElement('p')
+                    fieldDesc.classList.add('field__desc')
+                    fieldDesc.textContent = `ООП:`
+                    fieldWrapper.append(fieldDesc)
+                    fieldWrapper.append(createInactiveTextBox(bep
+                        ? `${bep.academicYear}, ${bep.profile.name}, ${bep.educationType.name}`
+                        : '-'))
                     form.append(fieldWrapper)
 
                     fieldWrapper = document.createElement('div')
@@ -555,12 +628,16 @@
                         let rows = table.getElementsByTagName('tr');
                         // Найти строку с нужным dataId и обновить ее содержимое
                         for (let i = 0; i < rows.length; i++) {
+                            let bep = newRecord.updatedData.competence.basicEducationalProgram;
                             if (rows[i].getAttribute('dataid') == newRecord.updatedData.id) {
                                 rows[i].innerHTML =
                                     '<td>' + newRecord.updatedData.id + '</td>' +
                                     '<td>' + newRecord.updatedData.text + '</td>' +
                                     '<td>' + newRecord.updatedData.type.name + '</td>' +
-                                    '<td>' + newRecord.updatedData.competence.index + ' ' + newRecord.updatedData.competence.essence + '</td>';
+                                    (bep
+                                        ? `<td>${bep.academicYear}, ${bep.profile.name}, ${bep.educationType.name}</td>`
+                                        : '<td>-</td>') +
+                                    '<td>' + newRecord.updatedData.competence.index + '</td>';
                                 break;
                             }
                         }

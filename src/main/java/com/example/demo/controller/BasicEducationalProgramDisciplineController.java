@@ -142,6 +142,8 @@ public class BasicEducationalProgramDisciplineController {
         BasicEducationalProgramDiscipline bepDiscipline = basicEducationalProgramDisciplineService.getById(dataId);
         List<Competence> competences = Arrays.stream(param1)
                 .mapToObj(competenceService::getById)
+                .filter(c -> c.getBasicEducationalProgram() == null
+                        || c.getBasicEducationalProgram().getId() == bepDiscipline.getBasicEducationalProgram().getId())
                 .distinct()
                 .toList();
         List<Indicator> indicators = Arrays.stream(param2)
@@ -212,6 +214,9 @@ public class BasicEducationalProgramDisciplineController {
         Discipline discipline = disciplineService.getById(param2);
         List<Competence> competences = Arrays.stream(param3)
                 .mapToObj(competenceService::getById)
+                .filter(c -> c.getBasicEducationalProgram() == null
+                        || bep == null
+                        || c.getBasicEducationalProgram().getId() == bep.getId())
                 .distinct()
                 .toList();
         List<Indicator> indicators = Arrays.stream(param4)
