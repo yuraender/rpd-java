@@ -272,7 +272,7 @@
                         fieldDesc.classList.add('field__desc')
                         fieldDesc.textContent = `Аудитория:`
                         fieldWrapper.append(fieldDesc)
-                        fieldWrapper.append(createTextBoxForCreate(10))
+                        fieldWrapper.append(createTextBoxForCreate(100))
                         form.append(fieldWrapper)
 
                         fieldWrapper = document.createElement('div')
@@ -281,7 +281,7 @@
                         fieldDesc.classList.add('field__desc')
                         fieldDesc.textContent = `Оснащенность:`
                         fieldWrapper.append(fieldDesc)
-                        fieldWrapper.append(createOptionalTextBoxForCreate(1000))
+                        fieldWrapper.append(createOptionalTextBoxForCreate(2000))
                         form.append(fieldWrapper)
 
                         fieldWrapper = document.createElement('div')
@@ -290,7 +290,7 @@
                         fieldDesc.classList.add('field__desc')
                         fieldDesc.textContent = `Перечень ПО:`
                         fieldWrapper.append(fieldDesc)
-                        fieldWrapper.append(createOptionalTextBoxForCreate(1000))
+                        fieldWrapper.append(createOptionalTextBoxForCreate(2000))
                         form.append(fieldWrapper)
 
                         let closeBtn = document.querySelector('.close-btn');
@@ -429,7 +429,7 @@
                     fieldDesc.classList.add('field__desc')
                     fieldDesc.textContent = `Аудитория:`
                     fieldWrapper.append(fieldDesc)
-                    fieldWrapper.append(createTextBoxForActiveRecord(data.data.auditoriumNumber, 10))
+                    fieldWrapper.append(createTextBoxForActiveRecord(data.data.auditoriumNumber, 100))
                     form.append(fieldWrapper)
 
                     fieldWrapper = document.createElement('div')
@@ -438,7 +438,7 @@
                     fieldDesc.classList.add('field__desc')
                     fieldDesc.textContent = `Оснащенность:`
                     fieldWrapper.append(fieldDesc)
-                    fieldWrapper.append(createOptionalTextBoxForActiveRecord(data.data.equipment, 1000))
+                    fieldWrapper.append(createOptionalTextBoxForActiveRecord(data.data.equipment, 2000))
                     form.append(fieldWrapper)
 
                     fieldWrapper = document.createElement('div')
@@ -447,7 +447,7 @@
                     fieldDesc.classList.add('field__desc')
                     fieldDesc.textContent = `Перечень ПО:`
                     fieldWrapper.append(fieldDesc)
-                    fieldWrapper.append(createOptionalTextBoxForActiveRecord(data.data.software, 1000))
+                    fieldWrapper.append(createOptionalTextBoxForActiveRecord(data.data.software, 2000))
                     form.append(fieldWrapper)
 
                     // Конец добавления в активную запись

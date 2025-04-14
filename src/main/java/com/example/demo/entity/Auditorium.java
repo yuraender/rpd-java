@@ -14,7 +14,7 @@ public class Auditorium {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
-    @Column(name = "number", length = 10, nullable = false)
+    @Column(name = "number", length = 100, nullable = false)
     private String auditoriumNumber;
 
     @Column(columnDefinition = "TEXT")
