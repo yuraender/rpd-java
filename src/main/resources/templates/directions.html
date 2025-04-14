@@ -63,7 +63,7 @@
         <button class="btn-delete button btn btn-primary">Удалить</button>
         <button class="btn-choose button btn btn-primary">Выбрать запись</button>
     </div>
-    <div class="active-record">
+    <div class="active-record" style="display: none;">
     </div>
 </section>
 <div class="rightbar">
@@ -225,7 +225,8 @@
                         .then(response => response.json())
                         .then(deletedRecord => {
                             showModalWithMessage('Запись удалена.')
-                            document.querySelector('.active-form').remove()
+                            recordElement.parentElement.style.display = 'none';
+                            recordElement.remove()
                             let table = document.getElementById('dataTable');
                             let rows = table.querySelectorAll('tbody tr');
 

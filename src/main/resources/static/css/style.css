@@ -101,10 +101,6 @@ body {
     gap: 20px;
 }
 
-.active-record {
-    min-height: 50%;
-}
-
 .yes-status {
     font-size: 0.8em;
     background-color: green;
