@@ -68,6 +68,10 @@ public class EmployeePositionController {
             response.put("error", "Запись не найдена.");
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
         }
+        if (employeePositionService.existsByName(employeePosition.getId(), name)) {
+            response.put("error", "Запись уже существует.");
+            return ResponseEntity.status(HttpStatus.CONFLICT).body(response);
+        }
         employeePosition.setName(name);
         employeePosition.setDisabled(false);
         employeePositionService.save(employeePosition);
@@ -89,6 +93,10 @@ public class EmployeePositionController {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
         }
 
+        if (employeePositionService.existsByName(null, name)) {
+            response.put("error", "Запись уже существует.");
+            return ResponseEntity.status(HttpStatus.CONFLICT).body(response);
+        }
         if (param1 < 0 || param1 >= EmployeePosition.Type.values().length) {
             response.put("error", "Запись не найдена.");
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);

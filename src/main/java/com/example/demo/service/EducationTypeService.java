@@ -21,6 +21,12 @@ public class EducationTypeService {
         return educationTypeRepository.findByIdAndDisabledFalse(id).orElse(null);
     }
 
+    public boolean existsByName(Integer id, String name) {
+        return educationTypeRepository.findAllByNameAndDisabledFalse(name)
+                .stream()
+                .anyMatch(et -> id == null || et.getId() != id);
+    }
+
     public EducationType save(EducationType educationType) {
         return educationTypeRepository.save(educationType);
     }

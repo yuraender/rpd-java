@@ -26,6 +26,13 @@ public class DirectionService {
                 .orElse(null);
     }
 
+    public boolean existsByCodeOrName(Integer id, String code, String name) {
+        return directionRepository.findAllByCodeOrName(code, name)
+                .stream()
+                .filter(d -> !d.isDisabled())
+                .anyMatch(d -> id == null || d.getId() != id);
+    }
+
     public Direction save(Direction direction) {
         return directionRepository.save(direction);
     }

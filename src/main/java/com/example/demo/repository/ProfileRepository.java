@@ -12,5 +12,8 @@ public interface ProfileRepository extends JpaRepository<Profile, Integer> {
     @EntityGraph(attributePaths = {"direction"})
     List<Profile> findAllByDisabledFalse();
 
+    @EntityGraph(attributePaths = {"direction"})
+    List<Profile> findAllByNameAndDisabledFalse(String name);
+
     Optional<Profile> findByIdAndDisabledFalse(Integer id);
 }

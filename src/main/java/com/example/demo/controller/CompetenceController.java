@@ -75,6 +75,11 @@ public class CompetenceController {
             response.put("error", "Запись не найдена.");
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
         }
+        if (competenceService.existsByIndexAndBasicEducationalProgram(
+                competence.getId(), index, competence.getBasicEducationalProgram())) {
+            response.put("error", "Запись уже существует.");
+            return ResponseEntity.status(HttpStatus.CONFLICT).body(response);
+        }
         competence.setIndex(index);
         competence.setEssence(essence);
         competence.setDisabled(false);
@@ -100,6 +105,10 @@ public class CompetenceController {
         }
 
         BasicEducationalProgram bep = basicEducationalProgramService.getById(param3);
+        if (competenceService.existsByIndexAndBasicEducationalProgram(null, index, bep)) {
+            response.put("error", "Запись уже существует.");
+            return ResponseEntity.status(HttpStatus.CONFLICT).body(response);
+        }
         if (param2 < 0 || param2 >= Competence.Type.values().length) {
             response.put("error", "Запись не найдена.");
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);

@@ -21,6 +21,12 @@ public class AcademicRankService {
         return academicRankRepository.findByIdAndDisabledFalse(id).orElse(null);
     }
 
+    public boolean existsByName(Integer id, String name) {
+        return academicRankRepository.findAllByNameAndDisabledFalse(name)
+                .stream()
+                .anyMatch(ar -> id == null || ar.getId() != id);
+    }
+
     public AcademicRank save(AcademicRank academicRank) {
         return academicRankRepository.save(academicRank);
     }

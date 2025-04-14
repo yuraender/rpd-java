@@ -10,5 +10,7 @@ public interface AuditoriumRepository extends JpaRepository<Auditorium, Integer>
 
     List<Auditorium> findAllByDisabledFalse();
 
+    List<Auditorium> findAllByAuditoriumNumberAndDisabledFalse(String auditoriumNumber);
+
     Optional<Auditorium> findByIdAndDisabledFalse(Integer id);
 }

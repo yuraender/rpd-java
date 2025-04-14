@@ -124,6 +124,11 @@ public class BasicEducationalProgramController {
             response.put("error", "Запись не найдена.");
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
         }
+        if (basicEducationalProgramService
+                .existsByAcademicYearAndProfileIdAndEducationType(bep.getId(), academicYear, profile, educationType)) {
+            response.put("error", "Запись уже существует.");
+            return ResponseEntity.status(HttpStatus.CONFLICT).body(response);
+        }
         if (protocol.getDate().toLocalDate().getYear() != academicYear) {
             response.put("error", "Дата утверждения должна соответствовать учебному году.");
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
@@ -160,6 +165,11 @@ public class BasicEducationalProgramController {
         if (profile == null || educationType == null || protocol == null) {
             response.put("error", "Запись не найдена.");
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
+        }
+        if (basicEducationalProgramService
+                .existsByAcademicYearAndProfileIdAndEducationType(null, academicYear, profile, educationType)) {
+            response.put("error", "Запись уже существует.");
+            return ResponseEntity.status(HttpStatus.CONFLICT).body(response);
         }
         if (protocol.getDate().toLocalDate().getYear() != academicYear) {
             response.put("error", "Дата утверждения должна соответстовать учебному году.");

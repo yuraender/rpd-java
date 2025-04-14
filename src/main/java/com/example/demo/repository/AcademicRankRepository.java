@@ -10,5 +10,7 @@ public interface AcademicRankRepository extends JpaRepository<AcademicRank, Inte
 
     List<AcademicRank> findAllByDisabledFalse();
 
+    List<AcademicRank> findAllByNameAndDisabledFalse(String name);
+
     Optional<AcademicRank> findByIdAndDisabledFalse(Integer id);
 }

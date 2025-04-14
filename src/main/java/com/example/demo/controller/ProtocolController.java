@@ -74,7 +74,7 @@ public class ProtocolController {
         Integer dataId = Integer.parseInt(payload.get("dataId"));
 
         if (date.before(Date.valueOf("2000-01-01")) || date.after(Date.from(Instant.now()))) {
-            response.put("error", "Протокол не должен быть датирован ранее 01.01.2000 и позже текущего дня.");
+            response.put("error", "Протокол не должен быть датирован ранее 01.01.2000 и позднее текущего дня.");
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
         }
 
@@ -82,6 +82,10 @@ public class ProtocolController {
         if (protocol == null) {
             response.put("error", "Запись не найдена.");
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
+        }
+        if (protocolService.existsByNumberAndDateAndType(protocol.getId(), number, date, protocol.getType())) {
+            response.put("error", "Запись уже существует.");
+            return ResponseEntity.status(HttpStatus.CONFLICT).body(response);
         }
         protocol.setNumberProtocol(number);
         protocol.setDate(date);
@@ -108,18 +112,23 @@ public class ProtocolController {
         }
 
         if (date.before(Date.valueOf("2000-01-01")) || date.after(Date.from(Instant.now()))) {
-            response.put("error", "Протокол не должен быть датирован ранее 01.01.2000 и позже текущего дня.");
+            response.put("error", "Протокол не должен быть датирован ранее 01.01.2000 и позднее текущего дня.");
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
         }
         if (param2 < 0 || param2 >= Protocol.Type.values().length) {
             response.put("error", "Запись не найдена.");
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
         }
+        Protocol.Type type = Protocol.Type.values()[param2];
+        if (protocolService.existsByNumberAndDateAndType(null, number, date, type)) {
+            response.put("error", "Запись уже существует.");
+            return ResponseEntity.status(HttpStatus.CONFLICT).body(response);
+        }
 
         Protocol protocol = new Protocol();
         protocol.setNumberProtocol(number);
         protocol.setDate(date);
-        protocol.setType(Protocol.Type.values()[param2]);
+        protocol.setType(type);
         protocol.setDisabled(false);
         protocolService.save(protocol);
 

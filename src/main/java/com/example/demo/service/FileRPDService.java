@@ -1,5 +1,6 @@
 package com.example.demo.service;
 
+import com.example.demo.entity.BasicEducationalProgramDiscipline;
 import com.example.demo.entity.FileRPD;
 import com.example.demo.repository.FileRPDRepository;
 import lombok.RequiredArgsConstructor;
@@ -24,6 +25,16 @@ public class FileRPDService {
         return fileRPDRepository.findByIdAndDisabledFalse(id)
                 .filter(f -> !f.isDisabled())
                 .orElse(null);
+    }
+
+    public boolean existsByAcademicYearAndBasicEducationalProgramDiscipline(
+            Integer id, int academicYear, BasicEducationalProgramDiscipline bepDiscipline
+    ) {
+        return fileRPDRepository
+                .findAllByAcademicYearAndBasicEducationalProgramDisciplineAndDisabledFalse(academicYear, bepDiscipline)
+                .stream()
+                .filter(f -> !f.isDisabled())
+                .anyMatch(f -> id == null || f.getId() != id);
     }
 
     public FileRPD save(FileRPD fileRPD) {

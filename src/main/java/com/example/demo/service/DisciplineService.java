@@ -21,6 +21,12 @@ public class DisciplineService {
         return disciplineRepository.findByIdAndDisabledFalse(id).orElse(null);
     }
 
+    public boolean existsByName(Integer id, String name) {
+        return disciplineRepository.findAllByNameAndDisabledFalse(name)
+                .stream()
+                .anyMatch(d -> id == null || d.getId() != id);
+    }
+
     public Discipline save(Discipline discipline) {
         return disciplineRepository.save(discipline);
     }

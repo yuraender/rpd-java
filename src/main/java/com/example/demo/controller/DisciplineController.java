@@ -64,6 +64,10 @@ public class DisciplineController {
             response.put("error", "Запись не найдена.");
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
         }
+        if (disciplineService.existsByName(discipline.getId(), name)) {
+            response.put("error", "Запись уже существует.");
+            return ResponseEntity.status(HttpStatus.CONFLICT).body(response);
+        }
         discipline.setName(name);
         discipline.setDisabled(false);
         disciplineService.save(discipline);
@@ -77,6 +81,11 @@ public class DisciplineController {
         Map<String, Object> response = new HashMap<>();
 
         String name = payload.get("0");
+
+        if (disciplineService.existsByName(null, name)) {
+            response.put("error", "Запись уже существует.");
+            return ResponseEntity.status(HttpStatus.CONFLICT).body(response);
+        }
 
         Discipline discipline = new Discipline();
         discipline.setName(name);

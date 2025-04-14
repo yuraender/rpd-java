@@ -64,6 +64,10 @@ public class AcademicRankController {
             response.put("error", "Запись не найдена.");
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
         }
+        if (academicRankService.existsByName(academicRank.getId(), name)) {
+            response.put("error", "Запись уже существует.");
+            return ResponseEntity.status(HttpStatus.CONFLICT).body(response);
+        }
         academicRank.setName(name);
         academicRank.setDisabled(false);
         academicRankService.save(academicRank);
@@ -77,6 +81,11 @@ public class AcademicRankController {
         Map<String, Object> response = new HashMap<>();
 
         String name = payload.get("0");
+
+        if (academicRankService.existsByName(null, name)) {
+            response.put("error", "Запись уже существует.");
+            return ResponseEntity.status(HttpStatus.CONFLICT).body(response);
+        }
 
         AcademicRank academicRank = new AcademicRank();
         academicRank.setName(name);

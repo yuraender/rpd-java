@@ -72,6 +72,10 @@ public class EducationTypeController {
             response.put("error", "Запись не найдена.");
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
         }
+        if (educationTypeService.existsByName(educationType.getId(), name)) {
+            response.put("error", "Запись уже существует.");
+            return ResponseEntity.status(HttpStatus.CONFLICT).body(response);
+        }
         educationType.setName(name);
         educationType.setLearningPeriod(learningPeriod);
         educationType.setText(text);
@@ -95,6 +99,11 @@ public class EducationTypeController {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
         }
         String text = payload.get("2");
+
+        if (educationTypeService.existsByName(null, name)) {
+            response.put("error", "Запись уже существует.");
+            return ResponseEntity.status(HttpStatus.CONFLICT).body(response);
+        }
 
         EducationType educationType = new EducationType();
         educationType.setName(name);

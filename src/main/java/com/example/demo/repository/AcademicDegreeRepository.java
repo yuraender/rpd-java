@@ -10,5 +10,7 @@ public interface AcademicDegreeRepository extends JpaRepository<AcademicDegree, 
 
     List<AcademicDegree> findAllByDisabledFalse();
 
+    List<AcademicDegree> findAllByNameOrShortName(String name, String shortName);
+
     Optional<AcademicDegree> findByIdAndDisabledFalse(Integer id);
 }

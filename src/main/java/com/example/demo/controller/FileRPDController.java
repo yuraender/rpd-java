@@ -193,6 +193,10 @@ public class FileRPDController {
             response.put("error", "Запись не найдена.");
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
         }
+        if (fileRPDService.existsByAcademicYearAndBasicEducationalProgramDiscipline(null, academicYear, bepDiscipline)) {
+            response.put("error", "Запись уже существует.");
+            return ResponseEntity.status(HttpStatus.CONFLICT).body(response);
+        }
 
         FileRPD fileRPD = new FileRPD();
         fileRPD.setAcademicYear(academicYear);

@@ -99,6 +99,10 @@ public class DepartmentController {
             response.put("error", "Запись не найдена.");
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
         }
+        if (departmentService.existsByCodeOrName(department.getId(), code, name)) {
+            response.put("error", "Запись уже существует.");
+            return ResponseEntity.status(HttpStatus.CONFLICT).body(response);
+        }
         department.setCode(code);
         department.setName(name);
         department.setAbbreviation(abbreviation);
@@ -125,8 +129,7 @@ public class DepartmentController {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
         }
 
-        Department existingDepartment = departmentService.getByCode(code);
-        if (existingDepartment != null) {
+        if (departmentService.existsByCodeOrName(null, code, name)) {
             response.put("error", "Запись уже существует.");
             return ResponseEntity.status(HttpStatus.CONFLICT).body(response);
         }

@@ -12,7 +12,8 @@ public interface DepartmentRepository extends JpaRepository<Department, Integer>
     @EntityGraph(attributePaths = {"head"})
     List<Department> findAllByDisabledFalse();
 
-    Optional<Department> findByIdAndDisabledFalse(Integer id);
+    @EntityGraph(attributePaths = {"head"})
+    List<Department> findAllByCodeOrName(String code, String name);
 
-    Optional<Department> findByCodeAndDisabledFalse(String code);
+    Optional<Department> findByIdAndDisabledFalse(Integer id);
 }

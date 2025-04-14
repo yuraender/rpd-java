@@ -82,6 +82,10 @@ public class AuditoriumController {
             response.put("error", "Запись не найдена.");
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
         }
+        if (auditoriumService.existsByAuditoriumNumber(auditorium.getId(), auditoriumNumber)) {
+            response.put("error", "Запись уже существует.");
+            return ResponseEntity.status(HttpStatus.CONFLICT).body(response);
+        }
         auditorium.setAuditoriumNumber(auditoriumNumber);
         auditorium.setEquipment(equipment);
         auditorium.setSoftware(software);
@@ -99,6 +103,11 @@ public class AuditoriumController {
         String auditoriumNumber = payload.get("0");
         String equipment = payload.get("1");
         String software = payload.get("2");
+
+        if (auditoriumService.existsByAuditoriumNumber(null, auditoriumNumber)) {
+            response.put("error", "Запись уже существует.");
+            return ResponseEntity.status(HttpStatus.CONFLICT).body(response);
+        }
 
         Auditorium auditorium = new Auditorium();
         auditorium.setAuditoriumNumber(auditoriumNumber);

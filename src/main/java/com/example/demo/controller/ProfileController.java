@@ -97,6 +97,10 @@ public class ProfileController {
             response.put("error", "Запись не найдена.");
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
         }
+        if (profileService.existsByName(profile.getId(), name)) {
+            response.put("error", "Запись уже существует.");
+            return ResponseEntity.status(HttpStatus.CONFLICT).body(response);
+        }
         profile.setName(name);
         profile.setDirection(direction);
         profile.setDisabled(false);
@@ -119,6 +123,10 @@ public class ProfileController {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
         }
 
+        if (profileService.existsByName(null, name)) {
+            response.put("error", "Запись уже существует.");
+            return ResponseEntity.status(HttpStatus.CONFLICT).body(response);
+        }
         Direction direction = directionService.getById(param1);
         if (direction == null) {
             response.put("error", "Запись не найдена.");

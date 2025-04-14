@@ -10,5 +10,7 @@ public interface EducationTypeRepository extends JpaRepository<EducationType, In
 
     List<EducationType> findAllByDisabledFalse();
 
+    List<EducationType> findAllByNameAndDisabledFalse(String name);
+
     Optional<EducationType> findByIdAndDisabledFalse(Integer id);
 }

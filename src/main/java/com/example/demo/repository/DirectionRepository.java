@@ -12,5 +12,8 @@ public interface DirectionRepository extends JpaRepository<Direction, Integer> {
     @EntityGraph(attributePaths = {"department"})
     List<Direction> findAllByDisabledFalse();
 
+    @EntityGraph(attributePaths = {"department"})
+    List<Direction> findAllByCodeOrName(String code, String name);
+
     Optional<Direction> findByIdAndDisabledFalse(Integer id);
 }

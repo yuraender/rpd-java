@@ -16,7 +16,7 @@ public class EmployeePosition {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
-    @Column(length = 50, nullable = false, unique = true)
+    @Column(length = 50, nullable = false)
     private String name;
 
     @Column(nullable = false)

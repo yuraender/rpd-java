@@ -21,6 +21,12 @@ public class AuditoriumService {
         return auditoriumRepository.findByIdAndDisabledFalse(id).orElse(null);
     }
 
+    public boolean existsByAuditoriumNumber(Integer id, String auditoriumNumber) {
+        return auditoriumRepository.findAllByAuditoriumNumberAndDisabledFalse(auditoriumNumber)
+                .stream()
+                .anyMatch(a -> id == null || a.getId() != id);
+    }
+
     public Auditorium save(Auditorium auditorium) {
         return auditoriumRepository.save(auditorium);
     }

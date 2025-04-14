@@ -10,5 +10,7 @@ public interface DisciplineRepository extends JpaRepository<Discipline, Integer>
 
     List<Discipline> findAllByDisabledFalse();
 
+    List<Discipline> findAllByNameAndDisabledFalse(String name);
+
     Optional<Discipline> findByIdAndDisabledFalse(Integer id);
 }

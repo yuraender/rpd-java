@@ -98,6 +98,10 @@ public class DirectionController {
             response.put("error", "Запись не найдена.");
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
         }
+        if (directionService.existsByCodeOrName(direction.getId(), code, name)) {
+            response.put("error", "Запись уже существует.");
+            return ResponseEntity.status(HttpStatus.CONFLICT).body(response);
+        }
         direction.setCode(code);
         direction.setName(name);
         direction.setDepartment(department);
@@ -122,6 +126,10 @@ public class DirectionController {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
         }
 
+        if (directionService.existsByCodeOrName(null, code, name)) {
+            response.put("error", "Запись уже существует.");
+            return ResponseEntity.status(HttpStatus.CONFLICT).body(response);
+        }
         Department department = departmentService.getById(param2);
         if (department == null) {
             response.put("error", "Запись не найдена.");

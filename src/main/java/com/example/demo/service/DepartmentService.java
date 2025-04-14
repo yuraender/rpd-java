@@ -26,10 +26,11 @@ public class DepartmentService {
                 .orElse(null);
     }
 
-    public Department getByCode(String code) {
-        return departmentRepository.findByCodeAndDisabledFalse(code)
+    public boolean existsByCodeOrName(Integer id, String code, String name) {
+        return departmentRepository.findAllByCodeOrName(code, name)
+                .stream()
                 .filter(d -> !d.isDisabled())
-                .orElse(null);
+                .anyMatch(d -> id == null || d.getId() != id);
     }
 
     public Department save(Department department) {

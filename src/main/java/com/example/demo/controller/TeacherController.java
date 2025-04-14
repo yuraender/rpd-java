@@ -149,6 +149,10 @@ public class TeacherController {
             response.put("error", "Запись не найдена.");
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
         }
+        if (teacherService.existsByEmployee(null, employee)) {
+            response.put("error", "Запись уже существует.");
+            return ResponseEntity.status(HttpStatus.CONFLICT).body(response);
+        }
 
         Teacher teacher = new Teacher();
         teacher.setEmployee(employee);

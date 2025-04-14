@@ -21,6 +21,13 @@ public class AcademicDegreeService {
         return academicDegreeRepository.findByIdAndDisabledFalse(id).orElse(null);
     }
 
+    public boolean existsByNameOrShortName(Integer id, String name, String shortName) {
+        return academicDegreeRepository.findAllByNameOrShortName(name, shortName)
+                .stream()
+                .filter(ad -> !ad.isDisabled())
+                .anyMatch(ad -> id == null || ad.getId() != id);
+    }
+
     public AcademicDegree save(AcademicDegree academicDegree) {
         return academicDegreeRepository.save(academicDegree);
     }

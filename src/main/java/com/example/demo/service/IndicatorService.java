@@ -26,6 +26,13 @@ public class IndicatorService {
                 .orElse(null);
     }
 
+    public boolean existsByText(Integer id, String text) {
+        return indicatorRepository.findAllByTextAndDisabledFalse(text)
+                .stream()
+                .filter(i -> !i.isDisabled())
+                .anyMatch(i -> id == null || i.getId() != id);
+    }
+
     public Indicator save(Indicator indicator) {
         return indicatorRepository.save(indicator);
     }

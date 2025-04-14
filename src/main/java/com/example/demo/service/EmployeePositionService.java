@@ -29,6 +29,12 @@ public class EmployeePositionService {
         return employeePositionRepository.findByIdAndTypeAndDisabledFalse(id, type).orElse(null);
     }
 
+    public boolean existsByName(Integer id, String name) {
+        return employeePositionRepository.findAllByNameAndDisabledFalse(name)
+                .stream()
+                .anyMatch(ep -> id == null || ep.getId() != id);
+    }
+
     public EmployeePosition save(EmployeePosition employeePosition) {
         return employeePositionRepository.save(employeePosition);
     }

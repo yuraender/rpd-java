@@ -167,6 +167,11 @@ public class BasicEducationalProgramDisciplineController {
             response.put("error", "Запись не найдена.");
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
         }
+        if (basicEducationalProgramDisciplineService.existsByIndexAndBasicEducationalProgram(
+                bepDiscipline.getId(), index, bepDiscipline.getBasicEducationalProgram())) {
+            response.put("error", "Запись уже существует.");
+            return ResponseEntity.status(HttpStatus.CONFLICT).body(response);
+        }
         if (protocols.stream().anyMatch(p -> p.getDate().toLocalDate().getYear()
                 <= bepDiscipline.getBasicEducationalProgram().getProtocol().getDate().toLocalDate().getYear())) {
             response.put("error", "Дата актуализации должна быть позднее даты утверждения.");
@@ -239,6 +244,11 @@ public class BasicEducationalProgramDisciplineController {
                 || protocols.stream().anyMatch(Objects::isNull)) {
             response.put("error", "Запись не найдена.");
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
+        }
+        if (basicEducationalProgramDisciplineService.existsByIndexAndBasicEducationalProgram(null, index, bep)
+                || basicEducationalProgramDisciplineService.existsByBasicEducationalProgramAndDiscipline(null, bep, discipline)) {
+            response.put("error", "Запись уже существует.");
+            return ResponseEntity.status(HttpStatus.CONFLICT).body(response);
         }
         if (protocols.stream().anyMatch(p ->
                 p.getDate().toLocalDate().getYear() <= bep.getProtocol().getDate().toLocalDate().getYear())) {

@@ -84,6 +84,10 @@ public class IndicatorController {
             response.put("error", "Запись не найдена.");
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
         }
+        if (indicatorService.existsByText(indicator.getId(), text)) {
+            response.put("error", "Запись уже существует.");
+            return ResponseEntity.status(HttpStatus.CONFLICT).body(response);
+        }
         indicator.setText(text);
         indicator.setDisabled(false);
         indicatorService.save(indicator);
@@ -106,6 +110,10 @@ public class IndicatorController {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
         }
 
+        if (indicatorService.existsByText(null, text)) {
+            response.put("error", "Запись уже существует.");
+            return ResponseEntity.status(HttpStatus.CONFLICT).body(response);
+        }
         Competence competence = competenceService.getById(param3);
         if (param1 < 0 || param1 >= Protocol.Type.values().length || competence == null) {
             response.put("error", "Запись не найдена.");

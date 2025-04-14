@@ -65,6 +65,10 @@ public class AcademicDegreeController {
             response.put("error", "Запись не найдена.");
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
         }
+        if (academicDegreeService.existsByNameOrShortName(academicDegree.getId(), name, shortName)) {
+            response.put("error", "Запись уже существует.");
+            return ResponseEntity.status(HttpStatus.CONFLICT).body(response);
+        }
         academicDegree.setName(name);
         academicDegree.setShortName(shortName);
         academicDegree.setDisabled(false);
@@ -80,6 +84,11 @@ public class AcademicDegreeController {
 
         String name = payload.get("0");
         String shortName = payload.get("1");
+
+        if (academicDegreeService.existsByNameOrShortName(null, name, shortName)) {
+            response.put("error", "Запись уже существует.");
+            return ResponseEntity.status(HttpStatus.CONFLICT).body(response);
+        }
 
         AcademicDegree academicDegree = new AcademicDegree();
         academicDegree.setName(name);

@@ -26,6 +26,13 @@ public class ProfileService {
                 .orElse(null);
     }
 
+    public boolean existsByName(Integer id, String name) {
+        return profileRepository.findAllByNameAndDisabledFalse(name)
+                .stream()
+                .filter(p -> !p.isDisabled())
+                .anyMatch(p -> id == null || p.getId() != id);
+    }
+
     public Profile save(Profile profile) {
         return profileRepository.save(profile);
     }

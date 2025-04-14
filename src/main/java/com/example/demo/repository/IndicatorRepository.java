@@ -12,5 +12,8 @@ public interface IndicatorRepository extends JpaRepository<Indicator, Integer> {
     @EntityGraph(attributePaths = {"competence"})
     List<Indicator> findAllByDisabledFalse();
 
+    @EntityGraph(attributePaths = {"competence"})
+    List<Indicator> findAllByTextAndDisabledFalse(String text);
+
     Optional<Indicator> findByIdAndDisabledFalse(Integer id);
 }
