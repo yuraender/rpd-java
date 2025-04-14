@@ -8,10 +8,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
 import java.util.List;
@@ -76,7 +73,7 @@ public class DisciplineController {
         return ResponseEntity.ok(response);
     }
 
-    @PostMapping("/api/discipline/save-new-record")
+    @PutMapping("/api/discipline/save-new-record")
     public ResponseEntity<Map<String, Object>> createRecord(@RequestBody Map<String, String> payload) {
         Map<String, Object> response = new HashMap<>();
 
@@ -96,7 +93,7 @@ public class DisciplineController {
         return ResponseEntity.ok(response);
     }
 
-    @GetMapping("/api/discipline/delete-record/{entityId}")
+    @DeleteMapping("/api/discipline/delete-record/{entityId}")
     public ResponseEntity<Map<String, Object>> deleteRecord(@PathVariable Integer entityId) {
         Map<String, Object> response = new HashMap<>();
 

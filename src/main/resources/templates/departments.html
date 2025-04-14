@@ -117,7 +117,12 @@
             let form = document.querySelector('.active-form')
             if (form) {
                 let activeRecordId = form.getAttribute('activeRecordId')
-                fetch('/api/department/set-active/' + activeRecordId)
+                fetch('/api/department/set-active/' + activeRecordId, {
+                    method: 'POST',
+                    headers: {
+                        'X-CSRF-TOKEN': csrfToken
+                    }
+                })
                     .then(response => response.json())
                     .then(function (data) {
                         showModalWithMessage('Вы выбрали: ' + data.dataName)
@@ -214,7 +219,12 @@
                 } else {
                     let dataId = recordElement.getAttribute('activeRecordId')
                     if (!dataId) return null;
-                    fetch('/api/department/delete-record/' + dataId)
+                    fetch('/api/department/delete-record/' + dataId, {
+                        method: 'DELETE',
+                        headers: {
+                            'X-CSRF-TOKEN': csrfToken
+                        }
+                    })
                         .then(response => response.json())
                         .then(deletedRecord => {
                             showModalWithMessage('Запись удалена.')
@@ -349,7 +359,7 @@
 
         function createNewRecord(data) {
             fetch('/api/department/save-new-record', {
-                method: 'POST',
+                method: 'PUT',
                 headers: {
                     'Content-Type': 'application/json',
                     'X-CSRF-TOKEN': csrfToken

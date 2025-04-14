@@ -196,7 +196,12 @@
                 } else {
                     let dataId = recordElement.getAttribute('activeRecordId')
                     if (!dataId) return null;
-                    fetch('/api/indicator/delete-record/' + dataId)
+                    fetch('/api/indicator/delete-record/' + dataId, {
+                        method: 'DELETE',
+                        headers: {
+                            'X-CSRF-TOKEN': csrfToken
+                        }
+                    })
                         .then(response => response.json())
                         .then(deletedRecord => {
                             showModalWithMessage('Запись удалена.')
@@ -371,7 +376,7 @@
 
         function createNewRecord(data) {
             fetch('/api/indicator/save-new-record', {
-                method: 'POST',
+                method: 'PUT',
                 headers: {
                     'Content-Type': 'application/json',
                     'X-CSRF-TOKEN': csrfToken

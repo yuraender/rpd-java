@@ -54,7 +54,7 @@ public class FileRPDController {
         return ResponseEntity.ok(response);
     }
 
-    @GetMapping("/rpd-data-set-active/{entityId}")
+    @PostMapping("/api/rpd/set-active/{entityId}")
     public ResponseEntity<Map<String, Object>> setActive(@PathVariable Integer entityId, HttpServletRequest request) {
         Map<String, Object> response = new HashMap<>();
 
@@ -167,7 +167,7 @@ public class FileRPDController {
         return ResponseEntity.ok().headers(headers).body(fileContent);
     }
 
-    @PostMapping("/api/rpd/save-new-record")
+    @PutMapping("/api/rpd/save-new-record")
     public ResponseEntity<Map<String, Object>> createRecord(@RequestBody Map<String, Object> payload) {
         Map<String, Object> response = new HashMap<>();
 
@@ -209,7 +209,7 @@ public class FileRPDController {
         return ResponseEntity.ok(response);
     }
 
-    @GetMapping("/api/rpd/delete-record/{entityId}")
+    @DeleteMapping("/api/rpd/delete-record/{entityId}")
     public ResponseEntity<Map<String, Object>> deleteRecord(@PathVariable Integer entityId) {
         Map<String, Object> response = new HashMap<>();
 

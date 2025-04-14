@@ -12,6 +12,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.web.cors.CorsConfiguration;
 
+import java.util.List;
+
 @Configuration
 public class SecurityConfig {
 
@@ -46,9 +48,12 @@ public class SecurityConfig {
                 );
 
         // Добавление настройки CORS
-        http.cors((corsCustomizer) -> {
-            corsCustomizer.configurationSource(request -> new CorsConfiguration().applyPermitDefaultValues());
-        });
+        http.cors((corsCustomizer) -> corsCustomizer.configurationSource(request -> {
+            CorsConfiguration corsConfiguration = new CorsConfiguration();
+            corsConfiguration.applyPermitDefaultValues();
+            corsConfiguration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE"));
+            return corsConfiguration;
+        }));
         // Разрешение Mixed Content
         http.headers(headersCustomizer -> {
             headersCustomizer.contentSecurityPolicy((contentSecurityCustomizer) -> {

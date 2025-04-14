@@ -8,10 +8,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.*;
 
 import java.sql.Date;
 import java.time.Instant;
@@ -96,7 +93,7 @@ public class ProtocolController {
         return ResponseEntity.ok(response);
     }
 
-    @PostMapping("/api/protocol/save-new-record")
+    @PutMapping("/api/protocol/save-new-record")
     public ResponseEntity<Map<String, Object>> createRecord(@RequestBody Map<String, String> payload) {
         Map<String, Object> response = new HashMap<>();
 
@@ -136,7 +133,7 @@ public class ProtocolController {
         return ResponseEntity.ok(response);
     }
 
-    @GetMapping("/api/protocol/delete-record/{entityId}")
+    @DeleteMapping("/api/protocol/delete-record/{entityId}")
     public ResponseEntity<Map<String, Object>> deleteRecord(@PathVariable Integer entityId) {
         Map<String, Object> response = new HashMap<>();
 

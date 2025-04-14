@@ -10,10 +10,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
 import java.util.List;
@@ -31,7 +28,7 @@ public class DirectionController {
         return "directions";
     }
 
-    @GetMapping("/api/direction/set-active/{entityId}")
+    @PostMapping("/api/direction/set-active/{entityId}")
     public ResponseEntity<Map<String, Object>> setActive(@PathVariable Integer entityId, HttpServletRequest request) {
         Map<String, Object> response = new HashMap<>();
 
@@ -112,7 +109,7 @@ public class DirectionController {
         return ResponseEntity.ok(response);
     }
 
-    @PostMapping("/api/direction/save-new-record")
+    @PutMapping("/api/direction/save-new-record")
     public ResponseEntity<Map<String, Object>> createRecord(@RequestBody Map<String, String> payload) {
         Map<String, Object> response = new HashMap<>();
 
@@ -147,7 +144,7 @@ public class DirectionController {
         return ResponseEntity.ok(response);
     }
 
-    @GetMapping("/api/direction/delete-record/{entityId}")
+    @DeleteMapping("/api/direction/delete-record/{entityId}")
     public ResponseEntity<Map<String, Object>> deleteRecord(@PathVariable Integer entityId) {
         Map<String, Object> response = new HashMap<>();
 
