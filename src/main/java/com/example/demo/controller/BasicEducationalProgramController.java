@@ -40,7 +40,8 @@ public class BasicEducationalProgramController {
             response.put("error", "Запись не найдена.");
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
         }
-        response.put("dataName", bep.getId());
+        response.put("dataName", bep.getAcademicYear()
+                + ", " + bep.getProfile().getName() + ", " + bep.getEducationType().getName());
 
         HttpSession session = request.getSession();
         session.setAttribute("bepId", entityId);

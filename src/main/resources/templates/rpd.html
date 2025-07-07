@@ -120,7 +120,6 @@
         <button class="button-edit btn-edit button btn btn-primary">Редактировать</button>
         <button class="btn-create button btn btn-primary">Добавить</button>
         <button class="btn-delete button btn btn-primary">Удалить</button>
-        <button class="btn-choose button btn btn-primary">Выбрать запись</button>
     </div>
     <div class="active-record" style="display: none;">
     </div>
@@ -190,28 +189,6 @@
         let filter2Global = 0;
         filter2.disabled = true;
         filter3.disabled = true;
-
-        let btnChoose = document.querySelector('.btn-choose')
-        btnChoose.addEventListener('click', chooseRecord)
-
-        function chooseRecord() {
-            let form = document.querySelector('.active-form')
-            if (form) {
-                let activeRecordId = form.getAttribute('activeRecordId')
-                fetch('/api/rpd/set-active/' + activeRecordId, {
-                    method: 'POST',
-                    headers: {
-                        'X-CSRF-TOKEN': csrfToken
-                    }
-                })
-                    .then(response => response.json())
-                    .then(function (data) {
-                        showModalWithMessage('Вы выбрали: ' + data.dataName)
-                    })
-            } else {
-                showModalWithMessage('Выберите запись, кликнув по записи из таблицы. Затем нажмите "Выбрать запись".')
-            }
-        }
 
         const csrfToken = document.querySelector('input[name="_csrf"]').value;
         let editMode = false;
