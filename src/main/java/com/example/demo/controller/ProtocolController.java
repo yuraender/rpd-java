@@ -9,6 +9,7 @@ import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
@@ -61,6 +62,7 @@ public class ProtocolController {
         return ResponseEntity.ok(response);
     }
 
+    @PreAuthorize("@userDetailsServiceImpl.isAdmin(principal)")
     @PostMapping("/api/protocol/update")
     public ResponseEntity<Map<String, Object>> updateRecord(@RequestBody Map<String, Object> payload) {
         Map<String, Object> response = new HashMap<>();
@@ -109,6 +111,7 @@ public class ProtocolController {
         return ResponseEntity.ok(response);
     }
 
+    @PreAuthorize("@userDetailsServiceImpl.isAdmin(principal)")
     @PutMapping("/api/protocol/save-new-record")
     public ResponseEntity<Map<String, Object>> createRecord(@RequestBody Map<String, Object> payload) {
         Map<String, Object> response = new HashMap<>();
@@ -158,6 +161,7 @@ public class ProtocolController {
         return ResponseEntity.ok(response);
     }
 
+    @PreAuthorize("@userDetailsServiceImpl.isAdmin(principal)")
     @DeleteMapping("/api/protocol/delete-record/{entityId}")
     public ResponseEntity<Map<String, Object>> deleteRecord(@PathVariable Integer entityId) {
         Map<String, Object> response = new HashMap<>();

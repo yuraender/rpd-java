@@ -13,6 +13,7 @@ import org.apache.poi.openxml4j.opc.OPCPackage;
 import org.apache.poi.openxml4j.opc.PackagePart;
 import org.apache.poi.xwpf.usermodel.XWPFDocument;
 import org.springframework.http.*;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -67,6 +68,7 @@ public class FileRPDController {
         return ResponseEntity.ok(response);
     }
 
+    @PreAuthorize("@userDetailsServiceImpl.isAdmin(principal)")
     @PostMapping("/api/rpd/uploadFile")
     public ResponseEntity<Map<String, Object>> uploadFile(
             @RequestParam Integer rpdId, @RequestParam int sectionNumber, @RequestParam MultipartFile file
@@ -126,6 +128,7 @@ public class FileRPDController {
         return ResponseEntity.ok().headers(headers).body(fileContent);
     }
 
+    @PreAuthorize("@userDetailsServiceImpl.isAdmin(principal)")
     @PutMapping("/api/rpd/save-new-record")
     public ResponseEntity<Map<String, Object>> createRecord(@RequestBody Map<String, String> payload) {
         Map<String, Object> response = new HashMap<>();
@@ -159,6 +162,7 @@ public class FileRPDController {
         return ResponseEntity.ok(response);
     }
 
+    @PreAuthorize("@userDetailsServiceImpl.isAdmin(principal)")
     @DeleteMapping("/api/rpd/delete-record/{entityId}")
     public ResponseEntity<Map<String, Object>> deleteRecord(@PathVariable Integer entityId) {
         Map<String, Object> response = new HashMap<>();
