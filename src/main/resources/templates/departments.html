@@ -1,0 +1,655 @@
+<!DOCTYPE html>
+<html lang="ru" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Кафедры</title>
+    <link rel="icon" type="image/png" href="/image/favicon-96x96.png" sizes="96x96"/>
+    <link rel="icon" type="image/svg+xml" href="/image/favicon.svg"/>
+    <link rel="shortcut icon" href="/image/favicon.ico"/>
+    <link rel="apple-touch-icon" sizes="180x180" href="/image/apple-touch-icon.png"/>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css">
+    <link rel="stylesheet"
+          href="https://cdn.jsdelivr.net/npm/bootstrap-select@1.13.18/dist/css/bootstrap-select.min.css">
+    <link rel="stylesheet" href="/css/style.css"/>
+    <link rel="stylesheet" href="/css/entity.css"/>
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+</head>
+<body>
+<input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
+<nav class="navbar navbar-expand-lg navbar-light bg-light">
+    <a class="navbar-brand" href="/home">Главная</a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav"
+            aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarNav">
+        <ul class="navbar-nav">
+            <li class="nav-item">
+                <a class="nav-link" href="/background-information">Справочная информация</a>
+            </li>
+        </ul>
+    </div>
+</nav>
+<section class="container">
+    <h2>Кафедры</h2>
+    <div class="scrollable-table">
+        <table class="table table-bordered" id="dataTable">
+            <thead>
+            <tr class="sticky-header">
+                <th><input type="text" class="form-control" placeholder="ID"
+                           onkeyup="filterTable('dataTable', 0)"></th>
+                <th><input type="text" class="form-control" placeholder="Код"
+                           onkeyup="filterTable('dataTable', 1)"></th>
+                <th><input type="text" class="form-control" placeholder="Название"
+                           onkeyup="filterTable('dataTable', 2)"></th>
+                <th><input type="text" class="form-control" placeholder="Аббревиатура"
+                           onkeyup="filterTable('dataTable', 3)"></th>
+                <th><input type="text" class="form-control" placeholder="Заведующий"
+                           onkeyup="filterTable('dataTable', 4)"></th>
+            </tr>
+            <tr class="sticky-header">
+                <th>ID</th>
+                <th>Код</th>
+                <th>Название</th>
+                <th>Аббревиатура</th>
+                <th>Заведующий</th>
+            </tr>
+            </thead>
+            <tbody>
+            </tbody>
+        </table>
+    </div>
+    <div class="edit-buttons-wrapper no-visible">
+        <button class="button-edit btn-edit button btn btn-primary">Редактировать</button>
+        <button class="btn-create button btn btn-primary">Добавить</button>
+        <button class="btn-delete button btn btn-primary">Удалить</button>
+        <button class="btn-choose button btn btn-primary">Выбрать запись</button>
+    </div>
+    <div class="active-record" style="display: none;">
+    </div>
+</section>
+<div class="rightbar">
+    <hr>
+    <a href="/departments">Кафедры</a>
+    <a href="/directions">Направления</a>
+    <a href="/profiles">Профили</a>
+    <hr>
+    <a href="/beps">ООП</a>
+    <a href="/bep-disciplines">Дисциплины ОП</a>
+    <a href="/rpd">РПД</a>
+    <hr>
+    <a href="/disciplines">Дисциплины</a>
+    <a href="/competences">Компетенции</a>
+    <a href="/indicators">Индикаторы</a>
+    <a href="/education-types">Формы обучения</a>
+    <a href="/auditoriums">Аудитории</a>
+    <a href="/protocols">Протоколы</a>
+    <hr>
+    <a href="/employees">Сотрудники</a>
+    <a href="/teachers">Преподаватели</a>
+    <a href="/academic-degrees">Ученые степени</a>
+    <a href="/academic-ranks">Ученые звания</a>
+    <a href="/employee-positions">Должности</a>
+    <hr>
+</div>
+<div id="createModal" class="modal" style="display: none;">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h5>Добавить запись</h5>
+            <span class="close-btn">&times;</span>
+        </div>
+        <div class="modal-body createForm">
+
+        </div>
+        <div class="modal-footer">
+            <button type="button" class="cancel-create-modal btn btn-danger">Отмена</button>
+            <button type="button" class="save-modal-record btn btn-success">Сохранить</button>
+        </div>
+    </div>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap-select@1.13.18/dist/js/bootstrap-select.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap-select@1.13.18/dist/js/i18n/defaults-ru_RU.min.js"></script>
+<script src="/js/modalWindow.js"></script>
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        let btnChoose = document.querySelector('.btn-choose')
+        btnChoose.addEventListener('click', chooseRecord)
+
+        function chooseRecord() {
+            let form = document.querySelector('.active-form')
+            if (form) {
+                let activeRecordId = form.getAttribute('activeRecordId')
+                fetch('/api/department/set-active/' + activeRecordId, {
+                    method: 'POST',
+                    headers: {
+                        'X-CSRF-TOKEN': csrfToken
+                    }
+                })
+                    .then(response => response.json())
+                    .then(function (data) {
+                        showModalWithMessage('Вы выбрали: ' + data.dataName)
+                    })
+            } else {
+                showModalWithMessage('Выберите запись, кликнув по записи из таблицы. Затем нажмите "Выбрать запись".')
+            }
+        }
+
+        const csrfToken = document.querySelector('input[name="_csrf"]').value;
+        let editMode = false;
+        let isAdmin = false;
+
+        function removeAllChildElements(parentElement) {
+            while (parentElement.firstChild) {
+                parentElement.removeChild(parentElement.firstChild);
+            }
+        }
+
+        function checkAdmin(data) {
+            if (data.role === 'administrator') {
+                isAdmin = true;
+                let buttonsWrapper = document.querySelector('.edit-buttons-wrapper')
+                buttonsWrapper.classList.remove('no-visible')
+            }
+        }
+
+        function renderPage() {
+            document.querySelector('.button-edit').disabled = true;
+            let createModal = document.getElementById('createModal');
+            let cancelCreateModal = document.querySelector('.cancel-create-modal');
+            let saveModalRecord = document.querySelector('.save-modal-record');
+            saveModalRecord.addEventListener('click', () => saveNewRecord())
+
+            fetch('/departments-data')
+                .then(response => response.json())
+                .then(function (data) {
+                    checkAdmin(data)
+                    renderTable(data.data)
+                    $('select').selectpicker('refresh');
+                })
+                .catch(function (error) {
+                    console.error('Ошибка загрузки данных:', error);
+                    alert('Ошибка при загрузке данных');
+                });
+
+            let buttonEdit = document.querySelector('.button-edit');
+            buttonEdit.addEventListener('click', editActive)
+
+            function editActive() {
+                editMode = true;
+                let activeRecord = document.querySelector('.active-record');
+                let fields = activeRecord.querySelectorAll('.field');
+
+                fields.forEach(function (field) {
+                    field.disabled = false;
+                    field.readOnly = false;
+                    $(field).selectpicker('refresh');
+                });
+                $('.bootstrap-select', activeRecord).removeClass(['form-control', 'field']);
+
+                activeFieldsChange()
+
+                function activeFieldsChange() {
+                    let form = document.querySelector('.active-form')
+                    if (form.querySelector('.active-buttons-wrapper')) {
+                        return
+                    }
+
+                    let buttonsWrapper = document.createElement('div')
+                    buttonsWrapper.classList.add('active-buttons-wrapper')
+
+                    let btnSuccess = document.createElement('button');
+                    btnSuccess.classList.add('button', 'btn', 'btn-success')
+                    btnSuccess.textContent = 'Подтвердить'
+                    btnSuccess.addEventListener('click', updateRecord)
+                    buttonsWrapper.appendChild(btnSuccess);
+
+                    let btnCancel = document.createElement('button');
+                    btnCancel.classList.add('button', 'btn', 'btn-danger')
+                    btnCancel.textContent = 'Отменить'
+                    btnCancel.addEventListener('click', cancelUpdate)
+                    buttonsWrapper.appendChild(btnCancel);
+
+                    form.appendChild(buttonsWrapper);
+                }
+
+                function cancelUpdate() {
+                    let dataId = document.querySelector('.active-form').getAttribute('activeRecordId')
+                    changeActiveRowTable(dataId)
+                }
+            }
+
+            let createBtn = document.querySelector('.btn-create')
+            createBtn.addEventListener('click', showCreateModal)
+            let deleteBtn = document.querySelector('.btn-delete')
+            deleteBtn.addEventListener('click', deleteRecord)
+
+            function deleteRecord() {
+                let recordElement = document.querySelector('.active-form');
+                if (!recordElement) {
+                    showModalWithMessage('Для удаления нужно выбрать запись, а потом нажать кнопку удаления.')
+                } else {
+                    let dataId = recordElement.getAttribute('activeRecordId')
+                    if (!dataId) return null;
+                    fetch('/api/department/delete-record/' + dataId, {
+                        method: 'DELETE',
+                        headers: {
+                            'X-CSRF-TOKEN': csrfToken
+                        }
+                    })
+                        .then(response => response.json())
+                        .then(deletedRecord => {
+                            showModalWithMessage('Запись удалена.')
+                            recordElement.parentElement.style.display = 'none';
+                            recordElement.remove()
+                            let table = document.getElementById('dataTable');
+                            let rows = table.querySelectorAll('tbody tr');
+
+                            rows.forEach(row => {
+                                if (row.getAttribute('dataid') == deletedRecord.deletedData) {
+                                    row.remove();
+                                }
+                            });
+                        })
+                }
+            }
+
+            function createTextBoxForCreate(maxLength) {
+                let textBox = document.createElement('textarea');
+                textBox.textContent = '';
+                textBox.classList.add('form-control', 'field', 'textbox');
+                textBox.maxLength = maxLength;
+                return textBox;
+            }
+
+            function createOptionalTextBoxForCreate(maxLength) {
+                let textBox = createTextBoxForCreate(maxLength);
+                textBox.classList.add('optional');
+                return textBox;
+            }
+
+            function createOptionForCreate(text, id) {
+                let option = document.createElement('option');
+                option.textContent = text.length > 100 ? `${text.slice(0, 100)}...` : text;
+                option.value = id;
+                return option;
+            }
+
+            function showCreateModal() {
+                fetch('/departments-data')
+                    .then(response => response.json())
+                    .then(data => {
+                        const form = document.querySelector('.createForm')
+
+                        let fieldWrapper = document.createElement('div')
+                        fieldWrapper.classList.add('standard__active-record-wrapper')
+                        let fieldDesc = document.createElement('p')
+                        fieldDesc.classList.add('field__desc')
+                        fieldDesc.textContent = `Код:`
+                        fieldWrapper.append(fieldDesc)
+                        fieldWrapper.append(createTextBoxForCreate(10))
+                        form.append(fieldWrapper)
+
+                        fieldWrapper = document.createElement('div')
+                        fieldWrapper.classList.add('standard__active-record-wrapper')
+                        fieldDesc = document.createElement('p')
+                        fieldDesc.classList.add('field__desc')
+                        fieldDesc.textContent = `Название:`
+                        fieldWrapper.append(fieldDesc)
+                        fieldWrapper.append(createTextBoxForCreate(100))
+                        form.append(fieldWrapper)
+
+                        fieldWrapper = document.createElement('div')
+                        fieldWrapper.classList.add('standard__active-record-wrapper')
+                        fieldDesc = document.createElement('p')
+                        fieldDesc.classList.add('field__desc')
+                        fieldDesc.textContent = `Аббревиатура:`
+                        fieldWrapper.append(fieldDesc)
+                        fieldWrapper.append(createOptionalTextBoxForCreate(50))
+                        form.append(fieldWrapper)
+
+                        fieldWrapper = document.createElement('div')
+                        fieldWrapper.classList.add('standard__active-record-wrapper')
+                        fieldDesc = document.createElement('p')
+                        fieldDesc.classList.add('field__desc')
+                        fieldDesc.textContent = `Заведующий:`
+                        fieldWrapper.append(fieldDesc)
+                        let fieldSelect = document.createElement('select');
+                        fieldSelect.classList.add('form-control', 'field');
+                        fieldSelect.setAttribute('data-live-search', 'true');
+                        fieldSelect.setAttribute('data-selected-text-format', 'count');
+                        data.employees.forEach(function (optionData) {
+                            let text = optionData.nameTypeOne;
+                            let id = optionData.id;
+                            let option = createOptionForCreate(text, id)
+                            fieldSelect.append(option);
+                        });
+                        fieldWrapper.append(fieldSelect)
+                        form.append(fieldWrapper)
+
+                        let closeBtn = document.querySelector('.close-btn');
+                        cancelCreateModal.addEventListener('click', () => closeModal(createModal))
+                        closeBtn.addEventListener('click', () => closeModal(createModal))
+                        createModal.style.display = 'flex';
+
+                        $('select', form).selectpicker();
+                        $('.bootstrap-select', form).removeClass(['form-control', 'field']);
+                    })
+                    .catch(error => {
+                        console.error('Ошибка загрузки данных:', error);
+                        alert('Ошибка при загрузке данных');
+                    });
+            }
+        }
+
+        function saveNewRecord() {
+            let activeRecord = document.querySelector('.createForm');
+            let fields = activeRecord.querySelectorAll('.field');
+            let emptyFields = false;
+            let data = {}
+            fields.forEach(function (field, index) {
+                if (field.multiple) {
+                    const values = [];
+                    for (let selectedOption of field.selectedOptions) {
+                        values.push(selectedOption.value);
+                    }
+                    data[index] = values;
+                } else if (field.value) {
+                    data[index] = field.value
+                } else {
+                    if (field.classList.contains('optional')) {
+                        data[index] = ''
+                        return
+                    }
+                    showModalWithMessage('Поля должны быть заполнены.')
+                    emptyFields = true
+                }
+            })
+            if (emptyFields) return
+
+            createNewRecord(data)
+        }
+
+        function createNewRecord(data) {
+            fetch('/api/department/save-new-record', {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': csrfToken
+                },
+                body: JSON.stringify(data)
+            })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.error) {
+                        showModalWithMessage(data.error);
+                    } else {
+                        data = data.createdData
+                        let dataTable = document.getElementById('dataTable').getElementsByTagName('tbody')[0];
+
+                        let row = document.createElement('tr');
+                        row.setAttribute('dataid', data.id);
+                        row.classList.add(`${data.id}`)
+                        row.innerHTML =
+                            '<td>' + data.id + '</td>' +
+                            '<td>' + data.code + '</td>' +
+                            '<td>' + data.name + '</td>' +
+                            '<td>' + data.abbreviation + '</td>' +
+                            '<td>' + data.head.nameTypeOne + '</td>';
+                        row.addEventListener('click', function () {
+                            changeActiveRowTable(data.id);
+                        });
+
+                        dataTable.append(row);
+                        closeModal(createModal)
+                        showModalWithMessage('Запись создана.')
+                        let activeRecord = document.querySelector('.createForm');
+                        if (activeRecord) {
+                            removeAllChildElements(activeRecord)
+                        }
+                    }
+                })
+        }
+
+        renderPage()
+
+        function renderTable(dataList) {
+            let dataTable = document.getElementById('dataTable').getElementsByTagName('tbody')[0];
+            dataTable.innerHTML = '';
+            dataList.forEach(function (data) {
+                let row = document.createElement('tr');
+                row.setAttribute('dataid', data.id);
+                row.classList.add(`${data.id}`)
+                row.innerHTML =
+                    '<td>' + data.id + '</td>' +
+                    '<td>' + data.code + '</td>' +
+                    '<td>' + data.name + '</td>' +
+                    '<td>' + data.abbreviation + '</td>' +
+                    '<td>' + data.head.nameTypeOne + '</td>';
+                row.addEventListener('click', function () {
+                    changeActiveRowTable(data.id);
+                });
+                dataTable.appendChild(row);
+            });
+        }
+
+        function changeActiveRowTable(dataId) {
+            fetch('/api/department/get-active/' + dataId)
+                .then(response => response.json())
+                .then(function (data) {
+                    document.querySelector('.button-edit').disabled = false;
+                    let activeRecordWrapper = document.querySelector('.active-record');
+                    activeRecordWrapper.innerHTML = '';
+                    let form = document.createElement('div');
+                    form.classList.add('form-table', 'active-form');
+
+                    function createIdFieldForActiveRecord(data) {
+                        let fieldOneWrapper = document.createElement('div')
+                        fieldOneWrapper.classList.add('standard__active-record-wrapper')
+                        let fieldOneDesc = document.createElement('p')
+                        fieldOneDesc.classList.add('field__desc')
+                        fieldOneDesc.textContent = `ID:`
+                        fieldOneWrapper.append(fieldOneDesc)
+                        let idField = document.createElement('p');
+                        fieldOneWrapper.append(idField)
+                        idField.textContent = data.id;
+                        return fieldOneWrapper
+                    }
+
+                    form.setAttribute('activeRecordId', data.data.id)
+                    form.append(createIdFieldForActiveRecord(data.data));
+
+                    let fieldWrapper = document.createElement('div')
+                    fieldWrapper.classList.add('standard__active-record-wrapper')
+                    let fieldDesc = document.createElement('p')
+                    fieldDesc.classList.add('field__desc')
+                    fieldDesc.textContent = `Код:`
+                    fieldWrapper.append(fieldDesc)
+                    fieldWrapper.append(createTextBoxForActiveRecord(data.data.code, 10))
+                    form.append(fieldWrapper)
+
+                    fieldWrapper = document.createElement('div')
+                    fieldWrapper.classList.add('standard__active-record-wrapper')
+                    fieldDesc = document.createElement('p')
+                    fieldDesc.classList.add('field__desc')
+                    fieldDesc.textContent = `Название:`
+                    fieldWrapper.append(fieldDesc)
+                    fieldWrapper.append(createTextBoxForActiveRecord(data.data.name, 100))
+                    form.append(fieldWrapper)
+
+                    fieldWrapper = document.createElement('div')
+                    fieldWrapper.classList.add('standard__active-record-wrapper')
+                    fieldDesc = document.createElement('p')
+                    fieldDesc.classList.add('field__desc')
+                    fieldDesc.textContent = `Аббревиатура:`
+                    fieldWrapper.append(fieldDesc)
+                    fieldWrapper.append(createOptionalTextBoxForActiveRecord(data.data.abbreviation, 50))
+                    form.append(fieldWrapper)
+
+                    fieldWrapper = document.createElement('div')
+                    fieldWrapper.classList.add('standard__active-record-wrapper')
+                    fieldDesc = document.createElement('p')
+                    fieldDesc.classList.add('field__desc')
+                    fieldDesc.textContent = `Заведующий:`
+                    fieldWrapper.append(fieldDesc)
+                    let fieldSelect = document.createElement('select');
+                    fieldSelect.classList.add('form-control', 'field');
+                    fieldSelect.setAttribute('data-live-search', 'true');
+                    fieldSelect.setAttribute('data-selected-text-format', 'count');
+                    data.employees.forEach(function (optionData) {
+                        let text = optionData.nameTypeOne;
+                        let id = optionData.id;
+                        let parentDataId = data.data.head.id
+                        let option = createOptionForActiveRecord(text, id, parentDataId)
+                        fieldSelect.append(option);
+                    });
+                    fieldSelect.disabled = !editMode;
+                    fieldWrapper.append(fieldSelect)
+                    form.append(fieldWrapper)
+
+                    // Конец добавления в активную запись
+                    // Добавляем форму в контейнер
+                    activeRecordWrapper.append(form);
+                    // Показываем контейнер
+                    activeRecordWrapper.style.display = 'block';
+
+                    $('select', form).selectpicker();
+
+                    if (editMode && isAdmin) {
+                        let activeRecord = document.querySelector('.active-record');
+                        let fields = activeRecord.querySelectorAll('.field');
+
+                        fields.forEach(function (field) {
+                            field.disabled = true;
+                            field.readOnly = true;
+                            $(field).selectpicker('refresh');
+                        });
+                    }
+                    $('.bootstrap-select', form).removeClass(['form-control', 'field'])
+
+                    function createTextBoxForActiveRecord(text, maxLength) {
+                        let textBox = document.createElement('textarea');
+                        textBox.textContent = text;
+                        textBox.maxLength = maxLength;
+                        textBox.readOnly = !editMode;
+                        textBox.classList.add('form-control', 'field', 'textbox');
+                        return textBox;
+                    }
+
+                    function createOptionalTextBoxForActiveRecord(text, maxLength) {
+                        let textBox = createTextBoxForActiveRecord(text, maxLength);
+                        textBox.classList.add('optional');
+                        return textBox;
+                    }
+
+                    function createInactiveTextBox(text) {
+                        let textBox = document.createElement('p');
+                        textBox.textContent = text;
+                        return textBox;
+                    }
+
+                    function createOptionForActiveRecord(text, id, parentDataId) {
+                        let option = document.createElement('option');
+                        option.textContent = text.length > 100 ? `${text.slice(0, 100)}...` : text;
+                        option.value = id;
+                        if (id == parentDataId) {
+                            option.selected = true;
+                        }
+                        return option;
+                    }
+
+                    function createOptionMultipleForActiveRecord(text, id, selected) {
+                        let option = document.createElement('option');
+                        option.textContent = text.length > 100 ? `${text.slice(0, 100)}...` : text;
+                        option.value = id;
+                        if (selected) {
+                            option.selected = true;
+                        }
+                        return option;
+                    }
+                })
+                .catch(function (error) {
+                    console.error('Ошибка загрузки данных:', error);
+                    alert('Ошибка при загрузке данных');
+                });
+        }
+
+        function updateRecord() {
+            let activeRecord = document.querySelector('.active-record');
+            let fields = activeRecord.querySelectorAll('.field');
+            let emptyFields = false;
+            let dataId = document.querySelector('.active-form').getAttribute('activeRecordId')
+
+            let data = {}
+            fields.forEach(function (field, index) {
+                if (field.multiple) {
+                    const values = [];
+                    for (let selectedOption of field.selectedOptions) {
+                        values.push(selectedOption.value);
+                    }
+                    data[index] = values;
+                } else if (field.value) {
+                    data[index] = field.value
+                } else {
+                    if (field.classList.contains('optional')) {
+                        data[index] = ''
+                        return
+                    }
+                    showModalWithMessage('Поля должны быть заполнены.')
+                    emptyFields = true
+                }
+            })
+            data['dataId'] = dataId;
+
+            if (emptyFields) return
+            fetch('/api/department/update', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': csrfToken
+                },
+                body: JSON.stringify(data)
+            })
+                .then(response => response.json())
+                .then(function (newRecord) {
+                    if (newRecord.error) {
+                        showModalWithMessage(newRecord.error)
+                        emptyFields = true
+                    } else {
+                        let table = document.getElementById('dataTable');
+                        let rows = table.getElementsByTagName('tr');
+                        // Найти строку с нужным dataId и обновить ее содержимое
+                        for (let i = 0; i < rows.length; i++) {
+                            if (rows[i].getAttribute('dataid') == newRecord.updatedData.id) {
+                                rows[i].innerHTML =
+                                    '<td>' + newRecord.updatedData.id + '</td>' +
+                                    '<td>' + newRecord.updatedData.code + '</td>' +
+                                    '<td>' + newRecord.updatedData.name + '</td>' +
+                                    '<td>' + newRecord.updatedData.abbreviation + '</td>' +
+                                    '<td>' + newRecord.updatedData.head.nameTypeOne + '</td>';
+                                break;
+                            }
+                        }
+                        changeActiveRowTable(newRecord.updatedData.id)
+                        // Модальное окно
+                        showModalWithMessage('Запись обновлена.')
+                    }
+                })
+                .catch(function (error) {
+                    console.error('Ошибка обновления данных:', error);
+                    alert('Ошибка при обновлении данных');
+                });
+        }
+
+        function closeModal(modal) {
+            let form = document.querySelector('.createForm')
+            removeAllChildElements(form)
+            modal.style.display = 'none';
+        }
+    });
+</script>
+<script src="/js/tableUtils.js"></script>
+</body>
+</html>

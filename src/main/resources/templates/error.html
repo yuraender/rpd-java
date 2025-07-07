@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="ru" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title th:text="${code} + ' - ' + ${message}"></title>
+    <link rel="icon" type="image/png" href="/image/favicon-96x96.png" sizes="96x96"/>
+    <link rel="icon" type="image/svg+xml" href="/image/favicon.svg"/>
+    <link rel="shortcut icon" href="/image/favicon.ico"/>
+    <link rel="apple-touch-icon" sizes="180x180" href="/image/apple-touch-icon.png"/>
+    <link rel="stylesheet" href="/css/error.css"/>
+</head>
+<body>
+<div class="error-container">
+    <h1 th:text="${code}"></h1>
+    <p th:text="${message}"></p>
+    <p th:text="${message2}"></p>
+    <a href="/">Вернуться на главную страницу</a>
+</div>
+</body>
+</html>
