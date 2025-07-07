@@ -31,8 +31,8 @@ public class EmployeePosition {
     @RequiredArgsConstructor
     public enum Type {
 
-        ADMINISTRATIVE("Административная"),
-        TEACHING("Преподавательская");
+        ACADEMIC("Академическая"),
+        ADMINISTRATIVE("Административная");
 
         private final int id = ordinal();
         private final String name;

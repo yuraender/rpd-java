@@ -5,6 +5,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.util.List;
+import java.util.Set;
 
 @Entity
 @Table(name = "basic_educational_program_disciplines")
@@ -16,7 +17,7 @@ public class BasicEducationalProgramDiscipline {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
-    @Column(name = "discipline_index", length = 10, nullable = false)
+    @Column(name = "discipline_index", length = 20, nullable = false)
     private String index;
 
     @ManyToOne

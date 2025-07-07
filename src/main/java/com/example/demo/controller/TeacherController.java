@@ -44,7 +44,7 @@ public class TeacherController {
         response.put("departments", departments);
 
         List<EmployeePosition> employeePositions
-                = employeePositionService.getAllByType(EmployeePosition.Type.TEACHING);
+                = employeePositionService.getAllByType(EmployeePosition.Type.ACADEMIC);
         response.put("employeePositions", employeePositions);
 
         List<AcademicDegree> academicDegrees = academicDegreeService.getAll();
@@ -71,7 +71,7 @@ public class TeacherController {
         response.put("departments", departments);
 
         List<EmployeePosition> employeePositions
-                = employeePositionService.getAllByType(EmployeePosition.Type.TEACHING);
+                = employeePositionService.getAllByType(EmployeePosition.Type.ACADEMIC);
         response.put("employeePositions", employeePositions);
 
         List<AcademicDegree> academicDegrees = academicDegreeService.getAll();
@@ -102,7 +102,7 @@ public class TeacherController {
         Teacher teacher = teacherService.getById(dataId);
         Department department = departmentService.getById(param0);
         EmployeePosition employeePosition = employeePositionService
-                .getByIdAndType(param1, EmployeePosition.Type.TEACHING);
+                .getByIdAndType(param1, EmployeePosition.Type.ACADEMIC);
         AcademicDegree academicDegree = academicDegreeService.getById(param2);
         AcademicRank academicRank = academicRankService.getById(param3);
         if (teacher == null || department == null || employeePosition == null) {
@@ -139,7 +139,7 @@ public class TeacherController {
         Employee employee = employeeService.getById(param0);
         Department department = departmentService.getById(param1);
         EmployeePosition employeePosition = employeePositionService
-                .getByIdAndType(param2, EmployeePosition.Type.TEACHING);
+                .getByIdAndType(param2, EmployeePosition.Type.ACADEMIC);
         AcademicDegree academicDegree = academicDegreeService.getById(param3);
         AcademicRank academicRank = academicRankService.getById(param4);
         if (employee == null || department == null || employeePosition == null) {

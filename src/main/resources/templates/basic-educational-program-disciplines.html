@@ -360,7 +360,7 @@
                         fieldDesc.classList.add('field__desc')
                         fieldDesc.textContent = `Индекс:`
                         fieldWrapper.append(fieldDesc)
-                        fieldWrapper.append(createTextBoxForCreate(10))
+                        fieldWrapper.append(createTextBoxForCreate(20))
                         form.append(fieldWrapper)
 
                         fieldWrapper = document.createElement('div')
@@ -646,7 +646,7 @@
                     fieldDesc.classList.add('field__desc')
                     fieldDesc.textContent = `Индекс:`
                     fieldWrapper.append(fieldDesc)
-                    fieldWrapper.append(createTextBoxForActiveRecord(data.data.index, 10))
+                    fieldWrapper.append(createTextBoxForActiveRecord(data.data.index, 20))
                     form.append(fieldWrapper)
 
                     fieldWrapper = document.createElement('div')
@@ -688,16 +688,15 @@
                             data.indicatorTypes.forEach(function (type) {
                                 let optionGroup = document.createElement('optgroup');
                                 optionGroup.label = type.name;
-                                data.indicators
-                                    .forEach(function (optionData) {
-                                        if (values.includes(optionData.competence.id) && optionData.type.id === type.id) {
-                                            let text = optionData.text;
-                                            let id = optionData.id;
-                                            let selected = data.data.indicators.some(i => i.id === id)
-                                            let option = createOptionMultipleForActiveRecord(text, id, selected)
-                                            optionGroup.append(option);
-                                        }
-                                    });
+                                data.indicators.forEach(function (optionData) {
+                                    if (values.includes(optionData.competence.id) && optionData.type.id === type.id) {
+                                        let text = optionData.text;
+                                        let id = optionData.id;
+                                        let selected = data.data.indicators.some(i => i.id === id)
+                                        let option = createOptionMultipleForActiveRecord(text, id, selected)
+                                        optionGroup.append(option);
+                                    }
+                                });
                                 fieldSelectIndicators.append(optionGroup)
                             });
                         }
