@@ -1,8 +1,8 @@
 plugins {
     java
-    id("org.springframework.boot") version "3.3.0"
-    id("io.spring.dependency-management") version "1.1.5"
-    id("io.freefair.lombok") version "8.1.0"
+    id("org.springframework.boot") version "3.4.5"
+    id("io.spring.dependency-management") version "1.1.7"
+    id("io.freefair.lombok") version "8.13.1"
 }
 
 group = "com.example"
@@ -23,13 +23,11 @@ dependencies {
     implementation("org.springframework.boot:spring-boot-starter-thymeleaf")
     implementation("org.springframework.boot:spring-boot-starter-security")
     implementation("org.springframework.boot:spring-boot-starter-data-jpa")
-    implementation("org.springframework.boot:spring-boot-starter-validation")
-	developmentOnly("org.springframework.boot:spring-boot-devtools")
-    runtimeOnly("mysql:mysql-connector-java:5.1.49")
+
+    runtimeOnly("com.mysql:mysql-connector-j")
     implementation("com.fasterxml.jackson.datatype:jackson-datatype-hibernate6")
-	implementation("javax.servlet:javax.servlet-api:4.0.1")
-	implementation("org.apache.poi:poi-ooxml:5.2.3")
-	implementation("commons-io:commons-io:2.11.0")
+
+    implementation("org.apache.poi:poi-ooxml:5.4.1")
 }
 
 tasks.withType<JavaCompile> {
