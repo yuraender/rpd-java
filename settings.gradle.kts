@@ -1,1 +1,1 @@
-rootProject.name = "diploma-java"
+rootProject.name = "rpd-java"
