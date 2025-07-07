@@ -12,20 +12,13 @@
 
 .textbox {
     min-width: 100px;
-    height: auto;
     max-height: 70px;
     overflow-y: auto;
 }
 
 .field__desc {
     width: 40%;
-    min-width: min-content;
     max-width: 100px;
-}
-
-textarea {
-    width: 60%;
-    max-width: max-content;
 }
 
 p {
@@ -41,8 +34,10 @@ p {
     margin: 20px auto;
 }
 
-.btn-cancel {
-    margin-left: 20px;
+.active-buttons-wrapper {
+    display: flex;
+    justify-content: center;
+    gap: 20px;
 }
 
 .scrollable-table {
@@ -60,6 +55,7 @@ p {
 }
 
 .active-record {
+    width: 100%;
     margin-top: 20px;
     padding: 10px;
     border: 1px solid #ddd;
@@ -94,31 +90,18 @@ table:hover {
 }
 
 .modal {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
     background-color: rgba(0, 0, 0, 0.5);
-    display: flex;
     justify-content: center;
     align-items: center;
 }
 
 .modal-content {
-    background-color: #fff;
     padding: 20px;
-    border-radius: 5px;
     width: 500px;
-    max-width: 90%;
 }
 
-.modal-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    border-bottom: 1px solid #ccc;
-    padding-bottom: 10px;
+.alert {
+    margin-bottom: 0;
 }
 
 .standard__active-record-wrapper {
@@ -134,30 +117,18 @@ table:hover {
     font-size: 1.5em;
 }
 
-.modal-body {
-    margin-top: 20px;
-}
-
 .no-visible {
     display: none;
-}
-
-.modal-footer {
-    display: flex;
-    justify-content: flex-end;
-    border-top: 1px solid #ccc;
-    padding-top: 10px;
-    margin-top: 20px;
 }
 
 .form-control {
     max-width: 100%;
 }
 
-.createForm .dropdown-toggle {
-    width: 142% !important;
+.createForm .bootstrap-select button {
+    width: 311px !important;
 }
 
-.active-form .dropdown-toggle {
-    width: 442% !important;
+.active-form .bootstrap-select button {
+    width: 973px !important;
 }

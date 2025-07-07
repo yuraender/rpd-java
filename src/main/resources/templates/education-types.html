@@ -162,17 +162,26 @@
 
                 function activeFieldsChange() {
                     let form = document.querySelector('.active-form')
+                    if (form.querySelector('.active-buttons-wrapper')) {
+                        return
+                    }
+
+                    let buttonsWrapper = document.createElement('div')
+                    buttonsWrapper.classList.add('active-buttons-wrapper')
+
                     let btnSuccess = document.createElement('button');
-                    btnSuccess.classList.add('btn-success', 'button', 'btn', 'button-success')
+                    btnSuccess.classList.add('button', 'btn', 'btn-success')
                     btnSuccess.textContent = 'Подтвердить'
                     btnSuccess.addEventListener('click', updateRecord)
-                    form.appendChild(btnSuccess);
+                    buttonsWrapper.appendChild(btnSuccess);
 
-                    let btnCansel = document.createElement('button');
-                    btnCansel.classList.add('btn-cancel', 'button', 'btn', 'btn-danger')
-                    btnCansel.textContent = 'Отменить'
-                    btnCansel.addEventListener('click', cancelUpdate)
-                    form.appendChild(btnCansel);
+                    let btnCancel = document.createElement('button');
+                    btnCancel.classList.add('button', 'btn', 'btn-danger')
+                    btnCancel.textContent = 'Отменить'
+                    btnCancel.addEventListener('click', cancelUpdate)
+                    buttonsWrapper.appendChild(btnCancel);
+
+                    form.appendChild(buttonsWrapper);
                 }
 
                 function cancelUpdate() {
