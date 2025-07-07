@@ -5,6 +5,7 @@ import com.example.demo.repository.DirectionRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.Comparator;
 import java.util.List;
 
 @Service
@@ -17,6 +18,7 @@ public class DirectionService {
         return directionRepository.findAllByDisabledFalse()
                 .stream()
                 .filter(d -> !d.isDisabled())
+                .sorted(Comparator.comparing(Direction::getId))
                 .toList();
     }
 

@@ -27,23 +27,23 @@ public class BasicEducationalProgramDiscipline {
     @JoinColumn(name = "discipline_id", referencedColumnName = "id", nullable = false)
     private Discipline discipline;
 
-    @ManyToMany
+    @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(name = "basic_educational_program_discipline_indicators",
             joinColumns = @JoinColumn(name = "basic_educational_program_discipline_id", referencedColumnName = "id"),
             inverseJoinColumns = @JoinColumn(name = "indicator_id", referencedColumnName = "id"))
-    private List<Indicator> indicators;
+    private Set<Indicator> indicators;
 
-    @ManyToMany
+    @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(name = "basic_educational_program_discipline_auditoriums",
             joinColumns = @JoinColumn(name = "basic_educational_program_discipline_id", referencedColumnName = "id"),
             inverseJoinColumns = @JoinColumn(name = "auditorium_id", referencedColumnName = "id"))
-    private List<Auditorium> auditoriums;
+    private Set<Auditorium> auditoriums;
 
-    @ManyToMany
+    @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(name = "basic_educational_program_discipline_protocols",
             joinColumns = @JoinColumn(name = "basic_educational_program_discipline_id", referencedColumnName = "id"),
             inverseJoinColumns = @JoinColumn(name = "protocol_id", referencedColumnName = "id"))
-    private List<Protocol> protocols;
+    private Set<Protocol> protocols;
 
     @Column(nullable = false)
     private boolean disabled;

@@ -5,6 +5,7 @@ import com.example.demo.repository.IndicatorRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.Comparator;
 import java.util.List;
 
 @Service
@@ -17,6 +18,7 @@ public class IndicatorService {
         return indicatorRepository.findAllByDisabledFalse()
                 .stream()
                 .filter(i -> !i.isDisabled())
+                .sorted(Comparator.comparing(Indicator::getId))
                 .toList();
     }
 

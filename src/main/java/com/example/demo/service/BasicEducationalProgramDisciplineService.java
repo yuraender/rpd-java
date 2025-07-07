@@ -7,6 +7,7 @@ import com.example.demo.repository.BasicEducationalProgramDisciplineRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.Comparator;
 import java.util.List;
 
 @Service
@@ -19,6 +20,7 @@ public class BasicEducationalProgramDisciplineService {
         return basicEducationalProgramDisciplineRepository.findAllByDisabledFalse()
                 .stream()
                 .filter(bepd -> !bepd.isDisabled())
+                .sorted(Comparator.comparing(BasicEducationalProgramDiscipline::getId))
                 .toList();
     }
 

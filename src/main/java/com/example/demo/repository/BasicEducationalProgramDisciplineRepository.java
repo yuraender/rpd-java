@@ -11,15 +11,15 @@ import java.util.Optional;
 
 public interface BasicEducationalProgramDisciplineRepository extends JpaRepository<BasicEducationalProgramDiscipline, Integer> {
 
-    @EntityGraph(attributePaths = {"basicEducationalProgram", "discipline"})
+    @EntityGraph(attributePaths = {"basicEducationalProgram", "discipline", "indicators", "auditoriums", "protocols"})
     List<BasicEducationalProgramDiscipline> findAllByDisabledFalse();
 
-    @EntityGraph(attributePaths = {"basicEducationalProgram", "discipline"})
+    @EntityGraph(attributePaths = {"basicEducationalProgram", "discipline", "indicators", "auditoriums", "protocols"})
     List<BasicEducationalProgramDiscipline> findAllByIndexAndBasicEducationalProgram(
             String index, BasicEducationalProgram bep
     );
 
-    @EntityGraph(attributePaths = {"basicEducationalProgram", "discipline"})
+    @EntityGraph(attributePaths = {"basicEducationalProgram", "discipline", "indicators", "auditoriums", "protocols"})
     List<BasicEducationalProgramDiscipline> findAllByBasicEducationalProgramAndDiscipline(
             BasicEducationalProgram bep, Discipline discipline
     );

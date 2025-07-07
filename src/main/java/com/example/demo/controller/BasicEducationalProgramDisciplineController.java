@@ -175,9 +175,9 @@ public class BasicEducationalProgramDisciplineController {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
         }
         bepDiscipline.setIndex(index);
-        bepDiscipline.setIndicators(new ArrayList<>(indicators));
-        bepDiscipline.setAuditoriums(new ArrayList<>(auditoriums));
-        bepDiscipline.setProtocols(new ArrayList<>(protocols));
+        bepDiscipline.setIndicators(new HashSet<>(indicators));
+        bepDiscipline.setAuditoriums(new HashSet<>(auditoriums));
+        bepDiscipline.setProtocols(new HashSet<>(protocols));
         bepDiscipline.setDisabled(false);
         basicEducationalProgramDisciplineService.save(bepDiscipline);
 
@@ -257,9 +257,9 @@ public class BasicEducationalProgramDisciplineController {
         bepDiscipline.setIndex(index);
         bepDiscipline.setBasicEducationalProgram(bep);
         bepDiscipline.setDiscipline(discipline);
-        bepDiscipline.setIndicators(new ArrayList<>(indicators));
-        bepDiscipline.setAuditoriums(new ArrayList<>(auditoriums));
-        bepDiscipline.setProtocols(new ArrayList<>(protocols));
+        bepDiscipline.setIndicators(new HashSet<>(indicators));
+        bepDiscipline.setAuditoriums(new HashSet<>(auditoriums));
+        bepDiscipline.setProtocols(new HashSet<>(protocols));
         bepDiscipline.setDisabled(false);
         basicEducationalProgramDisciplineService.save(bepDiscipline);
 

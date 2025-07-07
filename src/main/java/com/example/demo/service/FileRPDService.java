@@ -6,6 +6,7 @@ import com.example.demo.repository.FileRPDRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.Comparator;
 import java.util.List;
 
 @Service
@@ -18,6 +19,7 @@ public class FileRPDService {
         return fileRPDRepository.findAllByDisabledFalse()
                 .stream()
                 .filter(f -> !f.isDisabled())
+                .sorted(Comparator.comparing(FileRPD::getId))
                 .toList();
     }
 

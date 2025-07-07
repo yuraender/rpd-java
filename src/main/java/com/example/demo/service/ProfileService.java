@@ -5,6 +5,7 @@ import com.example.demo.repository.ProfileRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.Comparator;
 import java.util.List;
 
 @Service
@@ -17,6 +18,7 @@ public class ProfileService {
         return profileRepository.findAllByDisabledFalse()
                 .stream()
                 .filter(p -> !p.isDisabled())
+                .sorted(Comparator.comparing(Profile::getId))
                 .toList();
     }
 

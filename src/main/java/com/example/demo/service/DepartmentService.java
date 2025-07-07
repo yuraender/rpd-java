@@ -5,6 +5,7 @@ import com.example.demo.repository.DepartmentRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.Comparator;
 import java.util.List;
 
 @Service
@@ -17,6 +18,7 @@ public class DepartmentService {
         return departmentRepository.findAllByDisabledFalse()
                 .stream()
                 .filter(d -> !d.isDisabled())
+                .sorted(Comparator.comparing(Department::getId))
                 .toList();
     }
 
