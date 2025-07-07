@@ -85,7 +85,7 @@ public class EmployeePositionController {
         int param1;
         try {
             param1 = Integer.parseInt(payload.get("1"));
-        } catch (IllegalArgumentException ex) {
+        } catch (NumberFormatException ex) {
             response.put("error", "Неверный формат данных.");
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
         }
