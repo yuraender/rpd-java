@@ -1,6 +1,7 @@
 package com.example.demo.controller;
 
 import com.example.demo.entity.*;
+import com.example.demo.repository.PlaceholderRepository;
 import com.example.demo.service.BasicEducationalProgramDisciplineService;
 import com.example.demo.service.DocumentService;
 import com.fasterxml.jackson.core.type.TypeReference;
@@ -9,6 +10,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -33,6 +35,9 @@ public class DocumentController {
     private final DocumentService documentService;
     private final BasicEducationalProgramDisciplineService basicEducationalProgramDisciplineService;
 
+    private final PlaceholderRepository placeholderRepository;
+    private final JdbcTemplate jdbcTemplate;
+
     @PostMapping("/generate")
     public ResponseEntity<byte[]> generate(@RequestBody Map<String, Object> payload) throws IOException {
         Integer bepId = (Integer) payload.get("bepId");
@@ -44,6 +49,23 @@ public class DocumentController {
                 .map(basicEducationalProgramDisciplineService::getById)
                 .filter(bepd -> bepd.getBasicEducationalProgram().getId() == bepId)
                 .filter(bepd -> !bepd.isDisabled())
+                .toList();
+        List<AbstractMap.SimpleEntry<String, ?>> placeholders = placeholderRepository.findAll()
+                .stream()
+                .map(p -> {
+                    if (p.getType() == Placeholder.Type.TEXT) {
+                        return new AbstractMap.SimpleEntry<>(p.getName(), p.getText());
+                    } else {
+                        Object result;
+                        try {
+                            result = jdbcTemplate.queryForObject(p.getText(), Object.class);
+                            return new AbstractMap.SimpleEntry<>(p.getName(), result);
+                        } catch (Exception ignored) {
+                        }
+                        return null;
+                    }
+                })
+                .filter(Objects::nonNull)
                 .toList();
         SimpleDateFormat fullSdf = new SimpleDateFormat("«dd» MMMM yyyy г.", new Locale("ru"));
         SimpleDateFormat shortSdf = new SimpleDateFormat("dd.MM.yyyy г.");
@@ -192,6 +214,10 @@ public class DocumentController {
                     actualizeProtocols.add(protocolData);
                 }
                 data.put("actualizeProtocols", actualizeProtocols);
+
+                placeholders.stream()
+                        .filter(p -> !data.containsKey(p.getKey()))
+                        .forEach(p -> data.put(p.getKey(), p.getValue()));
 
                 FileRPD fileRPD = documentService.generate(data, bepDiscipline);
 
