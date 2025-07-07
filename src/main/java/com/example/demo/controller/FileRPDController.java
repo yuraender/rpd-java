@@ -4,18 +4,25 @@ import com.example.demo.entity.*;
 import com.example.demo.service.BasicEducationalProgramDisciplineService;
 import com.example.demo.service.DepartmentService;
 import com.example.demo.service.FileRPDService;
-import com.example.demo.service.TeacherService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
+import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
+import org.apache.poi.openxml4j.opc.OPCPackage;
+import org.apache.poi.openxml4j.opc.PackagePart;
+import org.apache.poi.xwpf.usermodel.XWPFDocument;
 import org.springframework.http.*;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
-import java.util.*;
+import java.io.InputStream;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 @Controller
 @RequiredArgsConstructor
@@ -24,7 +31,6 @@ public class FileRPDController {
     private final FileRPDService fileRPDService;
     private final DepartmentService departmentService;
     private final BasicEducationalProgramDisciplineService basicEducationalProgramDisciplineService;
-    private final TeacherService teacherService;
 
     @GetMapping("/rpd")
     public String getTablePage() {
@@ -44,29 +50,10 @@ public class FileRPDController {
         List<BasicEducationalProgramDiscipline> bepDisciplines = basicEducationalProgramDisciplineService.getAll();
         response.put("bepDisciplines", bepDisciplines);
 
-        List<Teacher> teachers = teacherService.getAll();
-        response.put("teachers", teachers);
-
         HttpSession session = request.getSession();
         String role = (String) session.getAttribute("role");
         response.put("role", role);
 
-        return ResponseEntity.ok(response);
-    }
-
-    @PostMapping("/api/rpd/set-active/{entityId}")
-    public ResponseEntity<Map<String, Object>> setActive(@PathVariable Integer entityId, HttpServletRequest request) {
-        Map<String, Object> response = new HashMap<>();
-
-        FileRPD fileRPD = fileRPDService.getById(entityId);
-        if (fileRPD == null) {
-            response.put("error", "Запись не найдена.");
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
-        }
-        response.put("dataName", fileRPD.getId());
-
-        HttpSession session = request.getSession();
-        session.setAttribute("fileRPDId", entityId);
         return ResponseEntity.ok(response);
     }
 
@@ -77,40 +64,6 @@ public class FileRPDController {
         FileRPD fileRPD = fileRPDService.getById(entityId);
         response.put("data", fileRPD);
 
-        List<Teacher> teachers = teacherService.getAll();
-        response.put("teachers", teachers);
-
-        return ResponseEntity.ok(response);
-    }
-
-    @PostMapping("/api/rpd/update")
-    public ResponseEntity<Map<String, Object>> updateRecord(@RequestBody Map<String, Object> payload) {
-        Map<String, Object> response = new HashMap<>();
-
-        int[] param0;
-        try {
-            param0 = ((List<String>) payload.get("0")).stream()
-                    .mapToInt(Integer::parseInt)
-                    .toArray();
-        } catch (NumberFormatException ex) {
-            response.put("error", "Неверный формат данных.");
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
-        }
-        Integer dataId = Integer.parseInt((String) payload.get("dataId"));
-
-        FileRPD fileRPD = fileRPDService.getById(dataId);
-        List<Teacher> developers = Arrays.stream(param0)
-                .mapToObj(teacherService::getById)
-                .distinct()
-                .toList();
-        if (fileRPD == null || developers.stream().anyMatch(Objects::isNull)) {
-            response.put("error", "Запись не найдена.");
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
-        }
-        fileRPD.setDevelopers(new ArrayList<>(developers));
-        fileRPDService.save(fileRPD);
-
-        response.put("updatedData", fileRPD);
         return ResponseEntity.ok(response);
     }
 
@@ -120,10 +73,16 @@ public class FileRPDController {
     ) {
         Map<String, Object> response = new HashMap<>();
         try {
-            byte[] fileBytes = file.getBytes();
-
-            if (sectionNumber < 0 || sectionNumber > 9) {
+            if (sectionNumber < 1 || sectionNumber > 8) {
                 response.put("error", "Раздел с таким номером не найден.");
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
+            }
+            if (sectionNumber == 3 || sectionNumber == 8) {
+                response.put("error", "Раздел с таким номером нельзя загружать.");
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
+            }
+            if (!isDocxFile(file)) {
+                response.put("error", "Вы пытаетесь загрузить не DOCX файл.");
                 return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
             }
 
@@ -133,7 +92,7 @@ public class FileRPDController {
                 return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
             }
             String methodName = "setSection" + sectionNumber;
-            FileRPD.class.getMethod(methodName, byte[].class).invoke(fileRPD, new Object[]{fileBytes});
+            FileRPD.class.getMethod(methodName, byte[].class).invoke(fileRPD, new Object[]{file.getBytes()});
             FileRPD.class.getMethod(methodName + "IsLoad", boolean.class).invoke(fileRPD, true);
             fileRPDService.save(fileRPD);
 
@@ -168,32 +127,24 @@ public class FileRPDController {
     }
 
     @PutMapping("/api/rpd/save-new-record")
-    public ResponseEntity<Map<String, Object>> createRecord(@RequestBody Map<String, Object> payload) {
+    public ResponseEntity<Map<String, Object>> createRecord(@RequestBody Map<String, String> payload) {
         Map<String, Object> response = new HashMap<>();
 
         int academicYear, param1;
-        int[] param2;
         try {
-            academicYear = Integer.parseInt((String) payload.get("0"));
-            param1 = Integer.parseInt((String) payload.get("1"));
-            param2 = ((List<String>) payload.get("2")).stream()
-                    .mapToInt(Integer::parseInt)
-                    .toArray();
+            academicYear = Integer.parseInt(payload.get("0"));
+            param1 = Integer.parseInt(payload.get("1"));
         } catch (NumberFormatException ex) {
             response.put("error", "Неверный формат данных.");
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
         }
 
         BasicEducationalProgramDiscipline bepDiscipline = basicEducationalProgramDisciplineService.getById(param1);
-        List<Teacher> developers = Arrays.stream(param2)
-                .mapToObj(teacherService::getById)
-                .distinct()
-                .toList();
-        if (bepDiscipline == null || developers.stream().anyMatch(Objects::isNull)) {
+        if (bepDiscipline == null) {
             response.put("error", "Запись не найдена.");
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
         }
-        if (fileRPDService.existsByAcademicYearAndBasicEducationalProgramDiscipline(null, academicYear, bepDiscipline)) {
+        if (fileRPDService.getByAcademicYearAndBasicEducationalProgramDiscipline(academicYear, bepDiscipline) != null) {
             response.put("error", "Запись уже существует.");
             return ResponseEntity.status(HttpStatus.CONFLICT).body(response);
         }
@@ -201,7 +152,6 @@ public class FileRPDController {
         FileRPD fileRPD = new FileRPD();
         fileRPD.setAcademicYear(academicYear);
         fileRPD.setBasicEducationalProgramDiscipline(bepDiscipline);
-        fileRPD.setDevelopers(new ArrayList<>(developers));
         fileRPD.setDisabled(false);
         fileRPDService.save(fileRPD);
 
@@ -250,8 +200,8 @@ public class FileRPDController {
         return ResponseEntity.ok(response);
     }
 
-    @GetMapping("/api/rpd/oop-filter/{filter1}/{filter2}")
-    public ResponseEntity<Map<String, Object>> filterByOOP(@PathVariable Integer filter1, @PathVariable Integer filter2) {
+    @GetMapping("/api/rpd/bep-filter/{filter1}/{filter2}")
+    public ResponseEntity<Map<String, Object>> filterByBep(@PathVariable Integer filter1, @PathVariable Integer filter2) {
         Map<String, Object> response = new HashMap<>();
 
         List<Discipline> filterList = basicEducationalProgramDisciplineService.getAll().stream()
@@ -304,5 +254,43 @@ public class FileRPDController {
             response.put("entityList", entityList);
         }
         return ResponseEntity.ok(response);
+    }
+
+    private boolean isDocxFile(MultipartFile file) {
+        // 1. Check extension
+        String fileName = file.getOriginalFilename();
+        if (fileName == null || !fileName.toLowerCase().endsWith(".docx")) {
+            return false;
+        }
+        // 2. Check MIME type
+        String contentType = file.getContentType();
+        if (!"application/vnd.openxmlformats-officedocument.wordprocessingml.document".equals(contentType)) {
+            return false;
+        }
+        try (InputStream is = file.getInputStream()) {
+            // 3. Check magic bytes (ZIP header)
+            byte[] data = is.readAllBytes();
+            if (data.length < 4
+                    || data[0] != 0x50 || data[1] != 0x4B
+                    || data[2] != 0x03 || data[3] != 0x04) {
+                return false;
+            }
+            // 4. Full DOCX validation with Apache POI
+            try (
+                    ByteArrayInputStream bais = new ByteArrayInputStream(data);
+                    OPCPackage opcPackage = OPCPackage.open(bais);
+                    XWPFDocument ignored = new XWPFDocument(opcPackage)
+            ) {
+                // Check for VBA macros
+                for (PackagePart part : opcPackage.getParts()) {
+                    if (part.getPartName().getName().contains("vbaProject")) {
+                        return false;
+                    }
+                }
+                return true;
+            }
+        } catch (IOException | InvalidFormatException ex) {
+            return false;
+        }
     }
 }

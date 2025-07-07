@@ -61,7 +61,7 @@ public class BackgroundInformationController {
             @SessionAttribute(name = "disciplineId", required = false) Integer disciplineId,
             @SessionAttribute(name = "competenceId", required = false) Integer competenceId,
             @SessionAttribute(name = "auditoriumId", required = false) Integer auditoriumId,
-            @SessionAttribute(name = "basicEducationalProgramId", required = false) Integer basicEducationalProgramId,
+            @SessionAttribute(name = "bepId", required = false) Integer bepId,
             @SessionAttribute(name = "bepDisciplineId", required = false) Integer bepDisciplineId,
             @SessionAttribute(name = "fileRPDId", required = false) Integer fileRPDId,
             @SessionAttribute(name = "role", required = false) String role,
@@ -172,8 +172,8 @@ public class BackgroundInformationController {
         model.addAttribute("basicEducationalPrograms", basicEducationalPrograms);
 
         // Устанавливаем ООП
-        if (basicEducationalProgramId != null) {
-            BasicEducationalProgram activeBasicEducationalProgram = basicEducationalProgramService.getById(basicEducationalProgramId);
+        if (bepId != null) {
+            BasicEducationalProgram activeBasicEducationalProgram = basicEducationalProgramService.getById(bepId);
             model.addAttribute("activeBasicEducationalProgram", activeBasicEducationalProgram);
         }
 

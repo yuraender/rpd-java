@@ -29,14 +29,13 @@ public class FileRPDService {
                 .orElse(null);
     }
 
-    public boolean existsByAcademicYearAndBasicEducationalProgramDiscipline(
-            Integer id, int academicYear, BasicEducationalProgramDiscipline bepDiscipline
+    public FileRPD getByAcademicYearAndBasicEducationalProgramDiscipline(
+            int academicYear, BasicEducationalProgramDiscipline bepDiscipline
     ) {
         return fileRPDRepository
-                .findAllByAcademicYearAndBasicEducationalProgramDisciplineAndDisabledFalse(academicYear, bepDiscipline)
-                .stream()
+                .findByAcademicYearAndBasicEducationalProgramDisciplineAndDisabledFalse(academicYear, bepDiscipline)
                 .filter(f -> !f.isDisabled())
-                .anyMatch(f -> id == null || f.getId() != id);
+                .orElse(null);
     }
 
     public FileRPD save(FileRPD fileRPD) {

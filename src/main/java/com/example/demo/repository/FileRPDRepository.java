@@ -13,10 +13,9 @@ public interface FileRPDRepository extends JpaRepository<FileRPD, Integer> {
     @EntityGraph(attributePaths = {"basicEducationalProgramDiscipline"})
     List<FileRPD> findAllByDisabledFalse();
 
-    @EntityGraph(attributePaths = {"basicEducationalProgramDiscipline"})
-    List<FileRPD> findAllByAcademicYearAndBasicEducationalProgramDisciplineAndDisabledFalse(
+    Optional<FileRPD> findByIdAndDisabledFalse(Integer id);
+
+    Optional<FileRPD> findByAcademicYearAndBasicEducationalProgramDisciplineAndDisabledFalse(
             Integer academicYear, BasicEducationalProgramDiscipline basicEducationalProgramDiscipline
     );
-
-    Optional<FileRPD> findByIdAndDisabledFalse(Integer id);
 }

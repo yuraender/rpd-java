@@ -42,7 +42,7 @@ public class BasicEducationalProgramController {
         response.put("dataName", bep.getId());
 
         HttpSession session = request.getSession();
-        session.setAttribute("oopId", entityId);
+        session.setAttribute("bepId", entityId);
         return ResponseEntity.ok(response);
     }
 

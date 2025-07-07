@@ -4,8 +4,6 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
-import java.util.List;
-
 @Entity
 @Table(name = "files_rpd")
 @Getter
@@ -93,18 +91,8 @@ public class FileRPD {
     @JoinColumn(name = "discipline_educational_program_id", referencedColumnName = "id", nullable = false)
     private BasicEducationalProgramDiscipline basicEducationalProgramDiscipline;
 
-    @ManyToMany
-    @JoinTable(name = "file_rpd_developers",
-            joinColumns = @JoinColumn(name = "file_rpd_id", referencedColumnName = "id"),
-            inverseJoinColumns = @JoinColumn(name = "developer_id", referencedColumnName = "id"))
-    private List<Teacher> developers;
-
     @Column(nullable = false)
     private boolean disabled;
-
-    public List<Teacher> getDevelopers() {
-        return developers.stream().filter(d -> !d.isDisabled()).toList();
-    }
 
     public boolean isDisabled() {
         return disabled || basicEducationalProgramDiscipline.isDisabled();

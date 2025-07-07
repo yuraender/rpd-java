@@ -26,26 +26,6 @@ body {
     align-items: center;
 }
 
-.required-entities__wrapper {
-    display: flex;
-    gap: 40px;
-    padding: 0;
-    justify-content: center;
-}
-
-.required-entities__item {
-    display: flex;
-    width: max-content;
-    justify-content: space-between;
-    align-items: center;
-    padding: 0;
-    list-style-type: none;
-}
-
-.required-entities__name {
-    margin: 0;
-}
-
 .rightbar {
     grid-row: 1/4;
     grid-column: 2/3;
@@ -75,96 +55,12 @@ body {
     text-decoration: none;
 }
 
-.link {
-    display: block;
-    margin: 10px 0;
-    color: #007bff;
-    text-align: center;
-    text-decoration: none;
-    padding: 5px;
-    background-color: rgba(201, 201, 201, 0.66);
-    border-radius: 5px;
-    width: 100px;
-}
-
-.link:hover {
-    background-color: #e9ecef;
-    color: #0056b3;
-    text-decoration: none;
-}
-
-.container-rpd {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: start;
-    gap: 20px;
-}
-
-.yes-status {
-    font-size: 0.8em;
-    background-color: green;
-    color: white;
-    padding: 2px 5px;
-    border-radius: 3px;
-    margin-left: 10px;
-}
-
 .field {
     max-width: 90%;
     overflow: hidden;
     text-overflow: ellipsis;
 }
 
-.no-status {
-    font-size: 0.8em;
-    background-color: #dc3545;
-    color: white;
-    padding: 2px 5px;
-    border-radius: 3px;
-    margin-left: 10px;
-}
-
-.message-type {
-    width: max-content;
-}
-
-.message-wrapper {
-    display: flex;
-    gap: 20px;
-    align-items: center;
-    justify-content: center;
-}
-
-.discipline-op-element {
-    list-style-type: none;
-    padding: 10px;
-    border-radius: 12px;
-    display: flex;
-    width: max-content;
-    justify-content: space-between;
-    align-items: center;
-    gap: 20px;
-    margin: 20px 0;
-    border-bottom: 1px solid rgba(0, 0, 0, .5);
-}
-
-.discipline-op-element:hover {
-    cursor: pointer;
-}
-
 p {
     margin: 0;
-}
-
-.deletedItem {
-    background-color: #c82333;
-}
-
-.disciplines-list-container {
-    padding: 0;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 10px;
 }

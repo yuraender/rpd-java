@@ -12,11 +12,16 @@
     <link rel="stylesheet"
           href="https://cdn.jsdelivr.net/npm/bootstrap-select@1.13.18/dist/css/bootstrap-select.min.css">
     <style>
-        .btn-download {
+        .btn-download, .btn-upload {
             width: 50%;
             height: 60px;
             overflow: hidden;
             text-overflow: ellipsis;
+        }
+
+        .btn-upload {
+            align-content: center;
+            text-align-last: center;
         }
     </style>
     <link rel="stylesheet" href="/css/style.css"/>
@@ -74,21 +79,21 @@
                            onkeyup="filterTable('dataTable', 3)"></th>
                 <th><input type="text" class="form-control" placeholder="Дисциплина"
                            onkeyup="filterTable('dataTable', 4)"></th>
-                <th><input type="text" class="form-control" placeholder="Раздел 1"
+                <th><input type="text" class="form-control" placeholder="1"
                            onkeyup="filterTable('dataTable', 5)"></th>
-                <th><input type="text" class="form-control" placeholder="Раздел 2"
+                <th><input type="text" class="form-control" placeholder="2"
                            onkeyup="filterTable('dataTable', 6)"></th>
-                <th><input type="text" class="form-control" placeholder="Раздел 3"
+                <th><input type="text" class="form-control" placeholder="3"
                            onkeyup="filterTable('dataTable', 7)"></th>
-                <th><input type="text" class="form-control" placeholder="Раздел 4"
+                <th><input type="text" class="form-control" placeholder="4"
                            onkeyup="filterTable('dataTable', 8)"></th>
-                <th><input type="text" class="form-control" placeholder="Раздел 5"
+                <th><input type="text" class="form-control" placeholder="5"
                            onkeyup="filterTable('dataTable', 9)"></th>
-                <th><input type="text" class="form-control" placeholder="Раздел 6"
+                <th><input type="text" class="form-control" placeholder="6"
                            onkeyup="filterTable('dataTable', 10)"></th>
-                <th><input type="text" class="form-control" placeholder="Раздел 7"
+                <th><input type="text" class="form-control" placeholder="7"
                            onkeyup="filterTable('dataTable', 11)"></th>
-                <th><input type="text" class="form-control" placeholder="Раздел 8"
+                <th><input type="text" class="form-control" placeholder="8"
                            onkeyup="filterTable('dataTable', 12)"></th>
             </tr>
             <tr class="sticky-header">
@@ -97,14 +102,14 @@
                 <th>Профиль</th>
                 <th>Форма обучения</th>
                 <th>Дисциплина</th>
-                <th>Раздел 1</th>
-                <th>Раздел 2</th>
-                <th>Раздел 3</th>
-                <th>Раздел 4</th>
-                <th>Раздел 5</th>
-                <th>Раздел 6</th>
-                <th>Раздел 7</th>
-                <th>Раздел 8</th>
+                <th>1</th>
+                <th>2</th>
+                <th>3</th>
+                <th>4</th>
+                <th>5</th>
+                <th>6</th>
+                <th>7</th>
+                <th>8</th>
             </tr>
             </thead>
             <tbody>
@@ -164,7 +169,7 @@
         const fileNames = [
             "Титульный лист",
             "Цели освоения дисциплины",
-            "Место дисциплины в составе ОП",
+            "Место дисциплины в составе ООП",
             "Компетенции обучающегося",
             "Структура и содержание дисциплины",
             "Образовательные технологии",
@@ -262,33 +267,15 @@
                 let fields = activeRecord.querySelectorAll('.field');
 
                 fields.forEach(function (field) {
+                    let uploadId = field.getAttribute("uploadid");
+                    if (uploadId == 3 || uploadId == 8) {
+                        return
+                    }
                     field.disabled = false;
                     field.readOnly = false;
                     $(field).selectpicker('refresh');
                 });
                 $('.bootstrap-select', activeRecord).removeClass(['form-control', 'field']);
-
-                activeFieldsChange()
-
-                function activeFieldsChange() {
-                    let form = document.querySelector('.active-form')
-                    let btnSuccess = document.createElement('button');
-                    btnSuccess.classList.add('btn-success', 'button', 'btn', 'button-success')
-                    btnSuccess.textContent = 'Подтвердить'
-                    btnSuccess.addEventListener('click', updateRecord)
-                    form.appendChild(btnSuccess);
-
-                    let btnCansel = document.createElement('button');
-                    btnCansel.classList.add('btn-cancel', 'button', 'btn', 'btn-danger')
-                    btnCansel.textContent = 'Отменить'
-                    btnCansel.addEventListener('click', cancelUpdate)
-                    form.appendChild(btnCansel);
-                }
-
-                function cancelUpdate() {
-                    let dataId = document.querySelector('.active-form').getAttribute('activeRecordId')
-                    changeActiveRowTable(dataId)
-                }
             }
 
             let createBtn = document.querySelector('.btn-create')
@@ -377,26 +364,6 @@
                                 optionData.basicEducationalProgram.profile.name + ', ' +
                                 optionData.basicEducationalProgram.educationType.name + ', ' +
                                 optionData.discipline.name;
-                            let id = optionData.id;
-                            let option = createOptionForCreate(text, id)
-                            fieldSelect.append(option);
-                        });
-                        fieldWrapper.append(fieldSelect)
-                        form.append(fieldWrapper)
-
-                        fieldWrapper = document.createElement('div')
-                        fieldWrapper.classList.add('standard__active-record-wrapper')
-                        fieldDesc = document.createElement('p')
-                        fieldDesc.classList.add('field__desc')
-                        fieldDesc.textContent = `Разработчики:`
-                        fieldWrapper.append(fieldDesc)
-                        fieldSelect = document.createElement('select');
-                        fieldSelect.classList.add('form-control', 'field');
-                        fieldSelect.setAttribute('data-live-search', 'true');
-                        fieldSelect.setAttribute('data-selected-text-format', 'count');
-                        fieldSelect.multiple = true;
-                        data.teachers.forEach(function (optionData) {
-                            let text = optionData.employee.nameTypeOne;
                             let id = optionData.id;
                             let option = createOptionForCreate(text, id)
                             fieldSelect.append(option);
@@ -588,40 +555,12 @@
                     fieldWrapper.append(createInactiveTextBox(data.data.basicEducationalProgramDiscipline.discipline.name))
                     form.append(fieldWrapper)
 
-                    fieldWrapper = document.createElement('div')
-                    fieldWrapper.classList.add('standard__active-record-wrapper')
-                    fieldDesc = document.createElement('p')
-                    fieldDesc.classList.add('field__desc')
-                    fieldDesc.textContent = `Разработчики:`
-                    fieldWrapper.append(fieldDesc)
-                    let fieldSelect = document.createElement('select');
-                    fieldSelect.classList.add('form-control', 'field');
-                    fieldSelect.setAttribute('data-live-search', 'true');
-                    fieldSelect.setAttribute('data-selected-text-format', 'count');
-                    fieldSelect.multiple = true;
-                    data.teachers.forEach(function (optionData) {
-                        let text = optionData.employee.nameTypeOne;
-                        let id = optionData.id;
-                        let selected = data.data.developers.some(t => t.id === id)
-                        let option = createOptionMultipleForActiveRecord(text, id, selected)
-                        fieldSelect.append(option);
-                    });
-                    fieldSelect.disabled = !editMode;
-                    fieldWrapper.append(fieldSelect)
-                    form.append(fieldWrapper)
-
                     function createFileChanger(data, sectionNumber) {
                         let fieldWrapper = document.createElement('div')
                         fieldWrapper.classList.add('standard__active-record-wrapper')
                         let isLoadedSection = !!data.data["section" + sectionNumber + "IsLoad"];
                         fieldWrapper.append(createBtnDownloadForActiveRecord(data.data.id, sectionNumber, fileNames[sectionNumber], isLoadedSection))
-                        const uploadSection = document.createElement('input');
-                        uploadSection.setAttribute('type', 'file');
-                        uploadSection.classList.add('form-control-file');
-                        uploadSection.classList.add('btn-download', 'button', 'btn', 'btn-primary')
-                        uploadSection.setAttribute('accept', '.docx');
-                        uploadSection.addEventListener('change', (e) => uploadFile(e, sectionNumber));
-                        fieldWrapper.append(uploadSection)
+                        fieldWrapper.append(createBtnUploadForActiveRecord(sectionNumber))
                         return fieldWrapper
                     }
 
@@ -660,10 +599,22 @@
                         button.textContent = 'Скачать: ' + text;
                         button.setAttribute('downloadid', sectionNumber)
                         button.classList.add('btn-download', 'button', 'btn', 'btn-primary')
-                        button.disabled = !status;
                         button.addEventListener('click', () => {
                             fileDownload(dataId, sectionNumber)
                         })
+                        button.disabled = !status;
+                        return button;
+                    }
+
+                    function createBtnUploadForActiveRecord(sectionNumber) {
+                        let button = document.createElement('input');
+                        button.setAttribute('type', 'file');
+                        button.setAttribute('uploadid', sectionNumber)
+                        button.classList.add('form-control', 'field');
+                        button.classList.add('btn-upload', 'button', 'btn', 'btn-primary')
+                        button.setAttribute('accept', '.docx');
+                        button.addEventListener('change', (e) => uploadFile(e, sectionNumber));
+                        button.disabled = !editMode;
                         return button;
                     }
 
@@ -711,81 +662,6 @@
                 .catch(function (error) {
                     console.error('Ошибка загрузки данных:', error);
                     alert('Ошибка при загрузке данных');
-                });
-        }
-
-        function updateRecord() {
-            let activeRecord = document.querySelector('.active-record');
-            let fields = activeRecord.querySelectorAll('.field');
-            let emptyFields = false;
-            let dataId = document.querySelector('.active-form').getAttribute('activeRecordId')
-
-            let data = {}
-            fields.forEach(function (field, index) {
-                if (field.multiple) {
-                    const values = [];
-                    for (let selectedOption of field.selectedOptions) {
-                        values.push(selectedOption.value);
-                    }
-                    data[index] = values;
-                } else if (field.value) {
-                    data[index] = field.value
-                } else {
-                    if (field.classList.contains('optional')) {
-                        data[index] = ''
-                        return
-                    }
-                    showModalWithMessage('Поля должны быть заполнены.')
-                    emptyFields = true
-                }
-            })
-            data['dataId'] = dataId;
-
-            if (emptyFields) return
-            fetch('/api/rpd/update', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'X-CSRF-TOKEN': csrfToken
-                },
-                body: JSON.stringify(data)
-            })
-                .then(response => response.json())
-                .then(function (newRecord) {
-                    if (newRecord.error) {
-                        showModalWithMessage(newRecord.error)
-                        emptyFields = true
-                    } else {
-                        let table = document.getElementById('dataTable');
-                        let rows = table.getElementsByTagName('tr');
-                        // Найти строку с нужным dataId и обновить ее содержимое
-                        for (let i = 0; i < rows.length; i++) {
-                            if (rows[i].getAttribute('dataid') == newRecord.updatedData.id) {
-                                rows[i].innerHTML =
-                                    '<td>' + newRecord.updatedData.id + '</td>' +
-                                    '<td>' + newRecord.updatedData.academicYear + '</td>' +
-                                    '<td>' + newRecord.updatedData.basicEducationalProgramDiscipline.basicEducationalProgram.profile.name + '</td>' +
-                                    '<td>' + newRecord.updatedData.basicEducationalProgramDiscipline.basicEducationalProgram.educationType.name + '</td>' +
-                                    '<td>' + newRecord.updatedData.basicEducationalProgramDiscipline.discipline.name + '</td>' +
-                                    '<td>' + isLoadStatus(newRecord.updatedData.section1IsLoad) + '</td>' +
-                                    '<td>' + isLoadStatus(newRecord.updatedData.section2IsLoad) + '</td>' +
-                                    '<td>' + isLoadStatus(newRecord.updatedData.section3IsLoad) + '</td>' +
-                                    '<td>' + isLoadStatus(newRecord.updatedData.section4IsLoad) + '</td>' +
-                                    '<td>' + isLoadStatus(newRecord.updatedData.section5IsLoad) + '</td>' +
-                                    '<td>' + isLoadStatus(newRecord.updatedData.section6IsLoad) + '</td>' +
-                                    '<td>' + isLoadStatus(newRecord.updatedData.section7IsLoad) + '</td>' +
-                                    '<td>' + isLoadStatus(newRecord.updatedData.section8IsLoad) + '</td>';
-                                break;
-                            }
-                        }
-                        changeActiveRowTable(newRecord.updatedData.id)
-                        // Модальное окно
-                        showModalWithMessage('Запись обновлена.')
-                    }
-                })
-                .catch(function (error) {
-                    console.error('Ошибка обновления данных:', error);
-                    alert('Ошибка при обновлении данных');
                 });
         }
 
@@ -844,7 +720,7 @@
             filter3.disabled = true;
             $('select', '.filters').selectpicker('refresh');
 
-            fetch('/api/rpd/oop-filter/' + filter1Global + '/' + filter2Id)
+            fetch('/api/rpd/bep-filter/' + filter1Global + '/' + filter2Id)
                 .then(response => response.json())
                 .then(function (data) {
                     let filter3 = document.getElementById('filter3');
@@ -890,9 +766,7 @@
         });
 
         function isLoadStatus(section) {
-            let load = "Загружен";
-            let noLoad = "Не загружен";
-            return section ? load : noLoad;
+            return section ? '+' : '-';
         }
 
         function fileDownload(dataId, sectionNumber) {
@@ -940,13 +814,17 @@
                 })
                     .then(response => response.json())
                     .then(data => {
-                        let buttons = document.querySelectorAll('.btn-download')
-                        buttons.forEach(el => {
-                            if (el.getAttribute('downloadid') == data.data) {
-                                el.removeAttribute('disabled')
-                            }
-                        })
-                        showModalWithMessage("Файл успешно загружен");
+                        if (data.error) {
+                            showModalWithMessage(data.error);
+                        } else {
+                            let buttons = document.querySelectorAll('.btn-download')
+                            buttons.forEach(el => {
+                                if (el.getAttribute('downloadid') == data.data) {
+                                    el.removeAttribute('disabled')
+                                }
+                            })
+                            showModalWithMessage("Файл успешно загружен.");
+                        }
                     })
                     .catch(error => {
                         console.error('Ошибка загрузки файла:', error);
