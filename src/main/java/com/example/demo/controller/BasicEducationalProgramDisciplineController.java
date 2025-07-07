@@ -80,7 +80,7 @@ public class BasicEducationalProgramDisciplineController {
             response.put("error", "Запись не найдена.");
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
         }
-        response.put("dataName", bepDiscipline.getId());
+        response.put("dataName", bepDiscipline.getIndex() + " " + bepDiscipline.getDiscipline().getName());
 
         HttpSession session = request.getSession();
         session.setAttribute("bepDisciplineId", entityId);

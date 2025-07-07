@@ -26,22 +26,6 @@ public class AuditoriumController {
         return "auditoriums";
     }
 
-    @PostMapping("/api/auditorium/set-active/{entityId}")
-    public ResponseEntity<Map<String, Object>> setActive(@PathVariable Integer entityId, HttpServletRequest request) {
-        Map<String, Object> response = new HashMap<>();
-
-        Auditorium auditorium = auditoriumService.getById(entityId);
-        if (auditorium == null) {
-            response.put("error", "Запись не найдена.");
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
-        }
-        response.put("dataName", auditorium.getAuditoriumNumber());
-
-        HttpSession session = request.getSession();
-        session.setAttribute("auditoriumId", entityId);
-        return ResponseEntity.ok(response);
-    }
-
     @GetMapping("/auditoriums-data")
     public ResponseEntity<Map<String, Object>> getEntityData(HttpServletRequest request) {
         Map<String, Object> response = new HashMap<>();
