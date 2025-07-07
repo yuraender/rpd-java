@@ -145,7 +145,7 @@ public class BasicEducationalProgramDisciplineController {
                 .toList();
         List<Indicator> indicators = Arrays.stream(param2)
                 .mapToObj(indicatorService::getById)
-                .filter(i -> i == null || competences.contains(i.getCompetence()))
+                .filter(i -> i == null || competences.stream().anyMatch(c -> i.getCompetence().getId() == c.getId()))
                 .distinct()
                 .toList();
         List<Auditorium> auditoriums = Arrays.stream(param3)
@@ -223,7 +223,7 @@ public class BasicEducationalProgramDisciplineController {
                 .toList();
         List<Indicator> indicators = Arrays.stream(param4)
                 .mapToObj(indicatorService::getById)
-                .filter(i -> i == null || competences.contains(i.getCompetence()))
+                .filter(i -> i == null || competences.stream().anyMatch(c -> i.getCompetence().getId() == c.getId()))
                 .distinct()
                 .toList();
         List<Auditorium> auditoriums = Arrays.stream(param5)
