@@ -39,17 +39,23 @@
             <tr class="sticky-header">
                 <th><input type="text" class="form-control" placeholder="ID"
                            onkeyup="filterTable('dataTable', 0)"></th>
-                <th><input type="text" class="form-control" placeholder="Номер"
+                <th><input type="text" class="form-control" placeholder="Номер заседания кафедры"
                            onkeyup="filterTable('dataTable', 1)"></th>
-                <th><input type="text" class="form-control" placeholder="Дата подписания"
+                <th><input type="text" class="form-control" placeholder="Дата заседания кафедры"
                            onkeyup="filterTable('dataTable', 2)"></th>
-                <th><input type="text" class="form-control" placeholder="Тип"
+                <th><input type="text" class="form-control" placeholder="Номер заседания Ученого совета"
                            onkeyup="filterTable('dataTable', 3)"></th>
+                <th><input type="text" class="form-control" placeholder="Дата заседания Ученого совета"
+                           onkeyup="filterTable('dataTable', 4)"></th>
+                <th><input type="text" class="form-control" placeholder="Тип"
+                           onkeyup="filterTable('dataTable', 5)"></th>
             </tr>
             <tr class="sticky-header">
                 <th>ID</th>
-                <th>Номер</th>
-                <th>Дата подписания</th>
+                <th>Номер заседания кафедры</th>
+                <th>Дата заседания кафедры</th>
+                <th>Номер заседания Ученого совета</th>
+                <th>Дата заседания Ученого совета</th>
                 <th>Тип</th>
             </tr>
             </thead>
@@ -260,7 +266,7 @@
                         fieldWrapper.classList.add('standard__active-record-wrapper')
                         let fieldDesc = document.createElement('p')
                         fieldDesc.classList.add('field__desc')
-                        fieldDesc.textContent = `Номер:`
+                        fieldDesc.textContent = `Номер заседания кафедры:`
                         fieldWrapper.append(fieldDesc)
                         fieldWrapper.append(createTextBoxForCreate(100))
                         form.append(fieldWrapper)
@@ -269,7 +275,25 @@
                         fieldWrapper.classList.add('standard__active-record-wrapper')
                         fieldDesc = document.createElement('p')
                         fieldDesc.classList.add('field__desc')
-                        fieldDesc.textContent = `Дата подписания:`
+                        fieldDesc.textContent = `Дата заседания кафедры:`
+                        fieldWrapper.append(fieldDesc)
+                        fieldWrapper.append(createDatePickerForCreate())
+                        form.append(fieldWrapper)
+
+                        fieldWrapper = document.createElement('div')
+                        fieldWrapper.classList.add('standard__active-record-wrapper')
+                        fieldDesc = document.createElement('p')
+                        fieldDesc.classList.add('field__desc')
+                        fieldDesc.textContent = `Номер заседания Ученого совета:`
+                        fieldWrapper.append(fieldDesc)
+                        fieldWrapper.append(createTextBoxForCreate(100))
+                        form.append(fieldWrapper)
+
+                        fieldWrapper = document.createElement('div')
+                        fieldWrapper.classList.add('standard__active-record-wrapper')
+                        fieldDesc = document.createElement('p')
+                        fieldDesc.classList.add('field__desc')
+                        fieldDesc.textContent = `Дата заседания Ученого совета:`
                         fieldWrapper.append(fieldDesc)
                         fieldWrapper.append(createDatePickerForCreate())
                         form.append(fieldWrapper)
@@ -286,6 +310,26 @@
                         fieldSelect.setAttribute('data-selected-text-format', 'count');
                         data.types.forEach(function (optionData) {
                             let text = optionData.name;
+                            let id = optionData.id;
+                            let option = createOptionForCreate(text, id)
+                            fieldSelect.append(option);
+                        });
+                        fieldWrapper.append(fieldSelect)
+                        form.append(fieldWrapper)
+
+                        fieldWrapper = document.createElement('div')
+                        fieldWrapper.classList.add('standard__active-record-wrapper')
+                        fieldDesc = document.createElement('p')
+                        fieldDesc.classList.add('field__desc')
+                        fieldDesc.textContent = `Разработчики:`
+                        fieldWrapper.append(fieldDesc)
+                        fieldSelect = document.createElement('select');
+                        fieldSelect.classList.add('form-control', 'field');
+                        fieldSelect.setAttribute('data-live-search', 'true');
+                        fieldSelect.setAttribute('data-selected-text-format', 'count');
+                        fieldSelect.multiple = true;
+                        data.teachers.forEach(function (optionData) {
+                            let text = optionData.employee.nameTypeOne;
                             let id = optionData.id;
                             let option = createOptionForCreate(text, id)
                             fieldSelect.append(option);
@@ -358,8 +402,10 @@
                         row.classList.add(`${data.id}`)
                         row.innerHTML =
                             '<td>' + data.id + '</td>' +
-                            '<td>' + data.numberProtocol + '</td>' +
-                            '<td>' + formatDate(data.date) + '</td>' +
+                            '<td>' + data.number1 + '</td>' +
+                            '<td>' + formatDate(data.date1) + '</td>' +
+                            '<td>' + data.number2 + '</td>' +
+                            '<td>' + formatDate(data.date2) + '</td>' +
                             '<td>' + data.type.name + '</td>';
                         row.addEventListener('click', function () {
                             changeActiveRowTable(data.id);
@@ -387,8 +433,10 @@
                 row.classList.add(`${data.id}`)
                 row.innerHTML =
                     '<td>' + data.id + '</td>' +
-                    '<td>' + data.numberProtocol + '</td>' +
-                    '<td>' + formatDate(data.date) + '</td>' +
+                    '<td>' + data.number1 + '</td>' +
+                    '<td>' + formatDate(data.date1) + '</td>' +
+                    '<td>' + data.number2 + '</td>' +
+                    '<td>' + formatDate(data.date2) + '</td>' +
                     '<td>' + data.type.name + '</td>';
                 row.addEventListener('click', function () {
                     changeActiveRowTable(data.id);
@@ -427,18 +475,36 @@
                     fieldWrapper.classList.add('standard__active-record-wrapper')
                     let fieldDesc = document.createElement('p')
                     fieldDesc.classList.add('field__desc')
-                    fieldDesc.textContent = `Номер:`
+                    fieldDesc.textContent = `Номер заседания кафедры:`
                     fieldWrapper.append(fieldDesc)
-                    fieldWrapper.append(createTextBoxForActiveRecord(data.data.numberProtocol, 11))
+                    fieldWrapper.append(createTextBoxForActiveRecord(data.data.number1, 11))
                     form.append(fieldWrapper)
 
                     fieldWrapper = document.createElement('div')
                     fieldWrapper.classList.add('standard__active-record-wrapper')
                     fieldDesc = document.createElement('p')
                     fieldDesc.classList.add('field__desc')
-                    fieldDesc.textContent = `Дата подписания:`
+                    fieldDesc.textContent = `Дата заседания кафедры:`
                     fieldWrapper.append(fieldDesc)
-                    fieldWrapper.append(createDatePickerForActiveRecord(data.data.date))
+                    fieldWrapper.append(createDatePickerForActiveRecord(data.data.date1))
+                    form.append(fieldWrapper)
+
+                    fieldWrapper = document.createElement('div')
+                    fieldWrapper.classList.add('standard__active-record-wrapper')
+                    fieldDesc = document.createElement('p')
+                    fieldDesc.classList.add('field__desc')
+                    fieldDesc.textContent = `Номер заседания Ученого совета:`
+                    fieldWrapper.append(fieldDesc)
+                    fieldWrapper.append(createTextBoxForActiveRecord(data.data.number2, 11))
+                    form.append(fieldWrapper)
+
+                    fieldWrapper = document.createElement('div')
+                    fieldWrapper.classList.add('standard__active-record-wrapper')
+                    fieldDesc = document.createElement('p')
+                    fieldDesc.classList.add('field__desc')
+                    fieldDesc.textContent = `Дата заседания Ученого совета:`
+                    fieldWrapper.append(fieldDesc)
+                    fieldWrapper.append(createDatePickerForActiveRecord(data.data.date2))
                     form.append(fieldWrapper)
 
                     fieldWrapper = document.createElement('div')
@@ -448,6 +514,28 @@
                     fieldDesc.textContent = `Тип:`
                     fieldWrapper.append(fieldDesc)
                     fieldWrapper.append(createInactiveTextBox(data.data.type.name))
+                    form.append(fieldWrapper)
+
+                    fieldWrapper = document.createElement('div')
+                    fieldWrapper.classList.add('standard__active-record-wrapper')
+                    fieldDesc = document.createElement('p')
+                    fieldDesc.classList.add('field__desc')
+                    fieldDesc.textContent = `Разработчики:`
+                    fieldWrapper.append(fieldDesc)
+                    let fieldSelect = document.createElement('select');
+                    fieldSelect.classList.add('form-control', 'field');
+                    fieldSelect.setAttribute('data-live-search', 'true');
+                    fieldSelect.setAttribute('data-selected-text-format', 'count');
+                    fieldSelect.multiple = true;
+                    data.teachers.forEach(function (optionData) {
+                        let text = optionData.employee.nameTypeOne;
+                        let id = optionData.id;
+                        let selected = data.data.developers.some(t => t.id === id)
+                        let option = createOptionMultipleForActiveRecord(text, id, selected)
+                        fieldSelect.append(option);
+                    });
+                    fieldSelect.disabled = !editMode;
+                    fieldWrapper.append(fieldSelect)
                     form.append(fieldWrapper)
 
                     // Конец добавления в активную запись
@@ -581,8 +669,10 @@
                             if (rows[i].getAttribute('dataid') == newRecord.updatedData.id) {
                                 rows[i].innerHTML =
                                     '<td>' + newRecord.updatedData.id + '</td>' +
-                                    '<td>' + newRecord.updatedData.numberProtocol + '</td>' +
-                                    '<td>' + formatDate(newRecord.updatedData.date) + '</td>' +
+                                    '<td>' + newRecord.updatedData.number1 + '</td>' +
+                                    '<td>' + formatDate(newRecord.updatedData.date1) + '</td>' +
+                                    '<td>' + newRecord.updatedData.number2 + '</td>' +
+                                    '<td>' + formatDate(newRecord.updatedData.date2) + '</td>' +
                                     '<td>' + newRecord.updatedData.type.name + '</td>';
                                 break;
                             }

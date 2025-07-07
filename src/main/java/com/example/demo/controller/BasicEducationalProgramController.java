@@ -126,8 +126,9 @@ public class BasicEducationalProgramController {
             response.put("error", "Запись уже существует.");
             return ResponseEntity.status(HttpStatus.CONFLICT).body(response);
         }
-        if (protocol.getDate().toLocalDate().getYear() != academicYear) {
-            response.put("error", "Дата утверждения должна соответствовать учебному году.");
+        if (protocol.getDate1().toLocalDate().getYear() != academicYear
+                || protocol.getDate2().toLocalDate().getYear() != academicYear) {
+            response.put("error", "Дата заседаний должна соответствовать учебному году.");
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
         }
         bep.setAcademicYear(academicYear);
@@ -168,8 +169,9 @@ public class BasicEducationalProgramController {
             response.put("error", "Запись уже существует.");
             return ResponseEntity.status(HttpStatus.CONFLICT).body(response);
         }
-        if (protocol.getDate().toLocalDate().getYear() != academicYear) {
-            response.put("error", "Дата утверждения должна соответстовать учебному году.");
+        if (protocol.getDate1().toLocalDate().getYear() != academicYear
+                || protocol.getDate2().toLocalDate().getYear() != academicYear) {
+            response.put("error", "Дата заседаний должна соответствовать учебному году.");
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
         }
 

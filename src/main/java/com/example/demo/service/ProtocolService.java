@@ -5,7 +5,7 @@ import com.example.demo.repository.ProtocolRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.sql.Date;
+import java.util.Comparator;
 import java.util.List;
 
 @Service
@@ -15,11 +15,17 @@ public class ProtocolService {
     private final ProtocolRepository protocolRepository;
 
     public List<Protocol> getAll() {
-        return protocolRepository.findAllByDisabledFalse();
+        return protocolRepository.findAllByDisabledFalse()
+                .stream()
+                .sorted(Comparator.comparing(Protocol::getId))
+                .toList();
     }
 
     public List<Protocol> getAllByType(Protocol.Type type) {
-        return protocolRepository.findAllByTypeAndDisabledFalse(type);
+        return protocolRepository.findAllByTypeAndDisabledFalse(type)
+                .stream()
+                .sorted(Comparator.comparing(Protocol::getId))
+                .toList();
     }
 
     public Protocol getById(Integer id) {
@@ -28,13 +34,6 @@ public class ProtocolService {
 
     public Protocol getByIdAndType(Integer id, Protocol.Type type) {
         return protocolRepository.findByIdAndTypeAndDisabledFalse(id, type).orElse(null);
-    }
-
-    public boolean existsByNumberAndDateAndType(Integer id, int numberProtocol, Date date, Protocol.Type type) {
-        return protocolRepository.findAllByNumberProtocolAndDateAndTypeAndDisabledFalse(numberProtocol, date, type)
-                .stream()
-                .filter(p -> !p.isDisabled())
-                .anyMatch(p -> id == null || p.getId() != id);
     }
 
     public Protocol save(Protocol protocol) {

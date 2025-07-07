@@ -382,7 +382,8 @@
                         fieldSelect.setAttribute('data-live-search', 'true');
                         fieldSelect.setAttribute('data-selected-text-format', 'count');
                         data.protocols.forEach(function (optionData) {
-                            let text = `№${optionData.numberProtocol} от ${formatDate(optionData.date)}`;
+                            let text = `№${optionData.number1} от ${formatDate(optionData.date1)}`
+                                + ` | №${optionData.number2} от ${formatDate(optionData.date2)}`;
                             let id = optionData.id;
                             let option = createOptionForCreate(text, id)
                             fieldSelect.append(option);
@@ -619,7 +620,8 @@
                     fieldSelect.setAttribute('data-live-search', 'true');
                     fieldSelect.setAttribute('data-selected-text-format', 'count');
                     data.protocols.forEach(function (optionData) {
-                        let text = `№${optionData.numberProtocol} от ${formatDate(optionData.date)}`;
+                        let text = `№${optionData.number1} от ${formatDate(optionData.date1)}`
+                            + ` | №${optionData.number2} от ${formatDate(optionData.date2)}`;
                         let id = optionData.id;
                         let parentDataId = data.data.protocol.id
                         let option = createOptionForActiveRecord(text, id, parentDataId)

@@ -466,7 +466,8 @@
                         fieldSelect.setAttribute('data-selected-text-format', 'count');
                         fieldSelect.multiple = true;
                         data.protocols.forEach(function (optionData) {
-                            let text = `№${optionData.numberProtocol} от ${formatDate(optionData.date)}`;
+                            let text = `№${optionData.number1} от ${formatDate(optionData.date1)}`
+                                + ` | №${optionData.number2} от ${formatDate(optionData.date2)}`;
                             let id = optionData.id;
                             let option = createOptionForCreate(text, id)
                             fieldSelect.append(option);
@@ -756,7 +757,8 @@
                     fieldSelect.setAttribute('data-selected-text-format', 'count');
                     fieldSelect.multiple = true
                     data.protocols.forEach(function (optionData) {
-                        let text = `№${optionData.numberProtocol} от ${formatDate(optionData.date)}`;
+                        let text = `№${optionData.number1} от ${formatDate(optionData.date1)}`
+                            + ` | №${optionData.number2} от ${formatDate(optionData.date2)}`;
                         let id = optionData.id;
                         let selected = data.data.protocols.some(p => p.id === id)
                         let option = createOptionMultipleForActiveRecord(text, id, selected)

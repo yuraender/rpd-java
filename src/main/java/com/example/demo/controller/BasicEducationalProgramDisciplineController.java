@@ -169,8 +169,8 @@ public class BasicEducationalProgramDisciplineController {
             response.put("error", "Запись уже существует.");
             return ResponseEntity.status(HttpStatus.CONFLICT).body(response);
         }
-        if (protocols.stream().anyMatch(p -> p.getDate().toLocalDate().getYear()
-                <= bepDiscipline.getBasicEducationalProgram().getProtocol().getDate().toLocalDate().getYear())) {
+        if (protocols.stream().anyMatch(p -> p.getDate1().toLocalDate().getYear()
+                <= bepDiscipline.getBasicEducationalProgram().getProtocol().getDate1().toLocalDate().getYear())) {
             response.put("error", "Дата актуализации должна быть позднее даты утверждения.");
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
         }
@@ -248,7 +248,7 @@ public class BasicEducationalProgramDisciplineController {
             return ResponseEntity.status(HttpStatus.CONFLICT).body(response);
         }
         if (protocols.stream().anyMatch(p ->
-                p.getDate().toLocalDate().getYear() <= bep.getProtocol().getDate().toLocalDate().getYear())) {
+                p.getDate1().toLocalDate().getYear() <= bep.getProtocol().getDate1().toLocalDate().getYear())) {
             response.put("error", "Дата актуализации должна быть позднее даты утверждения.");
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
         }
